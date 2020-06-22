@@ -1,0 +1,31 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'sunday'
+      time: '08:00'
+      timezone: 'Asia/Ho_Chi_Minh'
+    versioning-strategy: increase-if-necessary
+    target-branch: 'develop'
+    open-pull-requests-limit: 10
+    rebase-strategy: 'auto'
+    ignore:
+      - dependency-name: '@nestjs/common'
+      - dependency-name: '@nestjs/core'
+      - dependency-name: '@nestjs/platform-express'
+      - dependency-name: 'reflect-metadata'
+    labels:
+      - 'dependencies'
+      - 'dependabot'
+    commit-message:
+      - prefix: 'fix'
+      - prefix-development: 'chore'
+      - include: 'scope'
+    assignees:
+      - phanduc0908
+      - quangnv281098
+      - ducnmhe130666
+    reviewers:
+      - harrytran998

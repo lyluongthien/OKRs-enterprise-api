@@ -1,0 +1,38 @@
+{
+  // ========
+  // Editor
+  // ========
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "node_modules": true
+  },
+  // ========
+  // Eslint
+  // ========
+  "eslint.run": "onSave",
+  "eslint.workingDirectories": [
+    {
+      "directory": "./app",
+      "changeProcessCWD": true
+    }
+  ],
+  "eslint.options": {
+    "extensions": [".js", ".ts"]
+  },
+  "eslint.alwaysShowStatus": true,
+  "eslint.validate": ["javascript", "typescript"],
+  // for Windows collaborators
+  "files.eol": "\n",
+  "files.encoding": "utf8",
+  "gitlens.defaultDateFormat": "dddd, MMMM Do YYYY, h:mm:ss a"
+}

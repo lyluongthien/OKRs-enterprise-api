@@ -1,0 +1,51 @@
+version: "3.7"
+services:
+  tool-okrs-db:
+    container_name: tool-okrs-db
+    image: postgres:11-alpine
+    restart: ${RESTART_POLICY}
+    ports:
+      - "${DB_PORT}:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      PGDATA: /var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - webnet
+  # redis:
+  #   container_name: re-radio_redis
+  #   image: redis:5.0.9-alpine
+  #   restart: ${RESTART_POLICY}
+  #   ports:
+  #     - "${REDIS_PORT}:6379"
+  tool-okrs:
+    container_name: tool-okrs
+    restart: ${RESTART_POLICY}
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/dist
+      - /usr/src/app/node_modules
+    ports:
+      - 3400:3000 # DON'T CONFLICT WITH MAIN PROTEUS APP LOCALLY
+      - 9229:9229 # FOR DEBUG
+    command: npm run start:debug
+    env_file: .env
+    networks:
+      - webnet
+    depends_on:
+      - tool-okrs-db
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  webnet:
+volumes:
+  postgres:
