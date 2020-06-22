@@ -8,6 +8,7 @@ const host = accessEnv('DB_HOST', null);
 const username = accessEnv('DB_USERNAME', null);
 const password = accessEnv('DB_PASSWORD', null);
 const database = accessEnv('DB_NAME', null);
+const isDev = accessEnv('NODE_ENV', null);
 
 @Injectable()
 export class TypeOrmOptions implements TypeOrmOptionsFactory {
@@ -29,6 +30,7 @@ export class TypeOrmOptions implements TypeOrmOptionsFactory {
         migrationsDir: __dirname + '../../typeorm/migrations',
       },
       migrationsRun: true,
+      synchronize: isDev ? true : false,
     };
   }
 }
