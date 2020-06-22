@@ -11,7 +11,10 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "allowJs": true
+    "allowJs": true,
+    "paths": {
+      "@helpers/*": ["./src/services/helpers/*"]
+    }
   },
   "include": ["test", "scripts", "src", "typeorm"],
   "exclude": ["node_modules", "dist"]
