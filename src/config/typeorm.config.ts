@@ -10,6 +10,8 @@ const password = accessEnv('DB_PASSWORD', null);
 const database = accessEnv('DB_NAME', null);
 const isDev = accessEnv('NODE_ENV', null);
 
+console.log(host, username);
+
 @Injectable()
 export class TypeOrmOptions implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): PostgresConnectionOptions {
@@ -27,7 +29,7 @@ export class TypeOrmOptions implements TypeOrmOptionsFactory {
       entities: [__dirname + '../modules/**/*.entity.ts'],
       migrations: [__dirname + '../modules/**/*.entity.ts'],
       cli: {
-        migrationsDir: __dirname + '../../typeorm/migrations',
+        migrationsDir: __dirname + '../db/migrations',
       },
       migrationsRun: true,
       synchronize: isDev ? true : false,
