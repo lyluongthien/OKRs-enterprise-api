@@ -34,7 +34,7 @@ services:
     ports:
       - 3400:3000 # DON'T CONFLICT WITH MAIN PROTEUS APP LOCALLY
       - 9229:9229 # FOR DEBUG
-    command: npm run start:debug
+    command: npm run start
     env_file: .env
     networks:
       - webnet
@@ -48,4 +48,4 @@ services:
 networks:
   webnet:
 volumes:
-  postgres:
+  pgdata:

@@ -16,7 +16,7 @@
       "@helpers/*": ["./src/services/helpers/*"]
     }
   },
-  "include": ["test/**/*", "scripts", "src/**/*"],
+  "include": ["test/**/*", "scripts", "src/**/*", "ormconfig.js"],
   "exclude": ["node_modules", "dist"],
   "typeAcquisition": {
     "include": ["jest"]
