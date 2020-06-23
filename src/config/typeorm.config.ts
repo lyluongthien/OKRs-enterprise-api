@@ -24,11 +24,12 @@ export class TypeOrmOptions implements TypeOrmOptionsFactory {
       password,
       database,
       entities: [__dirname + '../modules/**/*.entity.ts'],
-      migrations: [__dirname + '../modules/**/*.entity.ts'],
+      migrations: [__dirname + '../../typeorm/migrations/**/*{.ts,.js}'],
       cli: {
         migrationsDir: __dirname + '../../typeorm/migrations',
       },
       migrationsRun: true,
+      synchronize: false,
     };
   }
 }
