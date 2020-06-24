@@ -20,6 +20,12 @@ Nên ai có đóng góp gì thì mong các bạn tạo issue để cải thiện
 docker-compose up
 ```
 
+4. Run migration DB vào container Postgres Database
+
+```bash
+yarn migration:run
+```
+
 5. Ok, ngon rồi, bây giờ thì test API các thứ thôi! Nhớ thêm vào **Header** mục **Authorization** với **Bearer Token** từ khi Login vào nhé 😎
 
 ## Thành viên tham gia

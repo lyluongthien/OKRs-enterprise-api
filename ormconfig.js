@@ -7,8 +7,8 @@
 //   username: process.env.DB_USER,
 //   password: process.env.DB_PASSWORD,
 //   database: process.env.DB_NAME,
-//   entities: ['dist/src/db/entities/*.entity.{ts,js}'],
-//   migrations: ['dist/src/db/migrations/*.{ts,js}'],
+//   entities: ['src/db/entities/*.entity.{ts,js}'],
+//   migrations: ['src/db/migrations/*.{ts,js}'],
 //   cli: {
 //     entitiesDir: 'src/db/entities',
 //     migrationsDir: 'src/db/migrations',
