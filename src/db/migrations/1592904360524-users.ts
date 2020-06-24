@@ -1,8 +1,9 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
+import { TableName } from 'src/constants/Enums';
 
 export class users1592904360524 implements MigrationInterface {
-  private userTable = new Table({
-    name: 'users',
+  private userTable: Table = new Table({
+    name: TableName.User,
     columns: [
       {
         name: 'id',
@@ -18,18 +19,18 @@ export class users1592904360524 implements MigrationInterface {
         isUnique: true,
         isNullable: false,
       },
-      {
-        name: 'created_at',
-        type: 'timestamptz',
-        isNullable: false,
-        default: 'now()',
-      },
-      {
-        name: 'updated_at',
-        type: 'timestamptz',
-        isNullable: false,
-        default: 'now()',
-      },
+      // {
+      //   name: 'created_at',
+      //   type: 'timestamptz',
+      //   isNullable: false,
+      //   default: 'now()',
+      // },
+      // {
+      //   name: 'updated_at',
+      //   type: 'timestamptz',
+      //   isNullable: false,
+      //   default: 'now()',
+      // },
     ],
   });
 
