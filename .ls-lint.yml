@@ -1,0 +1,12 @@
+ls:
+  .spec.ts: point.case | camelCase
+
+  scripts:
+    .js: camelCase
+
+ignore:
+  - node_modules
+  - .yarn-packages-cache
+  - .git
+  - .github
+  - .vscode
