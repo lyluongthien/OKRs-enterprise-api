@@ -13,11 +13,20 @@
     "incremental": true,
     "allowJs": true,
     "paths": {
+      "@db/*": ["./src/db/*"],
       "@libs/*": ["./src/services/libs/*"],
       "@constants/*": ["./src/constants/*"]
     }
   },
-  "include": ["test/**/*", "scripts", "src/**/*", "ormconfig.js"],
+  "include": [
+    "test/**/*",
+    "scripts",
+    "src/**/*",
+    ".eslintrc.js",
+    "ormconfig.js",
+    "lint-staged.config.js",
+    "jest.config.js"
+  ],
   "exclude": ["node_modules", "dist"],
   "typeAcquisition": {
     "include": ["jest"]
