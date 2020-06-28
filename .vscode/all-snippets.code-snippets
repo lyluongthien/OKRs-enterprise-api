@@ -1,0 +1,8 @@
+{
+  "Add Colum to Entity ORM": {
+    "scope": "typescript",
+    "prefix": "column",
+    "body": ["@Column()", "${1}: ${2};"],
+    "description": "Add Colum to Entity ORM"
+  }
+}
