@@ -1,4 +1,4 @@
-import { UserEntity } from 'src/db/entities/user.entity';
+import { UserEntity } from '@db/entities/user.entity';
 
 export interface JwtPayload {
   id: number;
