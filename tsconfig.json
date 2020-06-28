@@ -13,7 +13,8 @@
     "incremental": true,
     "allowJs": true,
     "paths": {
-      "@helpers/*": ["./src/services/helpers/*"]
+      "@libs/*": ["./src/services/libs/*"],
+      "@constants/*": ["./src/constants/*"]
     }
   },
   "include": ["test/**/*", "scripts", "src/**/*", "ormconfig.js"],

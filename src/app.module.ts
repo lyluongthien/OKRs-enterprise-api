@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DatabaseModule } from 'src/db/DbConnection.module';
-import accessEnv from '@helpers/accessEnv';
+import accessEnv from '@libs/accessEnv';
 
 @Module({
   imports: [DatabaseModule],
@@ -10,9 +10,9 @@ import accessEnv from '@helpers/accessEnv';
   providers: [AppService],
 })
 export class AppModule {
-  static appPort: number | string;
+  static port: number | string;
 
   constructor() {
-    AppModule.appPort = accessEnv('SERVER_PORT', null);
+    AppModule.port = accessEnv('SERVER_PORT', 3000);
   }
 }
