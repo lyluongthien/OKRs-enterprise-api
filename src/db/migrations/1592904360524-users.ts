@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
-import { TableName } from 'src/constants/Enums';
+import { TableName } from '@app/constants/app.enums';
 
 export class users1592904360524 implements MigrationInterface {
   private userTable: Table = new Table({
@@ -9,7 +9,7 @@ export class users1592904360524 implements MigrationInterface {
         name: 'id',
         type: 'integer',
         isPrimary: true,
-        isGenerated: true, // Auto-increment
+        isGenerated: true,
         generationStrategy: 'increment',
       },
       {
