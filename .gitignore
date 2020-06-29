@@ -26,5 +26,10 @@ lerna-debug.log*
 .settings/
 *.sublime-workspace
 
+pgdata/*
+!pgdata/.gitkeep
+
+# dotenv environment variables file
+.env
 
 .yarn-packages-cache
