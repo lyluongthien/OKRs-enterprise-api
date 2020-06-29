@@ -22,6 +22,7 @@ export const databaseProviders = [
         database,
         entities: [__dirname + '/entities/*.entity.ts'],
         migrations: [__dirname + '/migrations/*.ts'],
+        seeders: [__dirname + '/seeders/*.ts'],
       } as PostgresConnectionOptions;
     },
   }),
