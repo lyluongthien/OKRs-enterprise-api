@@ -5,7 +5,7 @@ import accessEnv from '@libs/accessEnv';
 
 const type = DbConfig.DB_TYPE;
 const host = accessEnv(DbConfig.DB_HOST, '0.0.0.0');
-const port = +accessEnv(DbConfig.DB_PORT, null);
+const port = accessEnv(DbConfig.DB_PORT, null);
 const username = accessEnv(DbConfig.DB_USER, null);
 const password = accessEnv(DbConfig.DB_PASSWORD, null);
 const database = accessEnv(DbConfig.DB_NAME, null);

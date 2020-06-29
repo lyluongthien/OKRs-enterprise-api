@@ -1,7 +1,7 @@
 // accesses a variable inside of process.env, throwing an error if it's not found
 // always run this method in advance (i.e. upon initialisation) so that the error is thrown as early as possible
 // caching the values improves performance - accessing process.env many times is bad
-
+import 'dotenv/config';
 const cache = {};
 
 const accessEnv = (key: string, defaultValue: string | number | boolean | null): any => {

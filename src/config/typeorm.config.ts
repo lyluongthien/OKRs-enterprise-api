@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
-import accessEnv from '@helpers/accessEnv';
+import accessEnv from '@libs/accessEnv';
 
 const type = 'postgres';
 const host = accessEnv('DB_HOST', null);
