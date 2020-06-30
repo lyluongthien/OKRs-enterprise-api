@@ -28,9 +28,9 @@ export class createTableTeams1593445272105 implements MigrationInterface {
   });
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.createTable(this.teamsTable);
+    queryRunner.createTable(this.teamsTable, true);
   }
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.dropTable(this.teamsTable);
+    queryRunner.dropTable(this.teamsTable, true);
   }
 }

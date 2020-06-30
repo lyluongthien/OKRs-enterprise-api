@@ -26,10 +26,11 @@ export class createTableJobPosition1593445198341 implements MigrationInterface {
       },
     ],
   });
+
   public async up(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.createTable(this.jopPosTable);
+    queryRunner.createTable(this.jopPosTable, true);
   }
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.dropTable(this.jopPosTable);
+    queryRunner.dropTable(this.jopPosTable, true);
   }
 }

@@ -60,30 +60,42 @@ export class createTableUsers1593445390980 implements MigrationInterface {
         type: 'integer',
       },
       {
+        name: 'jobPositionId',
+        type: 'integer',
+      },
+      {
         name: 'createAt',
         type: 'date',
       },
       {
-        name: 'updateAt',
+        name: 'deActiveAt',
         type: 'date',
       },
     ],
   });
+
+  // Create ForeignKey: roleId
+  private fkRoleId: TableForeignKey = new TableForeignKey({
+    columnNames: ['roleId'],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Role,
+    onDelete: 'CASCADE',
+  });
+
+  // Create ForeignKey: jobPositionId
+  private fkJobPositionId: TableForeignKey = new TableForeignKey({
+    columnNames: ['jobPositionId'],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.JobPosition,
+    onDelete: 'CASCADE',
+  });
+
   public async up(queryRunner: QueryRunner): Promise<void> {
     queryRunner.createTable(this.usersTable, true);
 
-    // Create ForeignKey: roleId
-    queryRunner.createForeignKey(
-      TableName.User,
-      new TableForeignKey({
-        columnNames: ['roleId'],
-        referencedColumnNames: ['id'],
-        referencedTableName: TableName.Role,
-        onDelete: 'CASCADE',
-      }),
-    );
+    queryRunner.createForeignKeys(TableName.User, [this.fkRoleId, this.fkJobPositionId]);
   }
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.dropTable(this.usersTable);
+    queryRunner.dropTable(this.usersTable, true);
   }
 }
