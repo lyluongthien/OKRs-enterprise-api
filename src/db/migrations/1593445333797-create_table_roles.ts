@@ -17,6 +17,14 @@ export class createTableRoles1593445333797 implements MigrationInterface {
         isNullable: false,
         isUnique: true,
       },
+      {
+        name: 'createAt',
+        type: 'date',
+      },
+      {
+        name: 'updateAt',
+        type: 'date',
+      },
     ],
   });
   public async up(queryRunner: QueryRunner): Promise<void> {

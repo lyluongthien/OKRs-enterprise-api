@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, Table, TableForeignKey, TableColumn } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { TableName } from '@constants/Enums';
 
 export class createTableUsers1593445390980 implements MigrationInterface {
@@ -58,6 +58,14 @@ export class createTableUsers1593445390980 implements MigrationInterface {
       {
         name: 'roleId',
         type: 'integer',
+      },
+      {
+        name: 'createAt',
+        type: 'date',
+      },
+      {
+        name: 'updateAt',
+        type: 'date',
       },
     ],
   });

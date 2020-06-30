@@ -16,6 +16,14 @@ export class createTableJobPosition1593445198341 implements MigrationInterface {
         type: 'varchar',
         isNullable: false,
       },
+      {
+        name: 'createAt',
+        type: 'date',
+      },
+      {
+        name: 'updateAt',
+        type: 'date',
+      },
     ],
   });
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -16,6 +16,14 @@ export class createTableTeams1593445272105 implements MigrationInterface {
         type: 'varchar',
         isNullable: false,
       },
+      {
+        name: 'createAt',
+        type: 'date',
+      },
+      {
+        name: 'updateAt',
+        type: 'date',
+      },
     ],
   });
 
