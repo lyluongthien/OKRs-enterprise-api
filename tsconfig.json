@@ -9,13 +9,12 @@
     "target": "es2017",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": ".",
+    "baseUrl": "./src",
     "incremental": true,
     "allowJs": true,
     "paths": {
-      "@db/*": ["./src/db/*"],
-      "@libs/*": ["./src/services/libs/*"],
-      "@constants/*": ["./src/constants/*"]
+      "@app": ["./"],
+      "@app/*": ["./*"]
     }
   },
   "include": [
@@ -23,9 +22,10 @@
     "scripts",
     "src/**/*",
     ".eslintrc.js",
-    "ormconfig.js",
+    "ormconfig.ts",
     "lint-staged.config.js",
-    "jest.config.js"
+    "jest.config.js",
+    "webpack-hmr.config.js"
   ],
   "exclude": ["node_modules", "dist"],
   "typeAcquisition": {

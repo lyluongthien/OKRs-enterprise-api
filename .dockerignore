@@ -1,3 +1,20 @@
-test
+.yarn-packages-cache
+.env
 .vscode
 .github
+.git
+.prettierrc
+.prettierignore
+codecov.yml
+.ls-lint.yml
+coverage
+*.md
+
+# Node Files
+node_modules
+npm-debug.log
+npm-debug.log.*
+
+# Source files
+src
+test
