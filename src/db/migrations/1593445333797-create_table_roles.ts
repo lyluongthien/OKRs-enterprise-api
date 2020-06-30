@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
-import { TableName } from '@constants/Enums';
+import { TableName } from '@app/constants/app.enums';
 
 export class createTableRoles1593445333797 implements MigrationInterface {
   private roleTable: Table = new Table({

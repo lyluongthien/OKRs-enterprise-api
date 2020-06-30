@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
-import { TableName } from '@constants/Enums';
+import { TableName } from '@app/constants/app.enums';
 
 export class createTableUsers1593445390980 implements MigrationInterface {
   private usersTable: Table = new Table({

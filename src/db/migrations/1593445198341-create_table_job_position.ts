@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
-import { TableName } from '@constants/Enums';
+import { TableName } from '@app/constants/app.enums';
 
 export class createTableJobPosition1593445198341 implements MigrationInterface {
   private jopPosTable: Table = new Table({
