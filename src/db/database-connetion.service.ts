@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TypeOrmOptionsFactory } from '@nestjs/typeorm';
-import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DbConfig } from '@app/constants/app.enums';
 import { isDevMode } from '@app/constants/app.config';
 import accessEnv from '@app/libs/accessEnv';
@@ -14,7 +13,7 @@ const database = accessEnv(DbConfig.DB_NAME);
 
 @Injectable()
 export class DatabaseConnectionService implements TypeOrmOptionsFactory {
-  createTypeOrmOptions(): PostgresConnectionOptions {
+  createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
       type,
       port,
@@ -31,6 +30,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
       dropSchema: false,
       logging: isDevMode ? true : false,
       synchronize: false,
+      keepConnectionAlive: true,
     };
   }
 }
