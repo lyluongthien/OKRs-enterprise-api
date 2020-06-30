@@ -1,6 +1,9 @@
 export enum TableName {
   User = 'users',
   Objective = 'objective',
+  Teams = 'teams',
+  JobPosition = 'job_position',
+  Role = 'roles',
 }
 
 export enum DbConfig {
