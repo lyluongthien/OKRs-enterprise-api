@@ -1,8 +1,9 @@
 import { sign, verify } from 'jsonwebtoken';
-import accessEnv from '@libs/accessEnv';
-import { JwtPayload } from '@constants/Interfaces';
 
-const JWT_SECRET = accessEnv('JWT_SECRET', null);
+import accessEnv from './accessEnv';
+import { JwtPayload } from '@app/constants/app.interfaces';
+
+const JWT_SECRET = accessEnv('JWT_SECRET');
 
 export const createJWT = (payload: JwtPayload, expiresIn: number): string => {
   return sign(payload, JWT_SECRET, { expiresIn });

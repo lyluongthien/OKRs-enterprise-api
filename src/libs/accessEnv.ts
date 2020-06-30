@@ -4,7 +4,7 @@
 import 'dotenv/config';
 const cache = {};
 
-const accessEnv = (key: string, defaultValue: string | number | boolean | null): any => {
+const accessEnv = (key: string, defaultValue?: string | number | boolean): any => {
   if (!(key in process.env)) {
     if (defaultValue) return defaultValue;
     throw new Error(`${key} not found in process.env!`);
