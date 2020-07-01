@@ -1,14 +1,15 @@
-import { IsEmail, IsNotEmpty, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
-  readonly email: string;
+  public readonly email: string;
 
-  @MinLength(8)
-  @MaxLength(20)
+  @Matches(/^(?=.*\d)[0-9a-zA-Z]{8,}$/, {
+    message: 'Should contain at least 1 digit and 8 characters',
+  })
   @IsNotEmpty()
-  readonly password: string;
+  public readonly password: string;
 
   @IsNotEmpty()
-  readonly fullName: string;
+  public readonly fullName: string;
 }

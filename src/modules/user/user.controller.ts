@@ -10,7 +10,7 @@ export class UserController {
 
   @Post('auth/signin')
   @UsePipes(new ValidationPipe())
-  signIn(@Body() user: CreateUserDto): Promise<UserEntity> {
+  private signIn(@Body() user: CreateUserDto): Promise<UserEntity> {
     return this.userService.signIn(user);
   }
 }

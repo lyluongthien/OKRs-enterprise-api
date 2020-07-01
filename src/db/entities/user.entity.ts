@@ -1,12 +1,9 @@
-import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
+import { hashSync, compareSync } from 'bcryptjs';
 import { Entity, BaseEntity, PrimaryColumn, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
-import accessEnv from '@app/libs/accessEnv';
 import { TableName } from '@app/constants/app.enums';
 import { UserToken, JwtPayload } from '@app/constants/app.interfaces';
 import { createJWT } from '@app/libs/jwt';
-
-const SALT_WORK_FACTORY = accessEnv('SALT_WORK_FACTORY');
-export const _salt = genSaltSync(+SALT_WORK_FACTORY);
+import { _salt } from '@app/constants/app.config';
 
 @Entity({ name: TableName.User })
 export class UserEntity extends BaseEntity {

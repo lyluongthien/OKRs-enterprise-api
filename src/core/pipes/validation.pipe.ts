@@ -4,18 +4,20 @@ import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class ValidationPipe implements PipeTransform {
+  private readonly validationError = 0;
+  private readonly emptyValue = 0;
+
   /* eslint  @typescript-eslint/explicit-module-boundary-types: "off" */
-  async transform(value: any, metadata: ArgumentMetadata) {
+  async transform(value: any, { metatype }: ArgumentMetadata) {
     if (value instanceof Object && this.isEmpty(value)) {
       throw new HttpException('Validation failed: No body submitted', HttpStatus.BAD_REQUEST);
     }
-    const { metatype } = metadata;
     if (!metatype || !this.toValidate(metatype)) {
       return value;
     }
     const object = plainToClass(metatype, value);
     const errors = await validate(object);
-    if (errors.length > 0) {
+    if (errors.length > this.validationError) {
       throw new HttpException(`Validation failed: ${this.formatErrors(errors)}`, HttpStatus.BAD_REQUEST);
     }
     return value;
@@ -26,7 +28,7 @@ export class ValidationPipe implements PipeTransform {
     return !types.find((type) => metatype === type);
   }
 
-  private formatErrors(errors: any[]) {
+  private formatErrors(errors: any[]): string {
     return errors
       .map((err) => {
         for (const property in err.constraints) {
@@ -36,8 +38,8 @@ export class ValidationPipe implements PipeTransform {
       .join(', ');
   }
 
-  private isEmpty(value: any) {
-    if (Object.keys(value).length > 0) {
+  private isEmpty(value: any): boolean {
+    if (Object.keys(value).length > this.emptyValue) {
       return false;
     }
     return true;

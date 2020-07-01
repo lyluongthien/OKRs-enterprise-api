@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { hashSync } from 'bcryptjs';
-import { _salt } from '@app/db/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { _salt } from '@app/constants/app.config';
 @Injectable()
 export class UserService {
   constructor(
@@ -12,7 +12,7 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async signIn(user: CreateUserDto): Promise<UserEntity> {
+  public async signIn(user: CreateUserDto): Promise<UserEntity> {
     const { email } = user;
     let newUser = await this.userRepository.findOne({ where: { email } });
     if (newUser) {
