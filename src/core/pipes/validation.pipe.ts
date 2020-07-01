@@ -8,7 +8,7 @@ export class ValidationPipe implements PipeTransform {
   private readonly emptyValue: number = 0;
 
   /* eslint  @typescript-eslint/explicit-module-boundary-types: "off" */
-  public async transform(value: any, { metatype }: ArgumentMetadata) {
+  public async transform(value: any, { metatype }: ArgumentMetadata): Promise<any> {
     if (value instanceof Object && this.isEmpty(value)) {
       throw new HttpException('Validation failed: No body submitted', HttpStatus.BAD_REQUEST);
     }
