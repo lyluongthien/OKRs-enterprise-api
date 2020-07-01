@@ -6,7 +6,7 @@ import { UserToken, JwtPayload } from '@app/constants/app.interfaces';
 import { createJWT } from '@app/libs/jwt';
 
 const SALT_WORK_FACTORY = accessEnv('SALT_WORK_FACTORY');
-const _salt = genSaltSync(+SALT_WORK_FACTORY);
+export const _salt = genSaltSync(+SALT_WORK_FACTORY);
 
 @Entity({ name: TableName.User })
 export class UserEntity extends BaseEntity {
@@ -22,8 +22,8 @@ export class UserEntity extends BaseEntity {
   @Column()
   _salt: string;
 
-  @Column()
-  resetPasswordToken: string;
+  // @Column()
+  // resetPasswordToken: string;
 
   @Column()
   fullName: string;
