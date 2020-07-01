@@ -4,12 +4,14 @@ import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { DatabaseConnectionService } from './db/database-connetion.service';
 import accessEnv from './libs/accessEnv';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
       useClass: DatabaseConnectionService,
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
