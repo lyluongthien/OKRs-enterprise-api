@@ -29,6 +29,7 @@ export class createTableUsers1593445390980 implements MigrationInterface {
         name: '_salt',
         type: 'varchar',
         length: '255',
+        isNullable: true,
       },
       {
         name: 'fullName',
@@ -40,11 +41,13 @@ export class createTableUsers1593445390980 implements MigrationInterface {
         name: 'avatarURL',
         type: 'varchar',
         length: '255',
+        isNullable: true,
       },
       {
         name: 'gravatarURL',
         type: 'varchar',
         length: '255',
+        isNullable: true,
       },
       {
         name: 'isActive',
@@ -59,18 +62,23 @@ export class createTableUsers1593445390980 implements MigrationInterface {
       {
         name: 'roleID',
         type: 'integer',
+        isNullable: true,
       },
       {
         name: 'jobPositionID',
         type: 'integer',
+        isNullable: true,
       },
       {
         name: 'createdAt',
         type: 'date',
+        isNullable: false,
+        default: 'now()',
       },
       {
         name: 'deactivatedAt',
         type: 'date',
+        isNullable: true,
       },
     ],
   });
@@ -91,7 +99,6 @@ export class createTableUsers1593445390980 implements MigrationInterface {
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.usersTable, true);
-
     await queryRunner.createForeignKeys(TableName.User, [this.fkRoleId, this.fkJobPositionId]);
   }
   public async down(queryRunner: QueryRunner): Promise<void> {

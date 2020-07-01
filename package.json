@@ -30,6 +30,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
+    "doc:generate": "npx compodoc -p tsconfig.json -n 'Nest api boilerplate documentation'",
+    "doc:serve": "npx compodoc -s --port 9000",
     "migration:create": "typeorm migration:create -n",
     "migration:run": "yarn typeorm migration:run",
     "migration:revert": "yarn typeorm migration:revert"

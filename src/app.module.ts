@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { DatabaseConnectionService } from './db/database-connetion.service';
 import { RoleModule } from './modules/role/role.module';
 import accessEnv from './libs/accessEnv';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import accessEnv from './libs/accessEnv';
       useClass: DatabaseConnectionService,
     }),
     RoleModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

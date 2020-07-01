@@ -33,3 +33,5 @@ pgdata/*
 .env
 
 .yarn-packages-cache
+
+documentation
