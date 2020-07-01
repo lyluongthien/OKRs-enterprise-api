@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { DatabaseConnectionService } from './db/database-connetion.service';
+import { RoleModule } from './modules/role/role.module';
 import accessEnv from './libs/accessEnv';
 
 @Module({
@@ -10,6 +11,7 @@ import accessEnv from './libs/accessEnv';
     TypeOrmModule.forRootAsync({
       useClass: DatabaseConnectionService,
     }),
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

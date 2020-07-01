@@ -5,7 +5,7 @@ export enum TableName {
   JobPosition = 'job_position',
   Role = 'roles',
   UserTeam = 'user_team',
-  LessonOKRs = 'lesson_okrs',
+  LessonOKRs = 'lesson_okr',
   KeyResult = 'key_result',
   MeasureUnit = 'measure_unit',
   Cycle = 'cycle',
