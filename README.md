@@ -10,7 +10,7 @@ Tool OKRs - NestJS + TypeORM + PostgresQL
 
 <hr>
 
-## Participants
+## Thành viên
 
 | [<img src="https://avatars1.githubusercontent.com/u/24296018?s=460&u=6575a1785649a40e12d9593c46178b8fa36c3c9d&v=4" width="75px;"/>](https://github.com/harrytran998) | [<img src="https://avatars2.githubusercontent.com/u/29729545?s=460&u=b55c3313acc6c65df4be632f1a38e32d50b6cbfb&v=4" width="75px;"/>](https://github.com/phanduc0908) |
 | :------------------------------------------------------------------------------------------------------------------------------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -20,14 +20,29 @@ Tool OKRs - NestJS + TypeORM + PostgresQL
 
 ## Cách run project
 
+### ⚠️ Yêu cầu trước khi run project
+
+1. Có Docker Desktop bản stable
+2. NodeJS phiên bản LTS(hiện tại là 12.18.1)
+3. Cài đặt Yarn
+4. Laptop/PC ram ít nhất 8GB
+
+### Các bước chạy
+
 1. Bật Docker lên, nếu chưa có thì tải [ở đây](https://www.docker.com/products/docker-desktop)
 
 2. Tạo thêm file mới ở root project tên là `.env` và lấy dữ liệu copy từ file `.env.example`
 
-3. Chạy project với command line sau
+3. Run Docker Compose để chạy ngầm PostgresQL
 
 ```bash
-docker-compose up
+docker-compose up -d
+```
+
+4. Tải dependencies của app về
+
+```bash
+yarn
 ```
 
 4. Run migration DB vào container Postgres Database
