@@ -7,7 +7,7 @@ updates:
       day: "sunday"
       time: "08:00"
       timezone: "Asia/Ho_Chi_Minh"
-    versioning-strategy: increase-if-necessary
+    versioning-strategy: increase
     target-branch: "develop"
     open-pull-requests-limit: 10
     rebase-strategy: "auto"
@@ -16,16 +16,16 @@ updates:
       - dependency-name: "@nestjs/core"
       - dependency-name: "@nestjs/platform-express"
       - dependency-name: "reflect-metadata"
+      - dependency-name: "@nestjs/typeorm"
+      - dependency-name: "@nestjs/typeorm"
+      - dependency-name: "pg"
+      - dependency-name: "typeorm"
     labels:
       - "dependencies"
       - "dependabot"
     commit-message:
-      - prefix: "npm"
-      - prefix-development: "chore"
-      - include: "scope"
+      prefix: "npm"
+      prefix-development: "chore"
+      include: "scope"
     assignees:
-      - phanduc0908
-      - quangnv281098
-      - ducnmhe130666
-    reviewers:
       - harrytran998
