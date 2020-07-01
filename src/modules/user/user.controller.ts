@@ -1,8 +1,8 @@
 import { Controller, Post, Body, UsePipes } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { ValidationPipe } from '@app/core/pipes/validation.pipe';
 import { UserEntity } from '@app/db/entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller()
 export class UserController {
