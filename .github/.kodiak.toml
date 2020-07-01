@@ -1,5 +1,5 @@
 version = 1
-merge.automerge_label = "🚀  merge it 🚀  "
+merge.automerge_label = "🚀  merge it 🚀"
 require_automerge_label = true
 merge.delete_branch_on_merge = true
 merge.notify_on_conflict = true
