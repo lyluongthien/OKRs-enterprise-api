@@ -16,10 +16,8 @@ export class UserEntity extends BaseEntity {
   @Column()
   email: string;
 
-  password: string;
-
   @Column()
-  passwordHashed: string;
+  password: string;
 
   @Column()
   _salt: string;
@@ -44,19 +42,18 @@ export class UserEntity extends BaseEntity {
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {
-    this.passwordHashed = hashSync(this.password, _salt);
-    delete this.password;
+    this.password = hashSync(this.password, _salt);
   }
 
   @BeforeUpdate()
   async updateHashPassword(): Promise<void> {
-    if (this.passwordHashed !== this.passwordHashed) {
-      this.passwordHashed = hashSync(this.passwordHashed, _salt);
+    if (this.password !== this.password) {
+      this.password = hashSync(this.password, _salt);
     }
   }
 
   async verifyPassword(inputPassword: string): Promise<boolean> {
-    return compareSync(inputPassword, this.passwordHashed);
+    return compareSync(inputPassword, this.password);
   }
 
   generateToken(): UserToken {

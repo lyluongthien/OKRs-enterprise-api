@@ -1,5 +1,6 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
+import { dropFksToTable } from '@app/libs/migrationSupport';
 
 export class createTableUsers1593445390980 implements MigrationInterface {
   private usersTable: Table = new Table({
@@ -56,46 +57,45 @@ export class createTableUsers1593445390980 implements MigrationInterface {
         default: false,
       },
       {
-        name: 'roleId',
+        name: 'roleID',
         type: 'integer',
       },
       {
-        name: 'jobPositionId',
+        name: 'jobPositionID',
         type: 'integer',
       },
       {
-        name: 'createAt',
+        name: 'createdAt',
         type: 'date',
       },
       {
-        name: 'deActiveAt',
+        name: 'deactivatedAt',
         type: 'date',
       },
     ],
   });
 
-  // Create ForeignKey: roleId
   private fkRoleId: TableForeignKey = new TableForeignKey({
-    columnNames: ['roleId'],
+    columnNames: ['roleID'],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.Role,
     onDelete: 'CASCADE',
   });
 
-  // Create ForeignKey: jobPositionId
   private fkJobPositionId: TableForeignKey = new TableForeignKey({
-    columnNames: ['jobPositionId'],
+    columnNames: ['jobPositionID'],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.JobPosition,
     onDelete: 'CASCADE',
   });
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.createTable(this.usersTable, true);
+    await queryRunner.createTable(this.usersTable, true);
 
-    queryRunner.createForeignKeys(TableName.User, [this.fkRoleId, this.fkJobPositionId]);
+    await queryRunner.createForeignKeys(TableName.User, [this.fkRoleId, this.fkJobPositionId]);
   }
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.dropTable(this.usersTable, true);
+    await dropFksToTable(queryRunner, TableName.User, ['roleID', 'jobPositionID']);
+    await queryRunner.dropTable(this.usersTable, true);
   }
 }
