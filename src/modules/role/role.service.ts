@@ -8,23 +8,23 @@ import { ObjectLiteral } from 'typeorm';
 export class RoleService {
   constructor(private roleRepository: RoleRepository) {}
 
-  getListRole(): Promise<RoleEntity[]> {
+  public getListRole(): Promise<RoleEntity[]> {
     return this.roleRepository.find();
   }
 
-  createRole(data: RoleDTO): Promise<RoleEntity> {
+  public createRole(data: RoleDTO): Promise<RoleEntity> {
     return this.roleRepository.createRole(data);
   }
 
-  getRoleDetail(id: number): Promise<RoleEntity> {
+  public getRoleDetail(id: number): Promise<RoleEntity> {
     return this.roleRepository.getRoleDetail(id);
   }
 
-  updateRole(id: number, data: Partial<RoleDTO>): Promise<RoleEntity> {
+  public updateRole(id: number, data: Partial<RoleDTO>): Promise<RoleEntity> {
     return this.roleRepository.updateRole(id, data);
   }
 
-  deleteRole(id: number): Promise<ObjectLiteral> {
+  public deleteRole(id: number): Promise<ObjectLiteral> {
     return this.roleRepository.deleteRole(id);
   }
 }

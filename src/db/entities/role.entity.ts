@@ -4,8 +4,8 @@ import { TableName } from '@app/constants/app.enums';
 @Entity(TableName.Role)
 export class RoleEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  name: string;
+  public name: string;
 }
