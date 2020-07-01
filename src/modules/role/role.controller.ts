@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Res, Param } from '@nestjs/common';
 import { RoleService } from './role.service';
+import { RoleDTO } from './role.dto';
 
 @Controller('role')
 export class RoleController {
@@ -11,22 +12,22 @@ export class RoleController {
   }
 
   @Post()
-  createRole(): any {
-    return 'Phan duc';
+  createRole(@Body() role: RoleDTO): any {
+    return this.roleService.createRole(role);
   }
 
   @Get(':id')
-  getDetailRole(): any {
-    return 'Phan duc';
+  getDetailRole(@Param('id') id: number): any {
+    return this.roleService.getRoleDetail(id);
   }
 
   @Put(':id')
-  updateRole(): any {
-    return 'Phan duc';
+  updateRole(@Param('id') id: number, @Body() data: Partial<RoleDTO>): any {
+    return this.roleService.updateRole(id, data);
   }
 
   @Delete(':id')
-  deleteRole(): any {
-    return 'Phan duc';
+  deleteRole(@Param('id') id: number): any {
+    return this.roleService.deleteRole(id);
   }
 }
