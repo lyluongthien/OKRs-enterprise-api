@@ -1,5 +1,6 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
+import { dropFksToTable } from '@app/libs/migrationSupport';
 
 export class createTableUsers1593445390980 implements MigrationInterface {
   private usersTable: Table = new Table({
@@ -28,6 +29,7 @@ export class createTableUsers1593445390980 implements MigrationInterface {
         name: '_salt',
         type: 'varchar',
         length: '255',
+        isNullable: true,
       },
       {
         name: 'fullName',
@@ -39,11 +41,13 @@ export class createTableUsers1593445390980 implements MigrationInterface {
         name: 'avatarURL',
         type: 'varchar',
         length: '255',
+        isNullable: true,
       },
       {
         name: 'gravatarURL',
         type: 'varchar',
         length: '255',
+        isNullable: true,
       },
       {
         name: 'isActive',
@@ -56,8 +60,9 @@ export class createTableUsers1593445390980 implements MigrationInterface {
         default: false,
       },
       {
-        name: 'roleId',
+        name: 'roleID',
         type: 'integer',
+        isNullable: true,
       },
       {
         name: 'jobPositionId',
@@ -66,13 +71,31 @@ export class createTableUsers1593445390980 implements MigrationInterface {
       {
         name: 'createAt',
         type: 'date',
+        isNullable: false,
+        default: 'now()',
       },
       {
-        name: 'updateAt',
+        name: 'deactivatedAt',
         type: 'date',
+        isNullable: true,
       },
     ],
   });
+
+  private fkRoleId: TableForeignKey = new TableForeignKey({
+    columnNames: ['roleID'],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Role,
+    onDelete: 'CASCADE',
+  });
+
+  private fkJobPositionId: TableForeignKey = new TableForeignKey({
+    columnNames: ['jobPositionID'],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.JobPosition,
+    onDelete: 'CASCADE',
+  });
+
   public async up(queryRunner: QueryRunner): Promise<void> {
     queryRunner.createTable(this.usersTable, true);
 
@@ -96,6 +119,7 @@ export class createTableUsers1593445390980 implements MigrationInterface {
     queryRunner.createForeignKeys(TableName.User, tableforeignkey);
   }
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.dropTable(this.usersTable);
+    await dropFksToTable(queryRunner, TableName.User, ['roleID', 'jobPositionID']);
+    await queryRunner.dropTable(this.usersTable, true);
   }
 }

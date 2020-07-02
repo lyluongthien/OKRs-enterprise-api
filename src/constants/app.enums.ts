@@ -1,9 +1,21 @@
 export enum TableName {
   User = 'users',
-  Objective = 'objective',
+  Objective = 'objectives',
   Teams = 'teams',
   JobPosition = 'job_position',
   Role = 'roles',
+  UserTeam = 'user_teams',
+  LessonOKRs = 'lesson_okrs',
+  KeyResult = 'key_results',
+  MeasureUnit = 'measure_units',
+  Cycle = 'cycles',
+  Checkin = 'checkins',
+  Recognition = 'recognitions',
+  Feeback = 'feedbacks',
+  EvaluationCriteria = 'evaluation_criterias',
+  TemplateCheckin = 'template_checkins',
+  FieldCheckin = 'field_checkins',
+  UserStar = 'user_stars',
 }
 
 export enum DbConfig {

@@ -1,12 +1,9 @@
-import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
+import { hashSync, compareSync } from 'bcryptjs';
 import { Entity, BaseEntity, PrimaryColumn, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
-import accessEnv from '@app/libs/accessEnv';
 import { TableName } from '@app/constants/app.enums';
 import { UserToken, JwtPayload } from '@app/constants/app.interfaces';
 import { createJWT } from '@app/libs/jwt';
-
-const SALT_WORK_FACTORY = accessEnv('SALT_WORK_FACTORY');
-const _salt = genSaltSync(+SALT_WORK_FACTORY);
+import { _salt } from '@app/constants/app.config';
 
 @Entity({ name: TableName.User })
 export class UserEntity extends BaseEntity {
@@ -16,16 +13,14 @@ export class UserEntity extends BaseEntity {
   @Column()
   email: string;
 
-  password: string;
-
   @Column()
-  passwordHashed: string;
+  password: string;
 
   @Column()
   _salt: string;
 
-  @Column()
-  resetPasswordToken: string;
+  // @Column()
+  // resetPasswordToken: string;
 
   @Column()
   fullName: string;
@@ -50,19 +45,18 @@ export class UserEntity extends BaseEntity {
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {
-    this.passwordHashed = hashSync(this.password, _salt);
-    delete this.password;
+    this.password = hashSync(this.password, _salt);
   }
 
   @BeforeUpdate()
   async updateHashPassword(): Promise<void> {
-    if (this.passwordHashed !== this.passwordHashed) {
-      this.passwordHashed = hashSync(this.passwordHashed, _salt);
+    if (this.password !== this.password) {
+      this.password = hashSync(this.password, _salt);
     }
   }
 
   async verifyPassword(inputPassword: string): Promise<boolean> {
-    return compareSync(inputPassword, this.passwordHashed);
+    return compareSync(inputPassword, this.password);
   }
 
   generateToken(): UserToken {
