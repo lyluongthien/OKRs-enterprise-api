@@ -22,8 +22,8 @@ export class UserEntity extends BaseEntity {
   @Column()
   _salt: string;
 
-  @Column()
-  resetPasswordToken: string;
+  // @Column()
+  // resetPasswordToken: string;
 
   @Column()
   fullName: string;
