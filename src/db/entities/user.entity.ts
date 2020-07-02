@@ -37,6 +37,12 @@ export class UserEntity extends BaseEntity {
   gravatarURL: string;
 
   @Column()
+  jobPositionId: number;
+
+  @Column()
+  roleId: number;
+
+  @Column()
   isActive: boolean;
 
   @Column()
