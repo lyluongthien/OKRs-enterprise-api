@@ -29,4 +29,10 @@ export class UserController {
   private changePassword(@Param('id') id: number, @Body() user: ChangePasswordDTO): Promise<ObjectLiteral> {
     return this.userService.changePassword(id, user);
   }
+
+  @Put('reject-request/:id')
+  @UsePipes(new ValidationPipe())
+  private rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
+    return this.userService.rejectRequest(id);
+  }
 }

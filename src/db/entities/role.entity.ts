@@ -8,4 +8,10 @@ export class RoleEntity {
 
   @Column()
   public name: string;
+
+  @Column()
+  public createdAt: Date;
+
+  @Column()
+  public updatedAt: Date;
 }
