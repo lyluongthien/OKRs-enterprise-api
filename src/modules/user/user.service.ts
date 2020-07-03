@@ -1,16 +1,17 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { UserEntity } from '@app/db/entities/user.entity';
+import { ObjectLiteral } from 'typeorm';
 import { hashSync } from 'bcryptjs';
-import { CreateUserDto } from './dto/create-user.dto';
-import { _salt } from '@app/constants/app.config';
-import { ResetPasswordDTO } from './dto/reset-password.dto';
 import { generate } from 'generate-password';
+
+import { UserEntity } from '@app/db/entities/user.entity';
 import { sendEmail } from '@app/services/email/sendEmail';
+import { EX_EMAIL_EXISTS } from '@app/constants/app.exeption';
+import { _salt } from '@app/constants/app.config';
+import { CreateUserDto } from './dto/create-user.dto';
+import { ResetPasswordDTO } from './dto/reset-password.dto';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { UserRepository } from './user.repository';
-import { ObjectLiteral } from 'typeorm';
 
-// import { EX_EMAIL_EXISTS } from '@app/constants/app.exeption';
 @Injectable()
 export class UserService {
   constructor(private userRepository: UserRepository) {}
@@ -19,7 +20,7 @@ export class UserService {
     const { email } = user;
     let newUser = await this.userRepository.findOne({ where: { email } });
     if (newUser) {
-      // throw new HttpException(EX_EMAIL_EXISTS.message, EX_EMAIL_EXISTS.errorCode);
+      throw new HttpException(EX_EMAIL_EXISTS.message, EX_EMAIL_EXISTS.errorCode);
     }
     newUser = await this.userRepository.create(user);
     newUser.password = hashSync(newUser.password, _salt);

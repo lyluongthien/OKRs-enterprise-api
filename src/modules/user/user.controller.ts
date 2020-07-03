@@ -1,9 +1,10 @@
 import { Controller, Post, Body, UsePipes, Put, Param } from '@nestjs/common';
-import { UserService } from './user.service';
-import { ValidationPipe } from '@app/core/pipes/validation.pipe';
-import { UserEntity } from '@app/db/entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
 import { ObjectLiteral } from 'typeorm';
+
+import { UserEntity } from '@app/db/entities/user.entity';
+import { ValidationPipe } from '@app/core/pipes/validation.pipe';
+import { UserService } from './user.service';
+import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 
