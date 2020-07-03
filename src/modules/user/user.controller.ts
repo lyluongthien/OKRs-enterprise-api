@@ -1,12 +1,13 @@
-import { Controller, Post, Body, UsePipes } from '@nestjs/common';
+import { Controller, Post, Body, UsePipes, Put, Param } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ValidationPipe } from '@app/core/pipes/validation.pipe';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ObjectLiteral } from 'typeorm';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
+import { ChangePasswordDTO } from './dto/change-password.dto';
 
-@Controller()
+@Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -16,15 +17,15 @@ export class UserController {
     return this.userService.signIn(user);
   }
 
-  @Post('user/reset-password')
+  @Post('reset-password')
   @UsePipes(new ValidationPipe())
   private resetPassword(@Body() user: ResetPasswordDTO): Promise<ObjectLiteral> {
     return this.userService.resetPassword(user);
   }
 
-  @Post('user/change-password')
+  @Put('change-password/:id')
   @UsePipes(new ValidationPipe())
-  private changePassword(@Body() user: ResetPasswordDTO): Promise<ObjectLiteral> {
-    return this.userService.resetPassword(user);
+  private changePassword(@Param('id') id: number, @Body() user: ChangePasswordDTO): Promise<ObjectLiteral> {
+    return this.userService.changePassword(id, user);
   }
 }
