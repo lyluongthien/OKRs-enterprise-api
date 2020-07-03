@@ -10,8 +10,8 @@ export class JobEntity {
   public name: string;
 
   @Column()
-  public createAt: Date;
+  public createdAt: Date;
 
   @Column()
-  public updateAt: Date;
+  public updatedAt: Date;
 }

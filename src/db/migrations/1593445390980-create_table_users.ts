@@ -69,7 +69,7 @@ export class createTableUsers1593445390980 implements MigrationInterface {
         type: 'integer',
       },
       {
-        name: 'createAt',
+        name: 'createdAt',
         type: 'date',
         isNullable: false,
         default: 'now()',
