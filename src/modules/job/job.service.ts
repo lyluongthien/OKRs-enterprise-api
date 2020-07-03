@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JobEntity } from '@app/db/entities/job.entity';
 import { JobRepository } from './job.repository';
-import { jobDTO } from './job.dto';
+import { JobDTO } from './job.dto';
 import { ObjectLiteral } from 'typeorm';
 
 @Injectable()
@@ -12,7 +12,7 @@ export class JobService {
     return this.jobRepository.getListJob();
   }
 
-  public createJob(data: jobDTO): Promise<JobEntity> {
+  public createJob(data: JobDTO): Promise<JobEntity> {
     return this.jobRepository.createJob(data);
   }
 
@@ -20,7 +20,7 @@ export class JobService {
     return this.jobRepository.getJobDetail(id);
   }
 
-  public updateJob(id: number, data: Partial<jobDTO>): Promise<JobEntity> {
+  public updateJob(id: number, data: Partial<JobDTO>): Promise<JobEntity> {
     return this.jobRepository.updateJob(id, data);
   }
 

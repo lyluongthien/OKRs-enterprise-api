@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param } from '@nestjs/common';
 import { JobService } from './job.service';
-import { jobDTO } from './job.dto';
+import { JobDTO } from './job.dto';
 
 @Controller('jobs')
 export class JobController {
@@ -12,7 +12,7 @@ export class JobController {
   }
 
   @Post()
-  private createJob(@Body() role: jobDTO): any {
+  private createJob(@Body() role: JobDTO): any {
     return this.jobService.createJob(role);
   }
 
@@ -22,7 +22,7 @@ export class JobController {
   }
 
   @Put(':id')
-  private updateJob(@Param('id') id: number, @Body() data: Partial<jobDTO>): any {
+  private updateJob(@Param('id') id: number, @Body() data: Partial<JobDTO>): any {
     return this.jobService.updateJob(id, data);
   }
 

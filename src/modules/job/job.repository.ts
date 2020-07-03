@@ -1,28 +1,28 @@
 import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 import { JobEntity } from '@app/db/entities/job.entity';
-import { jobDTO } from './job.dto';
+import { JobDTO } from './job.dto';
 
 @EntityRepository(JobEntity)
 export class JobRepository extends Repository<JobEntity> {
-  public getListJob = async (): Promise<JobEntity[]> => {
+  public async getListJob(): Promise<JobEntity[]> {
     return await this.find();
-  };
+  }
 
-  public createJob = async (data: jobDTO): Promise<JobEntity> => {
+  public async createJob(data: JobDTO): Promise<JobEntity> {
     return await this.save(data);
-  };
+  }
 
-  public getJobDetail = async (id: number): Promise<JobEntity> => {
-    return this.findOne({ where: { id } });
-  };
+  public async getJobDetail(id: number): Promise<JobEntity> {
+    return await this.findOne({ where: { id } });
+  }
 
-  public updateJob = async (id: number, data: Partial<jobDTO>): Promise<JobEntity> => {
+  public async updateJob(id: number, data: Partial<JobDTO>): Promise<JobEntity> {
     await this.update({ id }, data);
-    return this.findOne({ id });
-  };
+    return await this.findOne({ id });
+  }
 
-  public deleteJob = async (id: number): Promise<ObjectLiteral> => {
+  public async deleteJob(id: number): Promise<ObjectLiteral> {
     await this.delete({ id });
     return { isDeleted: true };
-  };
+  }
 }
