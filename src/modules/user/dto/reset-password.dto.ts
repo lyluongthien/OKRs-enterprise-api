@@ -3,7 +3,7 @@ import { IsNotEmpty, IsEmail } from 'class-validator';
 export class ResetPasswordDTO {
   @IsNotEmpty()
   @IsEmail()
-  public email;
+  public email: string;
 
-  public password;
+  public password: string;
 }

@@ -5,5 +5,5 @@ export class ChangePasswordDTO {
     message: 'Should contain at least 1 digit and 8 characters',
   })
   @IsNotEmpty()
-  public password;
+  public password: string;
 }
