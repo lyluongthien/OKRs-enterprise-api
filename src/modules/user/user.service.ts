@@ -10,15 +10,16 @@ import { ChangePasswordDTO } from './dto/change-password.dto';
 import { UserRepository } from './user.repository';
 import { ObjectLiteral } from 'typeorm';
 
+// import { EX_EMAIL_EXISTS } from '@app/constants/app.exeption';
 @Injectable()
 export class UserService {
   constructor(private userRepository: UserRepository) {}
 
-  public async signIn(user: CreateUserDto): Promise<UserEntity> {
+  public async signUp(user: CreateUserDto): Promise<UserEntity> {
     const { email } = user;
     let newUser = await this.userRepository.findOne({ where: { email } });
     if (newUser) {
-      throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      // throw new HttpException(EX_EMAIL_EXISTS.message, EX_EMAIL_EXISTS.errorCode);
     }
     newUser = await this.userRepository.create(user);
     newUser.password = hashSync(newUser.password, _salt);

@@ -8,34 +8,37 @@ import { _salt } from '@app/constants/app.config';
 @Entity({ name: TableName.User })
 export class UserEntity extends BaseEntity {
   @PrimaryColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  email: string;
+  public email: string;
 
   @Column()
-  password: string;
+  public password: string;
 
   @Column()
-  _salt: string;
-
-  // @Column()
-  // resetPasswordToken: string;
+  public _salt: string;
 
   @Column()
-  fullName: string;
+  public fullName: string;
 
   @Column()
-  avatarURL: string;
+  public avatarURL: string;
 
   @Column()
-  gravatarURL: string;
+  public gravatarURL: string;
 
   @Column()
-  isActive: boolean;
+  public jobPositionId: number;
 
   @Column()
-  isApproved: boolean;
+  public roleId: number;
+
+  @Column()
+  public isActive: boolean;
+
+  @Column()
+  public isApproved: boolean;
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {

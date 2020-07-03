@@ -11,10 +11,10 @@ import { ChangePasswordDTO } from './dto/change-password.dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('auth/signin')
+  @Post('auth/signup')
   @UsePipes(new ValidationPipe())
-  private signIn(@Body() user: CreateUserDto): Promise<UserEntity> {
-    return this.userService.signIn(user);
+  private signup(@Body() user: CreateUserDto): Promise<UserEntity> {
+    return this.userService.signUp(user);
   }
 
   @Post('reset-password')
