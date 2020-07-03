@@ -65,9 +65,8 @@ export class createTableUsers1593445390980 implements MigrationInterface {
         isNullable: true,
       },
       {
-        name: 'jobPositionID',
+        name: 'jobPositionId',
         type: 'integer',
-        isNullable: true,
       },
       {
         name: 'createdAt',
@@ -98,8 +97,26 @@ export class createTableUsers1593445390980 implements MigrationInterface {
   });
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.createTable(this.usersTable, true);
-    await queryRunner.createForeignKeys(TableName.User, [this.fkRoleId, this.fkJobPositionId]);
+    queryRunner.createTable(this.usersTable, true);
+
+    //array of foreignkey in table user
+    const tableforeignkey = [
+      new TableForeignKey({
+        columnNames: ['roleId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: TableName.Role,
+        onDelete: 'CASCADE',
+      }),
+      new TableForeignKey({
+        columnNames: ['jobPositionId'],
+        referencedColumnNames: ['id'],
+        referencedTableName: TableName.JobPosition,
+        onDelete: 'CASCADE',
+      }),
+    ];
+
+    // Create ForeignKey: roleId
+    queryRunner.createForeignKeys(TableName.User, tableforeignkey);
   }
   public async down(queryRunner: QueryRunner): Promise<void> {
     await dropFksToTable(queryRunner, TableName.User, ['roleID', 'jobPositionID']);
