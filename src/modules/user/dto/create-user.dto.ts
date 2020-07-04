@@ -12,10 +12,4 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   public readonly fullName: string;
-
-  @IsBoolean()
-  public readonly isApproved: boolean;
-
-  @IsBoolean()
-  public readonly isActived: boolean;
 }
