@@ -9,6 +9,7 @@ import { EX_EMAIL_EXISTS } from '@app/constants/app.exeption';
 import { _salt } from '@app/constants/app.config';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
+import { ApproveRequestDTO } from './dto/approve-request.dto';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { UserRepository } from './user.repository';
 
@@ -74,5 +75,13 @@ export class UserService {
    */
   public async rejectRequest(id: number): Promise<ObjectLiteral> {
     return await this.userRepository.delete({ id });
+  }
+
+  /**
+   * Author: QuangNV
+   * Approve Request
+   */
+  public async approveRequest(id: number, user: ApproveRequestDTO): Promise<ObjectLiteral> {
+    return await this.userRepository.updateManyUserById(id, user);
   }
 }

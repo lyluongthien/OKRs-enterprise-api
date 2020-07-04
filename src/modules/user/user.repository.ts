@@ -1,7 +1,9 @@
 import { Repository, EntityRepository } from 'typeorm';
+
 import { UserEntity } from '@app/db/entities/user.entity';
 import { ObjectLiteral } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { ApproveRequestDTO } from './dto/approve-request.dto';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -13,12 +15,21 @@ export class UserRepository extends Repository<UserEntity> {
     return await this.findOne({ where: { id } });
   }
 
+  // public async getManyUserById(id: number[]): Promise<UserEntity[]> {
+  //   return await this.findByIds(id, { where: id });
+  // }
+
   public async getUserByEmail(email: string): Promise<UserEntity> {
     return await this.findOne({ where: { email } });
   }
 
   public async updateUserById(id: number, user: CreateUserDto): Promise<UserEntity> {
     await this.update({ id }, user);
+    return this.getUserById(id);
+  }
+
+  public async updateManyUserById(id: number, user: ApproveRequestDTO): Promise<UserEntity> {
+    await this.update(id, user);
     return this.getUserById(id);
   }
 

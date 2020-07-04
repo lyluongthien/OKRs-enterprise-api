@@ -5,6 +5,7 @@ import { UserEntity } from '@app/db/entities/user.entity';
 import { ValidationPipe } from '@app/core/pipes/validation.pipe';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { ApproveRequestDTO } from './dto/approve-request.dto';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 
@@ -33,5 +34,10 @@ export class UserController {
   @Put('reject-request/:id')
   private rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
     return this.userService.rejectRequest(id);
+  }
+
+  @Put('approve-request/:id')
+  private approveRequest(@Param('id') id: number, @Body() user: ApproveRequestDTO): Promise<ObjectLiteral> {
+    return this.userService.approveRequest(id, user);
   }
 }

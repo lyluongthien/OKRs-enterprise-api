@@ -4,6 +4,7 @@ import { RoleService } from './role.service';
 import { RoleDTO } from './role.dto';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { ValidationPipe } from '@app/core/pipes/validation.pipe';
+import { ApiBody } from '@nestjs/swagger';
 
 @Controller('roles')
 export class RoleController {
@@ -22,7 +23,7 @@ export class RoleController {
 
   @Put(':id')
   @UsePipes(new ValidationPipe())
-  private updateRole(@Param('id') id: number, @Body() data: Partial<RoleDTO>): Promise<RoleEntity> {
+  private updateRole(@Param('id') id: number, @Body() data: RoleDTO): Promise<RoleEntity> {
     return this.roleService.updateRole(id, data);
   }
 
