@@ -31,7 +31,6 @@ export class UserController {
   }
 
   @Put('reject-request/:id')
-  @UsePipes(new ValidationPipe())
   private rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
     return this.userService.rejectRequest(id);
   }

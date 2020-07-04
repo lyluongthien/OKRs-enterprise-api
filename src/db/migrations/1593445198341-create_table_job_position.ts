@@ -16,6 +16,18 @@ export class createTableJobPosition1593445198341 implements MigrationInterface {
         type: 'varchar',
         isNullable: false,
       },
+      {
+        name: 'createdAt',
+        type: 'date',
+        isNullable: true,
+        default: 'now()',
+      },
+      {
+        name: 'updatedAt',
+        type: 'date',
+        isNullable: true,
+        default: 'now()',
+      },
     ],
   });
 
