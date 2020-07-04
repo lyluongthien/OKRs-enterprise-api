@@ -26,7 +26,7 @@ export class JobController {
 
   @Put(':id')
   @UsePipes(new ValidationPipe())
-  private updateJob(@Param('id') id: number, @Body() data: Partial<JobDTO>): any {
+  private updateJob(@Param('id') id: number, @Body() data: JobDTO): any {
     return this.jobService.updateJob(id, data);
   }
 
