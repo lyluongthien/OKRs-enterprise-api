@@ -17,6 +17,16 @@ export class createTableRoles1593445333797 implements MigrationInterface {
         isNullable: false,
         isUnique: true,
       },
+      {
+        name: 'createdAt',
+        type: 'date',
+        default: 'now()',
+      },
+      {
+        name: 'updatedAt',
+        type: 'date',
+        default: 'now()',
+      },
     ],
   });
 

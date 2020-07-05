@@ -7,6 +7,7 @@ import { RoleModule } from './modules/role/role.module';
 import accessEnv from './libs/accessEnv';
 import { UserModule } from './modules/user/user.module';
 import { JobModule } from './modules/job/job.module';
+import { TeamModule } from './modules/team/team.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { JobModule } from './modules/job/job.module';
     RoleModule,
     UserModule,
     JobModule,
+    TeamModule,
   ],
   controllers: [AppController],
   providers: [AppService],
