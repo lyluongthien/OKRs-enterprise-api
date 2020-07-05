@@ -2,7 +2,7 @@ export enum TableName {
   User = 'users',
   Objective = 'objectives',
   Teams = 'teams',
-  JobPosition = 'job_positions',
+  JobPosition = 'job_position',
   Role = 'roles',
   UserTeam = 'user_teams',
   LessonOKRs = 'lesson_okrs',
@@ -16,6 +16,7 @@ export enum TableName {
   TemplateCheckin = 'template_checkins',
   FieldCheckin = 'field_checkins',
   UserStar = 'user_stars',
+  Team = 'teams',
 }
 
 export enum DbConfig {

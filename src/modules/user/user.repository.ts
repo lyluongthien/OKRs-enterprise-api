@@ -1,4 +1,5 @@
-import { Repository, EntityRepository } from 'typeorm';
+import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
+
 import { UserEntity } from '@app/db/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 
@@ -19,5 +20,10 @@ export class UserRepository extends Repository<UserEntity> {
   public async updateUserById(id: number, user: CreateUserDto): Promise<UserEntity> {
     await this.update({ id }, user);
     return this.getUserById(id);
+  }
+
+  public async deleteUser(id: number): Promise<ObjectLiteral> {
+    await this.delete({ id });
+    return { isDeleted: true };
   }
 }
