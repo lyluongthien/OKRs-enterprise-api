@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { TeamRepository } from './team.repository';
-import { TeamEntity } from '@app/db/entities/team.entity';
-import { TeamDTO } from './team.dto';
 import { ObjectLiteral } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+
+import { TeamEntity } from '@app/db/entities/team.entity';
+import { TeamRepository } from './team.repository';
+import { TeamDTO } from './team.dto';
 
 @Injectable()
 export class TeamService {

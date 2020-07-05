@@ -1,7 +1,8 @@
 import { Controller, Post, Body, Put, Param, Delete, Get } from '@nestjs/common';
+
+import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamService } from './team.service';
 import { TeamDTO } from './team.dto';
-import { TeamEntity } from '@app/db/entities/team.entity';
 
 @Controller('teams')
 export class TeamController {
