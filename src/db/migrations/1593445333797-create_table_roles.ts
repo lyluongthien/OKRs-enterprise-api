@@ -18,12 +18,14 @@ export class createTableRoles1593445333797 implements MigrationInterface {
         isUnique: true,
       },
       {
-        name: 'createAt',
+        name: 'createdAt',
         type: 'date',
+        default: 'now()',
       },
       {
-        name: 'updateAt',
+        name: 'updatedAt',
         type: 'date',
+        default: 'now()',
       },
     ],
   });

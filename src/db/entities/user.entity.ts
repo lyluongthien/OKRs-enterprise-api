@@ -1,44 +1,44 @@
-import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
+import { hashSync, compareSync } from 'bcryptjs';
 import { Entity, BaseEntity, PrimaryColumn, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
-import accessEnv from '@app/libs/accessEnv';
 import { TableName } from '@app/constants/app.enums';
 import { UserToken, JwtPayload } from '@app/constants/app.interfaces';
 import { createJWT } from '@app/libs/jwt';
-
-const SALT_WORK_FACTORY = accessEnv('SALT_WORK_FACTORY');
-const _salt = genSaltSync(+SALT_WORK_FACTORY);
+import { _salt } from '@app/constants/app.config';
 
 @Entity({ name: TableName.User })
 export class UserEntity extends BaseEntity {
   @PrimaryColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  email: string;
+  public email: string;
 
   @Column()
-  password: string;
+  public password: string;
 
   @Column()
-  _salt: string;
-
-  // @Column()
-  // resetPasswordToken: string;
+  public _salt: string;
 
   @Column()
-  fullName: string;
+  public fullName: string;
 
   @Column()
-  avatarURL: string;
+  public avatarURL: string;
 
   @Column()
-  gravatarURL: string;
+  public gravatarURL: string;
 
   @Column()
-  isActive: boolean;
+  public jobPositionId: number;
 
   @Column()
-  isApproved: boolean;
+  public roleId: number;
+
+  @Column()
+  public isActive: boolean;
+
+  @Column()
+  public isApproved: boolean;
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {
