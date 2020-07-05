@@ -18,11 +18,11 @@ export class createTableTeams1593445272105 implements MigrationInterface {
       },
       {
         name: 'createdAt',
-        type: 'date',
+        type: 'datetime',
       },
       {
         name: 'updatedAt',
-        type: 'date',
+        type: 'datetime',
       },
     ],
   });
