@@ -1,4 +1,4 @@
-import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
 @Entity(TableName.Teams)
@@ -9,9 +9,9 @@ export class TeamEntity {
   @Column()
   public name: string;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 }

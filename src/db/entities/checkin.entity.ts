@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
 @Entity(TableName.Checkin)
@@ -33,9 +33,6 @@ export class CheckinEntity {
   @Column()
   public keyResultId: number;
 
-  @Column()
-  public createdAt: Date;
-
-  @Column()
+  @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 }

@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
 @Entity(TableName.Role)
@@ -9,9 +9,9 @@ export class RoleEntity {
   @Column()
   public name: string;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   public updatedAt: Date;
 }

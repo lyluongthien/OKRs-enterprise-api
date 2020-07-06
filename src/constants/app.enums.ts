@@ -35,7 +35,6 @@ export enum RoleEnum {
 }
 
 export enum ForeignKey {
-  ID = 'id',
   ROLE_ID = 'roleId',
   JOB_POSITION_ID = 'jobPositionId',
   USER_ID = 'userId',
@@ -48,6 +47,6 @@ export enum ForeignKey {
   EVALUATION_CRITERIA_ID = 'evaluationCriteriaId',
   OBJECTIVE_ID = 'objectiveId',
   PARENT_OBJECTIVE_ID = 'parentObjectiveId',
-  ALIGN_OBJECTIVE_ID = 'alignObjectiveId',
+  ALIGN_OBJECTIVE_ID = 'alignObjectivesId',
   KEY_RESULTS_ID = 'keyResultId',
 }

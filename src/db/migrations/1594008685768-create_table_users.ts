@@ -69,11 +69,6 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
         type: 'integer',
       },
       {
-        name: 'deactivatedAt',
-        type: 'date',
-        isNullable: true,
-      },
-      {
         name: 'createdAt',
         type: 'timestamp',
         default: 'now()',
@@ -82,6 +77,11 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
         name: 'updatedAt',
         type: 'timestamp',
         default: 'now()',
+      },
+      {
+        name: 'deactivatedAt',
+        type: 'date',
+        isNullable: true,
       },
     ],
   });

@@ -9,6 +9,8 @@ module.exports = {
   logging: true,
   entities: ['src/**/*.entity.ts'],
   migrations: ['src/db/migrations/*.ts'],
+  seeds: ['src/db/seeders/**/*{.ts,.js}'],
+  factories: ['src/db/factories/**/*{.ts,.js}'],
   cli: {
     entitiesDir: 'src/db/entities',
     migrationsDir: 'src/db/migrations',

@@ -1,5 +1,13 @@
 import { hashSync, compareSync } from 'bcryptjs';
-import { Entity, Column, BeforeInsert, BeforeUpdate, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  BeforeInsert,
+  BeforeUpdate,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { UserToken, JwtPayload } from '@app/constants/app.interfaces';
 import { createJWT } from '@app/libs/jwt';
@@ -40,14 +48,14 @@ export class UserEntity {
   @Column()
   public isApproved: boolean;
 
-  @Column()
-  public deactivatedAt: Date;
-
-  @Column()
+  @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
+
+  @Column({ type: 'timestamp' })
+  public deactivatedAt: Date;
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {
