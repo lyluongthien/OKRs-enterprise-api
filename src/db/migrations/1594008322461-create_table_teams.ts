@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-export class createTableRoles1593445333797 implements MigrationInterface {
-  private roleTable: Table = new Table({
-    name: TableName.Role,
+export class CreateTableTeams1594008322461 implements MigrationInterface {
+  private teamsTable: Table = new Table({
+    name: TableName.Teams,
     columns: [
       {
         name: 'id',
@@ -15,25 +15,25 @@ export class createTableRoles1593445333797 implements MigrationInterface {
         name: 'name',
         type: 'varchar',
         isNullable: false,
-        isUnique: true,
+        length: '255',
       },
       {
         name: 'createdAt',
-        type: 'date',
+        type: 'timestamp',
         default: 'now()',
       },
       {
         name: 'updatedAt',
-        type: 'date',
+        type: 'timestamp',
         default: 'now()',
       },
     ],
   });
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.createTable(this.roleTable, true);
+    queryRunner.createTable(this.teamsTable, true);
   }
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.dropTable(this.roleTable, true);
+    queryRunner.dropTable(this.teamsTable, true);
   }
 }
