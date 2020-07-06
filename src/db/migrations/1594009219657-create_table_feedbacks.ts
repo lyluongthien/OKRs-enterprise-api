@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm
 import { TableName, ForeignKey } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
-export class createTableFeedbacks1594009219657 implements MigrationInterface {
+export class CreateTableFeedbacks1594009219657 implements MigrationInterface {
   private feedbackTable: Table = new Table({
     name: TableName.Feeback,
     columns: [
@@ -54,20 +54,20 @@ export class createTableFeedbacks1594009219657 implements MigrationInterface {
     ],
   });
 
-  private tableForeignKey = [
-    new TableForeignKey({
-      columnNames: [ForeignKey.EVALUATION_CRITERIA_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.EvaluationCriteria,
-      onDelete: 'CASCADE',
-    }),
-    new TableForeignKey({
-      columnNames: [ForeignKey.CHECKIN_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.Checkin,
-      onDelete: 'CASCADE',
-    }),
-  ];
+  private pkEvalCriteriaId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.EVALUATION_CRITERIA_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.EvaluationCriteria,
+    onDelete: 'CASCADE',
+  });
+  private pkCheckinId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.CHECKIN_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Checkin,
+    onDelete: 'CASCADE',
+  });
+
+  private tableForeignKey = [this.pkEvalCriteriaId, this.pkCheckinId];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.feedbackTable);

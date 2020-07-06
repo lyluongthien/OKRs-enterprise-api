@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-export class createTableMeasureUnits1594008567439 implements MigrationInterface {
+export class CreateTableMeasureUnits1594008567439 implements MigrationInterface {
   private measureUnitTable: Table = new Table({
     name: TableName.MeasureUnit,
     columns: [

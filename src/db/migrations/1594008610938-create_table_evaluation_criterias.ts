@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-export class createTableEvaluationCriterias1594008610938 implements MigrationInterface {
+export class CreateTableEvaluationCriterias1594008610938 implements MigrationInterface {
   private evalCriteriaTable: Table = new Table({
     name: TableName.EvaluationCriteria,
     columns: [

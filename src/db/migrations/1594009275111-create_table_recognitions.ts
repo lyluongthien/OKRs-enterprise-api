@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm
 import { TableName, ForeignKey } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
-export class createTableRecognitions1594009275111 implements MigrationInterface {
+export class CreateTableRecognitions1594009275111 implements MigrationInterface {
   private recognitionTable: Table = new Table({
     name: TableName.Recognition,
     columns: [

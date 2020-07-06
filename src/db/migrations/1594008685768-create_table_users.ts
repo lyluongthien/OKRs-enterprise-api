@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm
 import { TableName, ForeignKey } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
-export class createTableUsers1594008685768 implements MigrationInterface {
+export class CreateTableUsers1594008685768 implements MigrationInterface {
   private usersTable: Table = new Table({
     name: TableName.User,
     columns: [
@@ -86,20 +86,20 @@ export class createTableUsers1594008685768 implements MigrationInterface {
     ],
   });
 
-  private tableForeignKey = [
-    new TableForeignKey({
-      columnNames: [ForeignKey.ROLE_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.Role,
-      onDelete: 'CASCADE',
-    }),
-    new TableForeignKey({
-      columnNames: [ForeignKey.JOB_POSITION_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.JobPosition,
-      onDelete: 'CASCADE',
-    }),
-  ];
+  private pkRoleId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.ROLE_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Role,
+    onDelete: 'CASCADE',
+  });
+  private pkobPosId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.JOB_POSITION_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.JobPosition,
+    onDelete: 'CASCADE',
+  });
+
+  private tableForeignKey = [this.pkRoleId, this.pkobPosId];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.usersTable, true);

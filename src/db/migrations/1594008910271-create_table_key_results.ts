@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm
 import { TableName, ForeignKey } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
-export class createTableKeyResults1594008910271 implements MigrationInterface {
+export class CreateTableKeyResults1594008910271 implements MigrationInterface {
   private keyResultTable: Table = new Table({
     name: TableName.KeyResult,
     columns: [
@@ -54,20 +54,20 @@ export class createTableKeyResults1594008910271 implements MigrationInterface {
     ],
   });
 
-  private tableForeignKey = [
-    new TableForeignKey({
-      columnNames: [ForeignKey.OBJECTIVE_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.Objective,
-      onDelete: 'CASCADE',
-    }),
-    new TableForeignKey({
-      columnNames: [ForeignKey.MEASURE_UNIT_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.MeasureUnit,
-      onDelete: 'CASCADE',
-    }),
-  ];
+  private pkObjectiveId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.OBJECTIVE_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Objective,
+    onDelete: 'CASCADE',
+  });
+  private pkMeasureUnitId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.MEASURE_UNIT_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.MeasureUnit,
+    onDelete: 'CASCADE',
+  });
+
+  private tableForeignKey = [this.pkObjectiveId, this.pkMeasureUnitId];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.keyResultTable);

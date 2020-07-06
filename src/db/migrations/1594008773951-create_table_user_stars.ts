@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm
 import { TableName, ForeignKey } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
-export class createTableUserStars1594008773951 implements MigrationInterface {
+export class CreateTableUserStars1594008773951 implements MigrationInterface {
   private userStarTable: Table = new Table({
     name: TableName.UserStar,
     columns: [

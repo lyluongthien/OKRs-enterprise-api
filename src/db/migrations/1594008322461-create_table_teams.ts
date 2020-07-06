@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-export class createTableTeams1594008322461 implements MigrationInterface {
+export class CreateTableTeams1594008322461 implements MigrationInterface {
   private teamsTable: Table = new Table({
     name: TableName.Teams,
     columns: [

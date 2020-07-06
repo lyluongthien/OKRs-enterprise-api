@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm
 import { TableName, ForeignKey } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
-export class createTableCheckins1594009182120 implements MigrationInterface {
+export class CreateTableCheckins1594009182120 implements MigrationInterface {
   private checkinTable: Table = new Table({
     name: TableName.Checkin,
     columns: [
@@ -63,19 +63,17 @@ export class createTableCheckins1594009182120 implements MigrationInterface {
     ],
   });
 
-  private tableForeignKey = [
-    new TableForeignKey({
-      columnNames: [ForeignKey.KEY_RESULTS_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.KeyResult,
-      onDelete: 'CASCADE',
-    }),
-  ];
+  private tableForeignKey: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.KEY_RESULTS_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.KeyResult,
+    onDelete: 'CASCADE',
+  });
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.checkinTable);
 
-    await queryRunner.createForeignKeys(TableName.Checkin, this.tableForeignKey);
+    await queryRunner.createForeignKey(TableName.Checkin, this.tableForeignKey);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

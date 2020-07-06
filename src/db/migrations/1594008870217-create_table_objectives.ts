@@ -2,7 +2,7 @@ import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm
 import { TableName, ForeignKey } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
-export class createTableObjectives1594008870217 implements MigrationInterface {
+export class CreateTableObjectives1594008870217 implements MigrationInterface {
   private objectiveTable: Table = new Table({
     name: TableName.Objective,
     columns: [
@@ -53,32 +53,32 @@ export class createTableObjectives1594008870217 implements MigrationInterface {
     ],
   });
 
-  private tableForeignKey = [
-    new TableForeignKey({
-      columnNames: [ForeignKey.USER_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.User,
-      onDelete: 'CASCADE',
-    }),
-    new TableForeignKey({
-      columnNames: [ForeignKey.CYCLE_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.Cycle,
-      onDelete: 'CASCADE',
-    }),
-    new TableForeignKey({
-      columnNames: [ForeignKey.PARENT_OBJECTIVE_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.Objective,
-      onDelete: 'CASCADE',
-    }),
-    new TableForeignKey({
-      columnNames: [ForeignKey.ALIGN_OBJECTIVE_ID],
-      referencedColumnNames: ['id'],
-      referencedTableName: TableName.Objective,
-      onDelete: 'CASCADE',
-    }),
-  ];
+  private pkUserId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.USER_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.User,
+    onDelete: 'CASCADE',
+  });
+  private pkCycleId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.CYCLE_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Cycle,
+    onDelete: 'CASCADE',
+  });
+  private pkParentObectiveId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.PARENT_OBJECTIVE_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Objective,
+    onDelete: 'CASCADE',
+  });
+  private pkAlignObectiveId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.ALIGN_OBJECTIVE_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Objective,
+    onDelete: 'CASCADE',
+  });
+
+  private tableForeignKey = [this.pkUserId, this.pkCycleId, this.pkParentObectiveId, this.pkAlignObectiveId];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.objectiveTable);

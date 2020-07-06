@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 import { RoleEnum } from '@app/constants/app.enums';
 
-export class seedTableRoles1594024689396 implements MigrationInterface {
+export class SeedTableRoles1594024689396 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const sql = `INSERT INTO public.roles (name, "createdAt", "updatedAt") 
       VALUES('${RoleEnum.ADMIN}', now(), now()),

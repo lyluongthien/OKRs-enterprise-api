@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 import { TableName, ForeignKey } from '@app/constants/app.enums';
 
-export class createTableFieldTemplates1594009347849 implements MigrationInterface {
+export class CreateTableFieldTemplates1594009347849 implements MigrationInterface {
   private fieldTemplateTable: Table = new Table({
     name: TableName.FieldTemplate,
     columns: [

@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-export class createTableCycles1594008510605 implements MigrationInterface {
+export class CreateTableCycles1594008510605 implements MigrationInterface {
   private cycleTable: Table = new Table({
     name: TableName.Cycle,
     columns: [
