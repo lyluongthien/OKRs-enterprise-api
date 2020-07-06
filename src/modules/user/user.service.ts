@@ -81,7 +81,7 @@ export class UserService {
    * Author: QuangNV
    * Approve Request
    */
-  public async approveRequest(id: number, user: ApproveRequestDTO): Promise<ObjectLiteral> {
-    return await this.userRepository.updateManyUserById(id, user);
+  public async approveRequest(isApproved: boolean, user: ApproveRequestDTO): Promise<ObjectLiteral> {
+    return await this.userRepository.updateUserByApproveStatus(isApproved, user);
   }
 }

@@ -15,12 +15,12 @@ export class UserRepository extends Repository<UserEntity> {
     return await this.findOne({ where: { id } });
   }
 
-  // public async getManyUserById(id: number[]): Promise<UserEntity[]> {
-  //   return await this.findByIds(id, { where: id });
-  // }
-
   public async getUserByEmail(email: string): Promise<UserEntity> {
     return await this.findOne({ where: { email } });
+  }
+
+  public async getUserByApproveStatus(isApproved: boolean): Promise<UserEntity[]> {
+    return await this.find({ where: { isApproved } });
   }
 
   public async updateUserById(id: number, user: CreateUserDto): Promise<UserEntity> {
@@ -28,9 +28,9 @@ export class UserRepository extends Repository<UserEntity> {
     return this.getUserById(id);
   }
 
-  public async updateManyUserById(id: number, user: ApproveRequestDTO): Promise<UserEntity> {
-    await this.update(id, user);
-    return this.getUserById(id);
+  public async updateUserByApproveStatus(isApproved: boolean, user: ApproveRequestDTO): Promise<UserEntity[]> {
+    await this.update({ isApproved }, user);
+    return this.getUserByApproveStatus(isApproved);
   }
 
   public async deleteUser(id: number): Promise<ObjectLiteral> {

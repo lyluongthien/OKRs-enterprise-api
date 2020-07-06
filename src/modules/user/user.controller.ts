@@ -36,8 +36,11 @@ export class UserController {
     return this.userService.rejectRequest(id);
   }
 
-  @Put('approve-request/:id')
-  private approveRequest(@Param('id') id: number, @Body() user: ApproveRequestDTO): Promise<ObjectLiteral> {
-    return this.userService.approveRequest(id, user);
+  @Put('approve-request/:isApproved')
+  private approveRequest(
+    @Param('isApproved') isApproved: boolean,
+    @Body() user: ApproveRequestDTO,
+  ): Promise<ObjectLiteral> {
+    return this.userService.approveRequest(isApproved, user);
   }
 }

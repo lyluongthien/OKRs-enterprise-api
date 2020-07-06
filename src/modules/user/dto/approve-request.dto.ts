@@ -5,5 +5,5 @@ export class ApproveRequestDTO {
   public readonly isApproved: boolean;
 
   @IsNotEmpty()
-  public readonly isActived: boolean;
+  public readonly isActive: boolean;
 }
