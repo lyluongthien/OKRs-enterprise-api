@@ -4,7 +4,6 @@ import { RoleService } from './role.service';
 import { RoleDTO } from './role.dto';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { ValidationPipe } from '@app/core/pipes/validation.pipe';
-import { ApiBody } from '@nestjs/swagger';
 
 @Controller('roles')
 export class RoleController {

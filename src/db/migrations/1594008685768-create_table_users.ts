@@ -50,7 +50,7 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
         isNullable: true,
       },
       {
-        name: 'isActive',
+        name: 'isActived',
         type: 'bool',
         default: false,
       },

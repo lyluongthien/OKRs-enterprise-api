@@ -27,18 +27,6 @@ export class CreateTableJobPositions1594008255759 implements MigrationInterface 
         type: 'timestamp',
         default: 'now()',
       },
-      {
-        name: 'createdAt',
-        type: 'date',
-        isNullable: true,
-        default: 'now()',
-      },
-      {
-        name: 'updatedAt',
-        type: 'date',
-        isNullable: true,
-        default: 'now()',
-      },
     ],
   });
 

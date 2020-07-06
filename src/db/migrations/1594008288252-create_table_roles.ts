@@ -28,26 +28,6 @@ export class CreateTableRoles1594008288252 implements MigrationInterface {
         type: 'timestamp',
         default: 'now()',
       },
-      {
-        name: 'createdAt',
-        type: 'date',
-        default: 'now()',
-      },
-      {
-        name: 'updatedAt',
-        type: 'date',
-        default: 'now()',
-      },
-      {
-        name: 'createdAt',
-        type: 'date',
-        default: 'now()',
-      },
-      {
-        name: 'updatedAt',
-        type: 'date',
-        default: 'now()',
-      },
     ],
   });
 
