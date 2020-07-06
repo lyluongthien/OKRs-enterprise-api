@@ -67,7 +67,7 @@ export class CreateTableFeedbacks1594009219657 implements MigrationInterface {
     onDelete: 'CASCADE',
   });
 
-  private tableForeignKey = [this.pkEvalCriteriaId, this.pkCheckinId];
+  private tableForeignKey: TableForeignKey[] = [this.pkEvalCriteriaId, this.pkCheckinId];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.feedbackTable);

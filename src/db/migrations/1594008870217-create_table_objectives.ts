@@ -78,7 +78,12 @@ export class CreateTableObjectives1594008870217 implements MigrationInterface {
     onDelete: 'CASCADE',
   });
 
-  private tableForeignKey = [this.pkUserId, this.pkCycleId, this.pkParentObectiveId, this.pkAlignObectiveId];
+  private tableForeignKey: TableForeignKey[] = [
+    this.pkUserId,
+    this.pkCycleId,
+    this.pkParentObectiveId,
+    this.pkAlignObectiveId,
+  ];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.objectiveTable);

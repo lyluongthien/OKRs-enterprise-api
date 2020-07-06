@@ -67,7 +67,7 @@ export class CreateTableKeyResults1594008910271 implements MigrationInterface {
     onDelete: 'CASCADE',
   });
 
-  private tableForeignKey = [this.pkObjectiveId, this.pkMeasureUnitId];
+  private tableForeignKey: TableForeignKey[] = [this.pkObjectiveId, this.pkMeasureUnitId];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.keyResultTable);

@@ -39,7 +39,7 @@ export class CreateTableUserTeams1594008723246 implements MigrationInterface {
     referencedTableName: TableName.Teams,
     onDelete: 'CASCADE',
   });
-  private tableForeignKey = [this.pkUserId, this.pkTeamId];
+  private tableForeignKey: TableForeignKey[] = [this.pkUserId, this.pkTeamId];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.userTeamTable, true);
