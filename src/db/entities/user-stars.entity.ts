@@ -1,17 +1,17 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-@Entity(TableName.Role)
-export class RoleEntity {
+@Entity(TableName.UserStar)
+export class UserStarEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Column()
-  public name: string;
+  public accumulatedStar: number;
 
   @Column()
-  public createdAt: Date;
+  public currentCycleStar: number;
 
   @Column()
-  public updatedAt: Date;
+  public userId: number;
 }

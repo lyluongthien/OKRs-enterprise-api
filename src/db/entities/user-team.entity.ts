@@ -1,17 +1,17 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-@Entity(TableName.Role)
-export class RoleEntity {
+@Entity(TableName.UserTeam)
+export class UserTeamEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Column()
-  public name: string;
+  public isLeader: boolean;
 
   @Column()
-  public createdAt: Date;
+  public userId: number;
 
   @Column()
-  public updatedAt: Date;
+  public teamId: number;
 }

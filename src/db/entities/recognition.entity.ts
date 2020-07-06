@@ -1,13 +1,22 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-@Entity(TableName.Role)
-export class RoleEntity {
+@Entity(TableName.Recognition)
+export class RecognitionEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Column()
-  public name: string;
+  public inferiorId: number;
+
+  @Column()
+  public superiorId: number;
+
+  @Column()
+  public content: string;
+
+  @Column()
+  public evaluationCriteriaId: number;
 
   @Column()
   public createdAt: Date;

@@ -1,17 +1,14 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-@Entity(TableName.Role)
-export class RoleEntity {
+@Entity(TableName.FieldTemplate)
+export class FieldTemplateEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Column()
-  public name: string;
+  public colmnName: string;
 
   @Column()
-  public createdAt: Date;
-
-  @Column()
-  public updatedAt: Date;
+  public templateCheckinId: string;
 }

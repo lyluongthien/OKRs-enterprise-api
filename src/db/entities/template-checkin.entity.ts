@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-@Entity(TableName.Role)
-export class RoleEntity {
+@Entity(TableName.TemplateCheckin)
+export class TemplateCheckinEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
