@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UsePipes, Put, Param } from '@nestjs/common';
+import { Controller, Post, Body, UsePipes, Put, Param, Get } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
 
 import { UserEntity } from '@app/db/entities/user.entity';
@@ -34,5 +34,10 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   private rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
     return this.userService.rejectRequest(id);
+  }
+
+  @Get()
+  private getAllUser(): Promise<UserEntity[]> {
+    return this.userService.getAllUser();
   }
 }

@@ -1,9 +1,25 @@
 import { hashSync, compareSync } from 'bcryptjs';
-import { Entity, Column, BeforeInsert, BeforeUpdate, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  BeforeInsert,
+  BeforeUpdate,
+  PrimaryGeneratedColumn,
+  ManyToMany,
+  ManyToOne,
+  JoinColumn,
+  JoinTable,
+  Table,
+  OneToMany,
+} from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { UserToken, JwtPayload } from '@app/constants/app.interfaces';
 import { createJWT } from '@app/libs/jwt';
 import { _salt } from '@app/constants/app.config';
+import { RoleEntity } from './role.entity';
+import { JobEntity } from './job.entity';
+import { TeamEntity } from './team.entity';
+import { UserTeamEntity } from './user-team.entity';
 
 @Entity({ name: TableName.User })
 export class UserEntity {
@@ -74,4 +90,22 @@ export class UserEntity {
       token: `Bearer ${token}`,
     };
   }
+
+  @ManyToOne(
+    (type) => RoleEntity,
+    (role) => role.users,
+  )
+  role: RoleEntity;
+
+  @ManyToOne(
+    (type) => JobEntity,
+    (jobPosition) => jobPosition.users,
+  )
+  jobPosition: JobEntity;
+
+  // @OneToMany(
+  //   () => UserTeamEntity,
+  //   (usersTeams) => usersTeams.user,
+  // )
+  // usersTeams: UserTeamEntity[];
 }
