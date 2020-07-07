@@ -3,8 +3,8 @@ import { Connection } from 'typeorm';
 import { RoleEntity } from '../entities/role.entity';
 import { RoleEnum } from '@app/constants/app.enums';
 
-export class CreateRoles implements Seeder {
-  async run(factory: Factory, connection: Connection): Promise<any> {
+export class RoleSeeder implements Seeder {
+  public async run(factory: Factory, connection: Connection): Promise<any> {
     await connection
       .createQueryBuilder()
       .insert()

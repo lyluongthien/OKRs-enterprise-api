@@ -37,10 +37,10 @@ export class UserEntity {
   public gravatarURL: string;
 
   @Column()
-  public jobPositionId: number;
+  public jobPositionId?: number;
 
   @Column()
-  public roleId: number;
+  public roleId?: number;
 
   @Column()
   public isActive: boolean;
@@ -55,7 +55,7 @@ export class UserEntity {
   public updatedAt: Date;
 
   @Column({ type: 'timestamp' })
-  public deactivatedAt: Date;
+  public deactivatedAt?: Date;
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {

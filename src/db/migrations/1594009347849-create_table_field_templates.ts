@@ -12,7 +12,7 @@ export class CreateTableFieldTemplates1594009347849 implements MigrationInterfac
         isGenerated: true,
       },
       {
-        name: 'colmnName',
+        name: 'columnName',
         type: 'varchar',
         isNullable: false,
         length: '255',

@@ -67,6 +67,7 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
       {
         name: ForeignKey.JOB_POSITION_ID,
         type: 'integer',
+        isNullable: true,
       },
       {
         name: 'createdAt',
@@ -80,7 +81,7 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
       },
       {
         name: 'deactivatedAt',
-        type: 'date',
+        type: 'timestamp',
         isNullable: true,
       },
     ],
@@ -96,7 +97,7 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
     columnNames: [ForeignKey.JOB_POSITION_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.JobPosition,
-    onDelete: 'CASCADE',
+    onDelete: 'NULL',
   });
 
   private tableForeignKey: TableForeignKey[] = [this.pkRoleId, this.pkobPosId];

@@ -1,7 +1,7 @@
 export enum TableName {
   User = 'users',
   Objective = 'objectives',
-  Teams = 'teams',
+  Team = 'teams',
   JobPosition = 'job_positions',
   Role = 'roles',
   UserTeam = 'user_teams',
@@ -49,4 +49,9 @@ export enum ForeignKey {
   PARENT_OBJECTIVE_ID = 'parentObjectiveId',
   ALIGN_OBJECTIVE_ID = 'alignObjectivesId',
   KEY_RESULTS_ID = 'keyResultId',
+}
+
+export enum EvaluationCriteriaEnum {
+  MEMBER_TO_LEADER = 'MEMBER_TO_LEADER',
+  LEADER_TO_MEMBER = 'LEADER_TO_MEMBER',
 }
