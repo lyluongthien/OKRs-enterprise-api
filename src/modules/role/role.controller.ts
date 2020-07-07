@@ -11,7 +11,7 @@ export class RoleController {
 
   @Post()
   @UsePipes(new ValidationPipe())
-  private createRole(@Body() role: RoleDTO): Promise<RoleEntity> {
+  public createRole(@Body() role: RoleDTO): Promise<RoleEntity> {
     return this.roleService.createRole(role);
   }
 
