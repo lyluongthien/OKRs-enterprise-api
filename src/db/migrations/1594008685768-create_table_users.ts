@@ -97,7 +97,7 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
     columnNames: [ForeignKey.JOB_POSITION_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.JobPosition,
-    onDelete: 'NULL',
+    onDelete: 'CASCADE',
   });
 
   private tableForeignKey: TableForeignKey[] = [this.pkRoleId, this.pkobPosId];
