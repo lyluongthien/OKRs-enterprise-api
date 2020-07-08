@@ -9,12 +9,14 @@ import {
   ManyToOne,
   UpdateDateColumn,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { _salt } from '@app/constants/app.config';
+import { JobEntity } from './job.entity';
+import { UserTeamEntity } from './user-team.entity';
 import { UserResponse } from '@app/modules/auth/auth.interface';
 import { RoleEntity } from './role.entity';
-import { JobEntity } from './job.entity';
 
 @Entity({ name: TableName.User })
 export class UserEntity {
@@ -51,11 +53,8 @@ export class UserEntity {
   @Column()
   public isApproved: boolean;
 
-  @ManyToOne(() => RoleEntity, (role) => role.users)
-  public role: RoleEntity;
-
-  @ManyToOne(() => JobEntity, (jobPosition) => jobPosition.users)
-  public jobPosition: JobEntity;
+  @Column()
+  public deactivatedAt: Date;
 
   @CreateDateColumn()
   public createdAt: Date;
@@ -63,8 +62,14 @@ export class UserEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 
-  @Column({ type: 'timestamp' })
-  public deactivatedAt?: Date;
+  @ManyToOne(() => RoleEntity, (role) => role.users)
+  public role: RoleEntity;
+
+  @ManyToOne(() => JobEntity, (jobPosition) => jobPosition.users)
+  public jobPosition: JobEntity;
+
+  @OneToMany(() => UserTeamEntity, (userTeam) => userTeam.user)
+  public userToTeams: UserTeamEntity[];
 
   @BeforeInsert()
   public async hashPassword(): Promise<void> {
