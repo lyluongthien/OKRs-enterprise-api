@@ -51,6 +51,18 @@ export class UserEntity {
   @Column()
   public updatedAt: Date;
 
+  @ManyToOne(
+    () => RoleEntity,
+    (role) => role.users,
+  )
+  public role: RoleEntity;
+
+  @ManyToOne(
+    () => JobEntity,
+    (jobPosition) => jobPosition.users,
+  )
+  public jobPosition: JobEntity;
+
   @BeforeInsert()
   async hashPassword(): Promise<void> {
     this.password = hashSync(this.password, _salt);
@@ -76,16 +88,4 @@ export class UserEntity {
       token: `Bearer ${token}`,
     };
   }
-
-  @ManyToOne(
-    () => RoleEntity,
-    (role) => role.users,
-  )
-  public role: RoleEntity;
-
-  @ManyToOne(
-    () => JobEntity,
-    (jobPosition) => jobPosition.users,
-  )
-  public jobPosition: JobEntity;
 }
