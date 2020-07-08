@@ -40,4 +40,9 @@ export class UserController {
   private getAllUser(): Promise<UserEntity[]> {
     return this.userService.getAllUser();
   }
+
+  @Get(':id')
+  private getUserDetail(@Param('id') id: number): Promise<UserEntity[]> {
+    return this.userService.getUserDetail(id);
+  }
 }

@@ -38,4 +38,11 @@ export class UserRepository extends Repository<UserEntity> {
       relations: ['role', 'jobPosition', 'userToTeams', 'userToTeams.team'],
     });
   }
+
+  public async getUserDetail(id: number): Promise<UserEntity[]> {
+    return await this.find({
+      relations: ['role', 'jobPosition', 'userToTeams', 'userToTeams.team'],
+      where: { id },
+    });
+  }
 }
