@@ -20,5 +20,5 @@ export class JobEntity {
     () => UserEntity,
     (user) => user.jobPosition,
   )
-  users: UserEntity[];
+  public users: UserEntity[];
 }

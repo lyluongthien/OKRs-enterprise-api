@@ -81,11 +81,11 @@ export class UserEntity {
     () => RoleEntity,
     (role) => role.users,
   )
-  role: RoleEntity;
+  public role: RoleEntity;
 
   @ManyToOne(
     () => JobEntity,
     (jobPosition) => jobPosition.users,
   )
-  jobPosition: JobEntity;
+  public jobPosition: JobEntity;
 }
