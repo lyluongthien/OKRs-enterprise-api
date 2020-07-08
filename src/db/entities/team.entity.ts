@@ -1,7 +1,5 @@
-import { PrimaryGeneratedColumn, Column, Entity, ManyToMany, JoinTable, OneToMany } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
-import { UserEntity } from './user.entity';
-import { UserTeamEntity } from './user-team.entity';
 
 @Entity(TableName.Teams)
 export class TeamEntity {
