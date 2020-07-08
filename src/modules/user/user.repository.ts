@@ -2,7 +2,6 @@ import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
-import { TableName } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -28,7 +27,7 @@ export class UserRepository extends Repository<UserEntity> {
     return { isDeleted: true };
   }
 
-  public async getAllUser(): Promise<UserEntity[]> {
+  public async getUsers(): Promise<UserEntity[]> {
     // return await this.createQueryBuilder(TableName.User) //alias
     //   .leftJoinAndSelect(TableName.User + '.role', TableName.Role)
     //   .leftJoinAndSelect(TableName.User + '.jobPosition', TableName.JobPosition)

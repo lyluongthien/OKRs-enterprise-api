@@ -12,6 +12,16 @@ import { ChangePasswordDTO } from './dto/change-password.dto';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Get()
+  private getUsers(): Promise<UserEntity[]> {
+    return this.userService.getUsers();
+  }
+
+  @Get(':id')
+  private getUserDetail(@Param('id') id: number): Promise<UserEntity[]> {
+    return this.userService.getUserDetail(id);
+  }
+
   @Post('auth/signup')
   @UsePipes(new ValidationPipe())
   private signup(@Body() user: CreateUserDto): Promise<UserEntity> {
@@ -34,15 +44,5 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   private rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
     return this.userService.rejectRequest(id);
-  }
-
-  @Get()
-  private getAllUser(): Promise<UserEntity[]> {
-    return this.userService.getAllUser();
-  }
-
-  @Get(':id')
-  private getUserDetail(@Param('id') id: number): Promise<UserEntity[]> {
-    return this.userService.getUserDetail(id);
   }
 }

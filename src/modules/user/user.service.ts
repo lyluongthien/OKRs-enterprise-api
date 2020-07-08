@@ -11,7 +11,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { UserRepository } from './user.repository';
-import { UserTeamEntity } from '@app/db/entities/user-team.entity';
 
 @Injectable()
 export class UserService {
@@ -77,8 +76,8 @@ export class UserService {
     return await this.userRepository.delete({ id });
   }
 
-  public async getAllUser(): Promise<UserEntity[]> {
-    return await this.userRepository.getAllUser();
+  public async getUsers(): Promise<UserEntity[]> {
+    return await this.userRepository.getUsers();
   }
 
   public async getUserDetail(id: number): Promise<UserEntity[]> {
