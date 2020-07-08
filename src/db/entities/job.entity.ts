@@ -16,6 +16,9 @@ export class JobEntity {
   @Column()
   public updatedAt: Date;
 
-  @OneToMany(() => UserEntity, (user) => user.jobPosition)
+  @OneToMany(
+    () => UserEntity,
+    (user) => user.jobPosition,
+  )
   public users: UserEntity[];
 }

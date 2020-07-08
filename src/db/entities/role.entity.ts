@@ -16,6 +16,9 @@ export class RoleEntity {
   @Column()
   public updatedAt: Date;
 
-  @OneToMany(() => UserEntity, (user) => user.role)
+  @OneToMany(
+    () => UserEntity,
+    (user) => user.role,
+  )
   public users: UserEntity[];
 }
