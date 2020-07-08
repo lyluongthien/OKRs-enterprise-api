@@ -9,7 +9,7 @@ declare const module: any;
 
 const bootstrap = async (): Promise<void> => {
   const app: INestApplication = await NestFactory.create(AppModule);
-  const prefixApiV1: string = accessEnv('API_PREFIX_V1');
+  // const prefixApiV1: string = accessEnv('API_PREFIX_V1');
   const port: number | string = accessEnv('SERVER_PORT');
   const options = new DocumentBuilder()
     .setTitle('OKRs APIs')
@@ -19,7 +19,7 @@ const bootstrap = async (): Promise<void> => {
     .build();
 
   const document: OpenAPIObject = SwaggerModule.createDocument(app, options);
-  await app.setGlobalPrefix(prefixApiV1);
+  // await app.setGlobalPrefix(prefixApiV1);
 
   await app.listen(port);
   await SwaggerModule.setup('api', app, document);

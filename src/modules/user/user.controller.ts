@@ -34,9 +34,4 @@ export class UserController {
   public rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
     return this.userService.rejectRequest(id);
   }
-
-  @Get()
-  private getAllUser(): Promise<UserEntity[]> {
-    return this.userService.getAllUser();
-  }
 }
