@@ -9,9 +9,9 @@ export class CycleSeeder implements Seeder {
       .insert()
       .into(CycleEntity)
       .values([
-        { name: 'Summer 2020', startDate: '2020-01-01', endDate: '2020-01-01' },
-        { name: 'Spring 2020', startDate: '2020-01-01', endDate: '2020-01-01' },
-        { name: 'Fall 2020', startDate: '2020-01-01', endDate: '2020-01-01' },
+        { name: 'Fall 2019', startDate: '2019-09-01', endDate: '2019-12-31' },
+        { name: 'Spring 2020', startDate: '2020-01-01', endDate: '2020-04-30' },
+        { name: 'Summer 2020', startDate: '2020-05-01', endDate: '2020-08-31' },
       ])
       .execute();
   }

@@ -8,7 +8,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 
-@Controller('users')
+@Controller('/api/v1/users')
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -24,7 +24,7 @@ export class UserController {
     return this.userService.resetPassword(user);
   }
 
-  @Put('change-password/:id')
+  @Put('/me/change-password/:id')
   @UsePipes(new ValidationPipe())
   private changePassword(@Param('id') id: number, @Body() user: ChangePasswordDTO): Promise<ObjectLiteral> {
     return this.userService.changePassword(id, user);

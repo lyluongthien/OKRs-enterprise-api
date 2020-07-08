@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { TableName } from '../../constants/app.enums';
+import { TableName } from '@app/constants/app.enums';
 
 @Entity(TableName.UserTeam)
 export class UserTeamEntity {

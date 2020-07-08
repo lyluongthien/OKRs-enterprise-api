@@ -7,7 +7,6 @@ declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('api/v1');
 
   const options = new DocumentBuilder()
     .setTitle('OKRs APIs')
