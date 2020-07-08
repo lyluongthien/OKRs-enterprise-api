@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
+import { UserEntity } from './user.entity';
 
 @Entity(TableName.JobPosition)
 export class JobEntity {
@@ -14,4 +15,7 @@ export class JobEntity {
 
   @Column()
   public updatedAt: Date;
+
+  @OneToMany(() => UserEntity, (user) => user.jobPosition)
+  public users: UserEntity[];
 }

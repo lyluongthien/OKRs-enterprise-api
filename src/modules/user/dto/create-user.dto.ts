@@ -1,11 +1,12 @@
 import { IsEmail, IsNotEmpty, Matches, IsBoolean } from 'class-validator';
+import { passwordValidation } from '@app/constants/app.config';
 export class CreateUserDto {
   @IsEmail()
   @IsNotEmpty()
   public readonly email: string;
 
-  @Matches(/^(?=.*\d)[0-9a-zA-Z]{8,}$/, {
-    message: 'Should contain at least 1 digit and 8 characters',
+  @Matches(passwordValidation.regex, {
+    message: passwordValidation.message,
   })
   @IsNotEmpty()
   public readonly password: string;
