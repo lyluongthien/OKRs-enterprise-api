@@ -11,6 +11,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDTO } from './dto/reset-password.dto';
 import { ChangePasswordDTO } from './dto/change-password.dto';
 import { UserRepository } from './user.repository';
+import { UserTeamEntity } from '@app/db/entities/user-team.entity';
 
 @Injectable()
 export class UserService {

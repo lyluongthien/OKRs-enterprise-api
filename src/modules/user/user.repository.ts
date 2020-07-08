@@ -29,9 +29,13 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   public async getAllUser(): Promise<UserEntity[]> {
-    return this.createQueryBuilder(TableName.User)
-      .leftJoinAndSelect(TableName.User + '.role', TableName.Role)
-      .leftJoinAndSelect(TableName.User + '.jobPosition', TableName.JobPosition)
-      .getMany();
+    // return await this.createQueryBuilder(TableName.User) //alias
+    //   .leftJoinAndSelect(TableName.User + '.role', TableName.Role)
+    //   .leftJoinAndSelect(TableName.User + '.jobPosition', TableName.JobPosition)
+    //   .getMany();
+
+    return await this.find({
+      relations: ['role', 'jobPosition', 'userToTeams', 'userToTeams.team'],
+    });
   }
 }

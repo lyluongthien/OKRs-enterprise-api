@@ -7,6 +7,7 @@ import { RoleEntity } from './entities/role.entity';
 import { UserEntity } from './entities/user.entity';
 import { JobEntity } from './entities/job.entity';
 import { TeamEntity } from './entities/team.entity';
+import { UserTeamEntity } from './entities/user-team.entity';
 
 const type = DbConfig.DB_TYPE;
 const host = accessEnv(DbConfig.DB_HOST);
@@ -25,7 +26,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
       username,
       password,
       database,
-      entities: [RoleEntity, UserEntity, JobEntity, TeamEntity],
+      entities: [RoleEntity, UserEntity, JobEntity, TeamEntity, UserTeamEntity],
       migrations: ['dist/db/migrations/*.js'],
       cli: {
         migrationsDir: 'src/db/migrations/*.ts',

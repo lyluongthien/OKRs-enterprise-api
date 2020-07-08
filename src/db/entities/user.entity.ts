@@ -1,11 +1,12 @@
 import { hashSync, compareSync } from 'bcryptjs';
-import { Entity, Column, BeforeInsert, BeforeUpdate, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, BeforeInsert, BeforeUpdate, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { UserToken, JwtPayload } from '@app/constants/app.interfaces';
 import { createJWT } from '@app/libs/jwt';
 import { _salt } from '@app/constants/app.config';
 import { RoleEntity } from './role.entity';
 import { JobEntity } from './job.entity';
+import { UserTeamEntity } from './user-team.entity';
 
 @Entity({ name: TableName.User })
 export class UserEntity {
@@ -62,6 +63,12 @@ export class UserEntity {
     (jobPosition) => jobPosition.users,
   )
   public jobPosition: JobEntity;
+
+  @OneToMany(
+    () => UserTeamEntity,
+    (userTeam) => userTeam.user,
+  )
+  public userToTeams: UserTeamEntity[];
 
   @BeforeInsert()
   async hashPassword(): Promise<void> {
