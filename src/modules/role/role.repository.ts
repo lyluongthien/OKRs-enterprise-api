@@ -9,9 +9,7 @@ export class RoleRepository extends Repository<RoleEntity> {
   }
 
   public async createRole(data: RoleDTO): Promise<RoleEntity> {
-    const final_data = await this.save(data);
-
-    return final_data;
+    return await this.save(data);
   }
 
   public async getRoleDetail(id: number): Promise<RoleEntity> {

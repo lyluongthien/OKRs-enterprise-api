@@ -1,7 +1,6 @@
-import { Repository, EntityRepository } from 'typeorm';
+import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 
 import { UserEntity } from '@app/db/entities/user.entity';
-import { ObjectLiteral } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApproveRequestDTO } from './dto/approve-request.dto';
 
