@@ -36,7 +36,7 @@ export class CreateTableUserTeams1594008723246 implements MigrationInterface {
   private pkTeamId: TableForeignKey = new TableForeignKey({
     columnNames: [ForeignKey.TEAM_ID],
     referencedColumnNames: ['id'],
-    referencedTableName: TableName.Teams,
+    referencedTableName: TableName.Team,
     onDelete: 'CASCADE',
   });
   private tableForeignKey: TableForeignKey[] = [this.pkUserId, this.pkTeamId];

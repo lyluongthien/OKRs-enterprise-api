@@ -17,15 +17,9 @@ export class UserTeamEntity {
   @Column()
   public teamId: number;
 
-  @ManyToOne(
-    () => UserEntity,
-    (user) => user.userToTeams,
-  )
+  @ManyToOne(() => UserEntity, (user) => user.userToTeams)
   public user: UserEntity;
 
-  @ManyToOne(
-    () => TeamEntity,
-    (team) => team.userToTeams,
-  )
+  @ManyToOne(() => TeamEntity, (team) => team.userToTeams)
   public team: TeamEntity;
 }

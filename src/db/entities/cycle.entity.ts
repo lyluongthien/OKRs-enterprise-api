@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
 @Entity(TableName.Cycle)
@@ -9,15 +9,15 @@ export class CycleEntity {
   @Column()
   public name: string;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   public startDate: Date;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   public endDate: Date;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 }

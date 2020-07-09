@@ -28,5 +28,5 @@ export class ObjectiveEntity {
   public parentObjectiveId: number;
 
   @Column()
-  public alignObjectiveId: number;
+  public alignObjectivesId: number;
 }

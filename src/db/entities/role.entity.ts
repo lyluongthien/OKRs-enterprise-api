@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, CreateDateColumn } from 'typeorm';
 import { TableName, RoleEnum } from '@app/constants/app.enums';
 import { UserEntity } from './user.entity';
 
@@ -10,15 +10,12 @@ export class RoleEntity {
   @Column({ enum: [RoleEnum.ADMIN, RoleEnum.HR, RoleEnum.TEAM_LEADER, RoleEnum.STAFF] })
   public name: string;
 
-  @Column()
+  @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   public updatedAt: Date;
 
-  @OneToMany(
-    () => UserEntity,
-    (user) => user.role,
-  )
+  @OneToMany(() => UserEntity, (user) => user.role)
   public users: UserEntity[];
 }

@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
-import { TableName } from '@app/constants/app.enums';
+import { TableName, EvaluationCriteriaEnum } from '@app/constants/app.enums';
 
 export class CreateTableEvaluationCriterias1594008610938 implements MigrationInterface {
   private evalCriteriaTable: Table = new Table({
@@ -23,7 +23,8 @@ export class CreateTableEvaluationCriterias1594008610938 implements MigrationInt
       },
       {
         name: 'type',
-        type: 'varchar',
+        type: 'enum',
+        enum: [EvaluationCriteriaEnum.LEADER_TO_MEMBER, EvaluationCriteriaEnum.MEMBER_TO_LEADER],
         isNullable: false,
       },
       {

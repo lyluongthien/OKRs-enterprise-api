@@ -7,7 +7,7 @@ import { AuthenticationGuard } from '../auth/authentication.guard';
 import { CurrentUser } from './user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
 
-@Controller('users')
+@Controller('/api/v1/users')
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -33,7 +33,7 @@ export class UserController {
     return this.userService.resetPassword(user);
   }
 
-  @Put('change-password/:id')
+  @Put('/me/change-password/:id')
   @UsePipes(new ValidationPipe())
   public changePassword(@Param('id') id: number, @Body() user: ChangePasswordDTO): Promise<ObjectLiteral> {
     return this.userService.changePassword(id, user);

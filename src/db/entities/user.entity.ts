@@ -1,6 +1,16 @@
 import { createHash } from 'crypto';
 import { hashSync, compareSync } from 'bcryptjs';
-import { Entity, Column, BeforeInsert, BeforeUpdate, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  BeforeInsert,
+  BeforeUpdate,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  UpdateDateColumn,
+  CreateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { _salt } from '@app/constants/app.config';
 import { JobEntity } from './job.entity';
@@ -32,10 +42,10 @@ export class UserEntity {
   public gravatarURL: string;
 
   @Column()
-  public jobPositionId: number;
+  public jobPositionId?: number;
 
   @Column()
-  public roleId: number;
+  public roleId?: number;
 
   @Column()
   public isActive: boolean;
@@ -46,28 +56,19 @@ export class UserEntity {
   @Column()
   public deactivatedAt: Date;
 
-  @Column()
+  @CreateDateColumn()
   public createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn({ type: 'timestamp' })
   public updatedAt: Date;
 
-  @ManyToOne(
-    () => RoleEntity,
-    (role) => role.users,
-  )
+  @ManyToOne(() => RoleEntity, (role) => role.users)
   public role: RoleEntity;
 
-  @ManyToOne(
-    () => JobEntity,
-    (jobPosition) => jobPosition.users,
-  )
+  @ManyToOne(() => JobEntity, (jobPosition) => jobPosition.users)
   public jobPosition: JobEntity;
 
-  @OneToMany(
-    () => UserTeamEntity,
-    (userTeam) => userTeam.user,
-  )
+  @OneToMany(() => UserTeamEntity, (userTeam) => userTeam.user)
   public userToTeams: UserTeamEntity[];
 
   @BeforeInsert()
@@ -77,9 +78,7 @@ export class UserEntity {
 
   @BeforeInsert()
   public async generateGravatar(): Promise<void> {
-    const sha512 = createHash('sha512')
-      .update(this.email)
-      .digest('hex');
+    const sha512 = createHash('sha512').update(this.email).digest('hex');
     const size = 200;
     this.gravatarURL = `https://gravatar.com/avatar/${sha512}?s=${size}&d=retro`;
   }
