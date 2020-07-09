@@ -11,6 +11,16 @@ import { UserEntity } from '@app/db/entities/user.entity';
 export class UserController {
   constructor(private userService: UserService) {}
 
+  @Get()
+  private getUsers(): Promise<UserEntity[]> {
+    return this.userService.getUsers();
+  }
+
+  @Get(':id')
+  private getUserDetail(@Param('id') id: number): Promise<UserEntity[]> {
+    return this.userService.getUserDetail(id);
+  }
+
   @Get('me')
   @UseGuards(AuthenticationGuard)
   public me(@CurrentUser() user: UserEntity): UserEntity {

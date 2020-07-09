@@ -6,6 +6,7 @@ import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
 import { sendEmail } from '@app/services/email/sendEmail';
 import { ResetPasswordDTO, ChangePasswordDTO } from './user.dto';
+import { UserEntity } from '@app/db/entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -52,5 +53,13 @@ export class UserService {
    */
   public async rejectRequest(id: number): Promise<ObjectLiteral> {
     return await this.userRepository.delete({ id });
+  }
+
+  public async getUsers(): Promise<UserEntity[]> {
+    return await this.userRepository.getUsers();
+  }
+
+  public async getUserDetail(id: number): Promise<UserEntity[]> {
+    return await this.userRepository.getUserDetail(id);
   }
 }

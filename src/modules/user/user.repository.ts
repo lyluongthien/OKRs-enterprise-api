@@ -22,4 +22,17 @@ export class UserRepository extends Repository<UserEntity> {
     await this.delete({ id });
     return { isDeleted: true };
   }
+
+  public async getUsers(): Promise<UserEntity[]> {
+    return await this.find({
+      relations: ['role', 'jobPosition', 'userToTeams', 'userToTeams.team'],
+    });
+  }
+
+  public async getUserDetail(id: number): Promise<UserEntity[]> {
+    return await this.find({
+      relations: ['role', 'jobPosition', 'userToTeams', 'userToTeams.team'],
+      where: { id },
+    });
+  }
 }

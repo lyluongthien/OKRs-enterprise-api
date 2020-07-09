@@ -1,11 +1,12 @@
 import { createHash } from 'crypto';
 import { hashSync, compareSync } from 'bcryptjs';
-import { Entity, Column, BeforeInsert, BeforeUpdate, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, BeforeInsert, BeforeUpdate, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { _salt } from '@app/constants/app.config';
+import { JobEntity } from './job.entity';
+import { UserTeamEntity } from './user-team.entity';
 import { UserResponse } from '@app/modules/auth/auth.interface';
 import { RoleEntity } from './role.entity';
-import { JobEntity } from './job.entity';
 
 @Entity({ name: TableName.User })
 export class UserEntity {
@@ -42,12 +43,6 @@ export class UserEntity {
   @Column()
   public isApproved: boolean;
 
-  @ManyToOne(() => RoleEntity, (role) => role.users)
-  public role: RoleEntity;
-
-  @ManyToOne(() => JobEntity, (jobPosition) => jobPosition.users)
-  public jobPosition: JobEntity;
-
   @Column()
   public deactivatedAt: Date;
 
@@ -56,6 +51,15 @@ export class UserEntity {
 
   @Column()
   public updatedAt: Date;
+
+  @ManyToOne(() => RoleEntity, (role) => role.users)
+  public role: RoleEntity;
+
+  @ManyToOne(() => JobEntity, (jobPosition) => jobPosition.users)
+  public jobPosition: JobEntity;
+
+  @OneToMany(() => UserTeamEntity, (userTeam) => userTeam.user)
+  public userToTeams: UserTeamEntity[];
 
   @BeforeInsert()
   public async hashPassword(): Promise<void> {
