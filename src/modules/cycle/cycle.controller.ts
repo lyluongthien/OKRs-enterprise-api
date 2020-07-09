@@ -21,7 +21,7 @@ export class CycleController {
   }
 
   @Put(':id')
-  private updateCycle(@Param('id') id: number, @Body() data: Partial<CycleDTO>): Promise<CycleEntity> {
+  private updateCycle(@Param('id') id: number, @Body() data: CycleDTO): Promise<CycleEntity> {
     return this.cycleService.updateCycle(id, data);
   }
 
