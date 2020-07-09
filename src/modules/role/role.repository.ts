@@ -27,8 +27,4 @@ export class RoleRepository extends Repository<RoleEntity> {
     await this.delete({ id });
     return { isDeleted: true };
   }
-
-  public hihi(): string {
-    return 'asfsdfsfsdf';
-  }
 }
