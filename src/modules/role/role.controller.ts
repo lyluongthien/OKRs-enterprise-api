@@ -4,7 +4,7 @@ import { RoleDTO } from './role.dto';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 
-@Controller('roles')
+@Controller('/api/v1/roles')
 export class RoleController {
   constructor(private roleService: RoleService) {}
 
