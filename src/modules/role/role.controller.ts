@@ -8,24 +8,24 @@ import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 export class RoleController {
   constructor(private roleService: RoleService) {}
 
-  @Post()
-  @UsePipes(new ValidationPipe())
-  public createRole(@Body() role: RoleDTO): Promise<RoleEntity> {
-    return this.roleService.createRole(role);
-  }
+  // @Post()
+  // @UsePipes(new ValidationPipe())
+  // public createRole(@Body() role: RoleDTO): Promise<RoleEntity> {
+  //   return this.roleService.createRole(role);
+  // }
 
-  @Get(':id')
-  private getDetailRole(@Param('id') id: number): Promise<RoleEntity> {
-    return this.roleService.getRoleDetail(id);
-  }
+  // @Get(':id')
+  // private getDetailRole(@Param('id') id: number): Promise<RoleEntity> {
+  //   return this.roleService.getRoleDetail(id);
+  // }
 
-  @Put(':id')
-  private updateRole(@Param('id') id: number, @Body() data: Partial<RoleDTO>): Promise<RoleEntity> {
-    return this.roleService.updateRole(id, data);
-  }
+  // @Put(':id')
+  // private updateRole(@Param('id') id: number, @Body() data: Partial<RoleDTO>): Promise<RoleEntity> {
+  //   return this.roleService.updateRole(id, data);
+  // }
 
-  @Delete(':id')
-  private deleteRole(@Param('id') id: number): any {
-    return this.roleService.deleteRole(id);
-  }
+  // @Delete(':id')
+  // private deleteRole(@Param('id') id: number): any {
+  //   return this.roleService.deleteRole(id);
+  // }
 }

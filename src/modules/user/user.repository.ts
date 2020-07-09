@@ -9,7 +9,7 @@ export class UserRepository extends Repository<UserEntity> {
     return await this.find();
   }
 
-  public async getUserByConditions(id?: number, options?: FindOneOptions): Promise<UserEntity> {
+  public async getUserByConditions(id?: number, options?: FindOneOptions<UserEntity>): Promise<UserEntity> {
     return await this.findOne(id, options);
   }
 
@@ -29,9 +29,16 @@ export class UserRepository extends Repository<UserEntity> {
     });
   }
 
-  public async getUserDetail(id: number): Promise<UserEntity[]> {
-    return await this.find({
+  public async getUserDetail(id: number): Promise<UserEntity> {
+    return await this.findOneOrFail({
       relations: ['role', 'jobPosition', 'userToTeams', 'userToTeams.team'],
+      where: { id },
+    });
+  }
+
+  public async getUserRole(id: number): Promise<UserEntity> {
+    return await this.findOneOrFail({
+      relations: ['role'],
       where: { id },
     });
   }
