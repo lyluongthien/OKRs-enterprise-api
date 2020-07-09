@@ -53,14 +53,14 @@ export class UserEntity {
   @Column()
   public isApproved: boolean;
 
-  @Column()
-  public deactivatedAt: Date;
-
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamptz' })
   public updatedAt: Date;
+
+  @Column({ type: 'timestamptz' })
+  public deactivatedAt: Date;
 
   @ManyToOne(() => RoleEntity, (role) => role.users)
   public role: RoleEntity;

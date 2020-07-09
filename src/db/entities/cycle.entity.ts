@@ -9,15 +9,15 @@ export class CycleEntity {
   @Column()
   public name: string;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamptz' })
   public startDate: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamptz' })
   public endDate: Date;
 
-  @CreateDateColumn({ type: 'timestamp' })
+  @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
+  @UpdateDateColumn({ type: 'timestamptz' })
   public updatedAt: Date;
 }

@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-export class CreateTableJobPositions1594008255759 implements MigrationInterface {
-  private jopPosTable: Table = new Table({
-    name: TableName.JobPosition,
+export class createTableInviteToken1594292284009 implements MigrationInterface {
+  private inviteTokenTable: Table = new Table({
+    name: TableName.InviteToken,
     columns: [
       {
         name: 'id',
@@ -12,7 +12,7 @@ export class CreateTableJobPositions1594008255759 implements MigrationInterface 
         isGenerated: true,
       },
       {
-        name: 'name',
+        name: 'token',
         type: 'varchar',
         isNullable: false,
         length: '255',
@@ -22,18 +22,14 @@ export class CreateTableJobPositions1594008255759 implements MigrationInterface 
         type: 'timestamptz',
         default: 'now()',
       },
-      {
-        name: 'updatedAt',
-        type: 'timestamptz',
-        default: 'now()',
-      },
     ],
   });
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.createTable(this.jopPosTable, true);
+    await queryRunner.createTable(this.inviteTokenTable);
   }
+
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.dropTable(this.jopPosTable, true);
+    await queryRunner.dropTable(this.inviteTokenTable);
   }
 }
