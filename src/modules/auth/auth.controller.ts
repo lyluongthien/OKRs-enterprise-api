@@ -4,7 +4,6 @@ import { AuthService } from './auth.service';
 import { RegisterDTO, SignInDTO } from './auth.dto';
 import { AuthResponse } from './auth.interface';
 import { UserService } from '../user/user.service';
-import { defaultJwtModuleOption } from '@app/constants/app.config';
 
 @Controller('auth')
 export class AuthController {
@@ -20,8 +19,6 @@ export class AuthController {
   @Post('/register')
   @ApiCreatedResponse({ description: 'User Registration' })
   public async register(@Body(ValidationPipe) credentials: Partial<RegisterDTO>): Promise<AuthResponse> {
-    console.log(defaultJwtModuleOption.expiresIn);
-    console.log(defaultJwtModuleOption.secret);
     const user = await this.userService.createUser(credentials);
     return await this.authService.createBearerToken(user);
   }
