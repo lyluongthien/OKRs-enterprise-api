@@ -10,6 +10,7 @@ import { CorsMiddleware } from './shared/middlewares/cors.middleware';
 import { RateLimitMiddleware } from './shared/middlewares/rate-limit.middleware';
 import { OriginMiddleware } from './shared/middlewares/origin.middleware';
 import { TeamModule } from './modules/team/team.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TeamModule } from './modules/team/team.module';
     UserModule,
     JobModule,
     TeamModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
