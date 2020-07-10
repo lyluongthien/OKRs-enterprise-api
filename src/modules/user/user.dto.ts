@@ -1,5 +1,7 @@
 import { IsNotEmpty, IsEmail, Matches } from 'class-validator';
 import { passwordValidation } from '@app/constants/app.config';
+import { Optional } from '@nestjs/common';
+import { UserTeamDTO } from './user-team.dto';
 
 export class ResetPasswordDTO {
   @IsNotEmpty()
@@ -7,6 +9,23 @@ export class ResetPasswordDTO {
   public email: string;
 
   public password: string;
+}
+
+export class UpdateUserDTO {
+  @IsNotEmpty()
+  @Optional()
+  public isActive: boolean;
+
+  @IsNotEmpty()
+  @Optional()
+  public roleId: number;
+
+  @IsNotEmpty()
+  @Optional()
+  public jobPositionId: number;
+
+  @Optional()
+  public userTeam: UserTeamDTO;
 }
 
 export class ChangePasswordDTO {

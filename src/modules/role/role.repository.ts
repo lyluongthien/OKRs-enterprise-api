@@ -18,7 +18,7 @@ export class RoleRepository extends Repository<RoleEntity> {
     return await this.findOne({ where: { id } });
   }
 
-  public async updateRole(id: number, data: Partial<RoleDTO>): Promise<RoleEntity> {
+  public async updateRole(id: number, data: RoleDTO): Promise<RoleEntity> {
     await this.update({ id }, data);
     return await this.findOne({ id });
   }

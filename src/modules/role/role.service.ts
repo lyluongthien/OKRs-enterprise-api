@@ -20,7 +20,7 @@ export class RoleService {
     return this.roleRepository.getRoleDetail(id);
   }
 
-  public updateRole(id: number, data: Partial<RoleDTO>): Promise<RoleEntity> {
+  public updateRole(id: number, data: RoleDTO): Promise<RoleEntity> {
     return this.roleRepository.updateRole(id, data);
   }
 

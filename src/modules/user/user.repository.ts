@@ -2,6 +2,8 @@ import { Repository, EntityRepository, ObjectLiteral, FindOneOptions } from 'typ
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
+import { UpdateUserDTO } from './user.dto';
+import { UserTeamEntity } from '@app/db/entities/user-team.entity';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -34,5 +36,10 @@ export class UserRepository extends Repository<UserEntity> {
       relations: ['role', 'jobPosition', 'userToTeams', 'userToTeams.team'],
       where: { id },
     });
+  }
+  //HR
+  public async updateUserInfor(id: number, user: UpdateUserDTO): Promise<UserEntity> {
+    await this.update({ id }, user);
+    return this.getUserByConditions(id);
   }
 }

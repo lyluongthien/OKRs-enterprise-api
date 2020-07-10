@@ -20,7 +20,7 @@ export class RoleController {
   }
 
   @Put(':id')
-  private updateRole(@Param('id') id: number, @Body() data: Partial<RoleDTO>): Promise<RoleEntity> {
+  private updateRole(@Param('id') id: number, @Body() data: RoleDTO): Promise<RoleEntity> {
     return this.roleService.updateRole(id, data);
   }
 

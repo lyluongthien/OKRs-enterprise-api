@@ -1,7 +1,7 @@
 import { ObjectLiteral } from 'typeorm';
 import { Controller, Post, Body, UsePipes, Put, Param, Get, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
-import { ResetPasswordDTO, ChangePasswordDTO } from './user.dto';
+import { ResetPasswordDTO, ChangePasswordDTO, UpdateUserDTO } from './user.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { CurrentUser } from './user.decorator';
@@ -43,5 +43,10 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   public rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
     return this.userService.rejectRequest(id);
+  }
+
+  @Put(':id')
+  public updateUserInfo(@Param('id') id: number, @Body() data: UpdateUserDTO): Promise<ObjectLiteral> {
+    return this.userService.updateUserInfor(id, data);
   }
 }
