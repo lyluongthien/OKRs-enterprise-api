@@ -21,11 +21,6 @@ export class UserController {
     return this.userService.getUserById(id);
   }
 
-  @Get('/test/:id')
-  private getUserRole(@Param('id') id: number): Promise<number> {
-    return this.userService.getRoleByUserID(id);
-  }
-
   @Get('me')
   @UseGuards(AuthenticationGuard)
   public me(@CurrentUser() user: UserEntity): UserEntity {

@@ -20,8 +20,8 @@ export class UserService {
     if (emailExists) {
       throw new UnprocessableEntityException();
     }
-    password = await hashSync(password, _salt);
-    const newUser = this.userRepository.create({ email, password });
+    const hasedPassword = await hashSync(password, _salt);
+    const newUser = this.userRepository.create({ email, password: hasedPassword });
     await this.userRepository.save(newUser);
     delete newUser.password;
     return newUser;
