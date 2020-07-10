@@ -27,16 +27,6 @@ export class CreateTableEvaluationCriterias1594008610938 implements MigrationInt
         enum: [EvaluationCriteriaEnum.LEADER_TO_MEMBER, EvaluationCriteriaEnum.MEMBER_TO_LEADER],
         isNullable: false,
       },
-      {
-        name: 'createdAt',
-        type: 'timestamp',
-        default: 'now()',
-      },
-      {
-        name: 'updatedAt',
-        type: 'timestamp',
-        default: 'now()',
-      },
     ],
   });
 
