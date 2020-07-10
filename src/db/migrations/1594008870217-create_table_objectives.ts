@@ -45,10 +45,13 @@ export class CreateTableObjectives1594008870217 implements MigrationInterface {
       {
         name: ForeignKey.PARENT_OBJECTIVE_ID,
         type: 'integer',
+        isNullable: true,
       },
       {
         name: ForeignKey.ALIGN_OBJECTIVE_ID,
         type: 'integer',
+        isArray: true,
+        isNullable: true,
       },
     ],
   });
@@ -71,19 +74,8 @@ export class CreateTableObjectives1594008870217 implements MigrationInterface {
     referencedTableName: TableName.Objective,
     onDelete: 'CASCADE',
   });
-  private pkAlignObectiveId: TableForeignKey = new TableForeignKey({
-    columnNames: [ForeignKey.ALIGN_OBJECTIVE_ID],
-    referencedColumnNames: ['id'],
-    referencedTableName: TableName.Objective,
-    onDelete: 'CASCADE',
-  });
 
-  private tableForeignKey: TableForeignKey[] = [
-    this.pkUserId,
-    this.pkCycleId,
-    this.pkParentObectiveId,
-    this.pkAlignObectiveId,
-  ];
+  private tableForeignKey: TableForeignKey[] = [this.pkUserId, this.pkCycleId, this.pkParentObectiveId];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.objectiveTable);

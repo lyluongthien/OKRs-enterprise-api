@@ -7,14 +7,8 @@ export class RoleEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
-  @Column({ enum: [RoleEnum.ADMIN, RoleEnum.HR, RoleEnum.TEAM_LEADER, RoleEnum.STAFF] })
-  public name: string;
-
-  @Column()
-  public createdAt: Date;
-
-  @Column()
-  public updatedAt: Date;
+  @Column({ type: 'enum', enum: RoleEnum, default: RoleEnum.STAFF })
+  public name!: RoleEnum;
 
   @OneToMany(() => UserEntity, (user) => user.role)
   public users: UserEntity[];

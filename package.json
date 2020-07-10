@@ -25,7 +25,7 @@
     "lint:eslint": "eslint \"src/**/*.ts\" \"test/**/*.ts\" --ignore-path .gitignore . --fix",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
+    "test:cov": "jest --coverage --passWithNoTests",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
@@ -34,7 +34,8 @@
     "doc:serve": "npx compodoc -s --port 9000",
     "migration:create": "typeorm migration:create -n",
     "migration:run": "yarn typeorm migration:run",
-    "migration:revert": "yarn typeorm migration:revert"
+    "migration:revert": "yarn typeorm migration:revert",
+    "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed"
   },
   "engines": {
     "node": ">=12.18.1"
@@ -67,7 +68,8 @@
     "rimraf": "^3.0.2",
     "rxjs": "^6.6.0",
     "swagger-ui-express": "^4.1.4",
-    "typeorm": "^0.2.25"
+    "typeorm": "^0.2.25",
+    "typeorm-seeding": "^1.6.1"
   },
   "devDependencies": {
     "@ls-lint/ls-lint": "^1.9.0",
@@ -76,6 +78,7 @@
     "@nestjs/testing": "^7.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.3",
+    "@types/faker": "^4.1.12",
     "@types/generate-password": "^1.5.0",
     "@types/jest": "26.0.3",
     "@types/jsonwebtoken": "^8.5.0",

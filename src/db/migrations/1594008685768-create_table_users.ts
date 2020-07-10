@@ -67,10 +67,6 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
       {
         name: ForeignKey.JOB_POSITION_ID,
         type: 'integer',
-      },
-      {
-        name: 'deactivatedAt',
-        type: 'date',
         isNullable: true,
       },
       {
@@ -82,6 +78,11 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
         name: 'updatedAt',
         type: 'timestamp',
         default: 'now()',
+      },
+      {
+        name: 'deactivatedAt',
+        type: 'timestamp',
+        isNullable: true,
       },
     ],
   });

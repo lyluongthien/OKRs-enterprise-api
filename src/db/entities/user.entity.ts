@@ -1,11 +1,21 @@
 import { createHash } from 'crypto';
 import { hashSync, compareSync } from 'bcryptjs';
-import { Entity, Column, BeforeInsert, BeforeUpdate, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  BeforeInsert,
+  BeforeUpdate,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  UpdateDateColumn,
+  CreateDateColumn,
+  OneToMany,
+} from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { _salt } from '@app/constants/app.config';
-import { UserResponse } from '@app/modules/auth/auth.interface';
-import { RoleEntity } from './role.entity';
 import { JobEntity } from './job.entity';
+import { UserTeamEntity } from './user-team.entity';
+import { RoleEntity } from './role.entity';
 
 @Entity({ name: TableName.User })
 export class UserEntity {
@@ -31,10 +41,7 @@ export class UserEntity {
   public gravatarURL: string;
 
   @Column()
-  public jobPositionId: number;
-
-  @Column()
-  public roleId: number;
+  public jobPositionId?: number;
 
   @Column()
   public isActive: boolean;
@@ -42,20 +49,23 @@ export class UserEntity {
   @Column()
   public isApproved: boolean;
 
+  @Column()
+  public deactivatedAt: Date;
+
+  @CreateDateColumn({ type: 'timestamp' })
+  public createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  public updatedAt: Date;
+
   @ManyToOne(() => RoleEntity, (role) => role.users)
   public role: RoleEntity;
 
   @ManyToOne(() => JobEntity, (jobPosition) => jobPosition.users)
   public jobPosition: JobEntity;
 
-  @Column()
-  public deactivatedAt: Date;
-
-  @Column()
-  public createdAt: Date;
-
-  @Column()
-  public updatedAt: Date;
+  @OneToMany(() => UserTeamEntity, (userTeam) => userTeam.user)
+  public userToTeams: UserTeamEntity[];
 
   @BeforeInsert()
   public async hashPassword(): Promise<void> {
@@ -77,15 +87,6 @@ export class UserEntity {
   }
 
   public async comparePassword(inputPassword: string): Promise<boolean> {
-    return compareSync(inputPassword, this.password);
-  }
-
-  public toJSON(): UserResponse {
-    return {
-      email: this.email,
-      fullName: this.fullName,
-      gravatarUrl: this.gravatarURL ? this.gravatarURL : '',
-      avatarUrl: this.avatarURL ? this.avatarURL : '',
-    };
+    return await compareSync(inputPassword, this.password);
   }
 }

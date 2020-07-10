@@ -1,57 +1,33 @@
-import { hashSync } from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { Injectable, InternalServerErrorException, HttpException, UnauthorizedException } from '@nestjs/common';
-import { _salt } from '@app/constants/app.config';
-import { SignInDTO, RegisterDTO } from './auth.dto';
-import { UserRepository } from '../user/user.repository';
+import { Injectable, InternalServerErrorException, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { SignInDTO } from './auth.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { AuthResponse, JwtPayload } from './auth.interface';
-import { EX_EMAIL_EXISTS, EX_INVALID_CREDENTIALS } from '@app/constants/app.exeption';
+import { invalidCredential } from '@app/constants/app.exeption';
+import { UserService } from '../user/user.service';
 @Injectable()
 export class AuthService {
-  constructor(private userRepository: UserRepository, private jwtService: JwtService) {}
+  constructor(private userService: UserService, private jwtService: JwtService) {}
 
-  public async signIn({ email, password }: SignInDTO): Promise<AuthResponse> {
+  public async authenticate({ email, password }: SignInDTO): Promise<AuthResponse> {
     try {
-      const user = await this.userRepository.findOne({ where: { email } });
-      const isValidPassword = await user.comparePassword(password);
-      if (!isValidPassword) {
-        throw new UnauthorizedException(EX_INVALID_CREDENTIALS.message);
+      const user = await this.userService.getUserByEmail(email);
+      if (!user) {
+        throw new BadRequestException();
       }
-      const token = await this.createBearerToken(user);
-      return {
-        ...user.toJSON(),
-        token,
-      };
+      if (!user.comparePassword(password)) {
+        throw new BadRequestException(invalidCredential);
+      }
+      return await this.createBearerToken(user);
     } catch (error) {
-      throw new UnauthorizedException(EX_INVALID_CREDENTIALS.message);
+      throw new UnauthorizedException(invalidCredential);
     }
   }
 
-  public async register(credentials: RegisterDTO): Promise<AuthResponse> {
-    try {
-      const { email } = credentials;
-      const user = await this.userRepository.findOne({ where: { email } });
-      if (user) {
-        throw new HttpException(EX_EMAIL_EXISTS.message, EX_EMAIL_EXISTS.errorCode);
-      }
-      const newUser = this.userRepository.create(credentials);
-      newUser.password = hashSync(newUser.password, _salt);
-      const token = await this.createBearerToken(newUser);
-      await this.userRepository.save(newUser);
-      return {
-        ...newUser.toJSON(),
-        token,
-      };
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
-
-  public async validateUserFromJwtPayload(payload: JwtPayload): Promise<UserEntity> {
+  public async validateUserFromJwtPayload(payload: JwtPayload): Promise<UserEntity | null> {
     try {
       const { id } = payload;
-      const user = await this.userRepository.findOne({ where: { id } });
+      const user = await this.userService.getUserById(id);
       if (!user) {
         throw new UnauthorizedException();
       }
@@ -61,9 +37,8 @@ export class AuthService {
     }
   }
 
-  private async createBearerToken(user: UserEntity): Promise<string> {
-    const payload: JwtPayload = { id: user.id };
-    const token = await this.jwtService.sign(payload);
-    return `bearer ${token}`;
+  public async createBearerToken(user: UserEntity): Promise<AuthResponse> {
+    const token = await this.jwtService.sign({ id: user.id });
+    return { token };
   }
 }

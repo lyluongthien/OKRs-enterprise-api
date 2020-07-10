@@ -1,8 +1,11 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext, InternalServerErrorException } from '@nestjs/common';
 
 export const CurrentUser = createParamDecorator(
   (_, ctx: ExecutionContext): ParameterDecorator => {
-    const req = ctx.switchToHttp().getRequest();
-    return req.user;
+    const user = ctx.switchToHttp().getRequest().user;
+    if (!user) {
+      throw new InternalServerErrorException();
+    }
+    return user;
   },
 );

@@ -7,6 +7,8 @@ import { RoleEntity } from './entities/role.entity';
 import { UserEntity } from './entities/user.entity';
 import { JobEntity } from './entities/job.entity';
 import { TeamEntity } from './entities/team.entity';
+import { UserTeamEntity } from './entities/user-team.entity';
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 const type = DbConfig.DB_TYPE;
 const host = accessEnv(DbConfig.DB_HOST);
@@ -19,13 +21,24 @@ const database = accessEnv(DbConfig.DB_NAME);
 export class DatabaseConnectionService implements TypeOrmOptionsFactory {
   createTypeOrmOptions(): TypeOrmModuleOptions {
     return {
+      ...DatabaseConnectionService.createTypeOrmOptions(),
+    };
+  }
+  public static createTypeOrmOptions(): TypeOrmModuleOptions {
+    return {
+      ...DatabaseConnectionService.postgresOrmOptions(),
+      keepConnectionAlive: true,
+    };
+  }
+  public static postgresOrmOptions(): PostgresConnectionOptions {
+    return {
       type,
       port,
       host,
       username,
       password,
       database,
-      entities: [RoleEntity, UserEntity, JobEntity, TeamEntity],
+      entities: [RoleEntity, UserEntity, JobEntity, TeamEntity, UserTeamEntity],
       migrations: ['dist/db/migrations/*.js'],
       cli: {
         migrationsDir: 'src/db/migrations/*.ts',
@@ -34,7 +47,6 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
       dropSchema: false,
       logging: isDevMode ? true : false,
       synchronize: false,
-      keepConnectionAlive: true,
     };
   }
 }

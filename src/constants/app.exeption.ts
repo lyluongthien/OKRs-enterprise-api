@@ -1,23 +1,21 @@
 import { HttpStatus } from '@nestjs/common';
 
-export const EX_EMAIL_EXISTS = {
+export const httpEmailExists = {
   message: 'Email already exists',
   errorCode: HttpStatus.CONFLICT,
 };
 
-export const EX_UNAUTHENTICATED = {
+export const httpUnauthenticated = {
   message: `Not authenticated`,
   statusCode: HttpStatus.FORBIDDEN,
 };
 
-export const EX_UNAUTHORIZED = {
+export const httpUnauthorized = {
   message: `Unauthorized access`,
   statusCode: HttpStatus.UNAUTHORIZED,
 };
 
-export const EX_INVALID_CREDENTIALS = {
-  message: 'Invalid credentials',
-};
-
-export const EX_MISSING_AUTHENTICATION_GUARD =
-  'Could not find user under execution context. Please make sure AuthenticationGuard are defined first.';
+export const invalidCredential = 'Invalid credentials';
+export const missingAuthenticationGuard = `Could not find user under execution context. 
+Please make sure AuthenticationGuard are defined first.`;
+export const notLocatedUserToContext = 'Could not locate user under application context';

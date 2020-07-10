@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { TableName } from '@app/constants/app.enums';
+import { TableName, EvaluationCriteriaEnum } from '@app/constants/app.enums';
 
 @Entity(TableName.EvaluationCriteria)
 export class EvaluationCriteriaEntity {
@@ -12,12 +12,6 @@ export class EvaluationCriteriaEntity {
   @Column()
   public numberOfStar: number;
 
-  @Column()
-  public type: string;
-
-  @Column()
-  public createdAt: Date;
-
-  @Column()
-  public updatedAt: Date;
+  @Column({ type: 'enum', enum: EvaluationCriteriaEnum, default: EvaluationCriteriaEnum.LEADER_TO_MEMBER })
+  public type: EvaluationCriteriaEnum;
 }

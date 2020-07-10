@@ -7,7 +7,7 @@ export class FieldTemplateEntity {
   public id: number;
 
   @Column()
-  public colmnName: string;
+  public columnName: string;
 
   @Column()
   public templateCheckinId: string;

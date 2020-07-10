@@ -7,9 +7,19 @@ import { AuthenticationGuard } from '../auth/authentication.guard';
 import { CurrentUser } from './user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
 
-@Controller('users')
+@Controller('/api/v1/users')
 export class UserController {
   constructor(private userService: UserService) {}
+
+  @Get()
+  private getUsers(): Promise<UserEntity[]> {
+    return this.userService.getUsers();
+  }
+
+  @Get(':id')
+  private getUserDetail(@Param('id') id: number): Promise<UserEntity> {
+    return this.userService.getUserById(id);
+  }
 
   @Get('me')
   @UseGuards(AuthenticationGuard)
@@ -23,7 +33,7 @@ export class UserController {
     return this.userService.resetPassword(user);
   }
 
-  @Put('change-password/:id')
+  @Put('/me/change-password/:id')
   @UsePipes(new ValidationPipe())
   public changePassword(@Param('id') id: number, @Body() user: ChangePasswordDTO): Promise<ObjectLiteral> {
     return this.userService.changePassword(id, user);
@@ -33,10 +43,5 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   public rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
     return this.userService.rejectRequest(id);
-  }
-
-  @Get()
-  private getAllUser(): Promise<UserEntity[]> {
-    return this.userService.getAllUser();
   }
 }

@@ -51,11 +51,6 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
         type: 'integer',
       },
       {
-        name: 'createdAt',
-        type: 'timestamp',
-        default: 'now()',
-      },
-      {
         name: 'updatedAt',
         type: 'timestamp',
         default: 'now()',

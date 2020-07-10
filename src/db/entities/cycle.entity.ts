@@ -9,15 +9,9 @@ export class CycleEntity {
   @Column()
   public name: string;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   public startDate: Date;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   public endDate: Date;
-
-  @Column()
-  public createdAt: Date;
-
-  @Column()
-  public updatedAt: Date;
 }
