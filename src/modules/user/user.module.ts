@@ -10,6 +10,7 @@ import { InviteTokenRepositiory } from './invite-token.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity, UserRepository, InviteTokenRepositiory])],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, UserRepository],
+  exports: [UserService, UserRepository],
 })
 export class UserModule {}

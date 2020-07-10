@@ -18,7 +18,7 @@ export class UserController {
   }
 
   @Get(':id')
-  public getUserDetail(@Param('id') id: number): Promise<UserEntity[]> {
+  public getUserDetail(@Param('id') id: number): Promise<UserEntity> {
     return this._userService.getUserDetail(id);
   }
 
@@ -51,6 +51,6 @@ export class UserController {
    */
   @Get('invite-link')
   public generateLinkInvite(): Promise<ObjectLiteral> {
-    return this._userService.generateLinkInvite();
+    return null;
   }
 }

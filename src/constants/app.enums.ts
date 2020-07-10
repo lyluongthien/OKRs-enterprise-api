@@ -31,7 +31,6 @@ export enum DbConfig {
 export enum RoleEnum {
   ADMIN = 'ADMIN',
   HR = 'HR',
-  TEAM_LEADER = 'TEAM_LEADER',
   STAFF = 'STAFF',
 }
 

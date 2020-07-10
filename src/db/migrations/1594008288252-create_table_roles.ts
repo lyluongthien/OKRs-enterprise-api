@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
-import { TableName } from '@app/constants/app.enums';
+import { TableName, RoleEnum } from '@app/constants/app.enums';
 
 export class CreateTableRoles1594008288252 implements MigrationInterface {
   private roleTable: Table = new Table({
@@ -13,20 +13,10 @@ export class CreateTableRoles1594008288252 implements MigrationInterface {
       },
       {
         name: 'name',
-        type: 'varchar',
+        type: 'enum',
         isNullable: false,
-        isUnique: true,
-        length: '50',
-      },
-      {
-        name: 'createdAt',
-        type: 'timestamptz',
-        default: 'now()',
-      },
-      {
-        name: 'updatedAt',
-        type: 'timestamptz',
-        default: 'now()',
+        enum: [RoleEnum.ADMIN, RoleEnum.HR, RoleEnum.STAFF],
+        enumName: 'roleName',
       },
     ],
   });

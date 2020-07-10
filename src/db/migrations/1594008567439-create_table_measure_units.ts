@@ -26,16 +26,6 @@ export class CreateTableMeasureUnits1594008567439 implements MigrationInterface 
         type: 'integer',
         isNullable: false,
       },
-      {
-        name: 'createdAt',
-        type: 'timestamptz',
-        default: 'now()',
-      },
-      {
-        name: 'updatedAt',
-        type: 'timestamptz',
-        default: 'now()',
-      },
     ],
   });
 
