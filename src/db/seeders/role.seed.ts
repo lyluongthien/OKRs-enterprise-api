@@ -9,12 +9,7 @@ export class RoleSeeder implements Seeder {
       .createQueryBuilder()
       .insert()
       .into(RoleEntity)
-      .values([
-        { name: RoleEnum.ADMIN },
-        { name: RoleEnum.HR },
-        { name: RoleEnum.TEAM_LEADER },
-        { name: RoleEnum.STAFF },
-      ])
+      .values([{ name: RoleEnum.ADMIN }, { name: RoleEnum.HR }, { name: RoleEnum.STAFF }])
       .execute();
   }
 }

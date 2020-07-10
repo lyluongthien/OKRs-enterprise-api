@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { RoleEntity } from '@app/db/entities/role.entity';
 import { RoleRepository } from './role.repository';
 import { RoleDTO } from './role.dto';
+import { RoleEntity } from '@app/db/entities/role.entity';
 import { ObjectLiteral } from 'typeorm';
 
 @Injectable()

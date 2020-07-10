@@ -1,9 +1,7 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UsePipes } from '@nestjs/common';
+import { Controller, Post, UsePipes, Body, Param, Get, Put, Delete, ValidationPipe } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { RoleDTO } from './role.dto';
 import { RoleEntity } from '@app/db/entities/role.entity';
-import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
-
+import { RoleDTO } from './role.dto';
 @Controller('roles')
 export class RoleController {
   constructor(private roleService: RoleService) {}

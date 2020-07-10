@@ -17,8 +17,8 @@ export class UserController {
   }
 
   @Get(':id')
-  private getUserDetail(@Param('id') id: number): Promise<UserEntity[]> {
-    return this.userService.getUserDetail(id);
+  private getUserDetail(@Param('id') id: number): Promise<UserEntity> {
+    return this.userService.getUserById(id);
   }
 
   @Get('me')

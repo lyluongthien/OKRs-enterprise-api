@@ -15,7 +15,6 @@ import { TableName } from '@app/constants/app.enums';
 import { _salt } from '@app/constants/app.config';
 import { JobEntity } from './job.entity';
 import { UserTeamEntity } from './user-team.entity';
-import { UserResponse } from '@app/modules/auth/auth.interface';
 import { RoleEntity } from './role.entity';
 
 @Entity({ name: TableName.User })
@@ -45,9 +44,6 @@ export class UserEntity {
   public jobPositionId?: number;
 
   @Column()
-  public roleId?: number;
-
-  @Column()
   public isActive: boolean;
 
   @Column()
@@ -56,7 +52,7 @@ export class UserEntity {
   @Column()
   public deactivatedAt: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
@@ -91,15 +87,6 @@ export class UserEntity {
   }
 
   public async comparePassword(inputPassword: string): Promise<boolean> {
-    return compareSync(inputPassword, this.password);
-  }
-
-  public toJSON(): UserResponse {
-    return {
-      email: this.email,
-      fullName: this.fullName,
-      gravatarUrl: this.gravatarURL ? this.gravatarURL : '',
-      avatarUrl: this.avatarURL ? this.avatarURL : '',
-    };
+    return await compareSync(inputPassword, this.password);
   }
 }
