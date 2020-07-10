@@ -8,13 +8,15 @@ import { sendEmail } from '@app/services/email/sendEmail';
 import { ResetPasswordDTO, ChangePasswordDTO } from './user.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
+import { RoleEntity } from '@app/db/entities/role.entity';
 
 @Injectable()
 export class UserService {
   constructor(private userRepository: UserRepository) {}
 
-  public async createUser({ email, password }: RegisterDTO): Promise<UserEntity> {
-    const emailExists = await this.userRepository.getUserByConditions(null, { where: { email } });
+  public async createUser({ email, password }: Partial<RegisterDTO>): Promise<UserEntity> {
+    // const emailExists = await this.userRepository.getUserByConditions(null, { where: { email } });
+    const emailExists = await this.userRepository.findUserByEmail(email);
     if (emailExists) {
       throw new UnprocessableEntityException();
     }
@@ -84,8 +86,8 @@ export class UserService {
     return await this.userRepository.getUserByConditions(id);
   }
 
-  public async getRoleByUserID(id: number): Promise<number> {
+  public async getRoleByUserID(id: number): Promise<RoleEntity> {
     const userRole = await this.userRepository.getUserRole(id);
-    return userRole.role.id;
+    return userRole.role;
   }
 }
