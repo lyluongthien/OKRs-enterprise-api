@@ -1,4 +1,4 @@
-import { Controller, Post, Body, ValidationPipe, UnprocessableEntityException } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDTO, SignInDTO } from './auth.dto';
@@ -18,7 +18,7 @@ export class AuthController {
 
   @Post('/register')
   @ApiCreatedResponse({ description: 'User Registration' })
-  public async register(@Body(ValidationPipe) credentials: RegisterDTO): Promise<AuthResponse> {
+  public async register(@Body(ValidationPipe) credentials: Partial<RegisterDTO>): Promise<AuthResponse> {
     const user = await this.userService.createUser(credentials);
     return this.authService.authenticate(user);
   }
