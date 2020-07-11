@@ -4,7 +4,7 @@ import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamService } from './team.service';
 import { TeamDTO } from './team.dto';
 
-@Controller('teams')
+@Controller('/api/v1/teams')
 export class TeamController {
   constructor(private _teamService: TeamService) {}
 

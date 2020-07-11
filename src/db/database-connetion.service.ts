@@ -7,6 +7,7 @@ import { RoleEntity } from './entities/role.entity';
 import { UserEntity } from './entities/user.entity';
 import { JobEntity } from './entities/job.entity';
 import { TeamEntity } from './entities/team.entity';
+import { CycleEntity } from './entities/cycle.entity';
 import { UserTeamEntity } from './entities/user-team.entity';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
@@ -38,7 +39,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
       username,
       password,
       database,
-      entities: [RoleEntity, UserEntity, JobEntity, TeamEntity, UserTeamEntity],
+      entities: [RoleEntity, UserEntity, JobEntity, TeamEntity, UserTeamEntity, CycleEntity],
       migrations: ['dist/db/migrations/*.js'],
       cli: {
         migrationsDir: 'src/db/migrations/*.ts',
