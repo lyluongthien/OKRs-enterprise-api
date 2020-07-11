@@ -1,17 +1,19 @@
-import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, Query } from '@nestjs/common';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { MeasureUnitService } from './measure-unit.service';
 import { MeasureUnitDTO } from './measure-unit.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { MeasureUnitEntity } from '@app/db/entities/measure-unit.entity';
 
-@Controller('/api/v1/measure-unit')
+@Controller('/api/v1/measure-units')
 export class MeasureUnitController {
   constructor(private _measureService: MeasureUnitService) {}
 
-  @Get()
-  public getAllMeasureUnit(): Promise<MeasureUnitEntity[]> {
-    return this._measureService.getListMeasureUnit();
+  @Get(':page')
+  public getMeasureUnitByPage(@Query('page') page: number): Promise<Pagination<MeasureUnitEntity>> {
+    const limit = 3;
+    return this._measureService.getMeasureByPage({ page, limit, route: 'localhost:3000/api/v1/measure-units' });
   }
 
   @Get(':id')

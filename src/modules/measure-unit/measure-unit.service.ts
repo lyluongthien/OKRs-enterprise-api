@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
+import { paginate, Pagination, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 import { MeasureUnitEntity } from '@app/db/entities/measure-unit.entity';
 import { MeasureRepository } from './measure-unit.repository';
@@ -27,5 +28,8 @@ export class MeasureUnitService {
 
   public deleteMeasureUnit(id: number): Promise<ObjectLiteral> {
     return this._measureRepository.deleteMeasureUnit(id);
+  }
+  public getMeasureByPage(options: IPaginationOptions): Promise<Pagination<MeasureUnitEntity>> {
+    return paginate<MeasureUnitEntity>(this._measureRepository, options);
   }
 }
