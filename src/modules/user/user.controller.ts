@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UsePipes, Put, Param, Get, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UsePipes, Put, Param, Get, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
 
 import { UserService } from './user.service';
@@ -15,11 +15,6 @@ export class UserController {
   @Get()
   public getUsers(): Promise<UserEntity[]> {
     return this._userService.getUsers();
-  }
-
-  @Get(':id')
-  public getUserDetail(@Param('id') id: number): Promise<UserEntity> {
-    return this._userService.getUserDetail(id);
   }
 
   @Get('me')
@@ -49,8 +44,13 @@ export class UserController {
   /**
    * @description: Generate link, when user get generated link then access to system
    */
-  @Get('invite-link')
+  @Get('/invite-link')
   public generateLinkInvite(): Promise<ObjectLiteral> {
-    return null;
+    return this._userService.genInviteLink();
+  }
+
+  @Get(':id')
+  public getUserDetail(@Param('id', ParseIntPipe) id: number): Promise<UserEntity> {
+    return this._userService.getUserDetail(id);
   }
 }

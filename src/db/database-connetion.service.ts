@@ -9,6 +9,7 @@ import { RoleEntity } from './entities/role.entity';
 import { UserEntity } from './entities/user.entity';
 import { JobEntity } from './entities/job.entity';
 import { TeamEntity } from './entities/team.entity';
+import { CycleEntity } from './entities/cycle.entity';
 import { UserTeamEntity } from './entities/user-team.entity';
 import { InviteTokenEntity } from './entities/invite-token.entity';
 
@@ -40,7 +41,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
       username,
       password,
       database,
-      entities: [RoleEntity, UserEntity, JobEntity, TeamEntity, UserTeamEntity, InviteTokenEntity],
+      entities: [RoleEntity, UserEntity, JobEntity, TeamEntity, UserTeamEntity, InviteTokenEntity, CycleEntity],
       migrations: ['dist/db/migrations/*.js'],
       cli: {
         migrationsDir: 'src/db/migrations/*.ts',

@@ -9,28 +9,35 @@ import { sendEmail } from '@app/services/email/sendEmail';
 import { ResetPasswordDTO, ChangePasswordDTO } from './user.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RoleEntity } from '@app/db/entities/role.entity';
+import { RegisterDTO } from '../auth/auth.dto';
+import { httpEmailExists } from '@app/constants/app.exeption';
+import { InviteTokenRepositiory } from './invite-token.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private connection: Connection, private _userRepository: UserRepository) {
-    // this.userRepository = userRepository;
-    // this.userRepository = connection.getCustomRepository(UserRepository);
+  constructor(
+    private connection: Connection,
+    private _userRepository: UserRepository,
+    private _tokenRepository: InviteTokenRepositiory,
+  ) {
+    this._userRepository = _userRepository;
+    this._userRepository = connection.getCustomRepository(UserRepository);
   }
 
-  // public async createUser({ email, password, fullName }: Partial<RegisterDTO>): Promise<UserEntity> {
-  //   try {
-  //     const emailExists = await this.userRepository.findUserByEmail(email);
-  //     if (emailExists) {
-  //       throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
-  //     }
-  //     const newUser = this.userRepository.create({ email, password, fullName, _salt });
-  //     await this.userRepository.save(newUser);
-  //     delete newUser.password;
-  //     return newUser;
-  //   } catch (error) {
-  //     throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
-  //   }
-  // }
+  public async createUser({ email, password, fullName }: Partial<RegisterDTO>): Promise<UserEntity> {
+    try {
+      const emailExists = await this._userRepository.findUserByEmail(email);
+      if (emailExists) {
+        throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
+      }
+      const newUser = this._userRepository.create({ email, password, fullName, _salt });
+      await this._userRepository.save(newUser);
+      delete newUser.password;
+      return newUser;
+    } catch (error) {
+      throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
+    }
+  }
 
   // public async createUser({ email, password }: Partial<RegisterDTO>): Promise<UserEntity> {
   //   // const emailExists = await this.userRepository.getUserByConditions(null, { where: { email } });
@@ -101,5 +108,17 @@ export class UserService {
   public async getRoleByUserID(id: number): Promise<RoleEntity> {
     const userRole = await this._userRepository.getUserRole(id);
     return userRole.role;
+  }
+
+  public async genInviteLink(): Promise<ObjectLiteral> {
+    const token = await this._tokenRepository.findOne();
+    if (token) {
+      return { url: 'https://www.flame-okrs.com/?token=' + token.token };
+    }
+    const genToken = generate({ length: 30, numbers: true, lowercase: true, uppercase: true });
+    const tokenDTO = { token: genToken };
+    await this._tokenRepository.save(tokenDTO);
+
+    return { url: 'https://www.flame-okrs.com/?token=' + genToken };
   }
 }

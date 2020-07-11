@@ -15,6 +15,7 @@ export class CreateTableUserTeams1594008723246 implements MigrationInterface {
       {
         name: 'isLeader',
         type: 'bool',
+        default: false,
       },
       {
         name: ForeignKey.USER_ID,

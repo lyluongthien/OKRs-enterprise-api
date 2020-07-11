@@ -1,4 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+
 import { TableName } from '@app/constants/app.enums';
 
 @Entity(TableName.Cycle)
