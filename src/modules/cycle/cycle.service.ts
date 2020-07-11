@@ -7,25 +7,25 @@ import { CycleDTO } from './cycle.dto';
 
 @Injectable()
 export class CycleService {
-  constructor(private cycleRepository: CycleRepository) {}
+  constructor(private _cycleRepository: CycleRepository) {}
 
   public getListCycle(): Promise<CycleEntity[]> {
-    return this.cycleRepository.getList();
+    return this._cycleRepository.getList();
   }
 
   public createCycle(data: CycleDTO): Promise<CycleEntity> {
-    return this.cycleRepository.createCycle(data);
+    return this._cycleRepository.createCycle(data);
   }
 
   public getCycleDetail(id: number): Promise<CycleEntity> {
-    return this.cycleRepository.getCycleDetail(id);
+    return this._cycleRepository.getCycleDetail(id);
   }
 
   public updateCycle(id: number, data: Partial<CycleDTO>): Promise<CycleEntity> {
-    return this.cycleRepository.updateCycle(id, data);
+    return this._cycleRepository.updateCycle(id, data);
   }
 
   public deleteCycle(id: number): Promise<ObjectLiteral> {
-    return this.cycleRepository.deleteCycle(id);
+    return this._cycleRepository.deleteCycle(id);
   }
 }

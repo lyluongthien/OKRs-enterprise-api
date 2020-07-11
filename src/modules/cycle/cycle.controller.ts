@@ -7,26 +7,26 @@ import { CycleEntity } from '@app/db/entities/cycle.entity';
 
 @Controller('/api/v1/cycles')
 export class CycleController {
-  constructor(private cycleService: CycleService) {}
+  constructor(private _cycleService: CycleService) {}
 
   @Post()
   @UsePipes(new ValidationPipe())
   public createCycle(@Body() role: CycleDTO): Promise<CycleEntity> {
-    return this.cycleService.createCycle(role);
+    return this._cycleService.createCycle(role);
   }
 
   @Get(':id')
   private getCycleDetail(@Param('id') id: number): Promise<CycleEntity> {
-    return this.cycleService.getCycleDetail(id);
+    return this._cycleService.getCycleDetail(id);
   }
 
   @Put(':id')
   private updateCycle(@Param('id') id: number, @Body() data: CycleDTO): Promise<CycleEntity> {
-    return this.cycleService.updateCycle(id, data);
+    return this._cycleService.updateCycle(id, data);
   }
 
   @Delete(':id')
   private deleteCycle(@Param('id') id: number): any {
-    return this.cycleService.deleteCycle(id);
+    return this._cycleService.deleteCycle(id);
   }
 }
