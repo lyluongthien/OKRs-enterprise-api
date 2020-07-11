@@ -9,6 +9,7 @@ import { JobEntity } from './entities/job.entity';
 import { TeamEntity } from './entities/team.entity';
 import { UserTeamEntity } from './entities/user-team.entity';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
+import { MeasureUnitEntity } from './entities/measure-unit.entity';
 
 const type = DbConfig.DB_TYPE;
 const host = accessEnv(DbConfig.DB_HOST);
@@ -38,7 +39,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
       username,
       password,
       database,
-      entities: [RoleEntity, UserEntity, JobEntity, TeamEntity, UserTeamEntity],
+      entities: [RoleEntity, UserEntity, JobEntity, TeamEntity, UserTeamEntity, MeasureUnitEntity],
       migrations: ['dist/db/migrations/*.js'],
       cli: {
         migrationsDir: 'src/db/migrations/*.ts',
