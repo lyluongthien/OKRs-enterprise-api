@@ -20,7 +20,6 @@ export class UserService {
     private _userRepository: UserRepository,
     private _tokenRepository: InviteTokenRepositiory,
   ) {
-    this._userRepository = _userRepository;
     this._userRepository = connection.getCustomRepository(UserRepository);
   }
 
@@ -39,7 +38,7 @@ export class UserService {
     }
   }
 
-  // public async createUser({ email, password }: Partial<RegisterDTO>): Promise<UserEntity> {
+  // public async createUser1({ email, password }: Partial<RegisterDTO>): Promise<UserEntity> {
   //   // const emailExists = await this.userRepository.getUserByConditions(null, { where: { email } });
   //   const emailExists = await this.userRepository.findUserByEmail(email);
   //   if (emailExists) {

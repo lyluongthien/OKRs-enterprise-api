@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-export class createTableInviteToken1594292284009 implements MigrationInterface {
+export class CreateTableInviteToken1594292284009 implements MigrationInterface {
   private inviteTokenTable: Table = new Table({
     name: TableName.InviteToken,
     columns: [
