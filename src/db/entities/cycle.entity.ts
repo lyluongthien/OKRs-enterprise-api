@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 import { TableName } from '@app/constants/app.enums';
 
@@ -15,10 +15,4 @@ export class CycleEntity {
 
   @Column({ type: 'timestamp' })
   public endDate: Date;
-
-  @CreateDateColumn({ type: 'timestamp' })
-  public createdAt: Date;
-
-  @UpdateDateColumn({ type: 'timestamp' })
-  public updatedAt: Date;
 }

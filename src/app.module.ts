@@ -11,6 +11,7 @@ import { RateLimitMiddleware } from './shared/middlewares/rate-limit.middleware'
 import { OriginMiddleware } from './shared/middlewares/origin.middleware';
 import { TeamModule } from './modules/team/team.module';
 import { CycleModule } from './modules/cycle/cycle.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CycleModule } from './modules/cycle/cycle.module';
     JobModule,
     TeamModule,
     CycleModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

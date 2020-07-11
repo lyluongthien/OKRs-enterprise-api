@@ -10,12 +10,12 @@ export class CycleController {
   constructor(private _cycleService: CycleService) {}
 
   @Get()
-  private getAllCycle(): Promise<CycleEntity[]> {
+  public getAllCycle(): Promise<CycleEntity[]> {
     return this._cycleService.getListCycle();
   }
 
   @Get(':id')
-  private getCycleDetail(@Param('id') id: number): Promise<CycleEntity> {
+  public getCycleDetail(@Param('id') id: number): Promise<CycleEntity> {
     return this._cycleService.getCycleDetail(id);
   }
 
@@ -26,12 +26,12 @@ export class CycleController {
   }
 
   @Put(':id')
-  private updateCycle(@Param('id') id: number, @Body() data: CycleDTO): Promise<CycleEntity> {
+  public updateCycle(@Param('id') id: number, @Body() data: CycleDTO): Promise<CycleEntity> {
     return this._cycleService.updateCycle(id, data);
   }
 
   @Delete(':id')
-  private deleteCycle(@Param('id') id: number): any {
+  public deleteCycle(@Param('id') id: number): any {
     return this._cycleService.deleteCycle(id);
   }
 }
