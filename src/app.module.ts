@@ -10,6 +10,7 @@ import { CorsMiddleware } from './shared/middlewares/cors.middleware';
 import { RateLimitMiddleware } from './shared/middlewares/rate-limit.middleware';
 import { OriginMiddleware } from './shared/middlewares/origin.middleware';
 import { TeamModule } from './modules/team/team.module';
+import { CycleModule } from './modules/cycle/cycle.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { MeasureUnitModule } from './modules/measure-unit/measure-unit.module';
 
@@ -22,6 +23,7 @@ import { MeasureUnitModule } from './modules/measure-unit/measure-unit.module';
     UserModule,
     JobModule,
     TeamModule,
+    CycleModule,
     AuthModule,
     MeasureUnitModule,
   ],
