@@ -9,15 +9,20 @@ import { CycleEntity } from '@app/db/entities/cycle.entity';
 export class CycleController {
   constructor(private _cycleService: CycleService) {}
 
-  @Post()
-  @UsePipes(new ValidationPipe())
-  public createCycle(@Body() role: CycleDTO): Promise<CycleEntity> {
-    return this._cycleService.createCycle(role);
+  @Get()
+  private getAllCycle(): Promise<CycleEntity[]> {
+    return this._cycleService.getListCycle();
   }
 
   @Get(':id')
   private getCycleDetail(@Param('id') id: number): Promise<CycleEntity> {
     return this._cycleService.getCycleDetail(id);
+  }
+
+  @Post()
+  @UsePipes(new ValidationPipe())
+  public createCycle(@Body() role: CycleDTO): Promise<CycleEntity> {
+    return this._cycleService.createCycle(role);
   }
 
   @Put(':id')
