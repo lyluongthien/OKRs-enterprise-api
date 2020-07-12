@@ -56,10 +56,6 @@ export enum EvaluationCriteriaEnum {
 }
 
 export enum RouterEnum {
-  // LIMIT = 3,
-  CRITERIA_ROUTE = 'localhost:3000/api/v1/criterias',
-}
-
-export enum PagingEnum {
-  ITEM_PER_PAGE = 5,
+  EVALUATION_CRITERIA_ROUTE = 'localhost:3000/api/v1/evaluation-criterias',
+  MEASURE_UNIT_ROUTE = 'localhost:3000/api/v1/measure-units',
 }

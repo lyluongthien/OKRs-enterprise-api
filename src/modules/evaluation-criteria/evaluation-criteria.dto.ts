@@ -1,5 +1,5 @@
 import { EvaluationCriteriaEnum } from '@app/constants/app.enums';
-export class CriteriaDTO {
+export class EvaluationDTO {
   public content: string;
 
   public numberOfStar: number;
