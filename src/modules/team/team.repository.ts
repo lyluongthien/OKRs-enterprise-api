@@ -2,11 +2,13 @@ import { EntityRepository, Repository, ObjectLiteral } from 'typeorm';
 
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamDTO } from './team.dto';
+import { Pagination, paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(TeamEntity)
 export class TeamRepository extends Repository<TeamEntity> {
-  public async getAllTeam(): Promise<TeamEntity[]> {
-    return await this.find();
+  public async getTeams(options: IPaginationOptions): Promise<Pagination<TeamEntity>> {
+    const queryBuilder = this.createQueryBuilder('team');
+    return await paginate<TeamEntity>(queryBuilder, options);
   }
 
   public async getDetailTeam(id: number): Promise<TeamEntity> {

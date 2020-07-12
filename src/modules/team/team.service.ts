@@ -4,13 +4,14 @@ import { Injectable } from '@nestjs/common';
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamRepository } from './team.repository';
 import { TeamDTO } from './team.dto';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class TeamService {
   constructor(private _teamRepository: TeamRepository) {}
 
-  public getAllTeam(): Promise<TeamEntity[]> {
-    return this._teamRepository.getAllTeam();
+  public getTeams(options: IPaginationOptions): Promise<Pagination<TeamEntity>> {
+    return this._teamRepository.getTeams(options);
   }
 
   public getDetailTeam(id: number): Promise<TeamEntity> {
