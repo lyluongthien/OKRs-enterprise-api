@@ -1,6 +1,9 @@
+import { HttpException } from '@nestjs/common';
 import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
+
 import { EvaluationCriteriaEntity } from '@app/db/entities/evaluation-criteria.entity';
 import { CriteriaDTO } from './criteria.dto';
+import { httpDatabaseException } from '@app/constants/app.exeption';
 
 @EntityRepository(EvaluationCriteriaEntity)
 export class CriteriaRepository extends Repository<EvaluationCriteriaEntity> {
@@ -9,7 +12,11 @@ export class CriteriaRepository extends Repository<EvaluationCriteriaEntity> {
   }
 
   public async createCriteria(data: CriteriaDTO): Promise<EvaluationCriteriaEntity> {
-    return await this.save(data);
+    try {
+      return await this.save(data);
+    } catch (error) {
+      throw new HttpException(httpDatabaseException.message, httpDatabaseException.statusCode);
+    }
   }
 
   public async getCriteriaDetail(id: number): Promise<EvaluationCriteriaEntity> {
@@ -17,8 +24,12 @@ export class CriteriaRepository extends Repository<EvaluationCriteriaEntity> {
   }
 
   public async updateCriteria(id: number, data: Partial<CriteriaDTO>): Promise<EvaluationCriteriaEntity> {
-    await this.update({ id }, data);
-    return await this.findOne({ id });
+    try {
+      await this.update({ id }, data);
+      return await this.findOne({ id });
+    } catch (error) {
+      throw new HttpException(httpDatabaseException.message, httpDatabaseException.statusCode);
+    }
   }
 
   public async deleteCriteria(id: number): Promise<ObjectLiteral> {
