@@ -1,4 +1,5 @@
-import { Injectable, HttpException, HttpStatus, UnprocessableEntityException } from '@nestjs/common';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { generate } from 'generate-password';
 import { ObjectLiteral, Connection } from 'typeorm';
 import { hashSync } from 'bcryptjs';
@@ -8,29 +9,23 @@ import { httpEmailExists } from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
 import { ResetPasswordDTO, ChangePasswordDTO, UpdateUserDTO } from './user.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
-import { UserTeamRepository } from './user-team.repository';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { RegisterDTO } from '../auth/auth.dto';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private connection: Connection,
-    private userRepository: UserRepository,
-    private userTeamRepository: UserTeamRepository,
-  ) {
-    this.userRepository = userRepository;
-    this.userRepository = connection.getCustomRepository(UserRepository);
+  constructor(private connection: Connection, private _userRepository: UserRepository) {
+    this._userRepository = connection.getCustomRepository(UserRepository);
   }
 
   public async createUser({ email, password, fullName }: Partial<RegisterDTO>): Promise<UserEntity> {
     try {
-      const emailExists = await this.userRepository.findUserByEmail(email);
+      const emailExists = await this._userRepository.findUserByEmail(email);
       if (emailExists) {
         throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
       }
-      const newUser = this.userRepository.create({ email, password, fullName, _salt });
-      await this.userRepository.save(newUser);
+      const newUser = this._userRepository.create({ email, password, fullName, _salt });
+      await this._userRepository.save(newUser);
       delete newUser.password;
       return newUser;
     } catch (error) {
@@ -43,7 +38,7 @@ export class UserService {
    */
   public async resetPassword(user: ResetPasswordDTO): Promise<void> {
     const { email } = user;
-    const currentUser = await this.userRepository.getUserByConditions(null, { where: { email } });
+    const currentUser = await this._userRepository.getUserByConditions(null, { where: { email } });
     if (!currentUser) {
       throw new HttpException('Email do not exist', HttpStatus.BAD_REQUEST);
     }
@@ -56,44 +51,39 @@ export class UserService {
     });
 
     user.password = hashSync(newPassword, _salt);
-    await this.userRepository.update({ email }, user);
+    await this._userRepository.update({ email }, user);
     sendEmail(email, newPassword);
   }
 
   public async changePassword(id: number, user: ChangePasswordDTO): Promise<ObjectLiteral> {
-    const currentUser = await this.userRepository.getUserByConditions(id);
+    const currentUser = await this._userRepository.getUserByConditions(id);
     if (!currentUser) {
       throw new HttpException('User do not exist', HttpStatus.BAD_REQUEST);
     }
     user.password = hashSync(user.password, _salt);
 
-    await this.userRepository.update({ id }, user);
+    await this._userRepository.update({ id }, user);
 
-    return this.userRepository.getUserByConditions(id);
+    return this._userRepository.getUserByConditions(id);
   }
 
   public async rejectRequest(id: number): Promise<ObjectLiteral> {
-    return await this.userRepository.delete({ id });
+    return await this._userRepository.delete({ id });
   }
 
-  public async getUsers(): Promise<UserEntity[]> {
-    return await this.userRepository.getUsers();
+  public async getUsers(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
+    return await paginate<UserEntity>(this._userRepository, options);
   }
 
   public async getUserDetail(id: number): Promise<UserEntity> {
-    return await this.userRepository.getUserDetail(id);
+    return await this._userRepository.getUserDetail(id);
   }
 
   public async updateUserInfor(id: number, data: UpdateUserDTO): Promise<ObjectLiteral> {
-    this.userRepository.update({ id }, data);
-    console.log('HIHI:' + data.userTeam);
-    if (data.userTeam) {
-      this.userTeamRepository.update({ id }, data.userTeam);
-    }
-    return { hihi: true };
+    return null;
   }
   public async getUserByEmail(email: string): Promise<UserEntity> {
-    return await this.userRepository.getUserByConditions(null, {
+    return await this._userRepository.getUserByConditions(null, {
       where: {
         email,
       },
@@ -101,11 +91,11 @@ export class UserService {
   }
 
   public async getUserById(id: number): Promise<UserEntity> {
-    return await this.userRepository.getUserByConditions(id);
+    return await this._userRepository.getUserByConditions(id);
   }
 
   public async getRoleByUserID(id: number): Promise<RoleEntity> {
-    const userRole = await this.userRepository.getUserRole(id);
+    const userRole = await this._userRepository.getUserRole(id);
     return userRole.role;
   }
 }

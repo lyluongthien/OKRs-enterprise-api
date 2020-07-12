@@ -2,9 +2,9 @@ import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm
 import { TableName, ForeignKey } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
-export class CreateTableRecognitions1594009275111 implements MigrationInterface {
-  private recognitionTable: Table = new Table({
-    name: TableName.Recognition,
+export class CreateTableTeams1594008652307 implements MigrationInterface {
+  private teamsTable: Table = new Table({
+    name: TableName.Team,
     columns: [
       {
         name: 'id',
@@ -13,24 +13,21 @@ export class CreateTableRecognitions1594009275111 implements MigrationInterface 
         isGenerated: true,
       },
       {
-        name: 'inferiorId',
-        type: 'integer',
-        isNullable: false,
-      },
-      {
-        name: 'superiorId',
-        type: 'integer',
-        isNullable: false,
-      },
-      {
-        name: 'content',
+        name: 'name',
         type: 'varchar',
         isNullable: false,
         length: '255',
       },
       {
-        name: ForeignKey.EVALUATION_CRITERIA_ID,
+        name: 'description',
+        type: 'varchar',
+        isNullable: false,
+        length: '255',
+      },
+      {
+        name: ForeignKey.TEMPLATE_ID,
         type: 'integer',
+        isNullable: true,
       },
       {
         name: 'createdAt',
@@ -45,22 +42,21 @@ export class CreateTableRecognitions1594009275111 implements MigrationInterface 
     ],
   });
 
-  private pkEvalCriteriaId: TableForeignKey = new TableForeignKey({
-    columnNames: [ForeignKey.EVALUATION_CRITERIA_ID],
+  private pkTemplateId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.TEMPLATE_ID],
     referencedColumnNames: ['id'],
-    referencedTableName: TableName.EvaluationCriteria,
+    referencedTableName: TableName.TemplateCheckin,
     onDelete: 'CASCADE',
   });
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.createTable(this.recognitionTable);
+    await queryRunner.createTable(this.teamsTable, true);
 
-    await queryRunner.createForeignKey(TableName.Recognition, this.pkEvalCriteriaId);
+    await queryRunner.createForeignKey(TableName.Team, this.pkTemplateId);
   }
-
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await dropFksToTable(queryRunner, TableName.Recognition, [ForeignKey.EVALUATION_CRITERIA_ID]);
+    await dropFksToTable(queryRunner, TableName.Team, [ForeignKey.TEMPLATE_ID]);
 
-    await queryRunner.dropTable(this.recognitionTable);
+    await queryRunner.dropTable(this.teamsTable, true);
   }
 }

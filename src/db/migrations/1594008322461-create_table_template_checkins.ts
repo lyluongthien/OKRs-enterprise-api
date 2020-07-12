@@ -1,9 +1,9 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-export class CreateTableTeams1594008322461 implements MigrationInterface {
-  private teamsTable: Table = new Table({
-    name: TableName.Team,
+export class CreateTableTemplateCheckins1594008322461 implements MigrationInterface {
+  private templateCheckinTable: Table = new Table({
+    name: TableName.TemplateCheckin,
     columns: [
       {
         name: 'id',
@@ -19,21 +19,22 @@ export class CreateTableTeams1594008322461 implements MigrationInterface {
       },
       {
         name: 'createdAt',
-        type: 'timestamp',
+        type: 'timestamptz',
         default: 'now()',
       },
       {
         name: 'updatedAt',
-        type: 'timestamp',
+        type: 'timestamptz',
         default: 'now()',
       },
     ],
   });
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.createTable(this.teamsTable, true);
+    await queryRunner.createTable(this.templateCheckinTable);
   }
+
   public async down(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.dropTable(this.teamsTable, true);
+    await queryRunner.dropTable(this.templateCheckinTable);
   }
 }
