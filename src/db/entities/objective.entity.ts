@@ -24,6 +24,6 @@ export class ObjectiveEntity {
   @Column()
   public parentObjectiveId?: number;
 
-  @Column()
-  public alignObjectivesId: number[];
+  @Column({ array: true })
+  public alignObjectivesId: number;
 }

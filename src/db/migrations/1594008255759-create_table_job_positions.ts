@@ -25,12 +25,12 @@ export class CreateTableJobPositions1594008255759 implements MigrationInterface 
       },
       {
         name: 'createdAt',
-        type: 'timestamp',
+        type: 'timestamptz',
         default: 'now()',
       },
       {
         name: 'updatedAt',
-        type: 'timestamp',
+        type: 'timestamptz',
         default: 'now()',
       },
     ],
