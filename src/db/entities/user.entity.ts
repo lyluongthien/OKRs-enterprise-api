@@ -44,6 +44,9 @@ export class UserEntity {
   public jobPositionId?: number;
 
   @Column()
+  public roleId: number;
+
+  @Column()
   public isActive: boolean;
 
   @Column()

@@ -7,9 +7,6 @@ export class ObjectiveEntity {
   public id: number;
 
   @Column()
-  public type: string;
-
-  @Column()
   public progress: number;
 
   @Column()
@@ -25,8 +22,8 @@ export class ObjectiveEntity {
   public cycleId: number;
 
   @Column()
-  public parentObjectiveId: number;
+  public parentObjectiveId?: number;
 
   @Column()
-  public alignObjectivesId: number;
+  public alignObjectivesId: number[];
 }

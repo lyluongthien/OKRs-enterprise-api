@@ -10,6 +10,9 @@ export class JobEntity {
   @Column()
   public name: string;
 
+  @Column()
+  public description?: string;
+
   @CreateDateColumn({ type: 'timestamp' })
   public createdAt: Date;
 
