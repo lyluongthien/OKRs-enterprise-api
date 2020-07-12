@@ -21,8 +21,10 @@ export class Seeder2001User implements Seeder {
           fullName: 'Phan Văn Đức',
           jobPositionId: 1,
           roleId: 1,
+          teamId: 1,
           isActive: true,
           isApproved: true,
+          isLeader: true,
         },
         {
           email: 'ducnmhe130666@fpt.edu.vn',
@@ -31,8 +33,10 @@ export class Seeder2001User implements Seeder {
           fullName: 'Ngô Minh Đức',
           jobPositionId: 2,
           roleId: 2,
+          teamId: 1,
           isActive: true,
           isApproved: true,
+          isLeader: false,
         },
         {
           email: 'hiepdqse05627@fpt.edu.vn',
@@ -41,8 +45,10 @@ export class Seeder2001User implements Seeder {
           fullName: 'Đỗ Quang Hiệp',
           jobPositionId: 3,
           roleId: 3,
+          teamId: 2,
           isActive: true,
           isApproved: true,
+          isLeader: false,
         },
       ])
       .execute();
