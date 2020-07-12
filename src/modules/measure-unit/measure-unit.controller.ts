@@ -11,9 +11,9 @@ export class MeasureUnitController {
   constructor(private _measureService: MeasureUnitService) {}
 
   @Get(':page')
-  public getMeasureUnitByPage(@Query('page') page: number): Promise<Pagination<MeasureUnitEntity>> {
+  public getMeasureUnits(@Query('page') page: number): Promise<Pagination<MeasureUnitEntity>> {
     const limit = 3;
-    return this._measureService.getMeasureByPage({ page, limit, route: 'localhost:3000/api/v1/measure-units' });
+    return this._measureService.getMeasureUnits({ page, limit, route: 'localhost:3000/api/v1/measure-units' });
   }
 
   @Get(':id')

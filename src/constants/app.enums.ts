@@ -54,3 +54,12 @@ export enum EvaluationCriteriaEnum {
   MEMBER_TO_LEADER = 'MEMBER_TO_LEADER',
   LEADER_TO_MEMBER = 'LEADER_TO_MEMBER',
 }
+
+export enum RouterEnum {
+  // LIMIT = 3,
+  CRITERIA_ROUTE = 'localhost:3000/api/v1/criterias',
+}
+
+export enum PagingEnum {
+  ITEM_PER_PAGE = 5,
+}
