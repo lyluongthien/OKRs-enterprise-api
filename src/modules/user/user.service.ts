@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { generate } from 'generate-password';
 import { ObjectLiteral, Connection } from 'typeorm';
 import { hashSync } from 'bcryptjs';
@@ -31,19 +31,6 @@ export class UserService {
     } catch (error) {
       throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
     }
-  }
-
-  public async createUser7({ email, password }: Partial<RegisterDTO>): Promise<UserEntity> {
-    // const emailExists = await this.userRepository.getUserByConditions(null, { where: { email } });
-    const emailExists = await this.userRepository.findUserByEmail(email);
-    if (emailExists) {
-      throw new UnprocessableEntityException();
-    }
-    const hasedPassword = await hashSync(password, _salt);
-    const newUser = this.userRepository.create({ email, password: hasedPassword });
-    await this.userRepository.save(newUser);
-    delete newUser.password;
-    return newUser;
   }
 
   /**
