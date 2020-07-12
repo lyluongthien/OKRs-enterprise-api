@@ -15,9 +15,9 @@ export class MeasureUnitEntity {
   @Column()
   public index: number;
 
-  @CreateDateColumn({ type: 'timestamp' })
-  public createdAt: Date;
+  // @CreateDateColumn({ type: 'timestamp' })
+  // public createdAt: Date;
 
-  @UpdateDateColumn({ type: 'timestamp' })
-  public updatedAt: Date;
+  // @UpdateDateColumn({ type: 'timestamp' })
+  // public updatedAt: Date;
 }

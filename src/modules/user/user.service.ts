@@ -33,7 +33,7 @@ export class UserService {
     }
   }
 
-  public async createUser({ email, password }: Partial<RegisterDTO>): Promise<UserEntity> {
+  public async createUser7({ email, password }: Partial<RegisterDTO>): Promise<UserEntity> {
     // const emailExists = await this.userRepository.getUserByConditions(null, { where: { email } });
     const emailExists = await this.userRepository.findUserByEmail(email);
     if (emailExists) {

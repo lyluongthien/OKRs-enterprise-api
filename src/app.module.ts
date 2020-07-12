@@ -12,6 +12,7 @@ import { OriginMiddleware } from './shared/middlewares/origin.middleware';
 import { TeamModule } from './modules/team/team.module';
 import { CycleModule } from './modules/cycle/cycle.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { CriteriaModule } from './modules/criteria/criteria.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { AuthModule } from './modules/auth/auth.module';
     TeamModule,
     CycleModule,
     AuthModule,
+    CriteriaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
