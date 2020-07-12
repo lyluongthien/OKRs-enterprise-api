@@ -13,6 +13,7 @@ import { TeamModule } from './modules/team/team.module';
 import { CycleModule } from './modules/cycle/cycle.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CriteriaModule } from './modules/criteria/criteria.module';
+import { MeasureUnitModule } from './modules/measure-unit/measure-unit.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CriteriaModule } from './modules/criteria/criteria.module';
     TeamModule,
     CycleModule,
     AuthModule,
+    MeasureUnitModule,
     CriteriaModule,
   ],
   controllers: [AppController],
