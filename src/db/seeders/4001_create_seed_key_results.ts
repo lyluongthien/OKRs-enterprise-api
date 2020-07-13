@@ -1,6 +1,5 @@
 import { Seeder, Factory } from 'typeorm-seeding';
 import { Connection } from 'typeorm';
-
 import { KeyResultEntity } from '../entities/key-result.entity';
 
 export class Seeder4001KeyResult implements Seeder {

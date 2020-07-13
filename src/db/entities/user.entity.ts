@@ -44,11 +44,11 @@ export class UserEntity {
   @Column()
   public roleId: number;
 
-  // @Column()
-  // public teamId: number;
+  @Column()
+  public teamId: number;
 
-  // @Column()
-  // public isLeader: boolean;
+  @Column()
+  public isLeader: boolean;
 
   @Column()
   public isActive: boolean;
