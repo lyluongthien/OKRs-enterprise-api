@@ -55,6 +55,11 @@ export enum EvaluationCriteriaEnum {
   LEADER_TO_MEMBER = 'LEADER_TO_MEMBER',
 }
 
+export enum ObjectiveTypeEnum {
+  MOON_SHOT = 'Moonshot',
+  ROOF_SHOT = 'Roofshot',
+}
+
 export enum RouterEnum {
   EVALUATION_CRITERIA_ROUTE = 'localhost:3000/api/v1/evaluation-criterias',
   MEASURE_UNIT_ROUTE = 'localhost:3000/api/v1/measure-units',
