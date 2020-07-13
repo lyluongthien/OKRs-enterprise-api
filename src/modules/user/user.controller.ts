@@ -58,7 +58,7 @@ export class UserController {
     return this._userService.updateUserInfor(id, data);
   }
 
-  @Put('/me:id')
+  @Post('me')
   public updateUserProfile(@Param('id') id: number, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
     return this._userService.updateUserProfile(id, data);
   }
