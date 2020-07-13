@@ -11,6 +11,7 @@ import { ResetPasswordDTO, ChangePasswordDTO } from './user.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
 import { RoleEntity } from '@app/db/entities/role.entity';
+import { RouterEnum } from '@app/constants/app.enums';
 
 @Injectable()
 export class UserService {
@@ -44,16 +45,11 @@ export class UserService {
       throw new HttpException('Email do not exist', HttpStatus.BAD_REQUEST);
     }
 
-    const newPassword = generate({
-      length: 10,
-      numbers: true,
-      lowercase: true,
-      uppercase: true,
-    });
+    const token = generate({ length: 30, numbers: true, lowercase: true, uppercase: true });
 
-    user.password = hashSync(newPassword, _salt);
-    await this._userRepository.update({ email }, user);
-    sendEmail(email, newPassword);
+    const url = RouterEnum.FE_HOST_ROUTER + `/reset-password?token=${token}`;
+
+    sendEmail(email, url);
   }
 
   public async changePassword(id: number, user: ChangePasswordDTO): Promise<ObjectLiteral> {

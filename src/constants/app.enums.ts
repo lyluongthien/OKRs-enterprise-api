@@ -58,4 +58,6 @@ export enum EvaluationCriteriaEnum {
 export enum RouterEnum {
   EVALUATION_CRITERIA_ROUTE = 'localhost:3000/api/v1/evaluation-criterias',
   MEASURE_UNIT_ROUTE = 'localhost:3000/api/v1/measure-units',
+  API_HOST_ROUTER = 'http://localhost:3000',
+  FE_HOST_ROUTER = 'http://localhost:5000',
 }

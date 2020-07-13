@@ -1,24 +1,28 @@
 import * as nodemailer from 'nodemailer';
 
 // async..await is not allowed in global scope, must use a wrapper
-export const sendEmail = async (email: string, password: string): Promise<void> => {
+export const sendEmail = async (email: string, url: string): Promise<void> => {
   // create reusable transporter object using the default SMTP transport
   const transporter = nodemailer.createTransport({
-    host: 'smtp.sendgrid.net',
-    port: 465,
-    secure: true, // true for 465, false for other ports
+    // host: 'smtp.domain.com',
+    // port: 25,
+    // secure: true,
+    service: 'gmail',
     auth: {
-      user: 'apikey', // generated ethereal user
-      pass: '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', // generated ethereal password
+      user: 'sp.flame.okrs@gmail.com', // generated ethereal user
+      pass: 'flameOkrs@123', // generated ethereal password
     },
   });
 
   // send mail with defined transport object
   const info = await transporter.sendMail({
-    from: 'phanduc0908@gmail.com', // sender address
-    to: email, // list of receivers
-    subject: '[Flame-OKRs] Change password', // Subject line
-    html: `<h3>Your new password: ${password}</h3>`, // html body
+    from: 'phanduc0908@gmail.com',
+    to: email,
+    cc: ['ducnmhe130666@fpt.edu.vn', 'quangnvse05839@fpt.edu.vn'],
+    subject: '[Flame-OKRs] | Lấy lại mật khẩu',
+    html: ` <p>Chúng tôi đã nhận được yêu cầu đổi mật khẩu của bạn.</p>
+            <p>Bạn vui lòng truy cập đường link dưới đây để đổi mật khẩu.</p>
+            <a href="${url}">${url}</a>`,
   });
 
   console.log('Message sent: %s', info.messageId);
