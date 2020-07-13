@@ -41,3 +41,11 @@ export class UserProfileDTO {
   @Optional()
   public gravatarURL: string;
 }
+
+export class MySearchDTO {
+  @Optional()
+  public fullName: string;
+
+  @Optional()
+  public email: string;
+}

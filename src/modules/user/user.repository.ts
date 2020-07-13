@@ -4,7 +4,7 @@ import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginat
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
-import { UserDTO, UserProfileDTO } from './user.dto';
+import { UserDTO, UserProfileDTO, MySearchDTO } from './user.dto';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -39,6 +39,18 @@ export class UserRepository extends Repository<UserEntity> {
       .leftJoinAndSelect('user.role', 'roles')
       .leftJoinAndSelect('user.jobPosition', 'jobPositions')
       .leftJoinAndSelect('user.team', 'teams');
+    return await paginate<UserEntity>(queryBuilder, options);
+  }
+
+  public async searchUsers(text: string, options: IPaginationOptions): Promise<Pagination<UserEntity>> {
+    const queryBuilder = this.createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'roles')
+      .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+      .leftJoinAndSelect('user.team', 'teams')
+      .where('user.fullName like :text', { text: '%' + text + '%' })
+      .orWhere('user.email like :text', { text: '%' + text + '%' })
+      .orderBy('user.id', 'ASC');
+
     return await paginate<UserEntity>(queryBuilder, options);
   }
 
