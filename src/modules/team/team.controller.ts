@@ -1,8 +1,11 @@
-import { Controller, Post, Body, Put, Param, Delete, Get } from '@nestjs/common';
-
+import { Controller, Post, Body, Put, Param, Delete, Get, UseGuards } from '@nestjs/common';
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamService } from './team.service';
 import { TeamDTO } from './team.dto';
+import { AuthenticationGuard } from '../auth/authentication.guard';
+import { AuthorizationGuard } from '../auth/authorization.guard';
+import { Roles } from '../role/roles.decorator';
+import { RoleEnum } from '@app/constants/app.enums';
 
 @Controller('/api/v1/teams')
 export class TeamController {
@@ -19,6 +22,8 @@ export class TeamController {
   }
 
   @Post()
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   private createTeam(@Body() team: TeamDTO): Promise<TeamEntity> {
     return this._teamService.createTeam(team);
   }

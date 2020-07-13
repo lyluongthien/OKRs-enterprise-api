@@ -16,10 +16,10 @@ export class AuthService {
       if (!user) {
         throw new BadRequestException();
       }
-      if (!compareSync(password, user.password)) {
+      const isMatchedPassword = await compareSync(password, user.password);
+      if (!isMatchedPassword) {
         throw new BadRequestException(invalidCredential);
       }
-      delete user.password;
       return await this.createBearerToken(user);
     } catch (error) {
       throw new UnauthorizedException(invalidCredential);

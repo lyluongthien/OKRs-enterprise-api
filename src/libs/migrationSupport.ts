@@ -1,4 +1,5 @@
 import { TableForeignKey, QueryRunner } from 'typeorm';
+import { TableForeignKeyOptions } from 'typeorm/schema-builder/options/TableForeignKeyOptions';
 
 export const dropFksToTable = async (queryRunner: QueryRunner, tableName: string, fksName: string[]): Promise<void> => {
   const FKs: TableForeignKey[] = [];
@@ -12,4 +13,18 @@ export const dropFksToTable = async (queryRunner: QueryRunner, tableName: string
     FKs.push(tableFK);
   }
   await queryRunner.dropForeignKeys(table, FKs);
+};
+
+export const createTableForeignKey = (
+  columnNames: string[],
+  referencedTableName: string,
+  onDelete: string,
+  referencedColumnNames: string[] = ['id'],
+): TableForeignKeyOptions => {
+  return new TableForeignKey({
+    columnNames,
+    referencedColumnNames,
+    referencedTableName,
+    onDelete,
+  });
 };

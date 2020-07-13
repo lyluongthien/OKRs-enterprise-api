@@ -46,7 +46,7 @@ export class UserRepository extends Repository<UserEntity> {
 
   public async getUserRole(id: number): Promise<UserEntity> {
     return await this.findOneOrFail({
-      relations: ['role'],
+      relations: ['roles'],
       where: { id },
     });
   }
