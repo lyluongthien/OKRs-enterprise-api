@@ -9,10 +9,10 @@ import { UserService } from '../user/user.service';
 export class AuthController {
   constructor(private readonly authService: AuthService, private readonly userService: UserService) {}
 
-  @Post('/signin')
+  @Post('/login')
   @ApiOkResponse({ description: 'Sign In with credentials' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
-  public async signIn(@Body(ValidationPipe) credentials: SignInDTO): Promise<AuthResponse> {
+  public async login(@Body(ValidationPipe) credentials: SignInDTO): Promise<AuthResponse> {
     return await this.authService.authenticate(credentials);
   }
 

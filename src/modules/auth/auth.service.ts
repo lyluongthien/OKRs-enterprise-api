@@ -5,6 +5,7 @@ import { UserEntity } from '@app/db/entities/user.entity';
 import { AuthResponse, JwtPayload } from './auth.interface';
 import { invalidCredential } from '@app/constants/app.exeption';
 import { UserService } from '../user/user.service';
+import { compareSync } from 'bcryptjs';
 @Injectable()
 export class AuthService {
   constructor(private userService: UserService, private jwtService: JwtService) {}
@@ -15,9 +16,10 @@ export class AuthService {
       if (!user) {
         throw new BadRequestException();
       }
-      if (!user.comparePassword(password)) {
+      if (!compareSync(password, user.password)) {
         throw new BadRequestException(invalidCredential);
       }
+      delete user.password;
       return await this.createBearerToken(user);
     } catch (error) {
       throw new UnauthorizedException(invalidCredential);

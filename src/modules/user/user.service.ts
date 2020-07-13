@@ -1,5 +1,5 @@
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, InternalServerErrorException, ConflictException } from '@nestjs/common';
 import { generate } from 'generate-password';
 import { ObjectLiteral, Connection } from 'typeorm';
 import { hashSync } from 'bcryptjs';
@@ -22,14 +22,13 @@ export class UserService {
     try {
       const emailExists = await this._userRepository.findUserByEmail(email);
       if (emailExists) {
-        throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
+        throw new ConflictException(httpEmailExists);
       }
       const newUser = this._userRepository.create({ email, password, fullName, _salt });
       await this._userRepository.save(newUser);
-      delete newUser.password;
       return newUser;
     } catch (error) {
-      throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
+      throw new ConflictException(httpEmailExists);
     }
   }
 
@@ -81,11 +80,15 @@ export class UserService {
   }
 
   public async getUserByEmail(email: string): Promise<UserEntity> {
-    return await this._userRepository.getUserByConditions(null, {
-      where: {
-        email,
-      },
-    });
+    try {
+      return await this._userRepository.getUserByConditions(null, {
+        where: {
+          email,
+        },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   public async getUserById(id: number): Promise<UserEntity> {
