@@ -1,8 +1,8 @@
 import { EntityRepository, Repository, ObjectLiteral } from 'typeorm';
+import { Pagination, paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamDTO } from './team.dto';
-import { Pagination, paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(TeamEntity)
 export class TeamRepository extends Repository<TeamEntity> {

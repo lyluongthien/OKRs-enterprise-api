@@ -1,10 +1,10 @@
 import { ObjectLiteral } from 'typeorm';
 import { Injectable } from '@nestjs/common';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamRepository } from './team.repository';
 import { TeamDTO } from './team.dto';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class TeamService {

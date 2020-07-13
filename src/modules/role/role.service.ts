@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { ObjectLiteral } from 'typeorm';
+
 import { RoleRepository } from './role.repository';
 import { RoleDTO } from './role.dto';
 import { RoleEntity } from '@app/db/entities/role.entity';
-import { ObjectLiteral } from 'typeorm';
 
 @Injectable()
 export class RoleService {

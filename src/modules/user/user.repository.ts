@@ -1,9 +1,9 @@
 import { Repository, EntityRepository, ObjectLiteral, FindOneOptions } from 'typeorm';
 import { InternalServerErrorException } from '@nestjs/common';
+import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 import { UserDTO, UserProfileDTO } from './user.dto';
 
 @EntityRepository(UserEntity)
@@ -44,7 +44,7 @@ export class UserRepository extends Repository<UserEntity> {
 
   public async getUserDetail(id: number): Promise<UserEntity> {
     return await this.findOneOrFail({
-      relations: ['role', 'jobPosition'],
+      relations: ['role', 'jobPosition', 'team'],
       where: { id },
     });
   }
