@@ -1,0 +1,54 @@
+name: Code coverage
+
+on:
+  push:
+    branches: [develop]
+
+jobs:
+  build:
+    env:
+      CI: true
+      TERM: xterm-256color
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [12.x]
+    runs-on: ${{ matrix.os }}
+
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node version
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Get yarn cache diretory path
+        id: yarn-cache-dir
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Cache dependencies
+        id: yarn-cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Install packages
+        run: yarn install
+
+      - name: Run Unit Test
+        run: yarn test:cov
+
+      - name: Upload Codecov report
+        uses: codecov/codecov-action@v1.0.7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unit-tests
+          name: devil-hunter
+          file: ./coverage/coverage-final.json
+          fail_ci_if_error: true
