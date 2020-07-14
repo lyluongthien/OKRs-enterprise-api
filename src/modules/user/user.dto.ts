@@ -41,3 +41,9 @@ export class UserProfileDTO {
   @Optional()
   public gravatarURL: string;
 }
+
+export class ResetPasswordTokenDTO {
+  public resetPasswordToken: string;
+
+  public resetPasswordTokenExpire: Date;
+}
