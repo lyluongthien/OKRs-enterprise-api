@@ -59,11 +59,11 @@ export class LessonService {
   }
 
   public async searchLessons(text: string, options: IPaginationOptions): Promise<ResponseModel> {
-    const data = this._lessonRepository.searchLessons(text, options);
+    const data = await this._lessonRepository.searchLessons(text, options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: this._lessonRepository.searchLessons(text, options),
+      data: data,
     };
   }
 }
