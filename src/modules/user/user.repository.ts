@@ -4,7 +4,7 @@ import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginat
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
-import { UserDTO, UserProfileDTO, MySearchDTO } from './user.dto';
+import { UserDTO, UserProfileDTO } from './user.dto';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {

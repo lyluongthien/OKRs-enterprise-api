@@ -1,14 +1,14 @@
 import { ObjectLiteral } from 'typeorm';
 import { Controller, Post, Body, UsePipes, Put, Param, Get, UseGuards, Query } from '@nestjs/common';
-import { UserService } from './user.service';
-import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO, MySearchDTO } from './user.dto';
+import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
+import { Pagination } from 'nestjs-typeorm-paginate';
+
+import { UserService } from './user.service';
+import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { CurrentUser } from './user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
-import { Pagination } from 'nestjs-typeorm-paginate';
-import { limitPagination, currentPage } from '@app/constants/app.magic-number';
-import { text } from 'express';
 
 @Controller('/api/v1/users')
 export class UserController {
