@@ -1,25 +1,24 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { generate } from 'generate-password';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { ObjectLiteral, Connection } from 'typeorm';
 import { hashSync } from 'bcryptjs';
 
+import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
 import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
+import { httpEmailExists, invalidTokenResetPassword, tokenExpired } from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
-import { ResetPasswordDTO, ChangePasswordDTO } from './user.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RoleEntity } from '@app/db/entities/role.entity';
+import { RouterEnum, CommonMessage } from '@app/constants/app.enums';
 import { RegisterDTO } from '../auth/auth.dto';
-import { httpEmailExists } from '@app/constants/app.exeption';
-import { InviteTokenRepositiory } from './invite-token.repository';
+import { expireResetPasswordToken } from '@app/constants/app.magic-number';
+import { ResponseModel } from '@app/constants/app.interface';
 
 @Injectable()
 export class UserService {
-  constructor(
-    private connection: Connection,
-    private _userRepository: UserRepository,
-    private _tokenRepository: InviteTokenRepositiory,
-  ) {
+  constructor(private connection: Connection, private _userRepository: UserRepository) {
     this._userRepository = connection.getCustomRepository(UserRepository);
   }
 
@@ -38,58 +37,131 @@ export class UserService {
     }
   }
 
-  // public async createUser1({ email, password }: Partial<RegisterDTO>): Promise<UserEntity> {
-  //   // const emailExists = await this.userRepository.getUserByConditions(null, { where: { email } });
-  //   const emailExists = await this.userRepository.findUserByEmail(email);
-  //   if (emailExists) {
-  //     throw new UnprocessableEntityException();
-  //   }
-  //   const hasedPassword = await hashSync(password, _salt);
-  //   const newUser = this.userRepository.create({ email, password: hasedPassword });
-  //   await this.userRepository.save(newUser);
-  //   delete newUser.password;
-  //   return newUser;
-  // }
-
   /**
-   * @description Reset password and send mail for staff
+   * @description Send a link in email to user, then use this link to reset password
    */
-  public async resetPassword(user: ResetPasswordDTO): Promise<void> {
+  public async forgetPassword(user: ResetPasswordDTO): Promise<ResponseModel> {
     const { email } = user;
-    const currentUser = await this._userRepository.getUserByConditions(null, { where: { email } });
+    const currentUser = await this._userRepository.findUserByEmail(email);
     if (!currentUser) {
       throw new HttpException('Email do not exist', HttpStatus.BAD_REQUEST);
     }
 
-    const newPassword = generate({ length: 10, numbers: true, lowercase: true, uppercase: true });
+    const token = generate({ length: 30, numbers: true, lowercase: true, uppercase: true });
+    const expireDate = new Date();
 
-    user.password = hashSync(newPassword, _salt);
-    await this._userRepository.update({ email }, user);
-    sendEmail(email, newPassword);
+    await this._userRepository.updateResetPasswordToken(email, {
+      resetPasswordToken: token,
+      resetPasswordTokenExpire: expireDate,
+    });
+
+    const url = RouterEnum.FE_HOST_ROUTER + `/reset-password?token=${token}`;
+    const subject = '[Flame-OKRs] | Lấy lại mật khẩu';
+    const html = `  <p>Chúng tôi đã nhận được yêu cầu đổi mật khẩu của bạn.</p>
+                    <p>Bạn vui lòng truy cập đường link dưới đây để đổi mật khẩu.</p>
+                    <a href="${url}">${url}</a>`;
+
+    sendEmail(email, subject, html);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.EMAIL_SENT,
+      data: {},
+    };
   }
 
-  public async changePassword(id: number, user: ChangePasswordDTO): Promise<ObjectLiteral> {
+  /**
+   * @description verify reset password token: valid | invalid
+   */
+  public async verifyForgetPassword(token: string): Promise<ResponseModel> {
+    const user = await this._userRepository.getUserByResetPasswordToken(token);
+    if (!user) {
+      throw new HttpException(CommonMessage.INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+    }
+    const now = new Date().getTime();
+    const expireTime = user.resetPasswordTokenExpire.getTime();
+    const dueTime = now - expireTime;
+
+    if (dueTime > expireResetPasswordToken) {
+      throw new HttpException(CommonMessage.EXPIRED_TOKEN, HttpStatus.BAD_REQUEST);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.VALID_TOKEN,
+      data: {},
+    };
+  }
+
+  /**
+   * @description: Save new password of user
+   */
+  public async resetPassword(token: string, data: ChangePasswordDTO): Promise<ResponseModel> {
+    const user = await this._userRepository.getUserByResetPasswordToken(token);
+    if (!user) {
+      throw new HttpException(invalidTokenResetPassword, HttpStatus.BAD_REQUEST);
+    }
+    const now = new Date().getTime();
+    const expireTime = user.resetPasswordTokenExpire.getTime();
+    const dueTime = now - expireTime;
+
+    if (dueTime > expireResetPasswordToken) {
+      throw new HttpException(tokenExpired, HttpStatus.BAD_REQUEST);
+    }
+    // Hash password
+    data.password = hashSync(data.password, _salt);
+    await this._userRepository.updatePassword(user.id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.PASSWORD_UPDATE_SUCCESS,
+      data: {},
+    };
+  }
+
+  /**
+   * @description: Change password for me
+   */
+  public async changePassword(id: number, user: ChangePasswordDTO): Promise<ResponseModel> {
     const currentUser = await this._userRepository.getUserByConditions(id);
     if (!currentUser) {
-      throw new HttpException('User do not exist', HttpStatus.BAD_REQUEST);
+      throw new HttpException(CommonMessage.USER_DO_NOT_EXIST, HttpStatus.BAD_REQUEST);
     }
     user.password = hashSync(user.password, _salt);
 
-    await this._userRepository.update({ id }, user);
+    await this._userRepository.updatePassword(id, user);
 
-    return this._userRepository.getUserByConditions(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.PASSWORD_UPDATE_SUCCESS,
+      data: {},
+    };
   }
 
   public async rejectRequest(id: number): Promise<ObjectLiteral> {
     return await this._userRepository.delete({ id });
   }
 
-  public async getUsers(): Promise<UserEntity[]> {
-    return await this._userRepository.getUsers();
+  public async getUsers(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
+    return await this._userRepository.getUsers(options);
   }
 
-  public async getUserDetail(id: number): Promise<UserEntity> {
-    return await this._userRepository.getUserDetail(id);
+  public async getUserDetail(id: number): Promise<ResponseModel> {
+    const data = await this._userRepository.getUserDetail(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async searchUsers(text: string, options: IPaginationOptions): Promise<Pagination<UserEntity>> {
+    return await this._userRepository.searchUsers(text, options);
+  }
+
+  public async updateUserInfor(id: number, data: UserDTO): Promise<ObjectLiteral> {
+    return this._userRepository.update(id, data);
+  }
+
+  public async updateUserProfile(id: number, data: UserProfileDTO): Promise<ObjectLiteral> {
+    return this._userRepository.updateUserProfile(id, data);
   }
 
   public async getUserByEmail(email: string): Promise<UserEntity> {
@@ -109,15 +181,15 @@ export class UserService {
     return userRole.role;
   }
 
-  public async genInviteLink(): Promise<ObjectLiteral> {
-    const token = await this._tokenRepository.findOne();
-    if (token) {
-      return { url: 'https://www.flame-okrs.com/?token=' + token.token };
-    }
-    const genToken = generate({ length: 30, numbers: true, lowercase: true, uppercase: true });
-    const tokenDTO = { token: genToken };
-    await this._tokenRepository.save(tokenDTO);
+  // public async genInviteLink(): Promise<ObjectLiteral> {
+  //   const token = await this._tokenRepository.findOne();
+  //   if (token) {
+  //     return { url: 'https://www.flame-okrs.com/?token=' + token.token };
+  //   }
+  //   const genToken = generate({ length: 30, numbers: true, lowercase: true, uppercase: true });
+  //   const tokenDTO = { token: genToken };
+  //   await this._tokenRepository.save(tokenDTO);
 
-    return { url: 'https://www.flame-okrs.com/?token=' + genToken };
-  }
+  //   return { url: 'https://www.flame-okrs.com/?token=' + genToken };
+  // }
 }

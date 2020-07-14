@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
-export class CreateTableTemplateCheckins1594008652307 implements MigrationInterface {
+export class CreateTableTemplateCheckins1594008322461 implements MigrationInterface {
   private templateCheckinTable: Table = new Table({
     name: TableName.TemplateCheckin,
     columns: [
