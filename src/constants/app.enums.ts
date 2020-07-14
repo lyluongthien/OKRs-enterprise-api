@@ -16,6 +16,7 @@ export enum TableName {
   TemplateCheckin = 'template_checkins',
   FieldTemplate = 'field_templates',
   UserStar = 'user_stars',
+  Lesson = 'lessons',
 }
 
 export enum DbConfig {
