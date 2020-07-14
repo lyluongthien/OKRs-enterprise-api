@@ -1,5 +1,5 @@
-import { Controller, Post, Body, ValidationPipe, HttpStatus } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse, ApiResponse } from '@nestjs/swagger';
+import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDTO, SignInDTO } from './auth.dto';
 import { AuthResponse } from './auth.interface';
