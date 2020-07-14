@@ -7,6 +7,7 @@ import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/roles.decorator';
 import { RoleEnum } from '@app/constants/app.enums';
 
+@UseGuards(AuthenticationGuard)
 @Controller('/api/v1/teams')
 export class TeamController {
   constructor(private _teamService: TeamService) {}
@@ -22,7 +23,7 @@ export class TeamController {
   }
 
   @Post()
-  @UseGuards(AuthenticationGuard, AuthorizationGuard)
+  @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   private createTeam(@Body() team: TeamDTO): Promise<TeamEntity> {
     return this._teamService.createTeam(team);

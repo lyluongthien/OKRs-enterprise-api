@@ -5,6 +5,7 @@ import { UserEntity } from '@app/db/entities/user.entity';
 @Injectable()
 export class AuthenticationGuard extends AuthGuard('jwt') {
   public async canActivate(context: ExecutionContext): Promise<any> {
+    // Gắn user vào request
     return super.canActivate(context);
   }
 

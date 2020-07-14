@@ -41,6 +41,6 @@ export class AuthService {
 
   public async createBearerToken(user: UserEntity): Promise<AuthResponse> {
     const token = await this.jwtService.sign({ id: user.id });
-    return { token };
+    return { token: `Bearer ${token}` };
   }
 }
