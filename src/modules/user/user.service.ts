@@ -11,9 +11,10 @@ import { httpEmailExists, invalidTokenResetPassword, tokenExpired } from '@app/c
 import { sendEmail } from '@app/services/email/sendEmail';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RoleEntity } from '@app/db/entities/role.entity';
-import { RouterEnum } from '@app/constants/app.enums';
+import { RouterEnum, CommonMessage } from '@app/constants/app.enums';
 import { RegisterDTO } from '../auth/auth.dto';
 import { expireResetPasswordToken } from '@app/constants/app.magic-number';
+import { ResponseModel } from '@app/constants/app.interface';
 
 @Injectable()
 export class UserService {
@@ -37,9 +38,9 @@ export class UserService {
   }
 
   /**
-   * @description Reset password and send mail for staff
+   * @description Send a link in email to user, then use this link to reset password
    */
-  public async forgetPassword(user: ResetPasswordDTO): Promise<void> {
+  public async forgetPassword(user: ResetPasswordDTO): Promise<ResponseModel> {
     const { email } = user;
     const currentUser = await this._userRepository.findUserByEmail(email);
     if (!currentUser) {
@@ -61,12 +62,39 @@ export class UserService {
                     <a href="${url}">${url}</a>`;
 
     sendEmail(email, subject, html);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.EMAIL_SENT,
+      data: {},
+    };
   }
 
   /**
    * @description verify reset password token: valid | invalid
    */
-  public async verifyForgotPassword(token: string): Promise<ObjectLiteral> {
+  public async verifyForgetPassword(token: string): Promise<ResponseModel> {
+    const user = await this._userRepository.getUserByResetPasswordToken(token);
+    if (!user) {
+      throw new HttpException(CommonMessage.INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+    }
+    const now = new Date().getTime();
+    const expireTime = user.resetPasswordTokenExpire.getTime();
+    const dueTime = now - expireTime;
+
+    if (dueTime > expireResetPasswordToken) {
+      throw new HttpException(CommonMessage.EXPIRED_TOKEN, HttpStatus.BAD_REQUEST);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.VALID_TOKEN,
+      data: {},
+    };
+  }
+
+  /**
+   * @description: Save new password of user
+   */
+  public async resetPassword(token: string, data: ChangePasswordDTO): Promise<ResponseModel> {
     const user = await this._userRepository.getUserByResetPasswordToken(token);
     if (!user) {
       throw new HttpException(invalidTokenResetPassword, HttpStatus.BAD_REQUEST);
@@ -78,19 +106,33 @@ export class UserService {
     if (dueTime > expireResetPasswordToken) {
       throw new HttpException(tokenExpired, HttpStatus.BAD_REQUEST);
     }
-    return { statusCode: HttpStatus.OK, message: 'Token valid' };
+    // Hash password
+    data.password = hashSync(data.password, _salt);
+    await this._userRepository.updatePassword(user.id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.PASSWORD_UPDATE_SUCCESS,
+      data: {},
+    };
   }
 
-  public async changePassword(id: number, user: ChangePasswordDTO): Promise<ObjectLiteral> {
+  /**
+   * @description: Change password for me
+   */
+  public async changePassword(id: number, user: ChangePasswordDTO): Promise<ResponseModel> {
     const currentUser = await this._userRepository.getUserByConditions(id);
     if (!currentUser) {
-      throw new HttpException('User do not exist', HttpStatus.BAD_REQUEST);
+      throw new HttpException(CommonMessage.USER_DO_NOT_EXIST, HttpStatus.BAD_REQUEST);
     }
     user.password = hashSync(user.password, _salt);
 
-    await this._userRepository.update({ id }, user);
+    await this._userRepository.updatePassword(id, user);
 
-    return this._userRepository.getUserByConditions(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.PASSWORD_UPDATE_SUCCESS,
+      data: {},
+    };
   }
 
   public async rejectRequest(id: number): Promise<ObjectLiteral> {
@@ -101,8 +143,13 @@ export class UserService {
     return await this._userRepository.getUsers(options);
   }
 
-  public async getUserDetail(id: number): Promise<UserEntity> {
-    return await this._userRepository.getUserDetail(id);
+  public async getUserDetail(id: number): Promise<ResponseModel> {
+    const data = await this._userRepository.getUserDetail(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
   public async updateUserInfor(id: number, data: UserDTO): Promise<ObjectLiteral> {

@@ -1,10 +1,11 @@
 import { Repository, EntityRepository, ObjectLiteral, FindOneOptions } from 'typeorm';
-import { InternalServerErrorException } from '@nestjs/common';
+import { InternalServerErrorException, HttpException, HttpStatus } from '@nestjs/common';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
-import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
+import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO, ChangePasswordDTO } from './user.dto';
+import { CommonMessage } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -13,7 +14,11 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   public async getUserByConditions(id?: number, options?: FindOneOptions<UserEntity>): Promise<UserEntity> {
-    return await this.findOneOrFail(id, options);
+    try {
+      return await this.findOne(id, options);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async findUserByEmail(email: string): Promise<UserEntity> {
@@ -35,11 +40,15 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   public async getUsers(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
-    const queryBuilder = this.createQueryBuilder('user')
-      .leftJoinAndSelect('user.role', 'roles')
-      .leftJoinAndSelect('user.jobPosition', 'jobPositions')
-      .leftJoinAndSelect('user.team', 'teams');
-    return await paginate<UserEntity>(queryBuilder, options);
+    try {
+      const queryBuilder = this.createQueryBuilder('user')
+        .leftJoinAndSelect('user.role', 'roles')
+        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+        .leftJoinAndSelect('user.team', 'teams');
+      return await paginate<UserEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async getUserDetail(id: number): Promise<UserEntity> {
@@ -72,6 +81,18 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   public async getUserByResetPasswordToken(token: string): Promise<UserEntity> {
-    return await this.findOne({ where: { resetPasswordToken: token } });
+    try {
+      return await this.findOne({ where: { resetPasswordToken: token } });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async updatePassword(id: number, data: ChangePasswordDTO): Promise<void> {
+    try {
+      await this.update({ id }, data);
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 }

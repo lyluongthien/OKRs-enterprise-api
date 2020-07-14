@@ -1,5 +1,5 @@
-import { Controller, Post, Body, ValidationPipe } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import { Controller, Post, Body, ValidationPipe, HttpStatus } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse, ApiResponse } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { RegisterDTO, SignInDTO } from './auth.dto';
 import { AuthResponse } from './auth.interface';
@@ -18,7 +18,7 @@ export class AuthController {
 
   @Post('/register')
   @ApiCreatedResponse({ description: 'User Registration' })
-  public async register(@Body(ValidationPipe) credentials: Partial<RegisterDTO>): Promise<AuthResponse> {
+  public async register(@Body(ValidationPipe) credentials: RegisterDTO): Promise<AuthResponse> {
     const user = await this.userService.createUser(credentials);
     return await this.authService.createBearerToken(user);
   }

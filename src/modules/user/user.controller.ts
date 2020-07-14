@@ -8,6 +8,7 @@ import { CurrentUser } from './user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
+import { ResponseModel } from '@app/constants/app.interface';
 
 @Controller('/api/v1/users')
 export class UserController {
@@ -25,8 +26,8 @@ export class UserController {
   }
 
   @Get(':id')
-  public async getUserDetail(@Param('id') id: number): Promise<UserEntity> {
-    return this._userService.getUserById(id);
+  public async getUserDetail(@Param('id') id: number): Promise<ResponseModel> {
+    return this._userService.getUserDetail(id);
   }
 
   @Get('me')
@@ -35,20 +36,35 @@ export class UserController {
     return user;
   }
 
+  /**
+   * @description: Verify token in links
+   */
   @Get('password/verification')
   public async verifyForgotPassword(@Query('token') token: string): Promise<ObjectLiteral> {
-    return this._userService.verifyForgotPassword(token);
+    return this._userService.verifyForgetPassword(token);
   }
 
-  @Post('password/forgot')
+  /**
+   * @description: Send mail to user a links, then use this link to reset password
+   */
+  @Post('password/forget')
   @UsePipes(new ValidationPipe())
-  public async forgetPassword(@Body() user: ResetPasswordDTO): Promise<void> {
+  public async forgetPassword(@Body() user: ResetPasswordDTO): Promise<ResponseModel> {
     return this._userService.forgetPassword(user);
+  }
+
+  /**
+   * @description: Save new password of user
+   */
+  @Put('password/reset:token')
+  @UsePipes(new ValidationPipe())
+  public async resetPassword(@Param('token') token: string, @Body() data: ChangePasswordDTO): Promise<ResponseModel> {
+    return this._userService.resetPassword(token, data);
   }
 
   @Put('/me/change-password/:id')
   @UsePipes(new ValidationPipe())
-  public async changePassword(@Param('id') id: number, @Body() user: ChangePasswordDTO): Promise<ObjectLiteral> {
+  public async changePassword(@Param('id') id: number, @Body() user: ChangePasswordDTO): Promise<ResponseModel> {
     return this._userService.changePassword(id, user);
   }
 

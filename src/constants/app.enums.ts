@@ -61,3 +61,14 @@ export enum RouterEnum {
   API_HOST_ROUTER = 'http://localhost:3000',
   FE_HOST_ROUTER = 'http://localhost:5000',
 }
+
+export enum CommonMessage {
+  SUCCESS = 'success',
+  PASSWORD_UPDATE_SUCCESS = 'Password successfully updated',
+  VALID_TOKEN = 'Token is valid',
+  INVALID_TOKEN = 'Token is invalid',
+  EXPIRED_TOKEN = 'Token is expired',
+  EMAIL_SENT = 'Email sent successfully',
+  USER_DO_NOT_EXIST = `User doesn't exist`,
+  DATABASE_EXCEPTION = 'Error when access to database',
+}
