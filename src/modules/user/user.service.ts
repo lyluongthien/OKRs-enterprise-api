@@ -7,12 +7,13 @@ import { hashSync } from 'bcryptjs';
 import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
 import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
-import { httpEmailExists } from '@app/constants/app.exeption';
+import { httpEmailExists, invalidTokenResetPassword, tokenExpired } from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { RouterEnum } from '@app/constants/app.enums';
 import { RegisterDTO } from '../auth/auth.dto';
+import { expireResetPasswordToken } from '@app/constants/app.magic-number';
 
 @Injectable()
 export class UserService {
@@ -34,18 +35,24 @@ export class UserService {
       throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
     }
   }
+
   /**
    * @description Reset password and send mail for staff
-   *
    */
-  public async resetPassword(user: ResetPasswordDTO): Promise<void> {
+  public async forgetPassword(user: ResetPasswordDTO): Promise<void> {
     const { email } = user;
-    const currentUser = await this._userRepository.getUserByConditions(null, { where: { email } });
+    const currentUser = await this._userRepository.findUserByEmail(email);
     if (!currentUser) {
       throw new HttpException('Email do not exist', HttpStatus.BAD_REQUEST);
     }
 
     const token = generate({ length: 30, numbers: true, lowercase: true, uppercase: true });
+    const expireDate = new Date();
+
+    await this._userRepository.updateResetPasswordToken(email, {
+      resetPasswordToken: token,
+      resetPasswordTokenExpire: expireDate,
+    });
 
     const url = RouterEnum.FE_HOST_ROUTER + `/reset-password?token=${token}`;
     const subject = '[Flame-OKRs] | Lấy lại mật khẩu';
@@ -54,6 +61,24 @@ export class UserService {
                     <a href="${url}">${url}</a>`;
 
     sendEmail(email, subject, html);
+  }
+
+  /**
+   * @description verify reset password token: valid | invalid
+   */
+  public async verifyForgotPassword(token: string): Promise<ObjectLiteral> {
+    const user = await this._userRepository.getUserByResetPasswordToken(token);
+    if (!user) {
+      throw new HttpException(invalidTokenResetPassword, HttpStatus.BAD_REQUEST);
+    }
+    const now = new Date().getTime();
+    const expireTime = user.resetPasswordTokenExpire.getTime();
+    const dueTime = now - expireTime;
+
+    if (dueTime > expireResetPasswordToken) {
+      throw new HttpException(tokenExpired, HttpStatus.BAD_REQUEST);
+    }
+    return { statusCode: HttpStatus.OK, message: 'Token valid' };
   }
 
   public async changePassword(id: number, user: ChangePasswordDTO): Promise<ObjectLiteral> {

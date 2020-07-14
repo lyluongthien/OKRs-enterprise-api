@@ -4,7 +4,7 @@ import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginat
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
-import { UserDTO, UserProfileDTO } from './user.dto';
+import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -64,5 +64,14 @@ export class UserRepository extends Repository<UserEntity> {
       relations: ['role'],
       where: { id },
     });
+  }
+
+  public async updateResetPasswordToken(email: string, data: ResetPasswordTokenDTO): Promise<UserEntity> {
+    await this.update({ email }, data);
+    return await this.findOne({ email });
+  }
+
+  public async getUserByResetPasswordToken(token: string): Promise<UserEntity> {
+    return await this.findOne({ where: { resetPasswordToken: token } });
   }
 }

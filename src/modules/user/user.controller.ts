@@ -35,10 +35,15 @@ export class UserController {
     return user;
   }
 
-  @Post('reset-password')
+  @Get('password/verification')
+  public async verifyForgotPassword(@Query('token') token: string): Promise<ObjectLiteral> {
+    return this._userService.verifyForgotPassword(token);
+  }
+
+  @Post('password/forgot')
   @UsePipes(new ValidationPipe())
-  public async resetPassword(@Body() user: ResetPasswordDTO): Promise<void> {
-    return this._userService.resetPassword(user);
+  public async forgetPassword(@Body() user: ResetPasswordDTO): Promise<void> {
+    return this._userService.forgetPassword(user);
   }
 
   @Put('/me/change-password/:id')

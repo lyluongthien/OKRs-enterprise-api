@@ -58,6 +58,12 @@ export class UserEntity {
   public isApproved: boolean;
 
   @Column()
+  public resetPasswordToken?: string;
+
+  @Column({ type: 'timestamptz' })
+  public resetPasswordTokenExpire?: Date;
+
+  @Column()
   public deactivatedAt: Date;
 
   @CreateDateColumn({ type: 'timestamptz' })
