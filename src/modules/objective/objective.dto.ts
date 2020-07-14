@@ -1,9 +1,11 @@
-import { ObjectiveTypeEnum } from '@app/constants/app.enums';
 import { KeyResultDTO } from '@app/modules/keyresult/keyresult.dto';
 
-export class ObjectiveDTO {
-  public type: ObjectiveTypeEnum;
+export class OkrsDTO {
+  public objective: ObjectiveDTO;
 
+  public keyResult: KeyResultDTO[];
+}
+export class ObjectiveDTO {
   public progress: number;
 
   public title: string;
@@ -16,7 +18,5 @@ export class ObjectiveDTO {
 
   public parentObjectiveId?: number;
 
-  public alignObjectivesId?: number;
-
-  public keyResult: KeyResultDTO[];
+  public alignObjectivesId: number;
 }

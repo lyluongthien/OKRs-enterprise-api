@@ -1,4 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Repository, EntityRepository, TransactionRepository } from 'typeorm';
 
-@Injectable()
-export class ObjectiveRepository {}
+import { OkrsDTO } from './objective.dto';
+import { ObjectiveEntity } from '@app/db/entities/objective.entity';
+
+@EntityRepository(ObjectiveEntity)
+export class ObjectiveRepository extends Repository<OkrsDTO> {
+  public async createObjective(data: OkrsDTO): Promise<OkrsDTO> {
+    return await this.save(data);
+  }
+}
