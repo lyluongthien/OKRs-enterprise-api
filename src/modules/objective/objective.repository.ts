@@ -1,4 +1,4 @@
-import { Repository, EntityRepository, EntityManager, ObjectLiteral } from 'typeorm';
+import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 
 import { ObjectiveDTO } from './objective.dto';
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';

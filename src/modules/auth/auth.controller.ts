@@ -18,7 +18,7 @@ export class AuthController {
 
   @Post('/register')
   @ApiCreatedResponse({ description: 'User Registration' })
-  public async register(@Body(ValidationPipe) credentials: Partial<RegisterDTO>): Promise<AuthResponse> {
+  public async register(@Body(ValidationPipe) credentials: RegisterDTO): Promise<AuthResponse> {
     const user = await this.userService.createUser(credentials);
     return await this.authService.createBearerToken(user);
   }

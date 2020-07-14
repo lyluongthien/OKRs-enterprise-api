@@ -1,7 +1,7 @@
 import { KeyResultDTO } from './keyresult.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 
-import { Repository, EntityRepository, EntityManager } from 'typeorm';
+import { Repository, EntityRepository } from 'typeorm';
 
 @EntityRepository(KeyResultEntity)
 export class KeyResultRepository extends Repository<KeyResultEntity> {
