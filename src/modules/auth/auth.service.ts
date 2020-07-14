@@ -1,10 +1,18 @@
 import { JwtService } from '@nestjs/jwt';
-import { Injectable, InternalServerErrorException, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+  BadRequestException,
+  HttpStatus,
+} from '@nestjs/common';
 import { SignInDTO } from './auth.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { AuthResponse, JwtPayload } from './auth.interface';
 import { invalidCredential } from '@app/constants/app.exeption';
 import { UserService } from '../user/user.service';
+import { ResponseModel } from '@app/constants/app.interface';
+import { CommonMessage } from '@app/constants/app.enums';
 @Injectable()
 export class AuthService {
   constructor(private userService: UserService, private jwtService: JwtService) {}
@@ -40,5 +48,13 @@ export class AuthService {
   public async createBearerToken(user: UserEntity): Promise<AuthResponse> {
     const token = await this.jwtService.sign({ id: user.id });
     return { token };
+  }
+
+  public async generateLinkInvite(): Promise<ResponseModel> {
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: {},
+    };
   }
 }

@@ -1,5 +1,5 @@
 import { ObjectLiteral } from 'typeorm';
-import { Controller, Post, Body, UsePipes, Put, Param, Get, UseGuards, Query } from '@nestjs/common';
+import { Controller, Post, Body, UsePipes, Put, Param, Get, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { Pagination } from 'nestjs-typeorm-paginate';
@@ -42,7 +42,7 @@ export class UserController {
   }
 
   @Get(':id')
-  public async getUserDetail(@Param('id') id: number): Promise<ResponseModel> {
+  public async getUserDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._userService.getUserDetail(id);
   }
 
