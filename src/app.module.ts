@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
 import { DatabaseConnectionService } from './db/database-connetion.service';
-import { RoleModule } from './modules/role/role.module';
 import { UserModule } from './modules/user/user.module';
 import { JobModule } from './modules/job/job.module';
 import { CorsMiddleware } from './shared/middlewares/cors.middleware';
@@ -20,7 +19,6 @@ import { MeasureUnitModule } from './modules/measure-unit/measure-unit.module';
     TypeOrmModule.forRootAsync({
       useClass: DatabaseConnectionService,
     }),
-    RoleModule,
     UserModule,
     JobModule,
     TeamModule,
