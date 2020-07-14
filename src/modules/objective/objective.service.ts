@@ -1,31 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { Connection } from 'typeorm';
+import { EntityManager } from 'typeorm';
 
 import { OkrsDTO } from './objective.dto';
 import { ObjectiveRepository } from './objective.repository';
+import { KeyResultEntity } from '@app/db/entities/key-result.entity';
+import { ObjectiveEntity } from '@app/db/entities/objective.entity';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
-import { async } from 'rxjs';
 
 @Injectable()
 export class ObjectiveService {
   constructor(private _objectiveRepository: ObjectiveRepository, private _keyresultRepository: KeyResultRepository) {}
 
-  public async createOKRs(data: OkrsDTO): Promise<OkrsDTO> {
-    // const queryRunner = this.connection.createQueryRunner();
-    // await queryRunner.connect();
-    // await queryRunner.startTransaction();
-    // try {
-    //   await queryRunner.manager.save(data.objective);
-    //   await queryRunner.manager.save(data.keyResult);
-    //   await queryRunner.commitTransaction();
-    //   return data;
-    // } catch (err) {
-    //   console.log(err);
-    //   await queryRunner.rollbackTransaction();
-    // } finally {
-    //   await queryRunner.release();
-    // }
+  public async createOKRs(okrDTo: OkrsDTO, manager?: EntityManager): Promise<void> {
+    const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
+    const KeyResultRepository = manager.getRepository(KeyResultEntity);
 
-    return null;
+    for (const value of okrDTo.keyResult) {
+      value.objectiveId = objective.id;
+      await KeyResultRepository.save(value);
+    }
   }
 }
