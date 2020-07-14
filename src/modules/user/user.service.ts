@@ -152,6 +152,10 @@ export class UserService {
     };
   }
 
+  public async searchUsers(text: string, options: IPaginationOptions): Promise<Pagination<UserEntity>> {
+    return await this._userRepository.searchUsers(text, options);
+  }
+
   public async updateUserInfor(id: number, data: UserDTO): Promise<ObjectLiteral> {
     return this._userRepository.update(id, data);
   }
