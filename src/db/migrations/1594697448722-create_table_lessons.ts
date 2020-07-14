@@ -51,6 +51,7 @@ export class CreateTableLessons1594697448722 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropIndex(TableName.Lesson, 'IDX_SLUG');
     await queryRunner.dropTable(this.lesssonsTable, true);
   }
 }
