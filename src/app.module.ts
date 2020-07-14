@@ -14,6 +14,7 @@ import { CycleModule } from './modules/cycle/cycle.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { EvaluationCriteriaModule } from './modules/evaluation-criteria/evaluation-criteria.module';
 import { MeasureUnitModule } from './modules/measure-unit/measure-unit.module';
+import { LessonModule } from './lesson/lesson.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { MeasureUnitModule } from './modules/measure-unit/measure-unit.module';
     AuthModule,
     MeasureUnitModule,
     EvaluationCriteriaModule,
+    LessonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,7 +1,7 @@
 import { PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 @Entity(TableName.Lesson)
-export class Lesson {
+export class LessonEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
