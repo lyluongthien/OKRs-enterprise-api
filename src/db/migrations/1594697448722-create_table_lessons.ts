@@ -36,6 +36,7 @@ export class CreateTableLessons1594697448722 implements MigrationInterface {
         name: 'slug',
         type: 'varchar',
         isNullable: false,
+        isUnique: true,
       },
     ],
   });
