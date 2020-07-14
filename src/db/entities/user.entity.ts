@@ -14,6 +14,7 @@ import { TableName } from '@app/constants/app.enums';
 import { _salt } from '@app/constants/app.config';
 import { JobEntity } from './job.entity';
 import { RoleEntity } from './role.entity';
+import { TeamEntity } from './team.entity';
 
 @Entity({ name: TableName.User })
 export class UserEntity {
@@ -70,6 +71,9 @@ export class UserEntity {
 
   @ManyToOne(() => JobEntity, (jobPosition) => jobPosition.users)
   public jobPosition: JobEntity;
+
+  @ManyToOne(() => TeamEntity, (team) => team.users)
+  public team: TeamEntity;
 
   @BeforeInsert()
   public async hashPassword(): Promise<void> {

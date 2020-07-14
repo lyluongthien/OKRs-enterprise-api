@@ -1,5 +1,6 @@
 import { ObjectLiteral } from 'typeorm';
 import { Injectable } from '@nestjs/common';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamRepository } from './team.repository';
@@ -9,8 +10,8 @@ import { TeamDTO } from './team.dto';
 export class TeamService {
   constructor(private _teamRepository: TeamRepository) {}
 
-  public getAllTeam(): Promise<TeamEntity[]> {
-    return this._teamRepository.getAllTeam();
+  public getTeams(options: IPaginationOptions): Promise<Pagination<TeamEntity>> {
+    return this._teamRepository.getTeams(options);
   }
 
   public getDetailTeam(id: number): Promise<TeamEntity> {

@@ -1,4 +1,4 @@
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { Injectable, HttpException, HttpStatus, InternalServerErrorException, ConflictException } from '@nestjs/common';
 import { generate } from 'generate-password';
 import { ObjectLiteral, Connection } from 'typeorm';
@@ -7,10 +7,10 @@ import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
 import { httpEmailExists } from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
-import { ResetPasswordDTO, ChangePasswordDTO } from './user.dto';
+import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
-import { RegisterDTO } from '../auth/auth.dto';
 import { RoleEntity } from '@app/db/entities/role.entity';
+import { RegisterDTO } from '../auth/auth.dto';
 
 @Injectable()
 export class UserService {
@@ -31,7 +31,6 @@ export class UserService {
       throw new ConflictException(httpEmailExists);
     }
   }
-
   /**
    * @description Reset password and send mail for staff
    *
@@ -72,11 +71,19 @@ export class UserService {
   }
 
   public async getUsers(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
-    return await paginate<UserEntity>(this._userRepository, options);
+    return await this._userRepository.getUsers(options);
   }
 
   public async getUserDetail(id: number): Promise<UserEntity> {
     return await this._userRepository.getUserDetail(id);
+  }
+
+  public async updateUserInfor(id: number, data: UserDTO): Promise<ObjectLiteral> {
+    return this._userRepository.update(id, data);
+  }
+
+  public async updateUserProfile(id: number, data: UserProfileDTO): Promise<ObjectLiteral> {
+    return this._userRepository.updateUserProfile(id, data);
   }
 
   public async getUserByEmail(email: string): Promise<UserEntity> {

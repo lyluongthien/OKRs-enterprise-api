@@ -1,5 +1,6 @@
-import { PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
+import { UserEntity } from './user.entity';
 @Entity(TableName.Team)
 export class TeamEntity {
   @PrimaryGeneratedColumn()
@@ -19,4 +20,7 @@ export class TeamEntity {
 
   @UpdateDateColumn({ type: 'timestamptz' })
   public updatedAt: Date;
+
+  @OneToMany(() => UserEntity, (user) => user.team)
+  public users: UserEntity[];
 }
