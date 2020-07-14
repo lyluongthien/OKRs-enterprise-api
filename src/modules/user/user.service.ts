@@ -75,6 +75,10 @@ export class UserService {
     return await this._userRepository.getUsers(options);
   }
 
+  public async searchUsers(text: string, options: IPaginationOptions): Promise<Pagination<UserEntity>> {
+    return await this._userRepository.searchUsers(text, options);
+  }
+
   public async getUserDetail(id: number): Promise<UserEntity> {
     return await this._userRepository.getUserDetail(id);
   }

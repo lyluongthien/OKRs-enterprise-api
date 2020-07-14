@@ -42,6 +42,18 @@ export class UserRepository extends Repository<UserEntity> {
     return await paginate<UserEntity>(queryBuilder, options);
   }
 
+  public async searchUsers(text: string, options: IPaginationOptions): Promise<Pagination<UserEntity>> {
+    const queryBuilder = this.createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'roles')
+      .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+      .leftJoinAndSelect('user.team', 'teams')
+      .where('user.fullName like :text', { text: '%' + text + '%' })
+      .orWhere('user.email like :text', { text: '%' + text + '%' })
+      .orderBy('user.id', 'ASC');
+
+    return await paginate<UserEntity>(queryBuilder, options);
+  }
+
   public async getUserDetail(id: number): Promise<UserEntity> {
     return await this.findOneOrFail({
       relations: ['role', 'jobPosition', 'team'],
