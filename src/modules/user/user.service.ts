@@ -18,24 +18,22 @@ import { ResponseModel } from '@app/constants/app.interface';
 
 @Injectable()
 export class UserService {
-  constructor(private connection: Connection, private _userRepository: UserRepository) {
-    this._userRepository = connection.getCustomRepository(UserRepository);
-  }
+  constructor(private _userRepository: UserRepository) {}
 
-  public async createUser({ email, password, fullName }: Partial<RegisterDTO>): Promise<UserEntity> {
-    try {
-      const emailExists = await this._userRepository.findUserByEmail(email);
-      if (emailExists) {
-        throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
-      }
-      const newUser = this._userRepository.create({ email, password, fullName, _salt });
-      await this._userRepository.save(newUser);
-      delete newUser.password;
-      return newUser;
-    } catch (error) {
-      throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
-    }
-  }
+  // public async createUser({ email, password, fullName }: Partial<RegisterDTO>): Promise<UserEntity> {
+  //   try {
+  //     const emailExists = await this._userRepository.findUserByEmail(email);
+  //     if (emailExists) {
+  //       throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
+  //     }
+  //     const newUser = this._userRepository.create({ email, password, fullName, _salt });
+  //     await this._userRepository.save(newUser);
+  //     delete newUser.password;
+  //     return newUser;
+  //   } catch (error) {
+  //     throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
+  //   }
+  // }
 
   /**
    * @description Send a link in email to user, then use this link to reset password

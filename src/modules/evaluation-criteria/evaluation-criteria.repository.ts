@@ -1,9 +1,9 @@
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 
 import { EvaluationCriteriaEntity } from '@app/db/entities/evaluation-criteria.entity';
 import { EvaluationDTO } from './evaluation-criteria.dto';
-import { httpDatabaseException } from '@app/constants/app.exeption';
+import { CommonMessage } from '@app/constants/app.enums';
 
 @EntityRepository(EvaluationCriteriaEntity)
 export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaEntity> {
@@ -15,7 +15,7 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
     try {
       return await this.save(data);
     } catch (error) {
-      throw new HttpException(httpDatabaseException.message, httpDatabaseException.statusCode);
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
 
@@ -28,7 +28,7 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
       await this.update({ id }, data);
       return await this.findOne({ id });
     } catch (error) {
-      throw new HttpException(httpDatabaseException.message, httpDatabaseException.statusCode);
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
 
