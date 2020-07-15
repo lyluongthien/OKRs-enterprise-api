@@ -21,12 +21,4 @@ export class LessonEntity {
 
   @Column()
   public slug: string;
-
-  @BeforeInsert()
-  public async updateSlug(): Promise<void> {
-    (this.slug = slugify(this.title)),
-      {
-        lower: true,
-      };
-  }
 }
