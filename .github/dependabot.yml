@@ -7,7 +7,7 @@ updates:
       day: "sunday"
       time: "08:00"
       timezone: Asia/Saigon
-    versioning-strategy: increase
+    versioning-strategy: increase-if-necessary
     target-branch: "develop"
     open-pull-requests-limit: 10
     rebase-strategy: "auto"
