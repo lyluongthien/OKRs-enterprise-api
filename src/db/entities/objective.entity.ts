@@ -1,5 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
+import { KeyResultEntity } from './key-result.entity';
+import { UserEntity } from './user.entity';
+import { CycleEntity } from './cycle.entity';
 
 @Entity(TableName.Objective)
 export class ObjectiveEntity {
@@ -26,4 +29,19 @@ export class ObjectiveEntity {
 
   @Column({ array: true })
   public alignObjectivesId: number;
+
+  @ManyToOne(() => ObjectiveEntity, (objective) => objective.objectives)
+  public objective: ObjectiveEntity;
+
+  @OneToMany(() => ObjectiveEntity, (objectives) => objectives.objective)
+  public objectives: ObjectiveEntity[];
+
+  @OneToMany(() => KeyResultEntity, (keyresult) => keyresult.objective)
+  public keyResults: KeyResultEntity[];
+
+  @ManyToOne(() => UserEntity, (user) => user.objectives)
+  public user: UserEntity;
+
+  @ManyToOne(() => CycleEntity, (cycle) => cycle.objectives)
+  public cycle: CycleEntity;
 }

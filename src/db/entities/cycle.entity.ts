@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 import { TableName } from '@app/constants/app.enums';
+import { ObjectiveDTO } from '@app/modules/objective/objective.dto';
+import { ObjectiveEntity } from './objective.entity';
 
 @Entity(TableName.Cycle)
 export class CycleEntity {
@@ -15,4 +17,7 @@ export class CycleEntity {
 
   @Column({ type: 'timestamptz' })
   public endDate: Date;
+
+  @OneToMany(() => ObjectiveEntity, (objectives) => objectives.cycle)
+  public objectives: ObjectiveEntity[];
 }

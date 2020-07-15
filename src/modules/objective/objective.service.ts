@@ -6,6 +6,7 @@ import { ObjectiveRepository } from './objective.repository';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ObjectiveService {
@@ -19,5 +20,9 @@ export class ObjectiveService {
       value.objectiveId = objective.id;
       await KeyResultRepository.save(value);
     }
+  }
+
+  public async viewObjectives(options: IPaginationOptions, cycleID: number): Promise<Pagination<ObjectiveEntity>> {
+    return await this._objectiveRepository.viewObjectives(options, cycleID);
   }
 }
