@@ -4,7 +4,7 @@ import { ObjectLiteral, Connection } from 'typeorm';
 import { generate } from 'generate-password';
 import { hashSync } from 'bcryptjs';
 
-import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
+import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO, ApproveRequestDTO } from './user.dto';
 import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
 import { httpEmailExists, invalidTokenResetPassword, tokenExpired } from '@app/constants/app.exeption';
@@ -137,6 +137,10 @@ export class UserService {
 
   public async rejectRequest(id: number): Promise<ObjectLiteral> {
     return await this._userRepository.delete({ id });
+  }
+
+  public async approveRequest(isApproved: boolean, user: ApproveRequestDTO): Promise<ObjectLiteral> {
+    return await this._userRepository.updateUserByApproveStatus(isApproved, user);
   }
 
   public async getUsers(options: IPaginationOptions): Promise<Pagination<UserEntity>> {

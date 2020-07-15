@@ -5,7 +5,7 @@ import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { UserService } from './user.service';
-import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
+import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO, ApproveRequestDTO } from './user.dto';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { CurrentUser } from './user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
@@ -88,6 +88,14 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   public async rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
     return this._userService.rejectRequest(id);
+  }
+
+  @Put('approve-request/:isApproved')
+  public approveRequest(
+    @Param('isApproved') isApproved: boolean,
+    @Body() user: ApproveRequestDTO,
+  ): Promise<ObjectLiteral> {
+    return this._userService.approveRequest(isApproved, user);
   }
 
   @Put(':id')

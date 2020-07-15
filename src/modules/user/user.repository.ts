@@ -4,7 +4,7 @@ import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginat
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
-import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO, ChangePasswordDTO } from './user.dto';
+import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO, ChangePasswordDTO, ApproveRequestDTO } from './user.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
@@ -69,6 +69,9 @@ export class UserRepository extends Repository<UserEntity> {
       where: { id },
     });
   }
+  public async getUserByApproveStatus(isApproved: boolean): Promise<UserEntity[]> {
+    return await this.find({ where: { isApproved } });
+  }
 
   public async updateUserProfile(id: number, data: UserProfileDTO): Promise<UserEntity> {
     await this.update({ id }, data);
@@ -106,5 +109,9 @@ export class UserRepository extends Repository<UserEntity> {
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
+  }
+  public async updateUserByApproveStatus(isApproved: boolean, user: ApproveRequestDTO): Promise<UserEntity[]> {
+    await this.update({ isApproved }, user);
+    return this.getUserByApproveStatus(isApproved);
   }
 }
