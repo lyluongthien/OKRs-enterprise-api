@@ -11,7 +11,7 @@ export class KeyResultController {
 
   @Post()
   @UsePipes(new ValidationPipe())
-  public createKeyResult(@Body() keyresult: KeyResultDTO): Promise<KeyResultEntity> {
+  public createKeyResult(@Body() keyresult: KeyResultDTO[]): Promise<KeyResultEntity> {
     return this._keyResultService.createKeyResult(keyresult);
   }
 }
