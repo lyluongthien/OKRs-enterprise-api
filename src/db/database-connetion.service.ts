@@ -11,7 +11,6 @@ import { CycleEntity } from './entities/cycle.entity';
 import { EvaluationCriteriaEntity } from './entities/evaluation-criteria.entity';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { MeasureUnitEntity } from './entities/measure-unit.entity';
-import { LessonService } from '@app/lesson/lesson.service';
 import { LessonEntity } from './entities/lesson.entity';
 
 const type = DbConfig.DB_TYPE;
