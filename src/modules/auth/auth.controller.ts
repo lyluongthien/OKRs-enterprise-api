@@ -1,4 +1,4 @@
-import { Controller, Post, Body, ValidationPipe, Get } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Get, Param } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
@@ -7,7 +7,7 @@ import { AuthResponse } from './auth.interface';
 import { UserService } from '../user/user.service';
 import { ResponseModel } from '@app/constants/app.interface';
 
-@Controller('auth')
+@Controller('auths')
 export class AuthController {
   constructor(private readonly _authService: AuthService, private readonly userService: UserService) {}
 
@@ -25,8 +25,19 @@ export class AuthController {
     return await this._authService.createBearerToken(user);
   }
 
-  @Get()
-  public async generateLinkInvite(): Promise<ResponseModel> {
-    return this._authService.generateLinkInvite();
+  /**
+   * @description: Generate a link, user can access this link to register an account
+   */
+  @Get('/verification/:token')
+  public async verifyLinkInvite(@Param('token') token: string): Promise<ResponseModel> {
+    return this._authService.verifyLinkInvite(token);
+  }
+
+  /**
+   * @description: Generate a link, user can access this link to register an account
+   */
+  @Get('/link-invite')
+  public async generateInviteLink(): Promise<ResponseModel> {
+    return this._authService.generateInviteLink();
   }
 }

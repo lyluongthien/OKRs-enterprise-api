@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
   BadRequestException,
   HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { SignInDTO } from './auth.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
@@ -12,10 +13,17 @@ import { AuthResponse, JwtPayload } from './auth.interface';
 import { invalidCredential } from '@app/constants/app.exeption';
 import { UserService } from '../user/user.service';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage } from '@app/constants/app.enums';
+import { CommonMessage, RouterEnum } from '@app/constants/app.enums';
+import { generate } from 'generate-password';
+import { TokenRepository } from './token.repository';
+
 @Injectable()
 export class AuthService {
-  constructor(private userService: UserService, private jwtService: JwtService) {}
+  constructor(
+    private userService: UserService,
+    private jwtService: JwtService,
+    private _tokenRepository: TokenRepository,
+  ) {}
 
   public async authenticate({ email, password }: SignInDTO): Promise<AuthResponse> {
     try {
@@ -50,10 +58,29 @@ export class AuthService {
     return { token };
   }
 
-  public async generateLinkInvite(): Promise<ResponseModel> {
+  public async generateInviteLink(): Promise<ResponseModel> {
+    const token = generate({ length: 30, numbers: true, lowercase: true, uppercase: true });
+    await this._tokenRepository.createToken(token);
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: CommonMessage.SUCCESS,
+      data: {
+        url: RouterEnum.FE_HOST_ROUTER + `/join/${token}`,
+      },
+    };
+  }
+
+  public async verifyLinkInvite(token: string): Promise<ResponseModel> {
+    const tokenEntity = await this._tokenRepository.getToken(token);
+    console.log(tokenEntity);
+    if (!tokenEntity) {
+      throw new HttpException(CommonMessage.INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+    }
+
     return {
       statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
+      message: CommonMessage.VALID_TOKEN,
       data: {},
     };
   }
