@@ -1,0 +1,18 @@
+codecov:
+  bot: code-hunter
+  token: ${{ secrets.CODECOV_TOKEN }}
+  require_ci_to_pass: yes
+
+coverage:
+  round: up
+  precision: 2
+  range: "70...100"
+parsers:
+  javascript:
+    enable_partials: yes
+
+comment:
+  layout: "reach, diff, flags, files"
+  behavior: default
+  require_changes: true
+  after_n_builds: 5

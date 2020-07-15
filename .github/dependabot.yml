@@ -3,11 +3,11 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: daily
       day: "sunday"
       time: "08:00"
-      timezone: "Asia/Ho_Chi_Minh"
-    versioning-strategy: increase
+      timezone: Asia/Saigon
+    versioning-strategy: increase-if-necessary
     target-branch: "develop"
     open-pull-requests-limit: 10
     rebase-strategy: "auto"
