@@ -1,6 +1,5 @@
-import { PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
-import slugify from 'slugify';
 
 @Entity(TableName.Lesson)
 export class LessonEntity {
