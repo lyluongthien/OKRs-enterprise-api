@@ -1,8 +1,21 @@
 import { ObjectLiteral } from 'typeorm';
-import { Controller, Post, Body, UsePipes, Put, Param, Get, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UsePipes,
+  Put,
+  Param,
+  Get,
+  UseGuards,
+  Query,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { Pagination } from 'nestjs-typeorm-paginate';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 import { UserService } from './user.service';
 import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
@@ -98,5 +111,11 @@ export class UserController {
   @Post('me')
   public updateUserProfile(@Param('id') id: number, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
     return this._userService.updateUserProfile(id, data);
+  }
+
+  @Post('/upload')
+  @UseInterceptors(FileInterceptor('image'))
+  uploadFile(@UploadedFile() file) {
+    console.log(file);
   }
 }
