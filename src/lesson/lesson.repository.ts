@@ -1,5 +1,4 @@
 import { EntityRepository, Repository, ObjectLiteral } from 'typeorm';
-import { paginate, IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { CommonMessage } from '@app/constants/app.enums';
 import { HttpStatus, HttpException } from '@nestjs/common';
 
@@ -8,10 +7,33 @@ import { LessonDTO } from './lesson.dto';
 
 @EntityRepository(LessonEntity)
 export class LessonRepository extends Repository<LessonEntity> {
-  public async getLessons(options: IPaginationOptions): Promise<any> {
+  public async getLessons(): Promise<LessonEntity[]> {
     try {
-      const queryBuilder = this.createQueryBuilder('lesson').orderBy('lesson.id', 'ASC');
-      return await paginate<LessonEntity>(queryBuilder, options);
+      const queryBuilder = this.createQueryBuilder('lesson').orderBy('lesson.id', 'ASC').getMany();
+      return await queryBuilder;
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async getDetailLesson(slug: string): Promise<LessonEntity> {
+    try {
+      const queryBuilder = this.createQueryBuilder('lesson').where('lesson.slug = :slug', { slug: slug }).getOne();
+      return await queryBuilder;
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async searchLessons(title: string): Promise<LessonEntity[]> {
+    try {
+      const queryBuilder = this.createQueryBuilder('lesson')
+        .where('lesson.title like :text', {
+          text: '%' + title + '%',
+        })
+        .orderBy('lesson.id', 'ASC')
+        .getMany();
+      return await queryBuilder;
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
@@ -38,18 +60,6 @@ export class LessonRepository extends Repository<LessonEntity> {
     try {
       await this.delete({ id });
       return { isDeleted: true };
-    } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  public async searchLessons(text: string, options: IPaginationOptions): Promise<any> {
-    try {
-      const queryBuilder = this.createQueryBuilder('lesson').where('lesson.title like :text', {
-        text: '%' + text + '%',
-      });
-
-      return await paginate<LessonEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }

@@ -1,18 +1,36 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { LessonRepository } from './lesson.repository';
-import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import slugify from 'slugify';
+
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage } from '@app/constants/app.enums';
 import { LessonDTO } from './lesson.dto';
-import slugify from 'slugify';
 import { generate } from 'generate-password';
 
 @Injectable()
 export class LessonService {
   constructor(private _lessonRepository: LessonRepository) {}
 
-  public async getLessons(options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this._lessonRepository.getLessons(options);
+  public async getLessons(): Promise<ResponseModel> {
+    const data = await this._lessonRepository.getLessons();
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async getDetailLesson(slug: string): Promise<ResponseModel> {
+    const data = await this._lessonRepository.getDetailLesson(slug);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async searchLessons(text: string): Promise<ResponseModel> {
+    const data = await this._lessonRepository.searchLessons(text);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -55,15 +73,6 @@ export class LessonService {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
       data: {},
-    };
-  }
-
-  public async searchLessons(text: string, options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this._lessonRepository.searchLessons(text, options);
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: data,
     };
   }
 }
