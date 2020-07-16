@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { JwtModuleOptions, JwtOptionsFactory } from '@nestjs/jwt';
-import accessEnv from '@app/libs/accessEnv';
+import { defaultJwtModuleOption } from '@app/constants/app.config';
 
 @Injectable()
 export class JwtConfig implements JwtOptionsFactory {
-  private jwtSecret: string = accessEnv('JWT_SECRET');
-  private expiresIn: number = accessEnv('JWT_TOKEN_EXPIRES_IN');
+  private jwtSecret: string = defaultJwtModuleOption.secret;
+  private expiresIn: number = defaultJwtModuleOption.expiresIn;
   private defaltJwtOptions: JwtModuleOptions = {
     secret: this.jwtSecret,
     signOptions: {

@@ -6,6 +6,9 @@ import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { UserModule } from '../user/user.module';
 import { defaultJwtModuleOption } from '@app/constants/app.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { TokenRepository } from './auth.repository';
+import { UserRepository } from '../user/user.repository';
 
 @Module({
   imports: [
@@ -21,6 +24,7 @@ import { defaultJwtModuleOption } from '@app/constants/app.config';
       },
     }),
     UserModule,
+    TypeOrmModule.forFeature([TokenRepository, UserRepository]),
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
