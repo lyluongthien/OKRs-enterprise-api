@@ -162,4 +162,19 @@ export class UserService {
     const userRole = await this._userRepository.getUserRole(id);
     return userRole.role;
   }
+
+  public async logout(id: number): Promise<ResponseModel> {
+    try {
+      const now = new Date();
+      this._userRepository.update({ id }, { aceptTokenAfter: now });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.LOGOUT_SUCCESS,
+      data: {},
+    };
+  }
 }

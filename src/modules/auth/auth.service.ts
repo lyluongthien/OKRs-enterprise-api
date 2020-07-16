@@ -1,12 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-import {
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-  BadRequestException,
-  HttpStatus,
-  HttpException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, HttpStatus, HttpException } from '@nestjs/common';
 import { SignInDTO } from './auth.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { invalidCredential, httpEmailExists } from '@app/constants/app.exeption';
@@ -16,7 +9,6 @@ import { generate } from 'generate-password';
 import { TokenRepository } from './auth.repository';
 import { expireInviteToken } from '@app/constants/app.magic-number';
 import { UserRepository } from '../user/user.repository';
-import { _salt } from '@app/constants/app.config';
 import { RegisterDTO } from '../auth/auth.dto';
 import { compareSync } from 'bcryptjs';
 import { JwtPayload } from './auth.interface';
@@ -35,7 +27,7 @@ export class AuthService {
       if (emailExists) {
         throw new HttpException(httpEmailExists, HttpStatus.BAD_REQUEST);
       }
-      const newUser = this._userRepository.create({ email, password, fullName, _salt });
+      const newUser = this._userRepository.create({ email, password, fullName });
       await this._userRepository.save(newUser);
       delete newUser.password;
       return newUser;
@@ -61,17 +53,16 @@ export class AuthService {
   }
 
   public async validateUserFromJwtPayload(payload: JwtPayload): Promise<any> {
-    try {
-      // const { id } = payload;
-      // const user = await this._userRepository.getUserByConditions(id);
-      // if (!user) {
-      //   throw new UnauthorizedException();
-      // }
-      // return user;
-      return payload;
-    } catch (error) {
-      throw new InternalServerErrorException();
+    const { id, iat } = payload;
+    const user = await this._userRepository.getUserByConditions(id);
+    if (!user) {
+      throw new UnauthorizedException();
     }
+    // Check if have user + user have acceptTokenAfter + Issue At time < date of accept Token
+    if (user.aceptTokenAfter && iat * 1000 < user.aceptTokenAfter.getTime()) {
+      throw new UnauthorizedException();
+    }
+    return payload;
   }
 
   public async createBearerToken(user: UserEntity): Promise<ResponseModel> {
