@@ -1,5 +1,5 @@
 import { Repository, EntityRepository, ObjectLiteral, FindOneOptions } from 'typeorm';
-import { InternalServerErrorException, HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
 
 import { UserEntity } from '@app/db/entities/user.entity';
