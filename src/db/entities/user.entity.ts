@@ -1,5 +1,5 @@
 import { createHash } from 'crypto';
-import { hashSync, compareSync } from 'bcryptjs';
+import { hashSync } from 'bcryptjs';
 import {
   Entity,
   Column,
@@ -98,9 +98,5 @@ export class UserEntity {
     if (this.password !== this.password) {
       this.password = hashSync(this.password, _salt);
     }
-  }
-
-  public async comparePassword(inputPassword: string): Promise<boolean> {
-    return await compareSync(inputPassword, this.password);
   }
 }

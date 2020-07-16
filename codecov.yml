@@ -1,3 +1,8 @@
+codecov:
+  bot: code-hunter
+  token: ${{ secrets.CODECOV_TOKEN }}
+  require_ci_to_pass: yes
+
 coverage:
   round: up
   precision: 2
@@ -11,5 +16,3 @@ comment:
   behavior: default
   require_changes: true
   after_n_builds: 5
-  branches:
-    - "develop*"
