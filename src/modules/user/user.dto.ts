@@ -47,8 +47,3 @@ export class ResetPasswordTokenDTO {
 
   public resetPasswordTokenExpire: Date;
 }
-export class ApproveRequestDTO {
-  public readonly isApproved: boolean;
-
-  public readonly isActive: boolean;
-}

@@ -4,7 +4,7 @@ import { ObjectLiteral } from 'typeorm';
 import { generate } from 'generate-password';
 import { hashSync } from 'bcryptjs';
 
-import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO, ApproveRequestDTO } from './user.dto';
+import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
 import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
 import { invalidTokenResetPassword, tokenExpired } from '@app/constants/app.exeption';
