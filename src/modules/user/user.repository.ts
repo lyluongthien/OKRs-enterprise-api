@@ -4,7 +4,7 @@ import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginat
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
-import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO, ChangePasswordDTO, SetAvatarUserDTO } from './user.dto';
+import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO, ChangePasswordDTO } from './user.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)

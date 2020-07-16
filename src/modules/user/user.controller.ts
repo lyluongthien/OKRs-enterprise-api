@@ -97,11 +97,14 @@ export class UserController {
     return this._userService.resetPassword(token, data);
   }
 
-  @Put('/me/change-password/:id')
+  @Put('/me/change-password')
   @UseGuards(AuthenticationGuard)
   @UsePipes(new ValidationPipe())
-  public async changePassword(@Param('id') id: number, @Body() user: ChangePasswordDTO): Promise<ResponseModel> {
-    return this._userService.changePassword(id, user);
+  public async changePassword(
+    @CurrentUser() user: UserEntity,
+    @Body() data: ChangePasswordDTO,
+  ): Promise<ResponseModel> {
+    return this._userService.changePassword(user.id, data);
   }
 
   @Put('reject-request/:id')
@@ -119,7 +122,7 @@ export class UserController {
 
   @Post('me')
   @UseGuards(AuthenticationGuard)
-  public updateUserProfile(@Param('id') id: number, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
-    return this._userService.updateUserProfile(id, data);
+  public updateUserProfile(@CurrentUser() user: UserEntity, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
+    return this._userService.updateUserProfile(user.id, data);
   }
 }
