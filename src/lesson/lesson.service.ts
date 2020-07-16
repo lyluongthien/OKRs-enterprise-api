@@ -68,11 +68,7 @@ export class LessonService {
     };
   }
   public async deleteLesson(id: number): Promise<ResponseModel> {
-    await this._lessonRepository.deleteLesson(id);
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: {},
-    };
+    const data = await this._lessonRepository.deleteLesson(id);
+    return data;
   }
 }

@@ -9,13 +9,11 @@ export class LessonController {
   constructor(private _lessonService: LessonService) {}
 
   @Get()
-  public getLessons(): Promise<ResponseModel> {
-    return this._lessonService.getLessons();
-  }
-
-  @Get('/search')
   public searchLessons(@Query('text') text: string): Promise<ResponseModel> {
-    return this._lessonService.searchLessons(text);
+    if (text) {
+      return this._lessonService.searchLessons(text);
+    }
+    return this._lessonService.getLessons();
   }
 
   @Get(':slug')
@@ -34,7 +32,7 @@ export class LessonController {
   }
 
   @Delete(':id')
-  public deteleLesson(@Param('id') id: number): any {
+  public deteleLesson(@Param('id') id: number): Promise<ResponseModel> {
     return this._lessonService.deleteLesson(id);
   }
 }

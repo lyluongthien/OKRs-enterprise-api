@@ -4,6 +4,7 @@ import { HttpStatus, HttpException } from '@nestjs/common';
 
 import { LessonEntity } from '@app/db/entities/lesson.entity';
 import { LessonDTO } from './lesson.dto';
+import { ResponseModel } from '@app/constants/app.interface';
 
 @EntityRepository(LessonEntity)
 export class LessonRepository extends Repository<LessonEntity> {
@@ -56,10 +57,17 @@ export class LessonRepository extends Repository<LessonEntity> {
     }
   }
 
-  public async deleteLesson(id: number): Promise<ObjectLiteral> {
+  public async deleteLesson(id: number): Promise<ResponseModel> {
     try {
-      await this.delete({ id });
-      return { isDeleted: true };
+      const rowEffected: number = (await this.delete({ id })).affected;
+      if (rowEffected == 1)
+        return {
+          statusCode: HttpStatus.OK,
+          message: CommonMessage.SUCCESS,
+          data: { is_deleted: true },
+        };
+
+      return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
