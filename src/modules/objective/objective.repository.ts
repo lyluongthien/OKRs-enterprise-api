@@ -11,7 +11,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     return null;
   }
 
-  public async viewObjectives(options: IPaginationOptions, cycleID: number): Promise<Pagination<ObjectiveEntity>> {
+  public async viewOKRs(options: IPaginationOptions, cycleID: number): Promise<Pagination<ObjectiveEntity>> {
     const queryBuilder = this.createQueryBuilder('objective')
       .select([
         'objective.id',
@@ -23,10 +23,19 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         'objective.parentObjectiveId',
         'objective.alignObjectivesId',
       ])
-      .leftJoin(ObjectiveEntity, 'childObjective', '"childObjective"."parentObjectiveId" = objective.parentObjectiveId')
+      //.leftJoin(ObjectiveEntity, 'childObjective', '"childObjective"."parentObjectiveId" = objective.id')
+      .leftJoin('objective.objective', 'childObjective', '"childObjective"."parentObjectiveId" = objective.id')
+      .select(['childObjective.id', 'childObjective.progress', 'childObjective.title'])
       .leftJoinAndSelect('objective.keyResults', 'keyresults')
       .leftJoinAndSelect('objective.user', 'user')
       .where('objective.cycleId = :id', { id: cycleID });
+    //console.log(queryBuilder);
     return await paginate<ObjectiveEntity>(queryBuilder, options);
+  }
+  public async getDetailOKRs(id: number): Promise<ObjectiveEntity> {
+    return await this.findOneOrFail({
+      relations: ['keyResults', 'user'],
+      where: { id },
+    });
   }
 }

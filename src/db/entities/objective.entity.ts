@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { KeyResultEntity } from './key-result.entity';
 import { UserEntity } from './user.entity';
@@ -31,9 +31,11 @@ export class ObjectiveEntity {
   public alignObjectivesId: number;
 
   @ManyToOne(() => ObjectiveEntity, (objective) => objective.objectives)
+  @JoinColumn([{ name: 'id', referencedColumnName: 'id' }])
   public objective: ObjectiveEntity;
 
   @OneToMany(() => ObjectiveEntity, (objectives) => objectives.objective)
+  @JoinColumn([{ name: 'id', referencedColumnName: 'id' }])
   public objectives: ObjectiveEntity[];
 
   @OneToMany(() => KeyResultEntity, (keyresult) => keyresult.objective)

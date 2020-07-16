@@ -17,12 +17,17 @@ export class ObjectiveController {
     return this._objectiveService.createOKRs(data, manager);
   }
 
+  @Get(':id')
+  public async viewDetailOKRs(@Param('id') id: number): Promise<ObjectiveEntity> {
+    return this._objectiveService.getDetailOKRs(id);
+  }
+
   @Get(':cycleID')
-  public async viewObjectives(
+  public async viewOKRs(
     @Param('cycleID') cycleID: number,
     @Query('page') page: number,
     @Query('limit') limit: number,
   ): Promise<Pagination<ObjectiveEntity>> {
-    return this._objectiveService.viewObjectives({ page, limit }, cycleID);
+    return this._objectiveService.viewOKRs({ page, limit }, cycleID);
   }
 }

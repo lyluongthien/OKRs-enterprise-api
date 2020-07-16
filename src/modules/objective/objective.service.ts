@@ -22,7 +22,11 @@ export class ObjectiveService {
     }
   }
 
-  public async viewObjectives(options: IPaginationOptions, cycleID: number): Promise<Pagination<ObjectiveEntity>> {
-    return await this._objectiveRepository.viewObjectives(options, cycleID);
+  public async viewOKRs(options: IPaginationOptions, cycleID: number): Promise<Pagination<ObjectiveEntity>> {
+    return await this._objectiveRepository.viewOKRs(options, cycleID);
+  }
+
+  public async getDetailOKRs(id: number): Promise<ObjectiveEntity> {
+    return await this._objectiveRepository.getDetailOKRs(id);
   }
 }
