@@ -118,7 +118,7 @@ export class UserService {
   }
 
   public async rejectRequest(id: number): Promise<ObjectLiteral> {
-    return await this._userRepository.delete({ id });
+    return await this._userRepository.deleteUser(id);
   }
 
   public async getUsers(options: IPaginationOptions): Promise<Pagination<UserEntity>> {

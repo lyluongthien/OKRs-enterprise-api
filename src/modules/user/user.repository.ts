@@ -33,9 +33,15 @@ export class UserRepository extends Repository<UserEntity> {
   public async deleteUser(id: number): Promise<ObjectLiteral> {
     try {
       const rowEffected: number = await (await this.delete({ id })).affected;
-      return { isDeleted: rowEffected === 1 ? true : false };
+      if (rowEffected == 1)
+        return {
+          statusCode: HttpStatus.OK,
+          message: CommonMessage.SUCCESS,
+          data: { is_deleted: true },
+        };
+      return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
     } catch (error) {
-      throw new InternalServerErrorException();
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
 
