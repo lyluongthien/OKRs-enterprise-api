@@ -16,6 +16,7 @@ export class UserController {
   constructor(private _userService: UserService) {}
 
   @Get()
+  @UseGuards(AuthenticationGuard)
   public async getUsers(@Query('page') page: number, @Query('limit') limit: number): Promise<Pagination<UserEntity>> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
@@ -27,6 +28,7 @@ export class UserController {
   }
 
   @Get('/search')
+  @UseGuards(AuthenticationGuard)
   public async searchUsers(
     @Query('text') text: string,
     @Query('page') page: number,
@@ -41,17 +43,17 @@ export class UserController {
     });
   }
 
+  @Get('me')
+  @UseGuards(AuthenticationGuard)
+  public async me(@CurrentUser() user: UserEntity): Promise<any> {
+    return this._userService.getUserDetail(user.id);
+  }
+
   @Get(':id')
+  @UseGuards(AuthenticationGuard)
   public async getUserDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._userService.getUserDetail(id);
   }
-
-  @Get('me')
-  @UseGuards(AuthenticationGuard)
-  public async me(@CurrentUser() user: UserEntity): Promise<UserEntity> {
-    return user;
-  }
-
   /**
    * @description: Verify token in links
    */
@@ -79,23 +81,27 @@ export class UserController {
   }
 
   @Put('/me/change-password/:id')
+  @UseGuards(AuthenticationGuard)
   @UsePipes(new ValidationPipe())
   public async changePassword(@Param('id') id: number, @Body() user: ChangePasswordDTO): Promise<ResponseModel> {
     return this._userService.changePassword(id, user);
   }
 
   @Put('reject-request/:id')
+  @UseGuards(AuthenticationGuard)
   @UsePipes(new ValidationPipe())
   public async rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
     return this._userService.rejectRequest(id);
   }
 
   @Put(':id')
+  @UseGuards(AuthenticationGuard)
   public updateUserInfo(@Param('id') id: number, @Body() data: UserDTO): Promise<ObjectLiteral> {
     return this._userService.updateUserInfor(id, data);
   }
 
   @Post('me')
+  @UseGuards(AuthenticationGuard)
   public updateUserProfile(@Param('id') id: number, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
     return this._userService.updateUserProfile(id, data);
   }

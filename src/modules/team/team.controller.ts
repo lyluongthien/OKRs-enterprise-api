@@ -1,11 +1,13 @@
-import { Controller, Post, Body, Put, Param, Delete, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Put, Param, Delete, Get, Query, UseGuards } from '@nestjs/common';
 import { currentPage, limitPagination } from '@app/constants/app.magic-number';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamService } from './team.service';
 import { TeamDTO } from './team.dto';
+import { AuthenticationGuard } from '../auth/authentication.guard';
 
+@UseGuards(AuthenticationGuard)
 @Controller('/api/v1/teams')
 export class TeamController {
   constructor(private _teamService: TeamService) {}

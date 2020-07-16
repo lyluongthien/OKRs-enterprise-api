@@ -9,17 +9,17 @@ import {
 } from '@nestjs/common';
 import { SignInDTO } from './auth.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
-import { AuthResponse, JwtPayload } from './auth.interface';
 import { invalidCredential, httpEmailExists } from '@app/constants/app.exeption';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, RouterEnum } from '@app/constants/app.enums';
 import { generate } from 'generate-password';
-import { TokenRepository } from './token.repository';
+import { TokenRepository } from './auth.repository';
 import { expireInviteToken } from '@app/constants/app.magic-number';
 import { UserRepository } from '../user/user.repository';
 import { _salt } from '@app/constants/app.config';
 import { RegisterDTO } from '../auth/auth.dto';
 import { compareSync } from 'bcryptjs';
+import { JwtPayload } from './auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -44,7 +44,7 @@ export class AuthService {
     }
   }
 
-  public async authenticate({ email, password }: SignInDTO): Promise<AuthResponse> {
+  public async authenticate({ email, password }: SignInDTO): Promise<ResponseModel> {
     try {
       const user = await this._userRepository.findUserByEmail(email);
       if (!user) {
@@ -60,22 +60,29 @@ export class AuthService {
     }
   }
 
-  public async validateUserFromJwtPayload(payload: JwtPayload): Promise<UserEntity | null> {
+  public async validateUserFromJwtPayload(payload: JwtPayload): Promise<any> {
     try {
-      const { id } = payload;
-      const user = await this._userRepository.getUserByConditions(id);
-      if (!user) {
-        throw new UnauthorizedException();
-      }
-      return user;
+      // const { id } = payload;
+      // const user = await this._userRepository.getUserByConditions(id);
+      // if (!user) {
+      //   throw new UnauthorizedException();
+      // }
+      // return user;
+      return payload;
     } catch (error) {
       throw new InternalServerErrorException();
     }
   }
 
-  public async createBearerToken(user: UserEntity): Promise<AuthResponse> {
-    const token = await this._jwtService.sign({ id: user.id });
-    return { token: `Bearer ${token}` };
+  public async createBearerToken(user: UserEntity): Promise<ResponseModel> {
+    const token = await this._jwtService.sign({ id: user.id, email: user.email });
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: {
+        token: `Bearer ${token}`,
+      },
+    };
   }
 
   public async generateInviteLink(): Promise<ResponseModel> {

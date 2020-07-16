@@ -7,7 +7,7 @@ import { AuthController } from './auth.controller';
 import { UserModule } from '../user/user.module';
 import { defaultJwtModuleOption } from '@app/constants/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TokenRepository } from './token.repository';
+import { TokenRepository } from './auth.repository';
 import { UserRepository } from '../user/user.repository';
 
 @Module({
