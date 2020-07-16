@@ -11,6 +11,8 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
@@ -23,6 +25,7 @@ import { AuthenticationGuard } from '../auth/authentication.guard';
 import { CurrentUser } from './user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { ResponseModel } from '@app/constants/app.interface';
+import { response } from 'express';
 
 @Controller('/api/v1/users')
 export class UserController {
@@ -111,11 +114,5 @@ export class UserController {
   @Post('me')
   public updateUserProfile(@Param('id') id: number, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
     return this._userService.updateUserProfile(id, data);
-  }
-
-  @Post('/upload')
-  @UseInterceptors(FileInterceptor('image'))
-  uploadFile(@UploadedFile() file) {
-    console.log(file);
   }
 }
