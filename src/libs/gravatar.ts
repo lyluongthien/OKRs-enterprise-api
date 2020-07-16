@@ -1,5 +1,3 @@
-import { async } from 'rxjs';
-
 import { createHash } from 'crypto';
 
 export const generateGravatar = (email: string): string => {

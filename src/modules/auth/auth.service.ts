@@ -1,12 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-import {
-  Injectable,
-  InternalServerErrorException,
-  UnauthorizedException,
-  BadRequestException,
-  HttpStatus,
-  HttpException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, HttpStatus, HttpException } from '@nestjs/common';
 import { SignInDTO } from './auth.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { invalidCredential, httpEmailExists } from '@app/constants/app.exeption';
