@@ -1,41 +1,23 @@
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { ObjectLiteral, Connection } from 'typeorm';
+import { ObjectLiteral } from 'typeorm';
 import { generate } from 'generate-password';
 import { hashSync } from 'bcryptjs';
 
 import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO, ApproveRequestDTO } from './user.dto';
 import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
-import { httpEmailExists, invalidTokenResetPassword, tokenExpired } from '@app/constants/app.exeption';
+import { invalidTokenResetPassword, tokenExpired } from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { RouterEnum, CommonMessage } from '@app/constants/app.enums';
-import { RegisterDTO } from '../auth/auth.dto';
 import { expireResetPasswordToken } from '@app/constants/app.magic-number';
 import { ResponseModel } from '@app/constants/app.interface';
 
 @Injectable()
 export class UserService {
-  constructor(private connection: Connection, private _userRepository: UserRepository) {
-    this._userRepository = connection.getCustomRepository(UserRepository);
-  }
-
-  public async createUser({ email, password, fullName }: Partial<RegisterDTO>): Promise<UserEntity> {
-    try {
-      const emailExists = await this._userRepository.findUserByEmail(email);
-      if (emailExists) {
-        throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
-      }
-      const newUser = this._userRepository.create({ email, password, fullName, _salt });
-      await this._userRepository.save(newUser);
-      delete newUser.password;
-      return newUser;
-    } catch (error) {
-      throw new HttpException(httpEmailExists.message, httpEmailExists.errorCode);
-    }
-  }
+  constructor(private _userRepository: UserRepository) {}
 
   /**
    * @description Send a link in email to user, then use this link to reset password
@@ -139,8 +121,8 @@ export class UserService {
     return await this._userRepository.delete({ id });
   }
 
-  public async approveRequest(isApproved: boolean, user: ApproveRequestDTO): Promise<ObjectLiteral> {
-    return await this._userRepository.updateUserByApproveStatus(isApproved, user);
+  public async approveRequest(id?: number): Promise<void> {
+    return await this._userRepository.approveRequest(id);
   }
 
   public async getUsers(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
@@ -183,5 +165,20 @@ export class UserService {
   public async getRoleByUserID(id: number): Promise<RoleEntity> {
     const userRole = await this._userRepository.getUserRole(id);
     return userRole.role;
+  }
+
+  public async logout(id: number): Promise<ResponseModel> {
+    try {
+      const now = new Date();
+      this._userRepository.update({ id }, { aceptTokenAfter: now });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.LOGOUT_SUCCESS,
+      data: {},
+    };
   }
 }

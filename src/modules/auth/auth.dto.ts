@@ -33,3 +33,8 @@ export class SignInDTO {
   @IsNotEmpty()
   public readonly password: string;
 }
+
+export class InviteTokenDTO {
+  public token: string;
+  public createdAt: Date;
+}

@@ -69,9 +69,6 @@ export class UserRepository extends Repository<UserEntity> {
       where: { id },
     });
   }
-  public async getUserByApproveStatus(isApproved: boolean): Promise<UserEntity[]> {
-    return await this.find({ where: { isApproved } });
-  }
 
   public async updateUserProfile(id: number, data: UserProfileDTO): Promise<UserEntity> {
     await this.update({ id }, data);
@@ -91,8 +88,12 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   public async updateResetPasswordToken(email: string, data: ResetPasswordTokenDTO): Promise<UserEntity> {
-    await this.update({ email }, data);
-    return await this.findOne({ email });
+    try {
+      await this.update({ email }, data);
+      return await this.findOne({ email });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async getUserByResetPasswordToken(token: string): Promise<UserEntity> {
@@ -110,8 +111,15 @@ export class UserRepository extends Repository<UserEntity> {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
-  public async updateUserByApproveStatus(isApproved: boolean, user: ApproveRequestDTO): Promise<UserEntity[]> {
-    await this.update({ isApproved }, user);
-    return this.getUserByApproveStatus(isApproved);
+  public async approveRequest(id?: number): Promise<void> {
+    try {
+      if (id) {
+        await this.update({ id }, { isApproved: true, isActive: true });
+      } else {
+        await this.update({ isApproved: false }, { isApproved: true, isActive: true });
+      }
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 }

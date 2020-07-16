@@ -20,7 +20,7 @@ const SALT_WORK_FACTORY = accessEnv('SALT_WORK_FACTORY');
 export const _salt = genSaltSync(+SALT_WORK_FACTORY);
 export const defaultJwtModuleOption = {
   secret: accessEnv('JWT_SECRET'),
-  expiresIn: 2592000, //# Expires in 2 months,
+  expiresIn: 5184000, //# Expires in 2 months = 2(month) * 30(day) * 24(hours) * 60(minutes) * 60(second) ,
 };
 
 export const passwordValidation = {
