@@ -17,6 +17,7 @@ export enum TableName {
   FieldTemplate = 'field_templates',
   UserStar = 'user_stars',
   Lesson = 'lessons',
+  InviteToken = 'invite_tokens',
 }
 
 export enum DbConfig {
