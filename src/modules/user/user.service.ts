@@ -121,8 +121,31 @@ export class UserService {
     return await this._userRepository.delete({ id });
   }
 
-  public async getUsers(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
-    return await this._userRepository.getUsers(options);
+  public async getUsersActived(options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.getUsersActived(options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async getUsersApproved(options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.getUsersApproved(options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async getUsersDeactived(options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.getUsersDeactived(options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
   public async getUserDetail(id: number): Promise<ResponseModel> {
@@ -134,8 +157,30 @@ export class UserService {
     };
   }
 
-  public async searchUsers(text: string, options: IPaginationOptions): Promise<Pagination<UserEntity>> {
-    return await this._userRepository.searchUsers(text, options);
+  public async searchUsersActived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.searchUsersActived(text, options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async searchUsersApproved(text: string, options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.searchUsersApproved(text, options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+  public async searchUsersDeactived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.searchUsersDeactived(text, options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
   public async updateUserInfor(id: number, data: UserDTO): Promise<ObjectLiteral> {

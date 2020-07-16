@@ -1,6 +1,6 @@
 import { Repository, EntityRepository, ObjectLiteral, FindOneOptions } from 'typeorm';
 import { InternalServerErrorException, HttpException, HttpStatus } from '@nestjs/common';
-import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
@@ -39,28 +39,104 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  public async getUsers(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
+  public async getUsersActived(options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
+        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
         .leftJoinAndSelect('user.role', 'roles')
         .leftJoinAndSelect('user.jobPosition', 'jobPositions')
-        .leftJoinAndSelect('user.team', 'teams');
+        .leftJoinAndSelect('user.team', 'teams')
+        .where('user.isActive = true and user.isApproved = true');
       return await paginate<UserEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
 
-  public async searchUsers(text: string, options: IPaginationOptions): Promise<Pagination<UserEntity>> {
-    const queryBuilder = this.createQueryBuilder('user')
-      .leftJoinAndSelect('user.role', 'roles')
-      .leftJoinAndSelect('user.jobPosition', 'jobPositions')
-      .leftJoinAndSelect('user.team', 'teams')
-      .where('user.fullName like :text', { text: '%' + text + '%' })
-      .orWhere('user.email like :text', { text: '%' + text + '%' })
-      .orderBy('user.id', 'ASC');
+  public async getUsersApproved(options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = this.createQueryBuilder('user')
+        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .leftJoinAndSelect('user.role', 'roles')
+        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+        .leftJoinAndSelect('user.team', 'teams')
+        .where('user.isApproved = false');
+      return await paginate<UserEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
 
-    return await paginate<UserEntity>(queryBuilder, options);
+  public async getUsersDeactived(options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = this.createQueryBuilder('user')
+        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .leftJoinAndSelect('user.role', 'roles')
+        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+        .leftJoinAndSelect('user.team', 'teams')
+        .where('user.isActive = false');
+      return await paginate<UserEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async searchUsersActived(text: string, options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = this.createQueryBuilder('user')
+        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .leftJoinAndSelect('user.role', 'roles')
+        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+        .leftJoinAndSelect('user.team', 'teams')
+        .where('user.isActive = true')
+        .andWhere('user.isApproved = true')
+        .andWhere('(user.fullName like :text or user.email like :text2)', {
+          text: '%' + text + '%',
+          text2: '%' + text + '%',
+        })
+        .orderBy('user.id', 'ASC');
+      return await paginate<UserEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async searchUsersApproved(text: string, options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = this.createQueryBuilder('user')
+        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .leftJoinAndSelect('user.role', 'roles')
+        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+        .leftJoinAndSelect('user.team', 'teams')
+        .where('user.isApproved = false')
+        .andWhere('(user.fullName like :text or user.email like :text2)', {
+          text: '%' + text + '%',
+          text2: '%' + text + '%',
+        })
+        .orderBy('user.id', 'ASC');
+      return await paginate<UserEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async searchUsersDeactived(text: string, options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = this.createQueryBuilder('user')
+        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .leftJoinAndSelect('user.role', 'roles')
+        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+        .leftJoinAndSelect('user.team', 'teams')
+        .where('user.isActive = false')
+        .andWhere('(user.fullName like :text or user.email like :text2)', {
+          text: '%' + text + '%',
+          text2: '%' + text + '%',
+        })
+        .orderBy('user.id', 'ASC');
+      return await paginate<UserEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async getUserDetail(id: number): Promise<UserEntity> {
@@ -74,7 +150,7 @@ export class UserRepository extends Repository<UserEntity> {
     await this.update({ id }, data);
     return await this.findOne({ id });
   }
-  //HR
+
   public async updateUserInfor(id: number, data: UserDTO): Promise<UserEntity> {
     await this.update({ id }, data);
     return await this.findOne({ id });

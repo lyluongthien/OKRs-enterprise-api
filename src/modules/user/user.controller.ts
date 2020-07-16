@@ -2,7 +2,6 @@ import { ObjectLiteral } from 'typeorm';
 import { Controller, Post, Body, UsePipes, Put, Param, Get, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
-import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { UserService } from './user.service';
 import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
@@ -15,28 +14,67 @@ import { ResponseModel } from '@app/constants/app.interface';
 export class UserController {
   constructor(private _userService: UserService) {}
 
-  @Get()
+  @Get('/active')
   @UseGuards(AuthenticationGuard)
-  public async getUsers(@Query('page') page: number, @Query('limit') limit: number): Promise<Pagination<UserEntity>> {
+  public async searchUsersActived(
+    @Query('text') text: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    return this._userService.getUsers({
+    if (text) {
+      return this._userService.searchUsersActived(text, {
+        page,
+        limit,
+        route: '',
+      });
+    }
+    return this._userService.getUsersActived({
       page,
       limit,
       route: '',
     });
   }
-
-  @Get('/search')
+  @Get('/pending')
   @UseGuards(AuthenticationGuard)
-  public async searchUsers(
+  public async searchUsersAprroved(
     @Query('text') text: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
-  ): Promise<Pagination<UserEntity>> {
+  ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    return this._userService.searchUsers(text, {
+    if (text) {
+      return this._userService.searchUsersApproved(text, {
+        page,
+        limit,
+        route: '',
+      });
+    }
+    return this._userService.getUsersApproved({
+      page,
+      limit,
+      route: '',
+    });
+  }
+  @Get('/deactive')
+  @UseGuards(AuthenticationGuard)
+  public async searchUsersDeactived(
+    @Query('text') text: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<ResponseModel> {
+    page = page ? page : currentPage;
+    limit = limit ? limit : limitPagination;
+    if (text) {
+      return this._userService.searchUsersDeactived(text, {
+        page,
+        limit,
+        route: '',
+      });
+    }
+    return this._userService.getUsersDeactived({
       page,
       limit,
       route: '',

@@ -1,5 +1,5 @@
-import { EntityRepository, Repository, ObjectLiteral } from 'typeorm';
-import { Pagination, paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { EntityRepository, Repository } from 'typeorm';
+import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamDTO } from './team.dto';

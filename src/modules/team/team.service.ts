@@ -1,17 +1,24 @@
 import { ObjectLiteral } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus } from '@nestjs/common';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamRepository } from './team.repository';
 import { TeamDTO } from './team.dto';
+import { CommonMessage } from '@app/constants/app.enums';
+import { ResponseModel } from '@app/constants/app.interface';
 
 @Injectable()
 export class TeamService {
   constructor(private _teamRepository: TeamRepository) {}
 
-  public getTeams(options: IPaginationOptions): Promise<Pagination<TeamEntity>> {
-    return this._teamRepository.getTeams(options);
+  public async getTeams(options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._teamRepository.getTeams(options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
   public getDetailTeam(id: number): Promise<TeamEntity> {
@@ -26,7 +33,7 @@ export class TeamService {
     return this._teamRepository.updateTeam(id, data);
   }
 
-  public deteleTeam(id: number): Promise<ObjectLiteral> {
-    return this._teamRepository.deteleTeam(id);
+  public async deteleTeam(id: number): Promise<ObjectLiteral> {
+    return await this._teamRepository.deteleTeam(id);
   }
 }
