@@ -17,6 +17,7 @@ export enum TableName {
   FieldTemplate = 'field_templates',
   UserStar = 'user_stars',
   Lesson = 'lessons',
+  InviteToken = 'invite_tokens',
 }
 
 export enum DbConfig {
@@ -61,6 +62,12 @@ export enum ObjectiveTypeEnum {
   ROOF_SHOT = 'Roofshot',
 }
 
+export enum GenderEnum {
+  FEMALE = 0,
+  MALE = 1,
+  OTHER = 2,
+}
+
 export enum RouterEnum {
   EVALUATION_CRITERIA_ROUTE = 'localhost:3000/api/v1/evaluation-criterias',
   MEASURE_UNIT_ROUTE = 'localhost:3000/api/v1/measure-units',
@@ -77,4 +84,6 @@ export enum CommonMessage {
   EMAIL_SENT = 'Email sent successfully',
   USER_DO_NOT_EXIST = `User doesn't exist`,
   DATABASE_EXCEPTION = 'Error when access to database',
+  DELETE_FAIL = 'Delete fail',
+  LOGOUT_SUCCESS = 'Logout success',
 }

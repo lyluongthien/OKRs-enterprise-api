@@ -15,6 +15,7 @@ import { EvaluationCriteriaModule } from './modules/evaluation-criteria/evaluati
 import { MeasureUnitModule } from './modules/measure-unit/measure-unit.module';
 import { ObjectiveModule } from './modules/objective/objective.module';
 import { KeyResultModule } from './modules/keyresult/keyresult.module';
+import { LessonModule } from './modules/lesson/lesson.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { KeyResultModule } from './modules/keyresult/keyresult.module';
     EvaluationCriteriaModule,
     ObjectiveModule,
     KeyResultModule,
+    LessonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

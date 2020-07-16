@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 
 import { TableName } from '@app/constants/app.enums';
-import { ObjectiveDTO } from '@app/modules/objective/objective.dto';
 import { ObjectiveEntity } from './objective.entity';
 
 @Entity(TableName.Cycle)
