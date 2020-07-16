@@ -11,7 +11,7 @@ import { MulterModule } from '@nestjs/platform-express';
   imports: [
     TypeOrmModule.forFeature([UserEntity, UserRepository]),
     MulterModule.register({
-      dest: './images',
+      dest: './uploads',
     }),
   ],
   controllers: [UserController],

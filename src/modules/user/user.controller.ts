@@ -11,10 +11,9 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
-  Res,
-  Req,
   ParseIntPipe,
 } from '@nestjs/common';
+import { diskStorage } from 'multer';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { Pagination } from 'nestjs-typeorm-paginate';
@@ -26,23 +25,10 @@ import { AuthenticationGuard } from '../auth/authentication.guard';
 import { CurrentUser } from './user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { ResponseModel } from '@app/constants/app.interface';
-import { response } from 'express';
 
 @Controller('/api/v1/users')
 export class UserController {
   constructor(private _userService: UserService) {}
-
-  @Get()
-  @UseGuards(AuthenticationGuard)
-  public async getUsers(@Query('page') page: number, @Query('limit') limit: number): Promise<Pagination<UserEntity>> {
-    page = page ? page : currentPage;
-    limit = limit ? limit : limitPagination;
-    return this._userService.getUsers({
-      page,
-      limit,
-      route: '',
-    });
-  }
 
   @Get('/search')
   @UseGuards(AuthenticationGuard)
@@ -53,7 +39,14 @@ export class UserController {
   ): Promise<Pagination<UserEntity>> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    return this._userService.searchUsers(text, {
+    if (text) {
+      return this._userService.searchUsers(text, {
+        page,
+        limit,
+        route: '',
+      });
+    }
+    return this._userService.getUsers({
       page,
       limit,
       route: '',
@@ -124,5 +117,18 @@ export class UserController {
   @UseGuards(AuthenticationGuard)
   public updateUserProfile(@CurrentUser() user: UserEntity, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
     return this._userService.updateUserProfile(user.id, data);
+  }
+
+  @Post()
+  @UseGuards(AuthenticationGuard)
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './images',
+      }),
+    }),
+  )
+  public async uploadFile(@CurrentUser() user: UserEntity, @UploadedFile() file): Promise<ObjectLiteral> {
+    return this._userService.updateAvatar(user.id, file.path);
   }
 }

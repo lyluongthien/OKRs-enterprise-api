@@ -37,9 +37,6 @@ export class UserProfileDTO {
 
   @Optional()
   public avatarURl: string;
-
-  @Optional()
-  public gravatarURL: string;
 }
 
 export class ResetPasswordTokenDTO {

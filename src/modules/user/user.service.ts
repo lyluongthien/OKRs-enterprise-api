@@ -138,12 +138,29 @@ export class UserService {
     return await this._userRepository.searchUsers(text, options);
   }
 
-  public async updateUserInfor(id: number, data: UserDTO): Promise<ObjectLiteral> {
-    return this._userRepository.update(id, data);
+  public async updateUserInfor(id: number, data: UserDTO): Promise<ResponseModel> {
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: this._userRepository.update(id, data),
+    };
   }
 
-  public async updateUserProfile(id: number, data: UserProfileDTO): Promise<ObjectLiteral> {
-    return this._userRepository.updateUserProfile(id, data);
+  public async updateUserProfile(id: number, data: UserProfileDTO): Promise<ResponseModel> {
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: this._userRepository.updateUserProfile(id, data),
+    };
+  }
+
+  public async updateAvatar(id: number, avatarUrl: string): Promise<ResponseModel> {
+    const data = await this._userRepository.updataAvatar(id, avatarUrl);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
   public async getUserByEmail(email: string): Promise<UserEntity> {

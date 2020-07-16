@@ -6,6 +6,7 @@ import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
 import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO, ChangePasswordDTO } from './user.dto';
 import { CommonMessage } from '@app/constants/app.enums';
+import { OpenAPIObject } from '@nestjs/swagger';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -52,27 +53,38 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   public async searchUsers(text: string, options: IPaginationOptions): Promise<Pagination<UserEntity>> {
-    const queryBuilder = this.createQueryBuilder('user')
-      .leftJoinAndSelect('user.role', 'roles')
-      .leftJoinAndSelect('user.jobPosition', 'jobPositions')
-      .leftJoinAndSelect('user.team', 'teams')
-      .where('user.fullName like :text', { text: '%' + text + '%' })
-      .orWhere('user.email like :text', { text: '%' + text + '%' })
-      .orderBy('user.id', 'ASC');
-
-    return await paginate<UserEntity>(queryBuilder, options);
+    try {
+      const queryBuilder = this.createQueryBuilder('user')
+        .leftJoinAndSelect('user.role', 'roles')
+        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+        .leftJoinAndSelect('user.team', 'teams')
+        .where('user.fullName like :text', { text: '%' + text + '%' })
+        .orWhere('user.email like :text', { text: '%' + text + '%' })
+        .orderBy('user.id', 'ASC');
+      return await paginate<UserEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async getUserDetail(id: number): Promise<UserEntity> {
-    return await this.findOneOrFail({
-      relations: ['role', 'jobPosition', 'team'],
-      where: { id },
-    });
+    try {
+      return await this.findOneOrFail({
+        relations: ['role', 'jobPosition', 'team'],
+        where: { id },
+      });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async updateUserProfile(id: number, data: UserProfileDTO): Promise<UserEntity> {
-    await this.update({ id }, data);
-    return await this.findOne({ id });
+    try {
+      await this.update({ id }, data);
+      return await this.findOne({ id });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
   //HR
   public async updateUserInfor(id: number, data: UserDTO): Promise<UserEntity> {
@@ -81,10 +93,14 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   public async getUserRole(id: number): Promise<UserEntity> {
-    return await this.findOneOrFail({
-      relations: ['role'],
-      where: { id },
-    });
+    try {
+      return await this.findOneOrFail({
+        relations: ['role'],
+        where: { id },
+      });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async updateResetPasswordToken(email: string, data: ResetPasswordTokenDTO): Promise<UserEntity> {
@@ -103,6 +119,15 @@ export class UserRepository extends Repository<UserEntity> {
   public async updatePassword(id: number, data: ChangePasswordDTO): Promise<void> {
     try {
       await this.update({ id }, data);
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async updataAvatar(id: number, avatarUrl: string): Promise<UserEntity> {
+    try {
+      await this.update(id, { avatarURL: avatarUrl });
+      return await this.findOne({ id });
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
