@@ -27,8 +27,8 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objective.alignObjectivesId',
         ])
         //.leftJoin(ObjectiveEntity, 'childObjective', '"childObjective"."parentObjectiveId" = objective.id')
-        .leftJoin('objective.objective', 'childObjective', '"childObjective"."parentObjectiveId" = objective.id')
         .select(['childObjective.id', 'childObjective.progress', 'childObjective.title'])
+        .leftJoin('objective.objectives', 'childObjective', '"childObjective"."parentObjectiveId" = objective.id')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
         .leftJoinAndSelect('objective.user', 'user')
         .where('objective.cycleId = :id', { id: cycleID });
@@ -38,9 +38,13 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
   public async getDetailOKRs(id: number): Promise<ObjectiveEntity> {
-    return await this.findOneOrFail({
-      relations: ['keyResults', 'user'],
-      where: { id },
-    });
+    try {
+      return await this.findOne({
+        relations: ['keyResults', 'user'],
+        where: { id },
+      });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 }

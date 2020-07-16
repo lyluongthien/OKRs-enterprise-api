@@ -37,9 +37,9 @@ export class UserRepository extends Repository<UserEntity> {
         return {
           statusCode: HttpStatus.OK,
           message: CommonMessage.SUCCESS,
-          data: { is_deleted: true },
+          data: { isDeleted: true },
         };
-      return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
+      return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { isDeleted: false } };
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
