@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
-import { TableName, ForeignKey } from '@app/constants/app.enums';
+import { TableName, ForeignKey, GenderEnum } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
 export class CreateTableUsers1594008685768 implements MigrationInterface {
@@ -26,16 +26,20 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
         length: '255',
       },
       {
-        name: '_salt',
-        type: 'varchar',
-        length: '255',
-        isNullable: true,
-      },
-      {
         name: 'fullName',
         type: 'varchar',
         length: '255',
         isNullable: false,
+      },
+      {
+        name: 'gender',
+        type: 'integer',
+        isNullable: true,
+      },
+      {
+        name: 'dateOfBirth',
+        type: 'date',
+        isNullable: true,
       },
       {
         name: 'avatarURL',
@@ -77,6 +81,11 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
       {
         name: ForeignKey.JOB_POSITION_ID,
         type: 'integer',
+        isNullable: true,
+      },
+      {
+        name: 'aceptTokenAfter',
+        type: 'timestamptz',
         isNullable: true,
       },
       {

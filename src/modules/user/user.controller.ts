@@ -49,6 +49,12 @@ export class UserController {
     return this._userService.getUserDetail(user.id);
   }
 
+  @Post('me/logout')
+  @UseGuards(AuthenticationGuard)
+  public async logout(@CurrentUser() user: UserEntity): Promise<ResponseModel> {
+    return await this._userService.logout(user.id);
+  }
+
   @Get(':id')
   @UseGuards(AuthenticationGuard)
   public async getUserDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {

@@ -28,10 +28,13 @@ export class UserEntity {
   public password: string;
 
   @Column()
-  public _salt: string;
+  public fullName: string;
 
   @Column()
-  public fullName: string;
+  public gender: number;
+
+  @Column()
+  public dateOfBirth: Date;
 
   @Column()
   public avatarURL: string;
@@ -56,6 +59,9 @@ export class UserEntity {
 
   @Column()
   public isApproved: boolean;
+
+  @Column({ type: 'timestamptz' })
+  public aceptTokenAfter?: Date;
 
   @Column()
   public resetPasswordToken?: string;
