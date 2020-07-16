@@ -11,6 +11,7 @@ import { CycleEntity } from './entities/cycle.entity';
 import { EvaluationCriteriaEntity } from './entities/evaluation-criteria.entity';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { MeasureUnitEntity } from './entities/measure-unit.entity';
+import { LessonEntity } from './entities/lesson.entity';
 import { InviteTokenEntity } from './entities/invite-token.entity';
 
 const type = DbConfig.DB_TYPE;
@@ -49,6 +50,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
         MeasureUnitEntity,
         CycleEntity,
         EvaluationCriteriaEntity,
+        LessonEntity,
         InviteTokenEntity,
       ],
       migrations: ['dist/db/migrations/*.js'],

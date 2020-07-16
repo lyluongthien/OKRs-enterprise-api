@@ -73,4 +73,5 @@ export enum CommonMessage {
   EMAIL_SENT = 'Email sent successfully',
   USER_DO_NOT_EXIST = `User doesn't exist`,
   DATABASE_EXCEPTION = 'Error when access to database',
+  DELETE_FAIL = 'Delete fail',
 }
