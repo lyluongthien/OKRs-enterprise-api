@@ -100,8 +100,9 @@ export class AuthService {
       const dueTime = now - expireTime;
       if (dueTime > expireInviteToken) {
         // If token is expire, update token and createAt = now
+        const date = new Date();
         token = generate({ length: 30, numbers: true, lowercase: true, uppercase: true });
-        await this._tokenRepository.updateToken(currentToken.id, { token: token, createdAt: new Date() });
+        await this._tokenRepository.updateToken(currentToken.id, { token: token, createdAt: date });
       } else {
         // If token is expire
         token = currentToken.token;
