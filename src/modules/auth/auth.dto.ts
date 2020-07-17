@@ -2,7 +2,6 @@ import { Optional } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
 import { passwordValidation } from '@app/constants/app.config';
-import { GenderEnum } from '@app/constants/app.enums';
 
 export class RegisterDTO {
   @ApiProperty()
