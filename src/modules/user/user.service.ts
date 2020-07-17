@@ -2,9 +2,9 @@ import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
 import { generate } from 'generate-password';
-import { hashSync } from 'bcryptjs';
+import { hashSync, compareSync } from 'bcryptjs';
 
-import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
+import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO, PasswordDTO } from './user.dto';
 import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
 import { invalidTokenResetPassword, tokenExpired } from '@app/constants/app.exeption';
@@ -76,7 +76,7 @@ export class UserService {
   /**
    * @description: Save new password of user
    */
-  public async resetPassword(token: string, data: ChangePasswordDTO): Promise<ResponseModel> {
+  public async resetPassword(token: string, data: PasswordDTO): Promise<ResponseModel> {
     const user = await this._userRepository.getUserByResetPasswordToken(token);
     if (!user) {
       throw new HttpException(invalidTokenResetPassword, HttpStatus.BAD_REQUEST);
@@ -90,7 +90,7 @@ export class UserService {
     }
     // Hash password
     data.password = hashSync(data.password, _salt);
-    await this._userRepository.updatePassword(user.id, data);
+    await this._userRepository.updatePassword(user.id, data, false);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.PASSWORD_UPDATE_SUCCESS,
@@ -106,9 +106,13 @@ export class UserService {
     if (!currentUser) {
       throw new HttpException(CommonMessage.USER_DO_NOT_EXIST, HttpStatus.BAD_REQUEST);
     }
-    user.password = hashSync(user.password, _salt);
+    const isMatchedPassword = await compareSync(user.password, currentUser.password);
+    if (!isMatchedPassword) {
+      throw new HttpException(CommonMessage.PASSWORD_FAIL, HttpStatus.CONFLICT);
+    }
+    user.newPassword = hashSync(user.newPassword, _salt);
 
-    await this._userRepository.updatePassword(id, user);
+    await this._userRepository.updatePassword(id, { password: user.newPassword }, true);
 
     return {
       statusCode: HttpStatus.OK,

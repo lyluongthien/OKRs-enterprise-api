@@ -22,12 +22,38 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
+  public async updateOKRs(okrDTo: OkrsDTO, manager?: EntityManager): Promise<void> {
+    try {
+      const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
+      const keyResultRepository = manager.getRepository(KeyResultEntity);
+
+      for (const value of okrDTo.keyResult) {
+        value.objectiveId = objective.id;
+        await keyResultRepository.save(value);
+      }
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
   public async viewOKRs(cycleID: number): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = this.createQueryBuilder('objective')
-        .leftJoinAndSelect('objective.parentObjectives', 'childObjective')
+        .select([
+          'objective.id',
+          'objective.progress',
+          'objective.title',
+          'objective.isRootObjective',
+          'objective.userId',
+          'objective.cycleId',
+          'objective.parentObjectiveId',
+          'objective.alignObjectivesId',
+          'user.id',
+          'user.fullName',
+          'user.isLeader',
+        ])
+        .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
-        .leftJoinAndSelect('objective.user', 'user')
+        .leftJoin('objective.user', 'user')
         .where('objective.cycleId = :id', { id: cycleID })
         .getMany();
       return queryBuilder;

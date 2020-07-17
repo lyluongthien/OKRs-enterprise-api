@@ -17,4 +17,24 @@ export class KeyResultService {
       data: {},
     };
   }
+
+  public async deleteKeyResult(id: number): Promise<ResponseModel> {
+    const rowEffected: string = (await this._keyResultRepository.deleteKeyResults(id)).toString();
+    if (rowEffected === '1')
+      return {
+        statusCode: HttpStatus.OK,
+        message: CommonMessage.SUCCESS,
+        data: { is_deleted: true },
+      };
+    return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
+  }
+
+  public async updateKeyresults(id: number, data: KeyResultDTO): Promise<ResponseModel> {
+    await this._keyResultRepository.updateKeyResults(id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: {},
+    };
+  }
 }

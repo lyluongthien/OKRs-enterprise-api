@@ -14,4 +14,20 @@ export class KeyResultRepository extends Repository<KeyResultEntity> {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
+
+  public async deleteKeyResults(id: number): Promise<number> {
+    try {
+      return (await this.delete({ id })).affected;
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async updateKeyResults(id: number, data: KeyResultDTO): Promise<void> {
+    try {
+      await this.update({ id }, data);
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
 }
