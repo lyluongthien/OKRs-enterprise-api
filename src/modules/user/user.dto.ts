@@ -1,12 +1,12 @@
 import { IsNotEmpty, IsEmail, Matches } from 'class-validator';
 import { passwordValidation } from '@app/constants/app.config';
 import { Optional } from '@nestjs/common';
+import { ApiProperty } from '@nestjs/swagger';
 export class ResetPasswordDTO {
   @IsNotEmpty()
   @IsEmail()
+  @ApiProperty()
   public email: string;
-
-  public password: string;
 }
 
 export class ChangePasswordDTO {
@@ -14,6 +14,23 @@ export class ChangePasswordDTO {
     message: passwordValidation.message,
   })
   @IsNotEmpty()
+  @ApiProperty()
+  public password: string;
+
+  @Matches(passwordValidation.regex, {
+    message: passwordValidation.message,
+  })
+  @IsNotEmpty()
+  @ApiProperty()
+  public newPassword: string;
+}
+
+export class PasswordDTO {
+  @Matches(passwordValidation.regex, {
+    message: passwordValidation.message,
+  })
+  @IsNotEmpty()
+  @ApiProperty()
   public password: string;
 }
 

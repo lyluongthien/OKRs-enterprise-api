@@ -4,7 +4,7 @@ import { IPaginationOptions, Pagination, paginate } from 'nestjs-typeorm-paginat
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { RegisterDTO } from '../auth/auth.dto';
-import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO, ChangePasswordDTO } from './user.dto';
+import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
@@ -70,6 +70,13 @@ export class UserRepository extends Repository<UserEntity> {
     });
   }
 
+  public async getUserDetailByEmail(email: string): Promise<UserEntity> {
+    return await this.findOneOrFail({
+      relations: ['role', 'jobPosition', 'team'],
+      where: { email },
+    });
+  }
+
   public async updateUserProfile(id: number, data: UserProfileDTO): Promise<UserEntity> {
     await this.update({ id }, data);
     return await this.findOne({ id });
@@ -104,8 +111,14 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  public async updatePassword(id: number, data: ChangePasswordDTO): Promise<void> {
+  public async updatePassword(id: number, data: any, isChangePassword: boolean): Promise<void> {
     try {
+      // Update aceptTokenAfter => logout
+      if (isChangePassword) {
+        const aceptTokenAfter = new Date();
+        await this.update({ id }, { aceptTokenAfter });
+      }
+
       await this.update({ id }, data);
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
