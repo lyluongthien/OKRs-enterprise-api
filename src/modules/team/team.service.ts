@@ -1,6 +1,6 @@
 import { ObjectLiteral } from 'typeorm';
 import { Injectable, HttpStatus } from '@nestjs/common';
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamRepository } from './team.repository';

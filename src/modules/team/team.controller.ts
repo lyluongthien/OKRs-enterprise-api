@@ -1,6 +1,5 @@
 import { Controller, Post, Body, Put, Param, Delete, Get, Query, UseGuards } from '@nestjs/common';
 import { currentPage, limitPagination } from '@app/constants/app.magic-number';
-import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamService } from './team.service';
