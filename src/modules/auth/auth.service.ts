@@ -23,7 +23,7 @@ export class AuthService {
 
   public async createUser({ email, password, fullName }: Partial<RegisterDTO>): Promise<UserEntity> {
     try {
-      const emailExists = await this._userRepository.findUserByEmail(email);
+      const emailExists = await this._userRepository.getUserByEmail(email);
       if (emailExists) {
         throw new HttpException(httpEmailExists, HttpStatus.BAD_REQUEST);
       }
@@ -38,7 +38,8 @@ export class AuthService {
 
   public async authenticate({ email, password }: SignInDTO): Promise<ResponseModel> {
     try {
-      const user = await this._userRepository.findUserByEmail(email);
+      const user = await this._userRepository.getUserByEmail(email);
+      console.log(user);
       if (!user) {
         throw new BadRequestException();
       }
@@ -54,7 +55,7 @@ export class AuthService {
 
   public async validateUserFromJwtPayload(payload: JwtPayload): Promise<any> {
     const { id, iat } = payload;
-    const user = await this._userRepository.getUserByConditions(id);
+    const user = await this._userRepository.getUserByID(id);
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -67,10 +68,19 @@ export class AuthService {
 
   public async createBearerToken(user: UserEntity): Promise<ResponseModel> {
     const token = await this._jwtService.sign({ id: user.id, email: user.email });
+    const userModel = {
+      id: user.id,
+      name: user.fullName,
+      email: user.email,
+      role: user.role.name,
+      department: user.jobPosition.name,
+    };
+
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
       data: {
+        user: userModel,
         token: `Bearer ${token}`,
       },
     };

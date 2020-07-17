@@ -1,35 +1,13 @@
-import { Repository, EntityRepository, ObjectLiteral, FindOneOptions } from 'typeorm';
+import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 import { InternalServerErrorException, HttpException, HttpStatus } from '@nestjs/common';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 import { UserEntity } from '@app/db/entities/user.entity';
-import { RegisterDTO } from '../auth/auth.dto';
-import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO, ChangePasswordDTO } from './user.dto';
+import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
-  public async getList(): Promise<UserEntity[]> {
-    return await this.find();
-  }
-
-  public async getUserByConditions(id?: number, options?: FindOneOptions<UserEntity>): Promise<UserEntity> {
-    try {
-      return await this.findOne(id, options);
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
-  }
-
-  public async findUserByEmail(email: string): Promise<UserEntity> {
-    return await this.findOne({ where: { email } });
-  }
-
-  public async updateUserById(id: number, user: RegisterDTO): Promise<UserEntity> {
-    await this.update({ id }, user);
-    return this.getUserByConditions(id);
-  }
-
   public async deleteUser(id: number): Promise<ObjectLiteral> {
     try {
       const rowEffected: number = await (await this.delete({ id })).affected;
@@ -175,22 +153,9 @@ export class UserRepository extends Repository<UserEntity> {
   public async getUserByID(id: number): Promise<UserEntity> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
-        .select([
-          'user.id',
-          'user.email',
-          'user.fullName',
-          'user.isLeader',
-          'user.isApproved',
-          'user.isActive',
-          'roles.name',
-          'jobPositions.id',
-          'jobPositions.name',
-          'teams.id',
-          'teams.name',
-        ])
-        .leftJoin('user.role', 'roles')
-        .leftJoin('user.jobPosition', 'jobPositions')
-        .leftJoin('user.team', 'teams')
+        .leftJoinAndSelect('user.role', 'roles')
+        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+        .leftJoinAndSelect('user.team', 'teams')
         .where('user.id = :id', { id: id })
         .getOne();
       return await queryBuilder;
@@ -202,22 +167,9 @@ export class UserRepository extends Repository<UserEntity> {
   public async getUserByEmail(email: string): Promise<UserEntity> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
-        .select([
-          'user.id',
-          'user.email',
-          'user.fullName',
-          'user.isLeader',
-          'user.isApproved',
-          'user.isActive',
-          'roles.name',
-          'jobPositions.id',
-          'jobPositions.name',
-          'teams.id',
-          'teams.name',
-        ])
-        .leftJoin('user.role', 'roles')
-        .leftJoin('user.jobPosition', 'jobPositions')
-        .leftJoin('user.team', 'teams')
+        .leftJoinAndSelect('user.role', 'roles')
+        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
+        .leftJoinAndSelect('user.team', 'teams')
         .where('user.email = :email', { email: email })
         .getOne();
       return await queryBuilder;
@@ -247,10 +199,14 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   public async getUserRole(id: number): Promise<UserEntity> {
-    return await this.findOneOrFail({
-      relations: ['role'],
-      where: { id },
-    });
+    try {
+      return await this.findOneOrFail({
+        relations: ['role'],
+        where: { id },
+      });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async updateResetPasswordToken(email: string, data: ResetPasswordTokenDTO): Promise<UserEntity> {
@@ -270,8 +226,14 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  public async updatePassword(id: number, data: ChangePasswordDTO): Promise<void> {
+  public async updatePassword(id: number, data: ObjectLiteral, isChangePassword: boolean): Promise<void> {
     try {
+      // Update aceptTokenAfter => logout
+      if (isChangePassword) {
+        const aceptTokenAfter = new Date();
+        await this.update({ id }, { aceptTokenAfter });
+      }
+
       await this.update({ id }, data);
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);

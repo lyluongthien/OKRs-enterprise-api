@@ -4,18 +4,24 @@ import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 
 import { UserService } from './user.service';
-import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
+import { ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { CurrentUser } from './user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { ResponseModel } from '@app/constants/app.interface';
+import { AuthorizationGuard } from '../auth/authorization.guard';
+import { Roles } from '../role/role.decorator';
+import { RoleEnum, CommonMessage } from '@app/constants/app.enums';
+import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 @Controller('/api/v1/users')
+@UseGuards(AuthenticationGuard)
 export class UserController {
   constructor(private _userService: UserService) {}
 
   @Get('/active')
-  @UseGuards(AuthenticationGuard)
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public async searchUsersActived(
     @Query('text') text: string,
     @Query('page') page: number,
@@ -37,8 +43,9 @@ export class UserController {
     });
   }
   @Get('/pending')
-  @UseGuards(AuthenticationGuard)
-  public async searchUsersAprroved(
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  public async searchUsers(
     @Query('text') text: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
@@ -58,8 +65,10 @@ export class UserController {
       route: '',
     });
   }
+
   @Get('/deactive')
-  @UseGuards(AuthenticationGuard)
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public async searchUsersDeactived(
     @Query('text') text: string,
     @Query('page') page: number,
@@ -81,78 +90,88 @@ export class UserController {
     });
   }
 
-  // @Get('me')
-  // @UseGuards(AuthenticationGuard)
-  // public async me(@CurrentUser() user: UserEntity): Promise<any> {
-  //   return this._userService.getUserDetail(user.id);
-  // }
+  /**
+   * @description: Get information of current logged in system
+   */
+  @Get('me')
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
+  public async me(@CurrentUser() user: UserEntity): Promise<any> {
+    return this._userService.getUserByID(user.id);
+  }
 
+  /**
+   * @description: Update information of current logged in system
+   */
+  @Post('me')
+  @UsePipes(new ValidationPipe())
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
+  public updateUserProfile(@CurrentUser() user: UserEntity, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
+    return this._userService.updateUserProfile(user.id, data);
+  }
+
+  /**
+   * @description: Change password of current logged in system
+   */
+  @Put('/me/change_password')
+  @UsePipes(new ValidationPipe())
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
+  public async changePassword(
+    @CurrentUser() user: UserEntity,
+    @Body() data: ChangePasswordDTO,
+  ): Promise<ResponseModel> {
+    return this._userService.changePassword(user.id, data);
+  }
+
+  /**
+   * @description: Log out current logged in system
+   */
   @Post('me/logout')
-  @UseGuards(AuthenticationGuard)
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async logout(@CurrentUser() user: UserEntity): Promise<ResponseModel> {
     return await this._userService.logout(user.id);
   }
 
+  /**
+   * @description: Get detail user, when manage staff
+   * @requires: ADMIN + HR
+   */
   @Get(':id')
-  //@UseGuards(AuthenticationGuard)
-  public async getUserByID(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
+  public async getUserDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._userService.getUserByID(id);
   }
 
-  @Get(':email')
-  //@UseGuards(AuthenticationGuard)
-  public async getUserByEmail(@Param('email') email: string): Promise<ResponseModel> {
-    return this._userService.getUserByEmail(email);
-  }
   /**
-   * @description: Verify token in links
+   * @description: Reject request of new member, when manage staff
+   * @requires: ADMIN + HR
    */
-  @Get('password/verification')
-  public async verifyForgotPassword(@Query('token') token: string): Promise<ObjectLiteral> {
-    return this._userService.verifyForgetPassword(token);
-  }
-
-  /**
-   * @description: Send mail to user a links, then use this link to reset password
-   */
-  @Post('password/forget')
+  @Put('reject_request/:id')
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  public async forgetPassword(@Body() user: ResetPasswordDTO): Promise<ResponseModel> {
-    return this._userService.forgetPassword(user);
-  }
-
-  /**
-   * @description: Save new password of user
-   */
-  @Put('password/reset:token')
-  @UsePipes(new ValidationPipe())
-  public async resetPassword(@Param('token') token: string, @Body() data: ChangePasswordDTO): Promise<ResponseModel> {
-    return this._userService.resetPassword(token, data);
-  }
-
-  @Put('/me/change-password/:id')
-  @UseGuards(AuthenticationGuard)
-  @UsePipes(new ValidationPipe())
-  public async changePassword(@Param('id') id: number, @Body() user: ChangePasswordDTO): Promise<ResponseModel> {
-    return this._userService.changePassword(id, user);
-  }
-
-  @Put('reject-request/:id')
-  @UseGuards(AuthenticationGuard)
-  @UsePipes(new ValidationPipe())
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
     return this._userService.rejectRequest(id);
   }
 
+  /**
+   * @description: Update information of detail user, when manage staff
+   * @requires: ADMIN + HR
+   */
   @Put(':id')
-  @UseGuards(AuthenticationGuard)
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public updateUserInfo(@Param('id') id: number, @Body() data: UserDTO): Promise<ObjectLiteral> {
     return this._userService.updateUserInfor(id, data);
-  }
-
-  @Post('me')
-  @UseGuards(AuthenticationGuard)
-  public updateUserProfile(@Param('id') id: number, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
-    return this._userService.updateUserProfile(id, data);
   }
 }
