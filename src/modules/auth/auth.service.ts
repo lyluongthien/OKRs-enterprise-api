@@ -23,7 +23,7 @@ export class AuthService {
 
   public async createUser({ email, password, fullName }: Partial<RegisterDTO>): Promise<UserEntity> {
     try {
-      const emailExists = await this._userRepository.findUserByEmail(email);
+      const emailExists = await this._userRepository.getUserByEmail(email);
       if (emailExists) {
         throw new HttpException(httpEmailExists, HttpStatus.BAD_REQUEST);
       }
@@ -38,7 +38,8 @@ export class AuthService {
 
   public async authenticate({ email, password }: SignInDTO): Promise<ResponseModel> {
     try {
-      const user = await this._userRepository.getUserDetailByEmail(email);
+      const user = await this._userRepository.getUserByEmail(email);
+      console.log(user);
       if (!user) {
         throw new BadRequestException();
       }
@@ -54,7 +55,7 @@ export class AuthService {
 
   public async validateUserFromJwtPayload(payload: JwtPayload): Promise<any> {
     const { id, iat } = payload;
-    const user = await this._userRepository.getUserByConditions(id);
+    const user = await this._userRepository.getUserByID(id);
     if (!user) {
       throw new UnauthorizedException();
     }

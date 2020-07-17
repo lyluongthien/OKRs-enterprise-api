@@ -2,7 +2,6 @@ import { ObjectLiteral } from 'typeorm';
 import { Controller, Post, Body, UsePipes, Put, Param, Get, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
-import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { UserService } from './user.service';
 import { ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
@@ -20,30 +19,71 @@ import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 export class UserController {
   constructor(private _userService: UserService) {}
 
-  @Get()
+  @Get('/active')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public async getUsers(@Query('page') page: number, @Query('limit') limit: number): Promise<Pagination<UserEntity>> {
+  public async searchUsersActived(
+    @Query('text') text: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    return this._userService.getUsers({
+    if (text) {
+      return this._userService.searchUsersActived(text, {
+        page,
+        limit,
+        route: '',
+      });
+    }
+    return this._userService.getUsersActived({
+      page,
+      limit,
+      route: '',
+    });
+  }
+  @Get('/pending')
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  public async searchUsers(
+    @Query('text') text: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<ResponseModel> {
+    page = page ? page : currentPage;
+    limit = limit ? limit : limitPagination;
+    if (text) {
+      return this._userService.searchUsersApproved(text, {
+        page,
+        limit,
+        route: '',
+      });
+    }
+    return this._userService.getUsersApproved({
       page,
       limit,
       route: '',
     });
   }
 
-  @Get('/search')
-  @UseGuards(AuthenticationGuard)
+  @Get('/deactive')
+  @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public async searchUsers(
+  public async searchUsersDeactived(
     @Query('text') text: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
-  ): Promise<Pagination<UserEntity>> {
+  ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    return this._userService.searchUsers(text, {
+    if (text) {
+      return this._userService.searchUsersDeactived(text, {
+        page,
+        limit,
+        route: '',
+      });
+    }
+    return this._userService.getUsersDeactived({
       page,
       limit,
       route: '',
@@ -57,7 +97,7 @@ export class UserController {
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async me(@CurrentUser() user: UserEntity): Promise<any> {
-    return this._userService.getUserDetail(user.id);
+    return this._userService.getUserByID(user.id);
   }
 
   /**
@@ -100,11 +140,12 @@ export class UserController {
    * @requires: ADMIN + HR
    */
   @Get(':id')
+  @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async getUserDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
-    return this._userService.getUserDetail(id);
+    return this._userService.getUserByID(id);
   }
 
   /**
@@ -112,6 +153,7 @@ export class UserController {
    * @requires: ADMIN + HR
    */
   @Put('reject_request/:id')
+  @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
@@ -125,6 +167,7 @@ export class UserController {
    * @requires: ADMIN + HR
    */
   @Put(':id')
+  @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
