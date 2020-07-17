@@ -21,16 +21,17 @@ export class AuthService {
     private _userRepository: UserRepository,
   ) {}
 
-  public async createUser({ email, password, fullName }: Partial<RegisterDTO>): Promise<UserEntity> {
+  public async createUser(data: RegisterDTO): Promise<UserEntity> {
     try {
-      const emailExists = await this._userRepository.getUserByEmail(email);
+      const emailExists = await this._userRepository.getUserByEmail(data.email);
       if (emailExists) {
         throw new HttpException(httpEmailExists, HttpStatus.BAD_REQUEST);
       }
-      const newUser = this._userRepository.create({ email, password, fullName });
+      const newUser = this._userRepository.create(data);
       await this._userRepository.save(newUser);
-      delete newUser.password;
-      return newUser;
+
+      const user = await this._userRepository.getUserByEmail(data.email);
+      return user;
     } catch (error) {
       throw new HttpException(httpEmailExists, HttpStatus.BAD_REQUEST);
     }
