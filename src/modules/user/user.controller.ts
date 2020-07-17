@@ -81,11 +81,11 @@ export class UserController {
     });
   }
 
-  @Get('me')
-  @UseGuards(AuthenticationGuard)
-  public async me(@CurrentUser() user: UserEntity): Promise<any> {
-    return this._userService.getUserDetail(user.id);
-  }
+  // @Get('me')
+  // @UseGuards(AuthenticationGuard)
+  // public async me(@CurrentUser() user: UserEntity): Promise<any> {
+  //   return this._userService.getUserDetail(user.id);
+  // }
 
   @Post('me/logout')
   @UseGuards(AuthenticationGuard)
@@ -94,9 +94,15 @@ export class UserController {
   }
 
   @Get(':id')
-  @UseGuards(AuthenticationGuard)
-  public async getUserDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
-    return this._userService.getUserDetail(id);
+  //@UseGuards(AuthenticationGuard)
+  public async getUserByID(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
+    return this._userService.getUserByID(id);
+  }
+
+  @Get(':email')
+  //@UseGuards(AuthenticationGuard)
+  public async getUserByEmail(@Param('email') email: string): Promise<ResponseModel> {
+    return this._userService.getUserByEmail(email);
   }
   /**
    * @description: Verify token in links

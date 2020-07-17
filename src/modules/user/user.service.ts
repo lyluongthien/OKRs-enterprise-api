@@ -148,8 +148,17 @@ export class UserService {
     };
   }
 
-  public async getUserDetail(id: number): Promise<ResponseModel> {
-    const data = await this._userRepository.getUserDetail(id);
+  public async getUserByID(id: number): Promise<ResponseModel> {
+    const data = await this._userRepository.getUserByID(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async getUserByEmail(email: string): Promise<ResponseModel> {
+    const data = await this._userRepository.getUserByEmail(email);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -183,26 +192,25 @@ export class UserService {
     };
   }
 
-  public async updateUserInfor(id: number, data: UserDTO): Promise<ObjectLiteral> {
-    return this._userRepository.update(id, data);
+  //HR
+  public async updateUserInfor(id: number, data: UserDTO): Promise<ResponseModel> {
+    const userInfor = await this._userRepository.updateUserInfor(id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: userInfor,
+    };
   }
 
-  public async updateUserProfile(id: number, data: UserProfileDTO): Promise<ObjectLiteral> {
-    return this._userRepository.updateUserProfile(id, data);
+  //Staff
+  public async updateUserProfile(id: number, data: UserProfileDTO): Promise<ResponseModel> {
+    const userProfile = await this._userRepository.updateUserProfile(id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: userProfile,
+    };
   }
-
-  public async getUserByEmail(email: string): Promise<UserEntity> {
-    return await this._userRepository.getUserByConditions(null, {
-      where: {
-        email,
-      },
-    });
-  }
-
-  public async getUserById(id: number): Promise<UserEntity> {
-    return await this._userRepository.getUserByConditions(id);
-  }
-
   public async getRoleByUserID(id: number): Promise<RoleEntity> {
     const userRole = await this._userRepository.getUserRole(id);
     return userRole.role;

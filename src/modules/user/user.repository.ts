@@ -84,10 +84,21 @@ export class UserRepository extends Repository<UserEntity> {
   public async searchUsersActived(text: string, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
-        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .select([
+          'user.id',
+          'user.email',
+          'user.fullName',
+          'user.isLeader',
+          'user.isApproved',
+          'user.isActive',
+          'jobPositions.id',
+          'jobPositions.name',
+          'teams.id',
+          'teams.name',
+        ])
         .leftJoinAndSelect('user.role', 'roles')
-        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
-        .leftJoinAndSelect('user.team', 'teams')
+        .leftJoin('user.jobPosition', 'jobPositions')
+        .leftJoin('user.team', 'teams')
         .where('user.isActive = true')
         .andWhere('user.isApproved = true')
         .andWhere('(user.fullName like :text or user.email like :text2)', {
@@ -104,10 +115,21 @@ export class UserRepository extends Repository<UserEntity> {
   public async searchUsersApproved(text: string, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
-        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .select([
+          'user.id',
+          'user.email',
+          'user.fullName',
+          'user.isLeader',
+          'user.isApproved',
+          'user.isActive',
+          'jobPositions.id',
+          'jobPositions.name',
+          'teams.id',
+          'teams.name',
+        ])
         .leftJoinAndSelect('user.role', 'roles')
-        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
-        .leftJoinAndSelect('user.team', 'teams')
+        .leftJoin('user.jobPosition', 'jobPositions')
+        .leftJoin('user.team', 'teams')
         .where('user.isApproved = false')
         .andWhere('(user.fullName like :text or user.email like :text2)', {
           text: '%' + text + '%',
@@ -123,10 +145,21 @@ export class UserRepository extends Repository<UserEntity> {
   public async searchUsersDeactived(text: string, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
-        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .select([
+          'user.id',
+          'user.email',
+          'user.fullName',
+          'user.isLeader',
+          'user.isApproved',
+          'user.isActive',
+          'jobPositions.id',
+          'jobPositions.name',
+          'teams.id',
+          'teams.name',
+        ])
         .leftJoinAndSelect('user.role', 'roles')
-        .leftJoinAndSelect('user.jobPosition', 'jobPositions')
-        .leftJoinAndSelect('user.team', 'teams')
+        .leftJoin('user.jobPosition', 'jobPositions')
+        .leftJoin('user.team', 'teams')
         .where('user.isActive = false')
         .andWhere('(user.fullName like :text or user.email like :text2)', {
           text: '%' + text + '%',
@@ -139,21 +172,78 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  public async getUserDetail(id: number): Promise<UserEntity> {
-    return await this.findOneOrFail({
-      relations: ['role', 'jobPosition', 'team'],
-      where: { id },
-    });
+  public async getUserByID(id: number): Promise<UserEntity> {
+    try {
+      const queryBuilder = this.createQueryBuilder('user')
+        .select([
+          'user.id',
+          'user.email',
+          'user.fullName',
+          'user.isLeader',
+          'user.isApproved',
+          'user.isActive',
+          'roles.name',
+          'jobPositions.id',
+          'jobPositions.name',
+          'teams.id',
+          'teams.name',
+        ])
+        .leftJoin('user.role', 'roles')
+        .leftJoin('user.jobPosition', 'jobPositions')
+        .leftJoin('user.team', 'teams')
+        .where('user.id = :id', { id: id })
+        .getOne();
+      return await queryBuilder;
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
+  public async getUserByEmail(email: string): Promise<UserEntity> {
+    try {
+      const queryBuilder = this.createQueryBuilder('user')
+        .select([
+          'user.id',
+          'user.email',
+          'user.fullName',
+          'user.isLeader',
+          'user.isApproved',
+          'user.isActive',
+          'roles.name',
+          'jobPositions.id',
+          'jobPositions.name',
+          'teams.id',
+          'teams.name',
+        ])
+        .leftJoin('user.role', 'roles')
+        .leftJoin('user.jobPosition', 'jobPositions')
+        .leftJoin('user.team', 'teams')
+        .where('user.email = :email', { email: email })
+        .getOne();
+      return await queryBuilder;
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  //Staff
   public async updateUserProfile(id: number, data: UserProfileDTO): Promise<UserEntity> {
-    await this.update({ id }, data);
-    return await this.findOne({ id });
+    try {
+      await this.update({ id }, data);
+      return await this.findOne({ id });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
+  //HR
   public async updateUserInfor(id: number, data: UserDTO): Promise<UserEntity> {
-    await this.update({ id }, data);
-    return await this.findOne({ id });
+    try {
+      await this.update({ id }, data);
+      return await this.findOne({ id });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async getUserRole(id: number): Promise<UserEntity> {
