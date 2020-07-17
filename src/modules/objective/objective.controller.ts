@@ -1,4 +1,4 @@
-import { Controller, Post, UsePipes, Body, Get, Query, Param, UseGuards } from '@nestjs/common';
+import { Controller, Post, UsePipes, Body, Get, Query, Param, UseGuards, Delete } from '@nestjs/common';
 
 import { ObjectiveService } from './objective.service';
 import { OkrsDTO } from './objective.dto';
@@ -36,5 +36,13 @@ export class ObjectiveController {
   @UseGuards(AuthenticationGuard)
   public async viewOKRs(@Query('cycleID') cycleID: number): Promise<ResponseModel> {
     return this._objectiveService.viewOKRs(cycleID);
+  }
+
+  @Delete(':id')
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
+  @UseGuards(AuthenticationGuard)
+  public deleteOKRs(@Param('id') id: number): Promise<ResponseModel> {
+    return this._objectiveService.deleteOKRs(id);
   }
 }

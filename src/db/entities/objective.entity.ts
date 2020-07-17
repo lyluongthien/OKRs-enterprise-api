@@ -30,15 +30,15 @@ export class ObjectiveEntity {
   @Column({ array: true })
   public alignObjectivesId?: number;
 
-  @ManyToOne(() => ObjectiveEntity, (objective) => objective.parentObjectives)
+  @ManyToOne(() => ObjectiveEntity, (objective) => objective.parentObjectives, { onDelete: 'SET NULL' })
   @JoinColumn([{ name: 'id', referencedColumnName: 'parentObjectiveId' }])
   public objective: ObjectiveEntity;
 
-  @OneToMany(() => ObjectiveEntity, (objectives) => objectives.objective)
+  @OneToMany(() => ObjectiveEntity, (objectives) => objectives.objective, { onDelete: 'SET NULL' })
   @JoinColumn([{ name: 'parentObjectiveId', referencedColumnName: 'id' }])
   public parentObjectives: ObjectiveEntity[];
 
-  @OneToMany(() => KeyResultEntity, (keyresult) => keyresult.objective)
+  @OneToMany(() => KeyResultEntity, (keyresult) => keyresult.objective, { onDelete: 'CASCADE' })
   public keyResults: KeyResultEntity[];
 
   @ManyToOne(() => UserEntity, (user) => user.objectives)

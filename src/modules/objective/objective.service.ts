@@ -36,4 +36,14 @@ export class ObjectiveService {
       data: { data },
     };
   }
+  public async deleteOKRs(id: number): Promise<ResponseModel> {
+    const rowEffected: string = (await this._objectiveRepository.deleteOKRs(id)).toString();
+    if (rowEffected === '1')
+      return {
+        statusCode: HttpStatus.OK,
+        message: CommonMessage.SUCCESS,
+        data: { is_deleted: true },
+      };
+    return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
+  }
 }

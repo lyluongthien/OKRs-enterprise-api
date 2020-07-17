@@ -71,4 +71,12 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
+
+  public async deleteOKRs(id: number): Promise<number> {
+    try {
+      return (await this.delete({ id })).affected;
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
 }
