@@ -2,6 +2,7 @@ import { Optional } from '@nestjs/common';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
 import { passwordValidation } from '@app/constants/app.config';
+import { GenderEnum } from '@app/constants/app.enums';
 
 export class RegisterDTO {
   @ApiProperty()
@@ -22,6 +23,21 @@ export class RegisterDTO {
 
   @Optional()
   public readonly avatarUrl: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  public readonly roleId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  public readonly teamId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  public readonly jobPositionId: number;
+
+  @ApiProperty()
+  public gender: number;
 }
 
 export class SignInDTO {
