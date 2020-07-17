@@ -28,15 +28,15 @@ export class ObjectiveEntity {
   public parentObjectiveId?: number;
 
   @Column({ array: true })
-  public alignObjectivesId: number;
+  public alignObjectivesId?: number;
 
-  @ManyToOne(() => ObjectiveEntity, (objective) => objective.objectives)
-  @JoinColumn([{ name: 'id', referencedColumnName: 'id' }])
+  @ManyToOne(() => ObjectiveEntity, (objective) => objective.parentObjectives)
+  @JoinColumn([{ name: 'id', referencedColumnName: 'parentObjectiveId' }])
   public objective: ObjectiveEntity;
 
   @OneToMany(() => ObjectiveEntity, (objectives) => objectives.objective)
-  @JoinColumn([{ name: 'id', referencedColumnName: 'id' }])
-  public objectives: ObjectiveEntity[];
+  @JoinColumn([{ name: 'parentObjectiveId', referencedColumnName: 'id' }])
+  public parentObjectives: ObjectiveEntity[];
 
   @OneToMany(() => KeyResultEntity, (keyresult) => keyresult.objective)
   public keyResults: KeyResultEntity[];

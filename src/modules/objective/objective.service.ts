@@ -6,7 +6,6 @@ import { ObjectiveRepository } from './objective.repository';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
-import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage } from '@app/constants/app.enums';
 
@@ -29,8 +28,8 @@ export class ObjectiveService {
     };
   }
 
-  public async viewOKRs(options: IPaginationOptions, cycleID: number): Promise<ResponseModel> {
-    const data = await this._objectiveRepository.viewOKRs(options, cycleID);
+  public async viewOKRs(cycleID: number): Promise<ResponseModel> {
+    const data = await this._objectiveRepository.viewOKRs(cycleID);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.VALID_TOKEN,

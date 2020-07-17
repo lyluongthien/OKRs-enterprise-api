@@ -26,11 +26,7 @@ export class ObjectiveController {
 
   @Get()
   @UseGuards(AuthenticationGuard)
-  public async viewOKRs(
-    @Query('cycleID') cycleID: number,
-    @Query('page') page: number,
-    @Query('limit') limit: number,
-  ): Promise<ResponseModel> {
-    return this._objectiveService.viewOKRs({ page, limit }, cycleID);
+  public async viewOKRs(@Query('cycleID') cycleID: number): Promise<ResponseModel> {
+    return this._objectiveService.viewOKRs(cycleID);
   }
 }
