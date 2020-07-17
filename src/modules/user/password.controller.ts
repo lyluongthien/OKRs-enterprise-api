@@ -1,7 +1,7 @@
-import { Controller, Get, Query, Post, UsePipes, ValidationPipe, Body, Put, Param } from '@nestjs/common';
+import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Put, Param } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
 import { UserService } from './user.service';
-import { ResetPasswordDTO, ChangePasswordDTO, PasswordDTO } from './user.dto';
+import { ResetPasswordDTO, PasswordDTO } from './user.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { ApiOkResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
 import { CommonMessage } from '@app/constants/app.enums';
