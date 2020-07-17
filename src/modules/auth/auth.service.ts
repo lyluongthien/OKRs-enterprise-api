@@ -38,7 +38,7 @@ export class AuthService {
 
   public async authenticate({ email, password }: SignInDTO): Promise<ResponseModel> {
     try {
-      const user = await this._userRepository.findUserByEmail(email);
+      const user = await this._userRepository.getUserDetailByEmail(email);
       if (!user) {
         throw new BadRequestException();
       }
@@ -67,10 +67,19 @@ export class AuthService {
 
   public async createBearerToken(user: UserEntity): Promise<ResponseModel> {
     const token = await this._jwtService.sign({ id: user.id, email: user.email });
+    const userModel = {
+      id: user.id,
+      name: user.fullName,
+      email: user.email,
+      role: user.role.name,
+      department: user.jobPosition.name,
+    };
+
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
       data: {
+        user: userModel,
         token: `Bearer ${token}`,
       },
     };
