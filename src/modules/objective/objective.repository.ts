@@ -1,15 +1,25 @@
-import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
+import { Repository, EntityRepository, EntityManager } from 'typeorm';
 
-import { ObjectiveDTO } from './objective.dto';
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { CommonMessage } from '@app/constants/app.enums';
+import { OkrsDTO } from './objective.dto';
+import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 
 @EntityRepository(ObjectiveEntity)
 export class ObjectiveRepository extends Repository<ObjectiveEntity> {
-  public async createObjective(data: ObjectiveDTO): Promise<ObjectLiteral> {
-    await this.save(data);
-    return null;
+  public async createOKRs(okrDTo: OkrsDTO, manager?: EntityManager): Promise<void> {
+    try {
+      const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
+      const keyResultRepository = manager.getRepository(KeyResultEntity);
+
+      for (const value of okrDTo.keyResult) {
+        value.objectiveId = objective.id;
+        await keyResultRepository.save(value);
+      }
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async viewOKRs(cycleID: number): Promise<ObjectiveEntity[]> {

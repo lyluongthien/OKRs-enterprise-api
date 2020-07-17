@@ -3,24 +3,15 @@ import { EntityManager } from 'typeorm';
 
 import { OkrsDTO } from './objective.dto';
 import { ObjectiveRepository } from './objective.repository';
-import { KeyResultEntity } from '@app/db/entities/key-result.entity';
-import { ObjectiveEntity } from '@app/db/entities/objective.entity';
-import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage } from '@app/constants/app.enums';
 
 @Injectable()
 export class ObjectiveService {
-  constructor(private _objectiveRepository: ObjectiveRepository, private _keyresultRepository: KeyResultRepository) {}
+  constructor(private _objectiveRepository: ObjectiveRepository) {}
 
   public async createOKRs(okrDTo: OkrsDTO, manager?: EntityManager): Promise<ResponseModel> {
-    const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
-    const KeyResultRepository = manager.getRepository(KeyResultEntity);
-
-    for (const value of okrDTo.keyResult) {
-      value.objectiveId = objective.id;
-      await KeyResultRepository.save(value);
-    }
+    await this._objectiveRepository.createOKRs(okrDTo, manager);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.VALID_TOKEN,
