@@ -24,9 +24,9 @@ export class KeyResultService {
       return {
         statusCode: HttpStatus.OK,
         message: CommonMessage.SUCCESS,
-        data: { is_deleted: true },
+        data: { isDeleted: true },
       };
-    return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
+    return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { isDeleted: false } };
   }
 
   public async updateKeyresults(id: number, data: KeyResultDTO): Promise<ResponseModel> {

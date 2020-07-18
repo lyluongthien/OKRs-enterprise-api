@@ -1,4 +1,4 @@
-import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
 import { generate } from 'generate-password';
@@ -9,7 +9,6 @@ import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
 import { invalidTokenResetPassword, tokenExpired } from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
-import { UserEntity } from '@app/db/entities/user.entity';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { RouterEnum, CommonMessage } from '@app/constants/app.enums';
 import { expireResetPasswordToken } from '@app/constants/app.magic-number';
@@ -24,7 +23,7 @@ export class UserService {
    */
   public async forgetPassword(user: ResetPasswordDTO): Promise<ResponseModel> {
     const { email } = user;
-    const currentUser = await this._userRepository.findUserByEmail(email);
+    const currentUser = await this._userRepository.getUserByEmail(email);
     if (!currentUser) {
       throw new HttpException('Email do not exist', HttpStatus.BAD_REQUEST);
     }
@@ -102,7 +101,7 @@ export class UserService {
    * @description: Change password for me
    */
   public async changePassword(id: number, user: ChangePasswordDTO): Promise<ResponseModel> {
-    const currentUser = await this._userRepository.getUserByConditions(id);
+    const currentUser = await this._userRepository.getUserByID(id);
     if (!currentUser) {
       throw new HttpException(CommonMessage.USER_DO_NOT_EXIST, HttpStatus.BAD_REQUEST);
     }
@@ -125,12 +124,8 @@ export class UserService {
     return await this._userRepository.deleteUser(id);
   }
 
-  public async getUsers(options: IPaginationOptions): Promise<Pagination<UserEntity>> {
-    return await this._userRepository.getUsers(options);
-  }
-
-  public async getUserDetail(id: number): Promise<ResponseModel> {
-    const data = await this._userRepository.getUserDetail(id);
+  public async getUsersActived(options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.getUsersActived(options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -138,30 +133,87 @@ export class UserService {
     };
   }
 
-  public async searchUsers(text: string, options: IPaginationOptions): Promise<Pagination<UserEntity>> {
-    return await this._userRepository.searchUsers(text, options);
+  public async getUsersApproved(options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.getUsersApproved(options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
-  public async updateUserInfor(id: number, data: UserDTO): Promise<ObjectLiteral> {
-    return this._userRepository.update(id, data);
+  public async getUsersDeactived(options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.getUsersDeactived(options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
-  public async updateUserProfile(id: number, data: UserProfileDTO): Promise<ObjectLiteral> {
-    return this._userRepository.updateUserProfile(id, data);
+  public async getUserByID(id: number): Promise<ResponseModel> {
+    const data = await this._userRepository.getUserByID(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
-  public async getUserByEmail(email: string): Promise<UserEntity> {
-    return await this._userRepository.getUserByConditions(null, {
-      where: {
-        email,
-      },
-    });
+  public async getUserByEmail(email: string): Promise<ResponseModel> {
+    const data = await this._userRepository.getUserByEmail(email);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
-  public async getUserById(id: number): Promise<UserEntity> {
-    return await this._userRepository.getUserByConditions(id);
+  public async searchUsersActived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.searchUsersActived(text, options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
+  public async searchUsersApproved(text: string, options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.searchUsersApproved(text, options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+  public async searchUsersDeactived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._userRepository.searchUsersDeactived(text, options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  //HR
+  public async updateUserInfor(id: number, data: UserDTO): Promise<ResponseModel> {
+    const userInfor = await this._userRepository.updateUserInfor(id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: userInfor,
+    };
+  }
+
+  //Staff
+  public async updateUserProfile(id: number, data: UserProfileDTO): Promise<ResponseModel> {
+    const userProfile = await this._userRepository.updateUserProfile(id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: userProfile,
+    };
+  }
   public async getRoleByUserID(id: number): Promise<RoleEntity> {
     const userRole = await this._userRepository.getUserRole(id);
     return userRole.role;
