@@ -13,6 +13,7 @@ import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConne
 import { MeasureUnitEntity } from './entities/measure-unit.entity';
 import { LessonEntity } from './entities/lesson.entity';
 import { InviteTokenEntity } from './entities/invite-token.entity';
+import { CheckinEntity } from './entities/checkin.entity';
 
 const type = DbConfig.DB_TYPE;
 const host = accessEnv(DbConfig.DB_HOST);
@@ -52,6 +53,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
         EvaluationCriteriaEntity,
         LessonEntity,
         InviteTokenEntity,
+        CheckinEntity,
       ],
       migrations: ['dist/db/migrations/*.js'],
       cli: {
