@@ -18,5 +18,5 @@ export class ObjectiveDTO {
 
   public parentObjectiveId?: number;
 
-  public alignObjectivesId: number;
+  public alignObjectivesId?: number;
 }

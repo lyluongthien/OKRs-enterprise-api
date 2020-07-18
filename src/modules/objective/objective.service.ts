@@ -10,8 +10,8 @@ import { CommonMessage } from '@app/constants/app.enums';
 export class ObjectiveService {
   constructor(private _objectiveRepository: ObjectiveRepository) {}
 
-  public async createOKRs(okrDTo: OkrsDTO, manager?: EntityManager): Promise<ResponseModel> {
-    await this._objectiveRepository.createOKRs(okrDTo, manager);
+  public async createOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<ResponseModel> {
+    await this._objectiveRepository.createOKRs(okrDTo, manager, userID);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.VALID_TOKEN,
