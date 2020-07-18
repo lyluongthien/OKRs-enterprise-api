@@ -1,5 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
+import { KeyResultEntity } from './key-result.entity';
+import { UserEntity } from './user.entity';
+import { CycleEntity } from './cycle.entity';
 
 @Entity(TableName.Objective)
 export class ObjectiveEntity {
@@ -21,9 +24,26 @@ export class ObjectiveEntity {
   @Column()
   public cycleId: number;
 
-  @Column()
-  public parentObjectiveId?: number;
+  @Column({ nullable: true })
+  public parentObjectiveId?: number | null;
 
-  @Column({ array: true })
-  public alignObjectivesId: number;
+  @Column({ array: true, nullable: true })
+  public alignObjectivesId?: number | null;
+
+  @ManyToOne(() => ObjectiveEntity, (objective) => objective.parentObjectives)
+  @JoinColumn([{ name: 'id', referencedColumnName: 'parentObjectiveId' }])
+  public objective: ObjectiveEntity;
+
+  @OneToMany(() => ObjectiveEntity, (objectives) => objectives.objective)
+  @JoinColumn([{ name: 'parentObjectiveId', referencedColumnName: 'id' }])
+  public parentObjectives: ObjectiveEntity[];
+
+  @OneToMany(() => KeyResultEntity, (keyresult) => keyresult.objective, { onDelete: 'CASCADE' })
+  public keyResults: KeyResultEntity[];
+
+  @ManyToOne(() => UserEntity, (user) => user.objectives)
+  public user: UserEntity;
+
+  @ManyToOne(() => CycleEntity, (cycle) => cycle.objectives)
+  public cycle: CycleEntity;
 }
