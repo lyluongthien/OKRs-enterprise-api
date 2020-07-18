@@ -68,6 +68,7 @@ export enum RouterEnum {
   MEASURE_UNIT_ROUTE = 'localhost:3000/api/v1/measure-units',
   API_HOST_ROUTER = 'http://localhost:3000',
   FE_HOST_ROUTER = 'http://localhost:5000',
+  USER_ROUTE = 'http://localhost:3000/api/v1/users',
 }
 
 export enum CommonMessage {
@@ -84,4 +85,10 @@ export enum CommonMessage {
   DATABASE_EXCEPTION = 'Error when access to database',
   DELETE_FAIL = 'Delete fail',
   LOGOUT_SUCCESS = 'Logout success',
+}
+
+export enum Status {
+  ACTIVE = 1,
+  PENDING = 0,
+  DEAVCTIVE = -1,
 }

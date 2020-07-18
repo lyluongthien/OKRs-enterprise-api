@@ -11,7 +11,7 @@ import { UserEntity } from '@app/db/entities/user.entity';
 import { ResponseModel } from '@app/constants/app.interface';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
-import { RoleEnum, CommonMessage } from '@app/constants/app.enums';
+import { RoleEnum, CommonMessage, Status, RouterEnum } from '@app/constants/app.enums';
 import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 @Controller('/api/v1/users')
@@ -19,75 +19,64 @@ import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 export class UserController {
   constructor(private _userService: UserService) {}
 
-  @Get('/active')
+  /**
+   * @description: Get list of user by status
+   * 1: Active, -1: Deactive, 0: Pending
+   */
+  @Get()
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public async searchUsersActived(
+    @Query('status') status: number,
     @Query('text') text: string,
     @Query('page') page: number,
     @Query('limit') limit: number,
   ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    if (text) {
-      return this._userService.searchUsersActived(text, {
+    if (status == Status.ACTIVE) {
+      if (text) {
+        return this._userService.searchUsersActived(text, {
+          page,
+          limit,
+          route: RouterEnum.USER_ROUTE,
+        });
+      }
+      return this._userService.getUsersActived({
         page,
         limit,
-        route: '',
+        route: RouterEnum.USER_ROUTE,
       });
     }
-    return this._userService.getUsersActived({
-      page,
-      limit,
-      route: '',
-    });
-  }
-  @Get('/pending')
-  @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public async searchUsers(
-    @Query('text') text: string,
-    @Query('page') page: number,
-    @Query('limit') limit: number,
-  ): Promise<ResponseModel> {
-    page = page ? page : currentPage;
-    limit = limit ? limit : limitPagination;
-    if (text) {
-      return this._userService.searchUsersApproved(text, {
+    if (status == Status.PENDING) {
+      if (text) {
+        return this._userService.searchUsersApproved(text, {
+          page,
+          limit,
+          route: RouterEnum.USER_ROUTE,
+        });
+      }
+      return this._userService.getUsersApproved({
         page,
         limit,
-        route: '',
+        route: RouterEnum.USER_ROUTE,
       });
     }
-    return this._userService.getUsersApproved({
-      page,
-      limit,
-      route: '',
-    });
-  }
 
-  @Get('/deactive')
-  @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public async searchUsersDeactived(
-    @Query('text') text: string,
-    @Query('page') page: number,
-    @Query('limit') limit: number,
-  ): Promise<ResponseModel> {
-    page = page ? page : currentPage;
-    limit = limit ? limit : limitPagination;
-    if (text) {
-      return this._userService.searchUsersDeactived(text, {
+    if (status == Status.DEAVCTIVE) {
+      if (text) {
+        return this._userService.searchUsersDeactived(text, {
+          page,
+          limit,
+          route: RouterEnum.USER_ROUTE,
+        });
+      }
+      return this._userService.getUsersDeactived({
         page,
         limit,
-        route: '',
+        route: RouterEnum.USER_ROUTE,
       });
     }
-    return this._userService.getUsersDeactived({
-      page,
-      limit,
-      route: '',
-    });
   }
 
   /**
