@@ -57,6 +57,11 @@ export enum EvaluationCriteriaEnum {
   LEADER_TO_MEMBER = 'LEADER_TO_MEMBER',
 }
 
+export enum ObjectiveTypeEnum {
+  MOON_SHOT = 'Moonshot',
+  ROOF_SHOT = 'Roofshot',
+}
+
 export enum GenderEnum {
   FEMALE = 0,
   MALE = 1,

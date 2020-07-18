@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
+import { KeyResultEntity } from './key-result.entity';
 
 @Entity(TableName.Checkin)
 export class CheckinEntity {
@@ -35,4 +36,7 @@ export class CheckinEntity {
 
   @UpdateDateColumn({ type: 'timestamptz' })
   public updatedAt: Date;
+
+  @ManyToOne(() => KeyResultEntity, (keyresult) => keyresult.checkins)
+  public keyResult: KeyResultEntity;
 }

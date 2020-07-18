@@ -13,6 +13,8 @@ import { CycleModule } from './modules/cycle/cycle.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { EvaluationCriteriaModule } from './modules/evaluation-criteria/evaluation-criteria.module';
 import { MeasureUnitModule } from './modules/measure-unit/measure-unit.module';
+import { ObjectiveModule } from './modules/objective/objective.module';
+import { KeyResultModule } from './modules/keyresult/keyresult.module';
 import { LessonModule } from './modules/lesson/lesson.module';
 import { CheckinModule } from './modules/checkin/checkin.module';
 
@@ -28,6 +30,8 @@ import { CheckinModule } from './modules/checkin/checkin.module';
     AuthModule,
     MeasureUnitModule,
     EvaluationCriteriaModule,
+    ObjectiveModule,
+    KeyResultModule,
     LessonModule,
     CheckinModule,
   ],

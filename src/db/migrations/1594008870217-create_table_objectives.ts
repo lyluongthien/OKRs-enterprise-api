@@ -66,7 +66,7 @@ export class CreateTableObjectives1594008870217 implements MigrationInterface {
     columnNames: [ForeignKey.PARENT_OBJECTIVE_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.Objective,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   });
 
   private tableForeignKey: TableForeignKey[] = [this.pkUserId, this.pkCycleId, this.pkParentObectiveId];
