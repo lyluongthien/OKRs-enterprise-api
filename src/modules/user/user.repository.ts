@@ -239,12 +239,12 @@ export class UserRepository extends Repository<UserEntity> {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
-  public async approveRequest(id?: number): Promise<void> {
+  public async approveRequest(id: number[]): Promise<void> {
     try {
-      if (id) {
-        await this.update({ id }, { isApproved: true, isActive: true });
-      } else {
+      if (id === undefined || id.length == 0) {
         await this.update({ isApproved: false }, { isApproved: true, isActive: true });
+      } else {
+        await this.update(id, { isApproved: true, isActive: true });
       }
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);

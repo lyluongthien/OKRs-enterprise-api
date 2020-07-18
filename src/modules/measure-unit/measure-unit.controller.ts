@@ -1,17 +1,26 @@
-import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, Query } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, Query, UseGuards } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { MeasureUnitService } from './measure-unit.service';
 import { MeasureUnitDTO } from './measure-unit.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { MeasureUnitEntity } from '@app/db/entities/measure-unit.entity';
 import { currentPage, limitPagination } from '@app/constants/app.magic-number';
-import { RouterEnum } from '@app/constants/app.enums';
+import { RouterEnum, CommonMessage, RoleEnum } from '@app/constants/app.enums';
+import { AuthenticationGuard } from '../auth/authentication.guard';
+import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
+import { AuthorizationGuard } from '../auth/authorization.guard';
+import { Roles } from '../role/role.decorator';
 
-@Controller('/api/v1/measure-units')
+@Controller('/api/v1/measure_units')
+@UseGuards(AuthenticationGuard)
 export class MeasureUnitController {
   constructor(private _measureService: MeasureUnitService) {}
 
   @Get(':page')
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public getMeasureUnits(
     @Query('page') page: number,
     @Query('limit') limit: number,
@@ -22,22 +31,38 @@ export class MeasureUnitController {
   }
 
   @Get(':id')
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public getMeasureUnitDetail(@Param('id') id: number): Promise<MeasureUnitEntity> {
     return this._measureService.getMeasureUnitDetail(id);
   }
 
   @Post()
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public createMeasureUnit(@Body() role: MeasureUnitDTO): Promise<MeasureUnitEntity> {
     return this._measureService.createMeasureUnit(role);
   }
 
   @Put(':id')
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public updateMeasureUnit(@Param('id') id: number, @Body() data: MeasureUnitDTO): Promise<MeasureUnitEntity> {
     return this._measureService.updateMeasureUnit(id, data);
   }
 
   @Delete(':id')
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public deleteMeasureUnit(@Param('id') id: number): any {
     return this._measureService.deleteMeasureUnit(id);
   }

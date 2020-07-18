@@ -24,7 +24,7 @@ export class ObjectiveService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.VALID_TOKEN,
-      data: { data },
+      data: data,
     };
   }
 

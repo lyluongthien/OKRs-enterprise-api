@@ -64,3 +64,7 @@ export class ResetPasswordTokenDTO {
 
   public resetPasswordTokenExpire: Date;
 }
+
+export class ApproveRequestDTO {
+  public id: number[];
+}

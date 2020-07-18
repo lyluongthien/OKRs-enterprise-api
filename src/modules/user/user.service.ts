@@ -128,12 +128,12 @@ export class UserService {
     };
   }
 
-  public async approveRequest(id?: number): Promise<ResponseModel> {
+  public async approveRequest(id: number[]): Promise<ResponseModel> {
     const data = await this._userRepository.approveRequest(id);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: { data },
     };
   }
 
