@@ -37,7 +37,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
   }
   public async viewOKRs(cycleID: number): Promise<ObjectiveEntity[]> {
     try {
-      const queryBuilder = this.createQueryBuilder('objective')
+      return await this.createQueryBuilder('objective')
         .select([
           'objective.id',
           'objective.progress',
@@ -47,16 +47,15 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objective.cycleId',
           'objective.parentObjectiveId',
           'objective.alignObjectivesId',
-          'user.id',
-          'user.fullName',
-          'user.isLeader',
+          'users.id',
+          'users.fullName',
+          'users.isLeader',
         ])
         .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
-        .leftJoin('objective.user', 'user')
+        .leftJoin('objective.user', 'users')
         .where('objective.cycleId = :id', { id: cycleID })
         .getMany();
-      return queryBuilder;
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }

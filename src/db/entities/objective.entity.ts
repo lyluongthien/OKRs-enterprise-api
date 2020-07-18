@@ -24,17 +24,17 @@ export class ObjectiveEntity {
   @Column()
   public cycleId: number;
 
-  @Column()
-  public parentObjectiveId?: number;
+  @Column({ nullable: true })
+  public parentObjectiveId?: number | null;
 
-  @Column({ array: true })
-  public alignObjectivesId?: number;
+  @Column({ array: true, nullable: true })
+  public alignObjectivesId?: number | null;
 
-  @ManyToOne(() => ObjectiveEntity, (objective) => objective.parentObjectives, { onDelete: 'SET NULL' })
+  @ManyToOne(() => ObjectiveEntity, (objective) => objective.parentObjectives)
   @JoinColumn([{ name: 'id', referencedColumnName: 'parentObjectiveId' }])
   public objective: ObjectiveEntity;
 
-  @OneToMany(() => ObjectiveEntity, (objectives) => objectives.objective, { onDelete: 'SET NULL' })
+  @OneToMany(() => ObjectiveEntity, (objectives) => objectives.objective)
   @JoinColumn([{ name: 'parentObjectiveId', referencedColumnName: 'id' }])
   public parentObjectives: ObjectiveEntity[];
 
