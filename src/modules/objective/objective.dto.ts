@@ -6,6 +6,8 @@ export class OkrsDTO {
   public keyResult: KeyResultDTO[];
 }
 export class ObjectiveDTO {
+  public id?: number;
+
   public progress: number;
 
   public title: string;

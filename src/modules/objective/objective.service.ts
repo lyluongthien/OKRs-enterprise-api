@@ -10,11 +10,11 @@ import { CommonMessage } from '@app/constants/app.enums';
 export class ObjectiveService {
   constructor(private _objectiveRepository: ObjectiveRepository) {}
 
-  public async createOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<ResponseModel> {
-    await this._objectiveRepository.createOKRs(okrDTo, manager, userID);
+  public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<ResponseModel> {
+    await this._objectiveRepository.createAndUpdateOKRs(okrDTo, manager, userID);
     return {
       statusCode: HttpStatus.OK,
-      message: CommonMessage.VALID_TOKEN,
+      message: CommonMessage.SUCCESS,
       data: {},
     };
   }
@@ -23,7 +23,7 @@ export class ObjectiveService {
     const data = await this._objectiveRepository.viewOKRs(cycleID);
     return {
       statusCode: HttpStatus.OK,
-      message: CommonMessage.VALID_TOKEN,
+      message: CommonMessage.SUCCESS,
       data: { data },
     };
   }
@@ -32,7 +32,7 @@ export class ObjectiveService {
     const data = await this._objectiveRepository.getDetailOKRs(id);
     return {
       statusCode: HttpStatus.OK,
-      message: CommonMessage.VALID_TOKEN,
+      message: CommonMessage.SUCCESS,
       data: { data },
     };
   }

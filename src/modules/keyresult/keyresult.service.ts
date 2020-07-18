@@ -13,7 +13,7 @@ export class KeyResultService {
     await this._keyResultRepository.createKeyResult(data);
     return {
       statusCode: HttpStatus.OK,
-      message: CommonMessage.VALID_TOKEN,
+      message: CommonMessage.SUCCESS,
       data: {},
     };
   }

@@ -25,7 +25,7 @@ export class ObjectiveController {
     @Body() data: OkrsDTO,
     @TransactionManager() manager: EntityManager,
   ): Promise<ResponseModel> {
-    return this._objectiveService.createOKRs(data, manager, user.id);
+    return this._objectiveService.createAndUpdateOKRs(data, manager, user.id);
   }
 
   @Get(':id')

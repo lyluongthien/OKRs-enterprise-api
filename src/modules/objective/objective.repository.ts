@@ -8,7 +8,7 @@ import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 
 @EntityRepository(ObjectiveEntity)
 export class ObjectiveRepository extends Repository<ObjectiveEntity> {
-  public async createOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<void> {
+  public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<void> {
     try {
       okrDTo.objective.userId = userID;
       const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
