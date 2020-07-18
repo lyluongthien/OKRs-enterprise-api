@@ -8,11 +8,14 @@ import { UserEntity } from './entities/user.entity';
 import { JobEntity } from './entities/job.entity';
 import { TeamEntity } from './entities/team.entity';
 import { CycleEntity } from './entities/cycle.entity';
+import { KeyResultEntity } from './entities/key-result.entity';
+import { ObjectiveEntity } from './entities/objective.entity';
 import { EvaluationCriteriaEntity } from './entities/evaluation-criteria.entity';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import { MeasureUnitEntity } from './entities/measure-unit.entity';
 import { LessonEntity } from './entities/lesson.entity';
 import { InviteTokenEntity } from './entities/invite-token.entity';
+import { CheckinEntity } from './entities/checkin.entity';
 
 const type = DbConfig.DB_TYPE;
 const host = accessEnv(DbConfig.DB_HOST);
@@ -50,8 +53,11 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
         MeasureUnitEntity,
         CycleEntity,
         EvaluationCriteriaEntity,
+        KeyResultEntity,
+        ObjectiveEntity,
         LessonEntity,
         InviteTokenEntity,
+        CheckinEntity,
       ],
       migrations: ['dist/db/migrations/*.js'],
       cli: {
