@@ -15,6 +15,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
 
       okrDTo.keyResult.map((data) => {
         data.objectiveId = objective.id;
+        return data.objectiveId;
       });
       await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
     } catch (error) {
