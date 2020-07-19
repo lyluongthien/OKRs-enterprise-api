@@ -1,7 +1,7 @@
 import { Repository, EntityRepository, EntityManager } from 'typeorm';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { CommonMessage } from '@app/constants/app.enums';
 import { OkrsDTO } from './objective.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
@@ -22,9 +22,9 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async viewOKRs(cycleID: number): Promise<ObjectiveEntity[]> {
+  public async viewOKRs(cycleID: number, text: string): Promise<ObjectiveEntity[]> {
     try {
-      return await this.createQueryBuilder('objective')
+      const queryBuilder = await this.createQueryBuilder('objective')
         .select([
           'objective.id',
           'objective.progress',
@@ -39,14 +39,17 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         ])
         .leftJoin('objective.parentObjectives', 'parentObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
-        .leftJoin('objective.user', 'users')
-        .leftJoin(
-          'objective.alignmentObjective',
-          'alignmentObjectives',
-          'alignmentObjectives.id = any (objective.alignObjectivesId)',
-        )
-        .where('objective.cycleId = :id', { id: cycleID })
-        .getMany();
+        .leftJoin('objective.user', 'users');
+      if (cycleID) {
+        if (text) {
+          return await queryBuilder
+            .where('objective.cycleId = :id', { id: cycleID })
+            .andWhere('objective.title like :text', { text: '%' + text + '%' })
+            .getMany();
+        }
+        return await queryBuilder.where('objective.cycleId = :id', { id: cycleID }).getMany();
+      }
+      return null;
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }

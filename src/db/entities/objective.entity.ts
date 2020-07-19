@@ -42,7 +42,7 @@ export class ObjectiveEntity {
   public objectiveAlignment: ObjectiveEntity;
 
   @ManyToOne(() => ObjectiveEntity, (objectives) => objectives.objectiveAlignment)
-  @JoinColumn([{ name: 'alignObjectivesId', referencedColumnName: 'id' }])
+  @JoinColumn([{}])
   public alignmentObjective: ObjectiveEntity[];
 
   @OneToMany(() => KeyResultEntity, (keyresult) => keyresult.objective, { onDelete: 'CASCADE' })

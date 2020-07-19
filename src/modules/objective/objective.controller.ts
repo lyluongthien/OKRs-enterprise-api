@@ -1,12 +1,12 @@
 import { Controller, Post, UsePipes, Body, Get, Query, Param, UseGuards, Delete } from '@nestjs/common';
+import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
+import { Transaction, TransactionManager, EntityManager } from 'typeorm';
 
 import { ObjectiveService } from './objective.service';
 import { OkrsDTO } from './objective.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
-import { Transaction, TransactionManager, EntityManager } from 'typeorm';
 import { ResponseModel } from '@app/constants/app.interface';
 import { AuthenticationGuard } from '../auth/authentication.guard';
-import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 import { CommonMessage } from '@app/constants/app.enums';
 import { CurrentUser } from '../user/user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
@@ -38,8 +38,8 @@ export class ObjectiveController {
   @Get()
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public async viewOKRs(@Query('cycleID') cycleID: number): Promise<ResponseModel> {
-    return this._objectiveService.viewOKRs(cycleID);
+  public async viewOKRs(@Query('cycleID') cycleID: number, @Query('text') text: string): Promise<ResponseModel> {
+    return this._objectiveService.viewOKRs(cycleID, text);
   }
 
   @Delete(':id')
