@@ -241,7 +241,7 @@ export class UserRepository extends Repository<UserEntity> {
   }
   public async approveRequest(id: number[]): Promise<void> {
     try {
-      if (id === undefined || id.length == 0) {
+      if (id === undefined || id.length < 1) {
         await this.update({ isApproved: false }, { isApproved: true, isActive: true });
       } else {
         await this.update(id, { isApproved: true, isActive: true });
