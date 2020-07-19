@@ -12,30 +12,16 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     try {
       okrDTo.objective.userId = userID;
       const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
-      const keyResultRepository = manager.getRepository(KeyResultEntity);
 
-      for (const value of okrDTo.keyResult) {
-        value.objectiveId = objective.id;
-        await keyResultRepository.save(value);
+      for (let i = 0; i < okrDTo.keyResult.length; i++) {
+        okrDTo.keyResult[i].id = objective.id;
       }
+      await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
 
-  public async updateOKRs(okrDTo: OkrsDTO, manager?: EntityManager): Promise<void> {
-    try {
-      const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
-      const keyResultRepository = manager.getRepository(KeyResultEntity);
-
-      for (const value of okrDTo.keyResult) {
-        value.objectiveId = objective.id;
-        await keyResultRepository.save(value);
-      }
-    } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
-    }
-  }
   public async viewOKRs(cycleID: number): Promise<ObjectiveEntity[]> {
     try {
       return await this.createQueryBuilder('objective')
@@ -46,15 +32,19 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objective.isRootObjective',
           'objective.userId',
           'objective.cycleId',
-          'objective.parentObjectiveId',
           'objective.alignObjectivesId',
           'users.id',
           'users.fullName',
           'users.isLeader',
         ])
-        .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
+        .leftJoin('objective.parentObjectives', 'parentObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
         .leftJoin('objective.user', 'users')
+        .leftJoin(
+          'objective.alignmentObjective',
+          'alignmentObjectives',
+          'alignmentObjectives.id = any (objective.alignObjectivesId)',
+        )
         .where('objective.cycleId = :id', { id: cycleID })
         .getMany();
     } catch (error) {

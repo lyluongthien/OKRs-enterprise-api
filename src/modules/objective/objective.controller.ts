@@ -20,7 +20,7 @@ export class ObjectiveController {
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   @UsePipes(new ValidationPipe())
   @Transaction({ isolation: 'SERIALIZABLE' })
-  public createOKRs(
+  public createAndUpdateOKRs(
     @CurrentUser() user: UserEntity,
     @Body() data: OkrsDTO,
     @TransactionManager() manager: EntityManager,

@@ -24,7 +24,7 @@ export class ObjectiveService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { data },
+      data: data,
     };
   }
 
@@ -33,7 +33,7 @@ export class ObjectiveService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { data },
+      data: data,
     };
   }
   public async deleteOKRs(id: number): Promise<ResponseModel> {

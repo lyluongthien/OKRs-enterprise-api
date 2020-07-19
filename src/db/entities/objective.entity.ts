@@ -38,6 +38,13 @@ export class ObjectiveEntity {
   @JoinColumn([{ name: 'parentObjectiveId', referencedColumnName: 'id' }])
   public parentObjectives: ObjectiveEntity[];
 
+  @ManyToOne(() => ObjectiveEntity, (objective) => objective.alignmentObjective)
+  public objectiveAlignment: ObjectiveEntity;
+
+  @ManyToOne(() => ObjectiveEntity, (objectives) => objectives.objectiveAlignment)
+  @JoinColumn([{ name: 'alignObjectivesId', referencedColumnName: 'id' }])
+  public alignmentObjective: ObjectiveEntity[];
+
   @OneToMany(() => KeyResultEntity, (keyresult) => keyresult.objective, { onDelete: 'CASCADE' })
   public keyResults: KeyResultEntity[];
 
