@@ -13,9 +13,9 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       okrDTo.objective.userId = userID;
       const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
 
-      for (let i = 0; i < okrDTo.keyResult.length; i++) {
-        okrDTo.keyResult[i].id = objective.id;
-      }
+      okrDTo.keyResult.map((data) => {
+        data.objectiveId = objective.id;
+      });
       await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
