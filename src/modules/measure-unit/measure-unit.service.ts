@@ -16,7 +16,7 @@ export class MeasureUnitService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { data },
+      data: data,
     };
   }
 
@@ -25,7 +25,7 @@ export class MeasureUnitService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { datas },
+      data: datas,
     };
   }
 
@@ -34,7 +34,7 @@ export class MeasureUnitService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { data },
+      data: data,
     };
   }
 
@@ -43,7 +43,7 @@ export class MeasureUnitService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { datas },
+      data: datas,
     };
   }
 
@@ -52,7 +52,7 @@ export class MeasureUnitService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { datas },
+      data: datas,
     };
   }
 }

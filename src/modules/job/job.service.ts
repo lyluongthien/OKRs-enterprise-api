@@ -13,7 +13,7 @@ export class JobService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { data },
+      data: data,
     };
   }
 
@@ -22,7 +22,7 @@ export class JobService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { datas },
+      data: datas,
     };
   }
 
@@ -31,7 +31,7 @@ export class JobService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { data },
+      data: data,
     };
   }
 
@@ -40,7 +40,7 @@ export class JobService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { datas },
+      data: datas,
     };
   }
 
@@ -49,7 +49,7 @@ export class JobService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { data },
+      data: data,
     };
   }
 }
