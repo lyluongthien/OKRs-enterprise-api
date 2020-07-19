@@ -1,30 +1,55 @@
-import { Injectable } from '@nestjs/common';
-import { JobEntity } from '@app/db/entities/job.entity';
+import { Injectable, HttpStatus } from '@nestjs/common';
 import { JobRepository } from './job.repository';
 import { JobDTO } from './job.dto';
-import { ObjectLiteral } from 'typeorm';
+import { CommonMessage } from '@app/constants/app.enums';
+import { ResponseModel } from '@app/constants/app.interface';
 
 @Injectable()
 export class JobService {
   constructor(private jobRepository: JobRepository) {}
 
-  public getListJob(): Promise<JobEntity[]> {
-    return this.jobRepository.getListJob();
+  public async getListJob(): Promise<ResponseModel> {
+    const data = await this.jobRepository.getListJob();
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: { data },
+    };
   }
 
-  public createJob(data: JobDTO): Promise<JobEntity> {
-    return this.jobRepository.createJob(data);
+  public async createJob(data: JobDTO): Promise<ResponseModel> {
+    const datas = await this.jobRepository.createJob(data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: { datas },
+    };
   }
 
-  public getJobDetail(id: number): Promise<JobEntity> {
-    return this.jobRepository.getJobDetail(id);
+  public async getJobDetail(id: number): Promise<ResponseModel> {
+    const data = await this.jobRepository.getJobDetail(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: { data },
+    };
   }
 
-  public updateJob(id: number, data: Partial<JobDTO>): Promise<JobEntity> {
-    return this.jobRepository.updateJob(id, data);
+  public async updateJob(id: number, data: Partial<JobDTO>): Promise<ResponseModel> {
+    const datas = await this.jobRepository.updateJob(id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: { datas },
+    };
   }
 
-  public deleteJob(id: number): Promise<ObjectLiteral> {
-    return this.jobRepository.deleteJob(id);
+  public async deleteJob(id: number): Promise<ResponseModel> {
+    const data = await this.jobRepository.deleteJob(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: { data },
+    };
   }
 }

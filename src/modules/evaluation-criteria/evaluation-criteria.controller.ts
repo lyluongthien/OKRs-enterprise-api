@@ -1,16 +1,15 @@
 import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, Query, UseGuards } from '@nestjs/common';
-import { Pagination } from 'nestjs-typeorm-paginate';
+import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 import { EvaluationDTO } from './evaluation-criteria.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
-import { EvaluationCriteriaEntity } from '@app/db/entities/evaluation-criteria.entity';
 import { RouterEnum, RoleEnum, CommonMessage } from '@app/constants/app.enums';
 import { EvaluationCriteriaService } from './evaluation-criteria.service';
 import { currentPage, limitPagination } from '@app/constants/app.magic-number';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
-import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
+import { ResponseModel } from '@app/constants/app.interface';
 
 @Controller('/api/v1/criterias')
 @UseGuards(AuthenticationGuard)
@@ -22,10 +21,7 @@ export class EvaluationCriteriaController {
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public getEvaluationCriterias(
-    @Query('page') page: number,
-    @Query('limit') limit: number,
-  ): Promise<Pagination<EvaluationCriteriaEntity>> {
+  public getEvaluationCriterias(@Query('page') page: number, @Query('limit') limit: number): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
     return this._evaluationCriteriaService.getEvaluationCriterias({
@@ -40,7 +36,7 @@ export class EvaluationCriteriaController {
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public getCriteriaDetail(@Param('id') id: number): Promise<EvaluationCriteriaEntity> {
+  public getCriteriaDetail(@Param('id') id: number): Promise<ResponseModel> {
     return this._evaluationCriteriaService.getCriteriaDetail(id);
   }
 
@@ -50,7 +46,7 @@ export class EvaluationCriteriaController {
   @UsePipes(new ValidationPipe())
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public createCriteria(@Body() role: EvaluationDTO): Promise<EvaluationCriteriaEntity> {
+  public createCriteria(@Body() role: EvaluationDTO): Promise<ResponseModel> {
     return this._evaluationCriteriaService.createCriteria(role);
   }
 
@@ -59,7 +55,7 @@ export class EvaluationCriteriaController {
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public updateCriteria(@Param('id') id: number, @Body() data: EvaluationDTO): Promise<EvaluationCriteriaEntity> {
+  public updateCriteria(@Param('id') id: number, @Body() data: EvaluationDTO): Promise<ResponseModel> {
     return this._evaluationCriteriaService.updateCriteria(id, data);
   }
 
