@@ -4,7 +4,7 @@ import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 
 import { UserService } from './user.service';
-import { ChangePasswordDTO, UserDTO, UserProfileDTO } from './user.dto';
+import { ChangePasswordDTO, UserDTO, UserProfileDTO, ApproveRequestDTO } from './user.dto';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { CurrentUser } from './user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
@@ -149,8 +149,22 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public async rejectRequest(@Param('id') id: number): Promise<ObjectLiteral> {
+  public async rejectRequest(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._userService.rejectRequest(id);
+  }
+
+  /**
+   * @description: Approve request of new member
+   * @requires: ADMIN + HR
+   */
+  @Put('approve_request')
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @UsePipes(new ValidationPipe())
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
+  public approveRequest(@Body() data: ApproveRequestDTO): Promise<ResponseModel> {
+    return this._userService.approveRequest(data.id);
   }
 
   /**

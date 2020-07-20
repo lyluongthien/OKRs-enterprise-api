@@ -5,9 +5,10 @@ import { CycleController } from './cycle.controller';
 import { CycleService } from './cycle.service';
 import { CycleEntity } from '@app/db/entities/cycle.entity';
 import { CycleRepository } from './cycle.repository';
+import { UserModule } from '../user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CycleEntity, CycleRepository])],
+  imports: [UserModule, TypeOrmModule.forFeature([CycleEntity, CycleRepository])],
   controllers: [CycleController],
   providers: [CycleService],
 })
