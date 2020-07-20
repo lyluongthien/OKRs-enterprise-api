@@ -17,12 +17,12 @@ export class JobService {
     };
   }
 
-  public async createJob(data: JobDTO): Promise<ResponseModel> {
-    const datas = await this.jobRepository.createJob(data);
+  public async createJob(jobDTO: JobDTO): Promise<ResponseModel> {
+    const data = await this.jobRepository.createJob(jobDTO);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: datas,
+      data: data,
     };
   }
 
@@ -35,12 +35,12 @@ export class JobService {
     };
   }
 
-  public async updateJob(id: number, data: Partial<JobDTO>): Promise<ResponseModel> {
-    const datas = await this.jobRepository.updateJob(id, data);
+  public async updateJob(id: number, jobDTO: Partial<JobDTO>): Promise<ResponseModel> {
+    const data = await this.jobRepository.updateJob(id, jobDTO);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: datas,
+      data: data,
     };
   }
 

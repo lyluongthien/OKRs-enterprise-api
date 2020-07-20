@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ApiBadRequestResponse, ApiOkResponse } from '@nestjs/swagger';
 
 import { CycleService } from './cycle.service';
@@ -17,7 +17,7 @@ export class CycleController {
 
   @Get()
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public getAllCycle(): Promise<ResponseModel> {
@@ -26,16 +26,16 @@ export class CycleController {
 
   @Get(':id')
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public getCycleDetail(@Param('id') id: number): Promise<ResponseModel> {
+  public getCycleDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._cycleService.getCycleDetail(id);
   }
 
   @Post()
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
@@ -45,17 +45,17 @@ export class CycleController {
 
   @Put(':id')
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public updateCycle(@Param('id') id: number, @Body() data: CycleDTO): Promise<ResponseModel> {
+  public updateCycle(@Param('id', ParseIntPipe) id: number, @Body() data: CycleDTO): Promise<ResponseModel> {
     return this._cycleService.updateCycle(id, data);
   }
 
   @Delete(':id')
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public deleteCycle(@Param('id') id: number): any {

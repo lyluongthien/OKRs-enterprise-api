@@ -20,12 +20,12 @@ export class EvaluationCriteriaService {
     };
   }
 
-  public async createCriteria(data: EvaluationDTO): Promise<ResponseModel> {
-    const datas = await this._evaluationCriteriaRepository.createCriteria(data);
+  public async createCriteria(evaluationDTO: EvaluationDTO): Promise<ResponseModel> {
+    const data = await this._evaluationCriteriaRepository.createCriteria(evaluationDTO);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: datas,
+      data: data,
     };
   }
 
@@ -38,12 +38,12 @@ export class EvaluationCriteriaService {
     };
   }
 
-  public async updateCriteria(id: number, data: Partial<EvaluationDTO>): Promise<ResponseModel> {
-    const datas = await this._evaluationCriteriaRepository.updateCriteria(id, data);
+  public async updateCriteria(id: number, evaluationDTO: Partial<EvaluationDTO>): Promise<ResponseModel> {
+    const data = await this._evaluationCriteriaRepository.updateCriteria(id, evaluationDTO);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: datas,
+      data: data,
     };
   }
 

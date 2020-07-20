@@ -20,12 +20,12 @@ export class MeasureUnitService {
     };
   }
 
-  public async createMeasureUnit(data: MeasureUnitDTO): Promise<ResponseModel> {
-    const datas = await this._measureRepository.createMeasureUnit(data);
+  public async createMeasureUnit(measureUnitDTO: MeasureUnitDTO): Promise<ResponseModel> {
+    const data = await this._measureRepository.createMeasureUnit(measureUnitDTO);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: datas,
+      data: data,
     };
   }
 
@@ -38,21 +38,21 @@ export class MeasureUnitService {
     };
   }
 
-  public async updateMeasureUnit(id: number, data: Partial<MeasureUnitDTO>): Promise<ResponseModel> {
-    const datas = await this._measureRepository.updateMeasureUnit(id, data);
+  public async updateMeasureUnit(id: number, measureUnitDTO: Partial<MeasureUnitDTO>): Promise<ResponseModel> {
+    const data = await this._measureRepository.updateMeasureUnit(id, measureUnitDTO);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: datas,
+      data: data,
     };
   }
 
   public async deleteMeasureUnit(id: number): Promise<ResponseModel> {
-    const datas = await this._measureRepository.deleteMeasureUnit(id);
+    const data = await this._measureRepository.deleteMeasureUnit(id);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: datas,
+      data: data,
     };
   }
 }

@@ -18,12 +18,12 @@ export class CycleService {
     };
   }
 
-  public async createCycle(data: CycleDTO): Promise<ResponseModel> {
-    const datas = await this._cycleRepository.createCycle(data);
+  public async createCycle(cycleDTO: CycleDTO): Promise<ResponseModel> {
+    const data = await this._cycleRepository.createCycle(cycleDTO);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: datas,
+      data: data,
     };
   }
 
@@ -36,12 +36,12 @@ export class CycleService {
     };
   }
 
-  public async updateCycle(id: number, data: Partial<CycleDTO>): Promise<ResponseModel> {
-    const datas = await this._cycleRepository.updateCycle(id, data);
+  public async updateCycle(id: number, cycleDTO: Partial<CycleDTO>): Promise<ResponseModel> {
+    const data = await this._cycleRepository.updateCycle(id, cycleDTO);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: datas,
+      data: data,
     };
   }
 
