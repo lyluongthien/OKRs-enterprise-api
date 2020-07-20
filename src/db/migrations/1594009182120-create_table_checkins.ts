@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
-import { TableName, ForeignKey } from '@app/constants/app.enums';
+import { TableName, ForeignKey, CheckinStatus, ConfidentLevel } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
 export class CreateTableCheckins1594009182120 implements MigrationInterface {
@@ -15,35 +15,44 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
       {
         name: 'valueObtained',
         type: 'integer',
-        isNullable: false,
       },
       {
         name: 'confidentLevel',
         type: 'integer',
-        isNullable: false,
       },
       {
-        name: 'content',
+        name: 'progress',
         type: 'varchar',
+        length: '255',
+      },
+      {
+        name: 'problems',
+        type: 'varchar',
+        length: '255',
+      },
+      {
+        name: 'plans',
+        type: 'varchar',
+        length: '255',
       },
       {
         name: 'checkinAt',
         type: 'date',
+        default: 'now()',
       },
       {
         name: 'nextCheckinDate',
         type: 'date',
+        isNullable: true,
       },
       {
-        name: 'status',
-        type: 'bool',
+        name: 'status', // Save status of Checkin: Draf, Pedding, Done
+        type: 'enum',
+        enum: [CheckinStatus.DRAFT, CheckinStatus.PEDDING, CheckinStatus.DONE],
+        isNullable: false,
       },
       {
         name: 'teamLeaderId',
-        type: 'integer',
-      },
-      {
-        name: 'templateCheckinId',
         type: 'integer',
       },
       {

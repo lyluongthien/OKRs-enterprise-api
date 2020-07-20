@@ -97,3 +97,15 @@ export enum Status {
   PENDING = 0,
   DEAVCTIVE = -1,
 }
+
+export enum CheckinStatus {
+  DRAFT = 'Draft',
+  PEDDING = 'Pedding',
+  DONE = 'Done',
+}
+
+export enum ConfidentLevel {
+  GOOD = 3,
+  NORMAL = 2,
+  BAD = 1,
+}

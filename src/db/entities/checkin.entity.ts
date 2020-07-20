@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
-import { TableName } from '@app/constants/app.enums';
+import { TableName, CheckinStatus, ConfidentLevel } from '@app/constants/app.enums';
 import { KeyResultEntity } from './key-result.entity';
 
 @Entity(TableName.Checkin)
@@ -14,7 +14,13 @@ export class CheckinEntity {
   public confidentLevel: number;
 
   @Column()
-  public content: string;
+  public progress: string;
+
+  @Column()
+  public problems: string;
+
+  @Column()
+  public plans: string;
 
   @Column()
   public checkinAt: Date;
@@ -22,14 +28,11 @@ export class CheckinEntity {
   @Column()
   public nextCheckinDate: Date;
 
-  @Column()
-  public status: boolean;
+  @Column({ type: 'enum', enum: CheckinStatus, default: CheckinStatus.DRAFT })
+  public status: CheckinStatus;
 
   @Column()
   public teamLeaderId: number;
-
-  @Column()
-  public templateCheckinId: number;
 
   @Column()
   public keyResultId: number;
@@ -37,6 +40,6 @@ export class CheckinEntity {
   @UpdateDateColumn({ type: 'timestamptz' })
   public updatedAt: Date;
 
-  @ManyToOne(() => KeyResultEntity, (keyresult) => keyresult.checkins)
+  @ManyToOne(() => KeyResultEntity, (keyResult) => keyResult.checkins)
   public keyResult: KeyResultEntity;
 }
