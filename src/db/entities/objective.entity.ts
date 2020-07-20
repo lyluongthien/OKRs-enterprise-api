@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { KeyResultEntity } from './key-result.entity';
 import { UserEntity } from './user.entity';
@@ -38,12 +38,13 @@ export class ObjectiveEntity {
   @JoinColumn([{ name: 'parentObjectiveId', referencedColumnName: 'id' }])
   public parentObjectives: ObjectiveEntity[];
 
-  // @ManyToOne(() => ObjectiveEntity, (objective) => objective.alignmentObjective)
-  // public objectiveAlignment: ObjectiveEntity;
+  @ManyToMany(() => ObjectiveEntity, (objectives) => objectives.objectiveAlignment)
+  @JoinColumn([{ name: 'alignObjectivesId', referencedColumnName: 'id' }])
+  public alignmentObjective: ObjectiveEntity[];
 
-  // @ManyToOne(() => ObjectiveEntity, (objectives) => objectives.objectiveAlignment)
-  // @JoinColumn([{}])
-  // public alignmentObjective: ObjectiveEntity[];
+  @ManyToMany(() => ObjectiveEntity, (objective) => objective.alignmentObjective)
+  @JoinColumn([{ name: 'id', referencedColumnName: 'alignObjectivesId' }])
+  public objectiveAlignment: ObjectiveEntity;
 
   @OneToMany(() => KeyResultEntity, (keyresult) => keyresult.objective, { onDelete: 'CASCADE' })
   public keyResults: KeyResultEntity[];
