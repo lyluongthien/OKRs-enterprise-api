@@ -50,8 +50,8 @@ export class UserEntity {
   @Column()
   public roleId: number;
 
-  @Column()
-  public teamId: number;
+  @Column({ nullable: true })
+  public teamId?: number | null;
 
   @Column()
   public isLeader: boolean;

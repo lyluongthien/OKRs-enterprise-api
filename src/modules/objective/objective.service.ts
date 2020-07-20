@@ -14,7 +14,7 @@ export class ObjectiveService {
     await this._objectiveRepository.createOKRs(okrDTo, manager, userID);
     return {
       statusCode: HttpStatus.OK,
-      message: CommonMessage.VALID_TOKEN,
+      message: CommonMessage.SUCCESS,
       data: {},
     };
   }
@@ -23,8 +23,8 @@ export class ObjectiveService {
     const data = await this._objectiveRepository.viewOKRs(cycleID);
     return {
       statusCode: HttpStatus.OK,
-      message: CommonMessage.VALID_TOKEN,
-      data: { data },
+      message: CommonMessage.SUCCESS,
+      data: data,
     };
   }
 
@@ -32,8 +32,8 @@ export class ObjectiveService {
     const data = await this._objectiveRepository.getDetailOKRs(id);
     return {
       statusCode: HttpStatus.OK,
-      message: CommonMessage.VALID_TOKEN,
-      data: { data },
+      message: CommonMessage.SUCCESS,
+      data: data,
     };
   }
   public async deleteOKRs(id: number): Promise<ResponseModel> {

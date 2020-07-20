@@ -74,6 +74,7 @@ export enum RouterEnum {
   API_HOST_ROUTER = 'http://localhost:3000',
   FE_HOST_ROUTER = 'http://localhost:5000',
   USER_ROUTE = 'http://localhost:3000/api/v1/users',
+  TEAM_ROUTE = 'http://localhost:3000/api/v1/teams',
 }
 
 export enum CommonMessage {

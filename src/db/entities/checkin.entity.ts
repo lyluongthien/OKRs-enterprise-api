@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
-import { TableName, CheckinStatus, ConfidentLevel } from '@app/constants/app.enums';
+import { TableName, CheckinStatus } from '@app/constants/app.enums';
 import { KeyResultEntity } from './key-result.entity';
 
 @Entity(TableName.Checkin)

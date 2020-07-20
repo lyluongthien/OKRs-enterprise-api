@@ -2,7 +2,6 @@ import { Repository, EntityRepository } from 'typeorm';
 import { HttpStatus, HttpException } from '@nestjs/common';
 
 import { CheckinEntity } from '@app/db/entities/checkin.entity';
-import { CommonMessage } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
 
 @EntityRepository(CheckinEntity)

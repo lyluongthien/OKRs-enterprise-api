@@ -2,9 +2,9 @@ import { Controller, Get, UseGuards, Post, Body, UsePipes, ValidationPipe, Param
 
 import { CheckinService } from './checkin.service';
 import { AuthenticationGuard } from '../auth/authentication.guard';
-import { ApiCreatedResponse, ApiBadRequestResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage } from '@app/constants/app.enums';
+import { CommonMessage, RoleEnum } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
 
 @Controller('/api/v1/checkins')
@@ -12,6 +12,10 @@ import { CreateCheckinDTO } from './checkin.dto';
 export class CheckinController {
   constructor(private readonly _checkinService: CheckinService) {}
 
+  /**
+   * @description: Get Checkin by objectiveId
+   * @returns: List Checkin, order by checkin date
+   */
   @Get(':objectiveId')
   @ApiCreatedResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })

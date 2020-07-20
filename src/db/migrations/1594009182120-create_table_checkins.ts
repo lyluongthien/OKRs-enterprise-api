@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
-import { TableName, ForeignKey, CheckinStatus, ConfidentLevel } from '@app/constants/app.enums';
+import { TableName, ForeignKey, CheckinStatus } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
 export class CreateTableCheckins1594009182120 implements MigrationInterface {
