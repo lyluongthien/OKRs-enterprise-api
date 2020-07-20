@@ -25,6 +25,8 @@ export class UserController {
    */
   @Get()
   @UseGuards(AuthorizationGuard)
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public async searchUsersActived(
     @Query('status') status: number,
