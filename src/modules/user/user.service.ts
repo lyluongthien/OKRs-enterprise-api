@@ -133,7 +133,7 @@ export class UserService {
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: { data },
+      data: data,
     };
   }
 
