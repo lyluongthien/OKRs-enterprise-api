@@ -11,7 +11,7 @@ import { RouterEnum } from '@app/constants/app.enums';
 export class MeasureUnitController {
   constructor(private _measureService: MeasureUnitService) {}
 
-  @Get(':page')
+  @Get()
   public getMeasureUnits(
     @Query('page') page: number,
     @Query('limit') limit: number,
