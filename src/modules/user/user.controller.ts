@@ -11,7 +11,7 @@ import { UserEntity } from '@app/db/entities/user.entity';
 import { ResponseModel } from '@app/constants/app.interface';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
-import { RoleEnum, CommonMessage, Status, RouterEnum } from '@app/constants/app.enums';
+import { RoleEnum, CommonMessage, Status } from '@app/constants/app.enums';
 import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 @Controller('/api/v1/users')
@@ -25,6 +25,8 @@ export class UserController {
    */
   @Get()
   @UseGuards(AuthorizationGuard)
+  @ApiOkResponse({ description: CommonMessage.SUCCESS })
+  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public async searchUsersActived(
     @Query('status') status: number,
@@ -39,13 +41,13 @@ export class UserController {
         return this._userService.searchUsersActived(text, {
           page,
           limit,
-          route: RouterEnum.USER_ROUTE,
+          route: '',
         });
       }
       return this._userService.getUsersActived({
         page,
         limit,
-        route: RouterEnum.USER_ROUTE,
+        route: '',
       });
     }
     if (status == Status.PENDING) {
@@ -53,13 +55,13 @@ export class UserController {
         return this._userService.searchUsersApproved(text, {
           page,
           limit,
-          route: RouterEnum.USER_ROUTE,
+          route: '',
         });
       }
       return this._userService.getUsersApproved({
         page,
         limit,
-        route: RouterEnum.USER_ROUTE,
+        route: '',
       });
     }
 
@@ -68,13 +70,13 @@ export class UserController {
         return this._userService.searchUsersDeactived(text, {
           page,
           limit,
-          route: RouterEnum.USER_ROUTE,
+          route: '',
         });
       }
       return this._userService.getUsersDeactived({
         page,
         limit,
-        route: RouterEnum.USER_ROUTE,
+        route: '',
       });
     }
   }

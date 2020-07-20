@@ -2,11 +2,10 @@ import { ObjectLiteral } from 'typeorm';
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
-import { TeamEntity } from '@app/db/entities/team.entity';
-import { TeamRepository } from './team.repository';
 import { TeamDTO } from './team.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
+import { TeamRepository } from './team.repository';
 
 @Injectable()
 export class TeamService {
@@ -21,16 +20,31 @@ export class TeamService {
     };
   }
 
-  public getDetailTeam(id: number): Promise<TeamEntity> {
-    return this._teamRepository.getDetailTeam(id);
+  public async getDetailTeam(id: number): Promise<ResponseModel> {
+    const data = await this._teamRepository.getDetailTeam(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
-  public createTeam(data: TeamDTO): Promise<TeamEntity> {
-    return this._teamRepository.createTeam(data);
+  public async createTeam(data: TeamDTO): Promise<ResponseModel> {
+    const team = await this._teamRepository.createTeam(data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: team,
+    };
   }
 
-  public updateTeam(id: number, data: TeamDTO): Promise<TeamEntity> {
-    return this._teamRepository.updateTeam(id, data);
+  public async updateTeam(id: number, data: TeamDTO): Promise<ResponseModel> {
+    const team = await this._teamRepository.updateTeam(id, data);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: team,
+    };
   }
 
   public async deteleTeam(id: number): Promise<ObjectLiteral> {

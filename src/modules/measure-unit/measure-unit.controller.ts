@@ -28,7 +28,7 @@ import { ResponseModel } from '@app/constants/app.interface';
 export class MeasureUnitController {
   constructor(private _measureService: MeasureUnitService) {}
 
-  @Get(':page')
+  @Get()
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
