@@ -58,7 +58,7 @@ export class CycleController {
   @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public deleteCycle(@Param('id') id: number): any {
+  public deleteCycle(@Param('id', ParseIntPipe) id: number): any {
     return this._cycleService.deleteCycle(id);
   }
 }

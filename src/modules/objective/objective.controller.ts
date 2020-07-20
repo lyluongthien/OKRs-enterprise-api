@@ -1,4 +1,4 @@
-import { Controller, Post, UsePipes, Body, Get, Query, Param, UseGuards, Delete } from '@nestjs/common';
+import { Controller, Post, UsePipes, Body, Get, Query, Param, UseGuards, Delete, ParseIntPipe } from '@nestjs/common';
 
 import { ObjectiveService } from './objective.service';
 import { OkrsDTO } from './objective.dto';
@@ -31,7 +31,7 @@ export class ObjectiveController {
   @Get(':id')
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public async viewDetailOKRs(@Param('id') id: number): Promise<ResponseModel> {
+  public async viewDetailOKRs(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._objectiveService.getDetailOKRs(id);
   }
 
@@ -45,7 +45,7 @@ export class ObjectiveController {
   @Delete(':id')
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public deleteOKRs(@Param('id') id: number): Promise<ResponseModel> {
+  public deleteOKRs(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._objectiveService.deleteOKRs(id);
   }
 }

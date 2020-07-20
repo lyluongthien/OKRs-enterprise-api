@@ -1,4 +1,16 @@
-import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  UsePipes,
+  Get,
+  Query,
+  UseGuards,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 import { EvaluationDTO } from './evaluation-criteria.dto';
@@ -36,7 +48,7 @@ export class EvaluationCriteriaController {
   @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public getCriteriaDetail(@Param('id') id: number): Promise<ResponseModel> {
+  public getCriteriaDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._evaluationCriteriaService.getCriteriaDetail(id);
   }
 
@@ -55,7 +67,7 @@ export class EvaluationCriteriaController {
   @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public updateCriteria(@Param('id') id: number, @Body() data: EvaluationDTO): Promise<ResponseModel> {
+  public updateCriteria(@Param('id', ParseIntPipe) id: number, @Body() data: EvaluationDTO): Promise<ResponseModel> {
     return this._evaluationCriteriaService.updateCriteria(id, data);
   }
 
@@ -64,7 +76,7 @@ export class EvaluationCriteriaController {
   @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public deleteCriteria(@Param('id') id: number): any {
+  public deleteCriteria(@Param('id', ParseIntPipe) id: number): any {
     return this._evaluationCriteriaService.deleteCriteria(id);
   }
 }

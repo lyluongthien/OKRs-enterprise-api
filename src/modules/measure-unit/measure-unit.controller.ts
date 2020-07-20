@@ -1,4 +1,16 @@
-import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  UsePipes,
+  Get,
+  Query,
+  UseGuards,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 import { MeasureUnitService } from './measure-unit.service';
@@ -32,7 +44,7 @@ export class MeasureUnitController {
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public getMeasureUnitDetail(@Param('id') id: number): Promise<ResponseModel> {
+  public getMeasureUnitDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._measureService.getMeasureUnitDetail(id);
   }
 
@@ -51,7 +63,10 @@ export class MeasureUnitController {
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public updateMeasureUnit(@Param('id') id: number, @Body() data: MeasureUnitDTO): Promise<ResponseModel> {
+  public updateMeasureUnit(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: MeasureUnitDTO,
+  ): Promise<ResponseModel> {
     return this._measureService.updateMeasureUnit(id, data);
   }
 
@@ -60,7 +75,7 @@ export class MeasureUnitController {
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public deleteMeasureUnit(@Param('id') id: number): any {
+  public deleteMeasureUnit(@Param('id', ParseIntPipe) id: number): any {
     return this._measureService.deleteMeasureUnit(id);
   }
 }

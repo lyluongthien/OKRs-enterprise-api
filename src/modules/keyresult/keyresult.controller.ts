@@ -1,4 +1,4 @@
-import { Controller, Post, UsePipes, Body, UseGuards, Delete, Param, Put } from '@nestjs/common';
+import { Controller, Post, UsePipes, Body, UseGuards, Delete, Param, Put, ParseIntPipe } from '@nestjs/common';
 
 import { KeyResultService } from './keyresult.service';
 import { KeyResultDTO } from './keyresult.dto';
@@ -24,7 +24,7 @@ export class KeyResultController {
   @Delete(':id')
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public deleteKeyResult(@Param('id') id: number): Promise<ResponseModel> {
+  public deleteKeyResult(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._keyResultService.deleteKeyResult(id);
   }
 
@@ -32,7 +32,7 @@ export class KeyResultController {
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   @UsePipes(new ValidationPipe())
-  public updateLesson(@Param('id') id: number, @Body() data: KeyResultDTO): Promise<ResponseModel> {
+  public updateLesson(@Param('id', ParseIntPipe) id: number, @Body() data: KeyResultDTO): Promise<ResponseModel> {
     return this._keyResultService.updateKeyresults(id, data);
   }
 }

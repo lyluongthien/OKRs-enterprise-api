@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UsePipes, ParseIntPipe } from '@nestjs/common';
 import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 import { JobService } from './job.service';
@@ -37,7 +37,7 @@ export class JobController {
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public getDetailJob(@Param('id') id: number): any {
+  public getDetailJob(@Param('id', ParseIntPipe) id: number): any {
     return this.jobService.getJobDetail(id);
   }
 
@@ -47,7 +47,7 @@ export class JobController {
   @UsePipes(new ValidationPipe())
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public updateJob(@Param('id') id: number, @Body() data: Partial<JobDTO>): any {
+  public updateJob(@Param('id', ParseIntPipe) id: number, @Body() data: Partial<JobDTO>): any {
     return this.jobService.updateJob(id, data);
   }
 
@@ -56,7 +56,7 @@ export class JobController {
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public deleteJob(@Param('id') id: number): any {
+  public deleteJob(@Param('id', ParseIntPipe) id: number): any {
     return this.jobService.deleteJob(id);
   }
 }
