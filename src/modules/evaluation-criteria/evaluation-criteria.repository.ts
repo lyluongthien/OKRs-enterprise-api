@@ -8,7 +8,11 @@ import { CommonMessage } from '@app/constants/app.enums';
 @EntityRepository(EvaluationCriteriaEntity)
 export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaEntity> {
   public async getList(): Promise<EvaluationCriteriaEntity[]> {
-    return await this.find();
+    try {
+      return await this.find();
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async createCriteria(data: EvaluationDTO): Promise<EvaluationCriteriaEntity> {
@@ -20,7 +24,11 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
   }
 
   public async getCriteriaDetail(id: number): Promise<EvaluationCriteriaEntity> {
-    return await this.findOne({ where: { id } });
+    try {
+      return await this.findOne({ where: { id } });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 
   public async updateCriteria(id: number, data: Partial<EvaluationDTO>): Promise<EvaluationCriteriaEntity> {
@@ -33,7 +41,11 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
   }
 
   public async deleteCriteria(id: number): Promise<ObjectLiteral> {
-    await this.delete({ id });
-    return { isDeleted: true };
+    try {
+      await this.delete({ id });
+      return { isDeleted: true };
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
   }
 }

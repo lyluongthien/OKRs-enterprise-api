@@ -1,7 +1,7 @@
 import { Repository, EntityRepository, EntityManager } from 'typeorm';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { CommonMessage } from '@app/constants/app.enums';
 import { OkrsDTO } from './objective.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
