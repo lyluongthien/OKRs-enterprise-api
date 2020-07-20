@@ -18,7 +18,7 @@ export class EvaluationCriteriaController {
 
   @Get(':page')
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public getEvaluationCriterias(@Query('page') page: number, @Query('limit') limit: number): Promise<ResponseModel> {
@@ -33,7 +33,7 @@ export class EvaluationCriteriaController {
 
   @Get(':id')
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public getCriteriaDetail(@Param('id') id: number): Promise<ResponseModel> {
@@ -42,7 +42,7 @@ export class EvaluationCriteriaController {
 
   @Post()
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
@@ -52,7 +52,7 @@ export class EvaluationCriteriaController {
 
   @Put(':id')
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public updateCriteria(@Param('id') id: number, @Body() data: EvaluationDTO): Promise<ResponseModel> {
@@ -61,7 +61,7 @@ export class EvaluationCriteriaController {
 
   @Delete(':id')
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public deleteCriteria(@Param('id') id: number): any {
