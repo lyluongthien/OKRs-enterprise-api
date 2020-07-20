@@ -147,7 +147,7 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public async rejectRequest(@Param('id') id: number): Promise<ResponseModel> {
+  public async rejectRequest(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._userService.rejectRequest(id);
   }
 

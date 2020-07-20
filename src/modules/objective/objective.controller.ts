@@ -38,7 +38,7 @@ export class ObjectiveController {
   @Get()
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public async viewOKRs(@Query('cycleID') cycleID: number): Promise<ResponseModel> {
+  public async viewOKRs(@Query('cycleID', ParseIntPipe) cycleID: number): Promise<ResponseModel> {
     return this._objectiveService.viewOKRs(cycleID);
   }
 

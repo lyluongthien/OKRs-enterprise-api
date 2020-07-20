@@ -33,7 +33,10 @@ export class MeasureUnitController {
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public getMeasureUnits(@Query('page') page: number, @Query('limit') limit: number): Promise<ResponseModel> {
+  public getMeasureUnits(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
     return this._measureService.getMeasureUnits({ page, limit, route: RouterEnum.MEASURE_UNIT_ROUTE });

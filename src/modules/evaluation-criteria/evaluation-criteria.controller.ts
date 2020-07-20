@@ -33,7 +33,10 @@ export class EvaluationCriteriaController {
   @Roles(RoleEnum.ADMIN)
   @ApiOkResponse({ description: CommonMessage.SUCCESS })
   @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  public getEvaluationCriterias(@Query('page') page: number, @Query('limit') limit: number): Promise<ResponseModel> {
+  public getEvaluationCriterias(
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
     return this._evaluationCriteriaService.getEvaluationCriterias({
