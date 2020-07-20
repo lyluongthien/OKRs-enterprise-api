@@ -11,6 +11,6 @@ import { PasswordController } from './password.controller';
   imports: [TypeOrmModule.forFeature([UserEntity, UserRepository])],
   controllers: [UserController, PasswordController],
   providers: [UserService],
-  // exports: [UserService, UserRepository],
+  exports: [UserService],
 })
 export class UserModule {}
