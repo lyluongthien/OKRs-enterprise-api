@@ -13,7 +13,7 @@ import { ObjectLiteral } from 'typeorm';
 export class TeamController {
   constructor(private _teamService: TeamService) {}
 
-  @Get('')
+  @Get()
   public async getTeams(@Query('page') page: number, @Query('limit') limit: number): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
@@ -25,17 +25,17 @@ export class TeamController {
   }
 
   @Get(':id')
-  public getDetailTeam(@Param('id') id: number): Promise<TeamEntity> {
+  public getDetailTeam(@Param('id') id: number): Promise<ResponseModel> {
     return this._teamService.getDetailTeam(id);
   }
 
   @Post()
-  public createTeam(@Body() team: TeamDTO): Promise<TeamEntity> {
+  public createTeam(@Body() team: TeamDTO): Promise<ResponseModel> {
     return this._teamService.createTeam(team);
   }
 
   @Put(':id')
-  public updateTeam(@Param('id') id: number, @Body() data: TeamDTO): Promise<TeamEntity> {
+  public updateTeam(@Param('id') id: number, @Body() data: TeamDTO): Promise<ResponseModel> {
     return this._teamService.updateTeam(id, data);
   }
 
