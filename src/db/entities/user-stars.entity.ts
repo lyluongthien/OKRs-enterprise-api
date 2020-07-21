@@ -14,4 +14,6 @@ export class UserStarEntity {
 
   @Column()
   public userId: number;
+  @Column()
+  public cycleId: number;
 }
