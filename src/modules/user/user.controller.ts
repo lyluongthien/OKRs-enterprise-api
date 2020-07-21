@@ -11,11 +11,12 @@ import { UserEntity } from '@app/db/entities/user.entity';
 import { ResponseModel } from '@app/constants/app.interface';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
-import { RoleEnum, CommonMessage, Status } from '@app/constants/app.enums';
-import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
+import { RoleEnum, Status } from '@app/constants/app.enums';
+import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
 @Controller('/api/v1/users')
 @UseGuards(AuthenticationGuard)
+@SwaggerAPI()
 export class UserController {
   constructor(private _userService: UserService) {}
 
@@ -25,8 +26,6 @@ export class UserController {
    */
   @Get()
   @UseGuards(AuthorizationGuard)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public async searchUsersActived(
     @Query('status') status: number,
@@ -64,7 +63,6 @@ export class UserController {
         route: '',
       });
     }
-
     if (status == Status.DEAVCTIVE) {
       if (text) {
         return this._userService.searchUsersDeactived(text, {
@@ -85,8 +83,6 @@ export class UserController {
    * @description: Get information of current logged in system
    */
   @Get('me')
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async me(@CurrentUser() user: UserEntity): Promise<any> {
     return this._userService.getUserByID(user.id);
   }
@@ -96,8 +92,6 @@ export class UserController {
    */
   @Post('me')
   @UsePipes(new ValidationPipe())
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public updateUserProfile(@CurrentUser() user: UserEntity, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
     return this._userService.updateUserProfile(user.id, data);
   }
@@ -107,8 +101,6 @@ export class UserController {
    */
   @Put('/me/change_password')
   @UsePipes(new ValidationPipe())
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async changePassword(
     @CurrentUser() user: UserEntity,
     @Body() data: ChangePasswordDTO,
@@ -120,8 +112,6 @@ export class UserController {
    * @description: Log out current logged in system
    */
   @Post('me/logout')
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async logout(@CurrentUser() user: UserEntity): Promise<ResponseModel> {
     return await this._userService.logout(user.id);
   }
@@ -133,8 +123,6 @@ export class UserController {
   @Get(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async getUserDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._userService.getUserByID(id);
   }
@@ -146,9 +134,6 @@ export class UserController {
   @Put('reject_request/:id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  @UsePipes(new ValidationPipe())
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async rejectRequest(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._userService.rejectRequest(id);
   }
@@ -161,8 +146,6 @@ export class UserController {
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public approveRequest(@Body() data: ApproveRequestDTO): Promise<ResponseModel> {
     return this._userService.approveRequest(data.id);
   }
@@ -174,8 +157,6 @@ export class UserController {
   @Put(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public updateUserInfo(@Param('id') id: number, @Body() data: UserDTO): Promise<ObjectLiteral> {
     return this._userService.updateUserInfor(id, data);
   }

@@ -91,6 +91,8 @@ export enum CommonMessage {
   DATABASE_EXCEPTION = 'Error when access to database',
   DELETE_FAIL = 'Delete fail',
   LOGOUT_SUCCESS = 'Logout success',
+  UNAUTHORIZED = 'Unauthorized Error',
+  FORBIDDEN = 'Forbidden',
 }
 
 export enum Status {
