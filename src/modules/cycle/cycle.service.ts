@@ -59,4 +59,14 @@ export class CycleService {
       data: data,
     };
   }
+
+  public async getCurrentCycle(): Promise<ResponseModel> {
+    const currentDate = new Date();
+    const data = await this._cycleRepository.getCurrentCycle(currentDate);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
 }

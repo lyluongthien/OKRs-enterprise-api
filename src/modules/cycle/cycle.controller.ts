@@ -23,6 +23,11 @@ export class CycleController {
     return this._cycleService.getListCycle();
   }
 
+  @Get('/current_cycle')
+  public getCurrentCycle(): Promise<ResponseModel> {
+    return this._cycleService.getCurrentCycle();
+  }
+
   @Get(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.ADMIN)
