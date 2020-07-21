@@ -24,7 +24,7 @@ export class ObjectiveController {
     @Body() data: OkrsDTO,
     @TransactionManager() manager: EntityManager,
   ): Promise<ResponseModel> {
-    return this._objectiveService.createOKRs(data, manager, user.id);
+    return this._objectiveService.createAndUpdateOKRs(data, manager, user.id);
   }
 
   @Get(':id')
@@ -33,8 +33,11 @@ export class ObjectiveController {
   }
 
   @Get()
-  public async viewOKRs(@Query('cycleID', ParseIntPipe) cycleID: number): Promise<ResponseModel> {
-    return this._objectiveService.viewOKRs(cycleID);
+  public async viewOKRs(
+    @Query('cycleID', ParseIntPipe) cycleID: number,
+    @Query('text') text: string,
+  ): Promise<ResponseModel> {
+    return this._objectiveService.viewOKRs(cycleID, text);
   }
 
   @Delete(':id')

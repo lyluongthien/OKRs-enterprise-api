@@ -1,4 +1,6 @@
 export class KeyResultDTO {
+  public id?: number;
+
   public startValue: number;
 
   public valueObtained: number;
