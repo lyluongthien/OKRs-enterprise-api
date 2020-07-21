@@ -17,6 +17,8 @@ export class CycleController {
   constructor(private _cycleService: CycleService) {}
 
   @Get()
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.ADMIN)
   public getAllCycle(): Promise<ResponseModel> {
     return this._cycleService.getListCycle();
   }
@@ -32,8 +34,8 @@ export class CycleController {
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  public createCycle(@Body() role: CycleDTO): Promise<ResponseModel> {
-    return this._cycleService.createCycle(role);
+  public createCycle(@Body() cycle: CycleDTO): Promise<ResponseModel> {
+    return this._cycleService.createCycle(cycle);
   }
 
   @Put(':id')
