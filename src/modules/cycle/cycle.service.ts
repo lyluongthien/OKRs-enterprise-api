@@ -21,7 +21,7 @@ export class CycleService {
   public async createCycle(cycleDTO: CycleDTO): Promise<ResponseModel> {
     const data = await this._cycleRepository.createCycle(cycleDTO);
     return {
-      statusCode: HttpStatus.OK,
+      statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: data,
     };

@@ -23,7 +23,7 @@ export class MeasureUnitService {
   public async createMeasureUnit(measureUnitDTO: MeasureUnitDTO): Promise<ResponseModel> {
     const data = await this._measureRepository.createMeasureUnit(measureUnitDTO);
     return {
-      statusCode: HttpStatus.OK,
+      statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: data,
     };
