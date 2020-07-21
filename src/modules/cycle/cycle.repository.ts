@@ -49,13 +49,13 @@ export class CycleRepository extends Repository<CycleEntity> {
     }
   }
 
-  public async getCurrentCycle(currentDate: Date): Promise<CycleEntity[]> {
+  public async getCurrentCycle(currentDate: Date): Promise<CycleEntity> {
     try {
       return await this.createQueryBuilder('cycle')
         .where(':date BETWEEN cycle.startDate AND cycle.endDate', {
           date: currentDate,
         })
-        .getMany();
+        .getOne();
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
