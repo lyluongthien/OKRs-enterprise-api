@@ -8,17 +8,17 @@ import { CommonMessage, RoleEnum } from '@app/constants/app.enums';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
+import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
 @Controller('/api/v1/jobs')
 @UseGuards(AuthenticationGuard)
+@SwaggerAPI()
 export class JobController {
   constructor(private jobService: JobService) {}
 
   @Get()
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public showAllJob(): any {
     return this.jobService.getListJob();
   }
@@ -26,8 +26,6 @@ export class JobController {
   @Post()
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public createJob(@Body() role: JobDTO): any {
     return this.jobService.createJob(role);
   }
@@ -35,8 +33,6 @@ export class JobController {
   @Get(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public getDetailJob(@Param('id', ParseIntPipe) id: number): any {
     return this.jobService.getJobDetail(id);
   }
@@ -45,8 +41,6 @@ export class JobController {
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public updateJob(@Param('id', ParseIntPipe) id: number, @Body() data: Partial<JobDTO>): any {
     return this.jobService.updateJob(id, data);
   }
@@ -54,8 +48,6 @@ export class JobController {
   @Delete(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public deleteJob(@Param('id', ParseIntPipe) id: number): any {
     return this.jobService.deleteJob(id);
   }

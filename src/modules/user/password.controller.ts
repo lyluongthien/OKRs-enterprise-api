@@ -5,8 +5,10 @@ import { ResetPasswordDTO, PasswordDTO } from './user.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { ApiOkResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
 import { CommonMessage } from '@app/constants/app.enums';
+import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
 @Controller('/api/v1/reset_password')
+@SwaggerAPI()
 export class PasswordController {
   constructor(private _userService: UserService) {}
 
@@ -15,9 +17,6 @@ export class PasswordController {
    */
   @Post()
   @UsePipes(new ValidationPipe())
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
-  @ApiInternalServerErrorResponse({ description: CommonMessage.INTERNAL_SERVER_ERROR })
   public async forgetPassword(@Body() user: ResetPasswordDTO): Promise<ResponseModel> {
     return this._userService.forgetPassword(user);
   }
@@ -26,8 +25,6 @@ export class PasswordController {
    * @description: Verify token in links
    */
   @Get(':token')
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async verifyForgotPassword(@Param('token') token: string): Promise<ObjectLiteral> {
     return this._userService.verifyForgetPassword(token);
   }
@@ -37,8 +34,6 @@ export class PasswordController {
    */
   @Put(':token')
   @UsePipes(new ValidationPipe())
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async resetPassword(@Param('token') token: string, @Body() data: PasswordDTO): Promise<ResponseModel> {
     return this._userService.resetPassword(token, data);
   }

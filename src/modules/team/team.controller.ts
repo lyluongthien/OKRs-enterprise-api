@@ -9,9 +9,11 @@ import { RoleEnum } from '@app/constants/app.enums';
 import { Roles } from '../role/role.decorator';
 import { TeamService } from './team.service';
 import { AuthorizationGuard } from '../auth/authorization.guard';
+import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
 @UseGuards(AuthenticationGuard)
 @Controller('/api/v1/teams')
+@SwaggerAPI()
 export class TeamController {
   constructor(private _teamService: TeamService) {}
 
@@ -19,8 +21,6 @@ export class TeamController {
    * @description: Get list of teams in company
    */
   @Get()
-  @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public async getTeams(@Query('page') page: number, @Query('limit') limit: number): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;

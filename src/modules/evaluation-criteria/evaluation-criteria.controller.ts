@@ -22,17 +22,15 @@ import { AuthenticationGuard } from '../auth/authentication.guard';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
 import { ResponseModel } from '@app/constants/app.interface';
+import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
-@Controller('/api/v1/criterias')
+@Controller('/api/v1/evaluation_criterias')
 @UseGuards(AuthenticationGuard)
+@SwaggerAPI()
 export class EvaluationCriteriaController {
   constructor(private _evaluationCriteriaService: EvaluationCriteriaService) {}
 
-  @Get(':page')
-  @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.ADMIN)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
+  @Get()
   public getEvaluationCriterias(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
@@ -49,8 +47,6 @@ export class EvaluationCriteriaController {
   @Get(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.ADMIN)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public getCriteriaDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._evaluationCriteriaService.getCriteriaDetail(id);
   }
@@ -59,8 +55,6 @@ export class EvaluationCriteriaController {
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public createCriteria(@Body() role: EvaluationDTO): Promise<ResponseModel> {
     return this._evaluationCriteriaService.createCriteria(role);
   }
@@ -68,8 +62,6 @@ export class EvaluationCriteriaController {
   @Put(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.ADMIN)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public updateCriteria(@Param('id', ParseIntPipe) id: number, @Body() data: EvaluationDTO): Promise<ResponseModel> {
     return this._evaluationCriteriaService.updateCriteria(id, data);
   }
@@ -77,8 +69,6 @@ export class EvaluationCriteriaController {
   @Delete(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.ADMIN)
-  @ApiOkResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public deleteCriteria(@Param('id', ParseIntPipe) id: number): any {
     return this._evaluationCriteriaService.deleteCriteria(id);
   }
