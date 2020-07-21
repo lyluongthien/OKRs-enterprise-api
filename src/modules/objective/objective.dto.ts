@@ -4,6 +4,9 @@ import { KeyResultDTO } from '@app/modules/keyresult/keyresult.dto';
 
 export class ObjectiveDTO {
   @ApiProperty()
+  public id?: number;
+
+  @ApiProperty()
   public progress: number;
 
   @ApiProperty()
