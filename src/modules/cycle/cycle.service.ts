@@ -9,8 +9,14 @@ import { CommonMessage } from '@app/constants/app.enums';
 export class CycleService {
   constructor(private _cycleRepository: CycleRepository) {}
 
-  public async getListCycle(): Promise<ResponseModel> {
-    const data = await this._cycleRepository.getList();
+  public async getCycle(status: string): Promise<ResponseModel> {
+    let data = null;
+    if (status && status == 'current') {
+      const currentDate = new Date();
+      data = await this._cycleRepository.getCurrentCycle(currentDate);
+    } else {
+      data = await this._cycleRepository.getList();
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -53,16 +59,6 @@ export class CycleService {
 
   public async deleteCycle(id: number): Promise<ResponseModel> {
     const data = await this._cycleRepository.deleteCycle(id);
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: data,
-    };
-  }
-
-  public async getCurrentCycle(): Promise<ResponseModel> {
-    const currentDate = new Date();
-    const data = await this._cycleRepository.getCurrentCycle(currentDate);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

@@ -1,4 +1,16 @@
-import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, UseGuards, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  UsePipes,
+  Get,
+  UseGuards,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 
 import { CycleService } from './cycle.service';
 import { CycleDTO } from './cycle.dto';
@@ -18,14 +30,8 @@ export class CycleController {
 
   @Get()
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.ADMIN)
-  public getAllCycle(): Promise<ResponseModel> {
-    return this._cycleService.getListCycle();
-  }
-
-  @Get('/current_cycle')
-  public getCurrentCycle(): Promise<ResponseModel> {
-    return this._cycleService.getCurrentCycle();
+  public getCycle(@Query('status') status: string): Promise<ResponseModel> {
+    return this._cycleService.getCycle(status);
   }
 
   @Get(':id')
