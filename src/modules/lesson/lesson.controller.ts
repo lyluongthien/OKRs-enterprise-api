@@ -7,9 +7,11 @@ import { AuthenticationGuard } from '../auth/authentication.guard';
 import { RoleEnum } from '@app/constants/app.enums';
 import { Roles } from '../role/role.decorator';
 import { AuthorizationGuard } from '../auth/authorization.guard';
+import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
 @Controller('/api/v1/lessons')
 @UseGuards(AuthenticationGuard)
+@SwaggerAPI()
 export class LessonController {
   constructor(private _lessonService: LessonService) {}
 
