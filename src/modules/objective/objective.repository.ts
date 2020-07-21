@@ -40,7 +40,6 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         ])
         .leftJoin('objective.parentObjectives', 'parentObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
-        //.leftJoin(ObjectiveEntity, 'alignmentObjectives', 'alignmentObjectives.id = any (objective.alignObjectivesId)')
         .leftJoinAndMapMany(
           'objective.alignmentObjective',
           ObjectiveEntity,

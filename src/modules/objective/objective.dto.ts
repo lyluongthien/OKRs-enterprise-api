@@ -3,7 +3,7 @@ import { KeyResultDTO } from '@app/modules/keyresult/keyresult.dto';
 export class OkrsDTO {
   public objective: ObjectiveDTO;
 
-  public keyResult: KeyResultDTO[];
+  public keyResult?: KeyResultDTO[];
 }
 export class ObjectiveDTO {
   public id?: number;
@@ -20,5 +20,5 @@ export class ObjectiveDTO {
 
   public parentObjectiveId?: number;
 
-  public alignObjectivesId?: number;
+  public alignmentObjectiveId?: number;
 }
