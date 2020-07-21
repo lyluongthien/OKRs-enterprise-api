@@ -3,8 +3,6 @@ import { ObjectLiteral } from 'typeorm';
 import { UserService } from './user.service';
 import { ResetPasswordDTO, PasswordDTO } from './user.dto';
 import { ResponseModel } from '@app/constants/app.interface';
-import { ApiOkResponse, ApiBadRequestResponse, ApiInternalServerErrorResponse } from '@nestjs/swagger';
-import { CommonMessage } from '@app/constants/app.enums';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
 @Controller('/api/v1/reset_password')

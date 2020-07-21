@@ -5,8 +5,6 @@ import { KeyResultDTO } from './keyresult.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { ResponseModel } from '@app/constants/app.interface';
-import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
-import { CommonMessage } from '@app/constants/app.enums';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
 @Controller('/api/v1/key_results')

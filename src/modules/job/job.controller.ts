@@ -1,10 +1,9 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UsePipes, ParseIntPipe } from '@nestjs/common';
-import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 import { JobService } from './job.service';
 import { JobDTO } from './job.dto';
 import { AuthenticationGuard } from '../auth/authentication.guard';
-import { CommonMessage, RoleEnum } from '@app/constants/app.enums';
+import { RoleEnum } from '@app/constants/app.enums';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';

@@ -1,5 +1,4 @@
 import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, UseGuards, ParseIntPipe } from '@nestjs/common';
-import { ApiBadRequestResponse, ApiOkResponse } from '@nestjs/swagger';
 
 import { CycleService } from './cycle.service';
 import { CycleDTO } from './cycle.dto';
@@ -7,7 +6,7 @@ import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
-import { RoleEnum, CommonMessage } from '@app/constants/app.enums';
+import { RoleEnum } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 

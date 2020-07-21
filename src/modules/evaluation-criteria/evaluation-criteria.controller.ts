@@ -11,11 +11,10 @@ import {
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
-import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 import { EvaluationDTO } from './evaluation-criteria.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
-import { RouterEnum, RoleEnum, CommonMessage } from '@app/constants/app.enums';
+import { RouterEnum, RoleEnum } from '@app/constants/app.enums';
 import { EvaluationCriteriaService } from './evaluation-criteria.service';
 import { currentPage, limitPagination } from '@app/constants/app.magic-number';
 import { AuthenticationGuard } from '../auth/authentication.guard';

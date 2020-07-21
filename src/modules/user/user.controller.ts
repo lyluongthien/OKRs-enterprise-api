@@ -11,8 +11,7 @@ import { UserEntity } from '@app/db/entities/user.entity';
 import { ResponseModel } from '@app/constants/app.interface';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
-import { RoleEnum, CommonMessage, Status } from '@app/constants/app.enums';
-import { ApiOkResponse, ApiBadRequestResponse } from '@nestjs/swagger';
+import { RoleEnum, Status } from '@app/constants/app.enums';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
 @Controller('/api/v1/users')
@@ -135,7 +134,6 @@ export class UserController {
   @Put('reject_request/:id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   public async rejectRequest(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._userService.rejectRequest(id);
   }
