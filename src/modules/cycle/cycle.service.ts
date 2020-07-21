@@ -1,31 +1,56 @@
-import { Injectable } from '@nestjs/common';
-import { ObjectLiteral } from 'typeorm';
+import { Injectable, HttpStatus } from '@nestjs/common';
 
-import { CycleEntity } from '@app/db/entities/cycle.entity';
 import { CycleRepository } from './cycle.repository';
 import { CycleDTO } from './cycle.dto';
+import { ResponseModel } from '@app/constants/app.interface';
+import { CommonMessage } from '@app/constants/app.enums';
 
 @Injectable()
 export class CycleService {
   constructor(private _cycleRepository: CycleRepository) {}
 
-  public getListCycle(): Promise<CycleEntity[]> {
-    return this._cycleRepository.getList();
+  public async getListCycle(): Promise<ResponseModel> {
+    const data = await this._cycleRepository.getList();
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
-  public createCycle(data: CycleDTO): Promise<CycleEntity> {
-    return this._cycleRepository.createCycle(data);
+  public async createCycle(cycleDTO: CycleDTO): Promise<ResponseModel> {
+    const data = await this._cycleRepository.createCycle(cycleDTO);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
-  public getCycleDetail(id: number): Promise<CycleEntity> {
-    return this._cycleRepository.getCycleDetail(id);
+  public async getCycleDetail(id: number): Promise<ResponseModel> {
+    const data = await this._cycleRepository.getCycleDetail(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
-  public updateCycle(id: number, data: Partial<CycleDTO>): Promise<CycleEntity> {
-    return this._cycleRepository.updateCycle(id, data);
+  public async updateCycle(id: number, cycleDTO: Partial<CycleDTO>): Promise<ResponseModel> {
+    const data = await this._cycleRepository.updateCycle(id, cycleDTO);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
-  public deleteCycle(id: number): Promise<ObjectLiteral> {
-    return this._cycleRepository.deleteCycle(id);
+  public async deleteCycle(id: number): Promise<ResponseModel> {
+    const data = await this._cycleRepository.deleteCycle(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 }

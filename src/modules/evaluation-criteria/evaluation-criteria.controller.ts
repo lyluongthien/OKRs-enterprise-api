@@ -1,22 +1,39 @@
-import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, Query } from '@nestjs/common';
-import { Pagination } from 'nestjs-typeorm-paginate';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  UsePipes,
+  Get,
+  Query,
+  UseGuards,
+  ParseIntPipe,
+} from '@nestjs/common';
 
 import { EvaluationDTO } from './evaluation-criteria.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
-import { EvaluationCriteriaEntity } from '@app/db/entities/evaluation-criteria.entity';
-import { RouterEnum } from '@app/constants/app.enums';
+import { RouterEnum, RoleEnum } from '@app/constants/app.enums';
 import { EvaluationCriteriaService } from './evaluation-criteria.service';
 import { currentPage, limitPagination } from '@app/constants/app.magic-number';
+import { AuthenticationGuard } from '../auth/authentication.guard';
+import { AuthorizationGuard } from '../auth/authorization.guard';
+import { Roles } from '../role/role.decorator';
+import { ResponseModel } from '@app/constants/app.interface';
+import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
-@Controller('/api/v1/criterias')
+@Controller('/api/v1/evaluation_criterias')
+@UseGuards(AuthenticationGuard)
+@SwaggerAPI()
 export class EvaluationCriteriaController {
   constructor(private _evaluationCriteriaService: EvaluationCriteriaService) {}
 
-  @Get(':page')
+  @Get()
   public getEvaluationCriterias(
-    @Query('page') page: number,
-    @Query('limit') limit: number,
-  ): Promise<Pagination<EvaluationCriteriaEntity>> {
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
     return this._evaluationCriteriaService.getEvaluationCriterias({
@@ -27,23 +44,31 @@ export class EvaluationCriteriaController {
   }
 
   @Get(':id')
-  public getCriteriaDetail(@Param('id') id: number): Promise<EvaluationCriteriaEntity> {
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.ADMIN)
+  public getCriteriaDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._evaluationCriteriaService.getCriteriaDetail(id);
   }
 
   @Post()
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  public createCriteria(@Body() role: EvaluationDTO): Promise<EvaluationCriteriaEntity> {
+  public createCriteria(@Body() role: EvaluationDTO): Promise<ResponseModel> {
     return this._evaluationCriteriaService.createCriteria(role);
   }
 
   @Put(':id')
-  public updateCriteria(@Param('id') id: number, @Body() data: EvaluationDTO): Promise<EvaluationCriteriaEntity> {
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.ADMIN)
+  public updateCriteria(@Param('id', ParseIntPipe) id: number, @Body() data: EvaluationDTO): Promise<ResponseModel> {
     return this._evaluationCriteriaService.updateCriteria(id, data);
   }
 
   @Delete(':id')
-  public deleteCriteria(@Param('id') id: number): any {
+  @UseGuards(AuthorizationGuard)
+  @Roles(RoleEnum.ADMIN)
+  public deleteCriteria(@Param('id', ParseIntPipe) id: number): any {
     return this._evaluationCriteriaService.deleteCriteria(id);
   }
 }

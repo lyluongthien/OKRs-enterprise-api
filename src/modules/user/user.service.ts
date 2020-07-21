@@ -1,6 +1,5 @@
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { ObjectLiteral } from 'typeorm';
 import { generate } from 'generate-password';
 import { hashSync, compareSync } from 'bcryptjs';
 
@@ -120,8 +119,22 @@ export class UserService {
     };
   }
 
-  public async rejectRequest(id: number): Promise<ObjectLiteral> {
-    return await this._userRepository.deleteUser(id);
+  public async rejectRequest(id: number): Promise<ResponseModel> {
+    const data = await this._userRepository.deleteUser(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async approveRequest(id: number[]): Promise<ResponseModel> {
+    const data = await this._userRepository.approveRequest(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
   public async getUsersActived(options: IPaginationOptions): Promise<ResponseModel> {
