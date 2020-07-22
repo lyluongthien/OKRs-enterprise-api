@@ -3,7 +3,7 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { CycleRepository } from './cycle.repository';
 import { CycleDTO } from './cycle.dto';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, Status, CycleStatus } from '@app/constants/app.enums';
+import { CommonMessage, CycleStatus } from '@app/constants/app.enums';
 
 @Injectable()
 export class CycleService {
