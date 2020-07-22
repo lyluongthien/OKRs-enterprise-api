@@ -1,4 +1,16 @@
-import { Controller, Post, Body, Param, Put, Delete, UsePipes, Get, UseGuards, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Param,
+  Put,
+  Delete,
+  UsePipes,
+  Get,
+  UseGuards,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 
 import { CycleService } from './cycle.service';
 import { CycleDTO } from './cycle.dto';
@@ -17,8 +29,8 @@ export class CycleController {
   constructor(private _cycleService: CycleService) {}
 
   @Get()
-  public getAllCycle(): Promise<ResponseModel> {
-    return this._cycleService.getListCycle();
+  public getCycle(@Query('status') status: string): Promise<ResponseModel> {
+    return this._cycleService.getCycle(status);
   }
 
   @Get(':id')
@@ -32,8 +44,8 @@ export class CycleController {
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  public createCycle(@Body() role: CycleDTO): Promise<ResponseModel> {
-    return this._cycleService.createCycle(role);
+  public createCycle(@Body() cycle: CycleDTO): Promise<ResponseModel> {
+    return this._cycleService.createCycle(cycle);
   }
 
   @Put(':id')

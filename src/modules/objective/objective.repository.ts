@@ -8,37 +8,24 @@ import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 
 @EntityRepository(ObjectiveEntity)
 export class ObjectiveRepository extends Repository<ObjectiveEntity> {
-  public async createOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<void> {
+  public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<void> {
     try {
       okrDTo.objective.userId = userID;
       const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
-      const keyResultRepository = manager.getRepository(KeyResultEntity);
 
-      for (const value of okrDTo.keyResult) {
-        value.objectiveId = objective.id;
-        await keyResultRepository.save(value);
-      }
+      okrDTo.keyResult.map((data) => {
+        data.objectiveId = objective.id;
+        return data.objectiveId;
+      });
+      await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
 
-  public async updateOKRs(okrDTo: OkrsDTO, manager?: EntityManager): Promise<void> {
+  public async viewOKRs(cycleID: number, text: string): Promise<ObjectiveEntity[]> {
     try {
-      const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
-      const keyResultRepository = manager.getRepository(KeyResultEntity);
-
-      for (const value of okrDTo.keyResult) {
-        value.objectiveId = objective.id;
-        await keyResultRepository.save(value);
-      }
-    } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
-    }
-  }
-  public async viewOKRs(cycleID: number): Promise<ObjectiveEntity[]> {
-    try {
-      return await this.createQueryBuilder('objective')
+      const queryBuilder = await this.createQueryBuilder('objective')
         .select([
           'objective.id',
           'objective.progress',
@@ -46,17 +33,30 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objective.isRootObjective',
           'objective.userId',
           'objective.cycleId',
-          'objective.parentObjectiveId',
           'objective.alignObjectivesId',
           'users.id',
           'users.fullName',
           'users.isLeader',
         ])
-        .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
+        .leftJoin('objective.parentObjectives', 'parentObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
-        .leftJoin('objective.user', 'users')
-        .where('objective.cycleId = :id', { id: cycleID })
-        .getMany();
+        .leftJoinAndMapMany(
+          'objective.alignmentObjective',
+          ObjectiveEntity,
+          'objectiveAlignment',
+          'objectiveAlignment.id = any (objective.alignObjectivesId)',
+        )
+        .leftJoin('objective.user', 'users');
+      if (cycleID) {
+        if (text) {
+          return await queryBuilder
+            .where('objective.cycleId = :id', { id: cycleID })
+            .andWhere('objective.title like :text', { text: '%' + text + '%' })
+            .getMany();
+        }
+        return await queryBuilder.where('objective.cycleId = :id', { id: cycleID }).getMany();
+      }
+      return null;
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
