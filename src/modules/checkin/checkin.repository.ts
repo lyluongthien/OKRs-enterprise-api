@@ -36,8 +36,43 @@ export class CheckinRepository extends Repository<CheckinEntity> {
 
   public async getCheckinById(id: number): Promise<CheckinEntity> {
     try {
-      const checkin = await this.findOne({ id });
-      return checkin;
+      const queryBuilder = this.createQueryBuilder('checkin')
+        .select([
+          'checkin.id',
+          'checkin.confidentLevel',
+          'checkin.checkinAt',
+          'checkin.nextCheckinDate',
+          'checkin.status',
+          'objective.id',
+          'objective.title',
+          'checkinDetails.id',
+          'checkinDetails.valueObtained',
+          'checkinDetails.confidentLevel',
+          'checkinDetails.progress',
+          'checkinDetails.problems',
+          'checkinDetails.plans',
+          'keyresult.id',
+          'keyresult.content',
+          'keyresult.targetValue',
+          'keyresult.valueObtained',
+        ])
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('checkin.checkinDetails', 'checkinDetails')
+        .leftJoin('checkinDetails.keyResult', 'keyresult')
+        .where('checkin.id= :id', { id })
+        .getOne();
+
+      return await queryBuilder;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public async getCheckinByObjectiveId(id: number): Promise<CheckinEntity[]> {
+    try {
+      const checkins = this.find({ where: { objectiveId: id } });
+
+      return checkins;
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

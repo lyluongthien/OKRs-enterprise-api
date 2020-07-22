@@ -23,11 +23,20 @@ export class CheckinController {
     return this._checkinService.getCheckinDetail(checkinId);
   }
 
+  /**
+   * @description: Get Checkin history of each objective
+   * @returns: List history checkin getHistoryCheckin
+   */
+  @Get('history/:objectiveId')
+  @UsePipes(new ValidationPipe())
+  public async getHistoryCheckin(@Param('objectiveId', ParseIntPipe) objectiveId: number): Promise<ResponseModel> {
+    return this._checkinService.getHistoryCheckin(objectiveId);
+  }
+
   @Post()
   @UsePipes(new ValidationPipe())
   @Transaction({ isolation: 'SERIALIZABLE' })
   public async createCheckin(
-    // @Query('status') status: string,
     @Body() data: CreateCheckinDTO,
     @TransactionManager() manager: EntityManager,
   ): Promise<ResponseModel> {

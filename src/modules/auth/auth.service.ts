@@ -83,7 +83,7 @@ export class AuthService {
       message: CommonMessage.SUCCESS,
       data: {
         user: userModel,
-        token: `Bearer ${token}`,
+        token: token,
       },
     };
   }

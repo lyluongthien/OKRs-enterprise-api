@@ -4,38 +4,28 @@ import { CheckinRepository } from './checkin.repository';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
-import { ObjectiveRepository } from '../objective/objective.repository';
-import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { EntityManager } from 'typeorm';
-import { check } from 'prettier';
 
 @Injectable()
 export class CheckinService {
-  constructor(
-    private readonly _checkinRepository: CheckinRepository,
-    private readonly _keyResultRepository: KeyResultRepository,
-    private readonly _objectiveRepository: ObjectiveRepository,
-  ) {}
+  constructor(private readonly _checkinRepository: CheckinRepository) {}
 
   public async getCheckinDetail(checkinId: number): Promise<ResponseModel> {
     const checkin = await this._checkinRepository.getCheckinById(checkinId);
-    // const checkinKRs = await this._keyResultRepository.getCheckinKeyResult(objectiveId);
 
-    // checkinKRs.map((checkinKRs) => {
-    //   checkinKRs.checkins.map((data) => {
-    //     return data.toJSON();
-    //   });
-    // });
-
-    // const objectiveRes = {
-    //   id: objectvie.id,
-    //   name: objectvie.title,
-    //   progress: objectvie.progress,
-    // };
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
       data: checkin,
+    };
+  }
+
+  public async getHistoryCheckin(objectiveId: number): Promise<ResponseModel> {
+    const data = await this._checkinRepository.getCheckinByObjectiveId(objectiveId);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
     };
   }
 
