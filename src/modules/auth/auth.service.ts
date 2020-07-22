@@ -116,7 +116,7 @@ export class AuthService {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: {
-        url: RouterEnum.FE_HOST_ROUTER + `/join/${token}`,
+        url: RouterEnum.FE_HOST_ROUTER + `/dang-ky/${token}`,
       },
     };
   }
