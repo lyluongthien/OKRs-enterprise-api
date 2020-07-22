@@ -12,6 +12,7 @@ import { RoleEntity } from '@app/db/entities/role.entity';
 import { RouterEnum, CommonMessage } from '@app/constants/app.enums';
 import { expireResetPasswordToken } from '@app/constants/app.magic-number';
 import { ResponseModel } from '@app/constants/app.interface';
+import { paginationDataParser } from '@app/libs/pagination';
 
 @Injectable()
 export class UserService {
@@ -139,28 +140,31 @@ export class UserService {
 
   public async getUsersActived(options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.getUsersActived(options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
 
   public async getUsersApproved(options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.getUsersApproved(options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
 
   public async getUsersDeactived(options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.getUsersDeactived(options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
 
@@ -184,27 +188,30 @@ export class UserService {
 
   public async searchUsersActived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.searchUsersActived(text, options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
 
   public async searchUsersApproved(text: string, options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.searchUsersApproved(text, options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
   public async searchUsersDeactived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.searchUsersDeactived(text, options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
 
