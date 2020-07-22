@@ -4,7 +4,6 @@ import { HttpStatus, HttpException } from '@nestjs/common';
 import { CheckinEntity } from '@app/db/entities/checkin.entity';
 import { CreateCheckinDTO } from './checkin.dto';
 import { CheckinDetailEntity } from '@app/db/entities/checkin-detail.entity';
-import { check } from 'prettier';
 
 @EntityRepository(CheckinEntity)
 export class CheckinRepository extends Repository<CheckinEntity> {

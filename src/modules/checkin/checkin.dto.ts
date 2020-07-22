@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsEnum, IsNumber, IsString } from 'class-validator';
-import { CheckinStatus, ConfidentLevel } from '@app/constants/app.enums';
+import { IsNotEmpty, IsEnum, IsString } from 'class-validator';
+import { ConfidentLevel } from '@app/constants/app.enums';
 import { Optional } from '@nestjs/common';
 
 export class CreateCheckinDTO {
