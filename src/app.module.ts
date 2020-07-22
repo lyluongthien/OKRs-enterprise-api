@@ -16,6 +16,7 @@ import { MeasureUnitModule } from './modules/measure-unit/measure-unit.module';
 import { ObjectiveModule } from './modules/objective/objective.module';
 import { KeyResultModule } from './modules/keyresult/keyresult.module';
 import { LessonModule } from './modules/lesson/lesson.module';
+import { CheckinModule } from './modules/checkin/checkin.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { LessonModule } from './modules/lesson/lesson.module';
     ObjectiveModule,
     KeyResultModule,
     LessonModule,
+    CheckinModule,
   ],
   controllers: [AppController],
   providers: [AppService],

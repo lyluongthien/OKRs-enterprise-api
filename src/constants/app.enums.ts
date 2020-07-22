@@ -18,6 +18,7 @@ export enum TableName {
   UserStar = 'user_stars',
   Lesson = 'lessons',
   InviteToken = 'invite_tokens',
+  CheckinDetail = 'checkin_details',
 }
 
 export enum DbConfig {
@@ -100,6 +101,18 @@ export enum Status {
   ACTIVE = 1,
   PENDING = 0,
   DEAVCTIVE = -1,
+}
+
+export enum CheckinStatus {
+  DRAFT = 'Draft',
+  PEDDING = 'Pedding',
+  DONE = 'Done',
+}
+
+export enum ConfidentLevel {
+  GOOD = 3,
+  NORMAL = 2,
+  BAD = 1,
 }
 
 export enum CycleStatus {
