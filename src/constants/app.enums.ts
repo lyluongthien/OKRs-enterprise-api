@@ -101,3 +101,7 @@ export enum Status {
   PENDING = 0,
   DEAVCTIVE = -1,
 }
+
+export enum CycleStatus {
+  CURRENT = 'current',
+}

@@ -3,7 +3,7 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { CycleRepository } from './cycle.repository';
 import { CycleDTO } from './cycle.dto';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage } from '@app/constants/app.enums';
+import { CommonMessage, Status, CycleStatus } from '@app/constants/app.enums';
 
 @Injectable()
 export class CycleService {
@@ -11,7 +11,7 @@ export class CycleService {
 
   public async getCycle(status: string): Promise<ResponseModel> {
     let data = null;
-    if (status && status == 'current') {
+    if (status && status == CycleStatus.CURRENT) {
       const currentDate = new Date();
       data = await this._cycleRepository.getCurrentCycle(currentDate);
     } else {

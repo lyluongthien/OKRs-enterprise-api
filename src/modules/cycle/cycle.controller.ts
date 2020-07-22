@@ -29,7 +29,6 @@ export class CycleController {
   constructor(private _cycleService: CycleService) {}
 
   @Get()
-  @UseGuards(AuthorizationGuard)
   public getCycle(@Query('status') status: string): Promise<ResponseModel> {
     return this._cycleService.getCycle(status);
   }
