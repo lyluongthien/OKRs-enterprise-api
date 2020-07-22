@@ -7,6 +7,7 @@ import { CreateCheckinDTO } from './checkin.dto';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { EntityManager } from 'typeorm';
+import { check } from 'prettier';
 
 @Injectable()
 export class CheckinService {
@@ -16,9 +17,9 @@ export class CheckinService {
     private readonly _objectiveRepository: ObjectiveRepository,
   ) {}
 
-  public async getCheckinDetail(objectiveId: number): Promise<ResponseModel> {
-    const objectvie = await this._objectiveRepository.getDetailOKRs(objectiveId);
-    const checkinKRs = await this._keyResultRepository.getCheckinKeyResult(objectiveId);
+  public async getCheckinDetail(checkinId: number): Promise<ResponseModel> {
+    const checkin = await this._checkinRepository.getCheckinById(checkinId);
+    // const checkinKRs = await this._keyResultRepository.getCheckinKeyResult(objectiveId);
 
     // checkinKRs.map((checkinKRs) => {
     //   checkinKRs.checkins.map((data) => {
@@ -26,18 +27,15 @@ export class CheckinService {
     //   });
     // });
 
-    const objectiveRes = {
-      id: objectvie.id,
-      name: objectvie.title,
-      progress: objectvie.progress,
-    };
+    // const objectiveRes = {
+    //   id: objectvie.id,
+    //   name: objectvie.title,
+    //   progress: objectvie.progress,
+    // };
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: {
-        objective: objectiveRes,
-        key_results: checkinKRs,
-      },
+      data: checkin,
     };
   }
 

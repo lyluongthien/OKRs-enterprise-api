@@ -14,13 +14,13 @@ export class CheckinController {
   constructor(private readonly _checkinService: CheckinService) {}
 
   /**
-   * @description: Get Checkin by objectiveId
-   * @returns: List Checkin, order by checkin date
+   * @description: Get Checkin detail by checkinId
+   * @returns: Checkin in detail
    */
-  @Get(':objectiveId')
+  @Get(':checkinId')
   @UsePipes(new ValidationPipe())
-  public async getCheckin(@Param('objectiveId', ParseIntPipe) objectiveId: number): Promise<ResponseModel> {
-    return this._checkinService.getCheckinDetail(objectiveId);
+  public async getCheckin(@Param('checkinId', ParseIntPipe) checkinId: number): Promise<ResponseModel> {
+    return this._checkinService.getCheckinDetail(checkinId);
   }
 
   @Post()
