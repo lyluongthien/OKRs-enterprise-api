@@ -13,27 +13,8 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
         isGenerated: true,
       },
       {
-        name: 'valueObtained',
-        type: 'integer',
-      },
-      {
         name: 'confidentLevel',
         type: 'integer',
-      },
-      {
-        name: 'progress',
-        type: 'varchar',
-        length: '255',
-      },
-      {
-        name: 'problems',
-        type: 'varchar',
-        length: '255',
-      },
-      {
-        name: 'plans',
-        type: 'varchar',
-        length: '255',
       },
       {
         name: 'checkinAt',
@@ -54,9 +35,10 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
       {
         name: 'teamLeaderId',
         type: 'integer',
+        isNullable: true,
       },
       {
-        name: ForeignKey.KEY_RESULTS_ID,
+        name: ForeignKey.OBJECTIVE_ID,
         type: 'integer',
       },
       {
@@ -68,9 +50,9 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
   });
 
   private tableForeignKey: TableForeignKey = new TableForeignKey({
-    columnNames: [ForeignKey.KEY_RESULTS_ID],
+    columnNames: [ForeignKey.OBJECTIVE_ID],
     referencedColumnNames: ['id'],
-    referencedTableName: TableName.KeyResult,
+    referencedTableName: TableName.Objective,
     onDelete: 'CASCADE',
   });
 

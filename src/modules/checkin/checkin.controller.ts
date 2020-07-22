@@ -2,13 +2,14 @@ import { Controller, Get, UseGuards, Post, Body, UsePipes, ValidationPipe, Param
 
 import { CheckinService } from './checkin.service';
 import { AuthenticationGuard } from '../auth/authentication.guard';
-import { ApiCreatedResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, RoleEnum } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
+import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { TransactionManager, EntityManager, Transaction } from 'typeorm';
 
 @Controller('/api/v1/checkins')
 @UseGuards(AuthenticationGuard)
+@SwaggerAPI()
 export class CheckinController {
   constructor(private readonly _checkinService: CheckinService) {}
 
@@ -17,18 +18,19 @@ export class CheckinController {
    * @returns: List Checkin, order by checkin date
    */
   @Get(':objectiveId')
-  @ApiCreatedResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   @UsePipes(new ValidationPipe())
   public async getCheckin(@Param('objectiveId', ParseIntPipe) objectiveId: number): Promise<ResponseModel> {
     return this._checkinService.getCheckinDetail(objectiveId);
   }
 
   @Post()
-  @ApiCreatedResponse({ description: CommonMessage.SUCCESS })
-  @ApiBadRequestResponse({ description: CommonMessage.BAD_REQUEST })
   @UsePipes(new ValidationPipe())
-  public async createCheckin(@Body() data: CreateCheckinDTO[]): Promise<ResponseModel> {
-    return this._checkinService.createCheckin(data);
+  @Transaction({ isolation: 'SERIALIZABLE' })
+  public async createCheckin(
+    // @Query('status') status: string,
+    @Body() data: CreateCheckinDTO,
+    @TransactionManager() manager: EntityManager,
+  ): Promise<ResponseModel> {
+    return this._checkinService.createUpdateCheckin(data, manager);
   }
 }

@@ -1,6 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, OneToMany } from 'typeorm';
 import { TableName, CheckinStatus } from '@app/constants/app.enums';
-import { KeyResultEntity } from './key-result.entity';
+import { CheckinDetailEntity } from './checkin-detail.entity';
 
 @Entity(TableName.Checkin)
 export class CheckinEntity {
@@ -8,19 +8,7 @@ export class CheckinEntity {
   public id: number;
 
   @Column()
-  public valueObtained: number;
-
-  @Column()
   public confidentLevel: number;
-
-  @Column()
-  public progress: string;
-
-  @Column()
-  public problems: string;
-
-  @Column()
-  public plans: string;
 
   @Column()
   public checkinAt: Date;
@@ -35,11 +23,21 @@ export class CheckinEntity {
   public teamLeaderId: number;
 
   @Column()
-  public keyResultId: number;
+  public objectiveId: number;
 
   @UpdateDateColumn({ type: 'timestamptz' })
   public updatedAt: Date;
 
-  @ManyToOne(() => KeyResultEntity, (keyResult) => keyResult.checkins)
-  public keyResult: KeyResultEntity;
+  @OneToMany(() => CheckinDetailEntity, (checkinDetail) => checkinDetail.checkin)
+  public checkinDetails: CheckinDetailEntity[];
+
+  public toJSON() {
+    return {
+      id: this.id,
+      confident_level: this.confidentLevel,
+      checkin_at: this.checkinAt,
+      next_checkin_date: this.nextCheckinDate,
+      status: this.status,
+    };
+  }
 }

@@ -34,7 +34,4 @@ export class KeyResultEntity {
 
   @ManyToOne(() => ObjectiveEntity, (objective) => objective.keyResults)
   public objective: ObjectiveEntity;
-
-  @OneToMany(() => CheckinEntity, (checkins) => checkins.keyResult, { onDelete: 'CASCADE' })
-  public checkins: CheckinEntity[];
 }

@@ -6,6 +6,7 @@ import { CommonMessage } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class CheckinService {
@@ -18,6 +19,12 @@ export class CheckinService {
   public async getCheckinDetail(objectiveId: number): Promise<ResponseModel> {
     const objectvie = await this._objectiveRepository.getDetailOKRs(objectiveId);
     const checkinKRs = await this._keyResultRepository.getCheckinKeyResult(objectiveId);
+
+    // checkinKRs.map((checkinKRs) => {
+    //   checkinKRs.checkins.map((data) => {
+    //     return data.toJSON();
+    //   });
+    // });
 
     const objectiveRes = {
       id: objectvie.id,
@@ -34,8 +41,8 @@ export class CheckinService {
     };
   }
 
-  public async createCheckin(data: CreateCheckinDTO[]): Promise<ResponseModel> {
-    const dataResponse = await this._checkinRepository.createCheckin(data);
+  public async createUpdateCheckin(data: CreateCheckinDTO, manager: EntityManager): Promise<ResponseModel> {
+    const dataResponse = await this._checkinRepository.createUpdateCheckin(data, manager);
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,

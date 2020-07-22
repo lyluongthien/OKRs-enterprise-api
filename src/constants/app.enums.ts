@@ -18,6 +18,7 @@ export enum TableName {
   UserStar = 'user_stars',
   Lesson = 'lessons',
   InviteToken = 'invite_tokens',
+  CheckinDetail = 'checkin_details',
 }
 
 export enum DbConfig {
