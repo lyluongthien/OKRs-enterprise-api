@@ -1,16 +1,17 @@
-import { Controller, UseGuards, Get } from '@nestjs/common';
-import { UserStarService } from './user-star.service';
+import { Controller, UseGuards, Get, Query } from '@nestjs/common';
 import { AuthenticationGuard } from '../auth/authentication.guard';
-import { UserStarRepository } from './user-star.repository';
-import { UserStarEntity } from '@app/db/entities/user-stars.entity';
+import { UserStarService } from './user-star.service';
+import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { ResponseModel } from '@app/constants/app.interface';
 
+@Controller('/api/v1/user_star')
 @UseGuards(AuthenticationGuard)
-@Controller('/api/v1/user-stars')
+@SwaggerAPI()
 export class UserStarController {
-  constructor(private _userStartService: UserStarService) {}
+  constructor(private _userStarService: UserStarService) {}
 
   @Get()
-  public async getUserStar(): Promise<UserStarEntity> {
-    return null;
+  public getUserStars(@Query('status') status: string): Promise<ResponseModel> {
+    return this._userStarService.getUserStar(status);
   }
 }

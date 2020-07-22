@@ -1,5 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
+import { UserEntity } from './user.entity';
 
 @Entity(TableName.UserStar)
 export class UserStarEntity {
@@ -7,13 +8,13 @@ export class UserStarEntity {
   public id: number;
 
   @Column()
-  public accumulatedStar: number;
+  public star: number;
 
   @Column()
-  public currentCycleStar: number;
+  public cycleId: number;
 
   @Column()
   public userId: number;
-  @Column()
-  public cycleId: number;
+
+  public users: UserEntity;
 }
