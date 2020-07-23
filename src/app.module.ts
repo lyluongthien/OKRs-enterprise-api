@@ -17,6 +17,7 @@ import { ObjectiveModule } from './modules/objective/objective.module';
 import { KeyResultModule } from './modules/keyresult/keyresult.module';
 import { LessonModule } from './modules/lesson/lesson.module';
 import { RecognitionModule } from './modules/recognition/recognition.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { RecognitionModule } from './modules/recognition/recognition.module';
     KeyResultModule,
     LessonModule,
     RecognitionModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService],
