@@ -1,9 +1,13 @@
-import { Controller, Post, Body, ValidationPipe, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiUnauthorizedResponse, ApiBadRequestResponse } from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
 import { RegisterDTO, SignInDTO } from './auth.dto';
 import { ResponseModel } from '@app/constants/app.interface';
+import { AuthenticationGuard } from './authentication.guard';
+import { AuthorizationGuard } from './authorization.guard';
+import { Roles } from '../role/role.decorator';
+import { RoleEnum } from '@app/constants/app.enums';
 
 @Controller('auth')
 export class AuthController {
@@ -37,6 +41,8 @@ export class AuthController {
    * @description: Generate a link, user can access this link to register an account
    */
   @Get('/link-invite')
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: 'Success' })
   @ApiBadRequestResponse({ description: 'Bad request' })
   public async generateInviteLink(): Promise<ResponseModel> {

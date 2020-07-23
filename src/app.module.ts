@@ -18,6 +18,7 @@ import { KeyResultModule } from './modules/keyresult/keyresult.module';
 import { LessonModule } from './modules/lesson/lesson.module';
 import { RecognitionModule } from './modules/recognition/recognition.module';
 import { FeedbackModule } from './feedback/feedback.module';
+import { CheckinModule } from './modules/checkin/checkin.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { FeedbackModule } from './feedback/feedback.module';
     LessonModule,
     RecognitionModule,
     FeedbackModule,
+    CheckinModule,
   ],
   controllers: [AppController],
   providers: [AppService],

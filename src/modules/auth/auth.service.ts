@@ -40,7 +40,6 @@ export class AuthService {
   public async authenticate({ email, password }: SignInDTO): Promise<ResponseModel> {
     try {
       const user = await this._userRepository.getUserByEmail(email);
-      console.log(user);
       if (!user) {
         throw new BadRequestException();
       }
@@ -69,12 +68,14 @@ export class AuthService {
 
   public async createBearerToken(user: UserEntity): Promise<ResponseModel> {
     const token = await this._jwtService.sign({ id: user.id, email: user.email });
+    const urlImage = user.avatarURL ? user.avatarURL : user.gravatarURL;
+
     const userModel = {
       id: user.id,
       name: user.fullName,
       email: user.email,
       role: user.role.name,
-      department: user.jobPosition.name,
+      image_url: urlImage,
     };
 
     return {
@@ -82,7 +83,7 @@ export class AuthService {
       message: CommonMessage.SUCCESS,
       data: {
         user: userModel,
-        token: `Bearer ${token}`,
+        token: token,
       },
     };
   }
@@ -115,7 +116,7 @@ export class AuthService {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: {
-        url: RouterEnum.FE_HOST_ROUTER + `/join/${token}`,
+        url: RouterEnum.FE_HOST_ROUTER + `/dang-ky/${token}`,
       },
     };
   }

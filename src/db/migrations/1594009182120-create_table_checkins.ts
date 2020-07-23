@@ -1,5 +1,5 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
-import { TableName, ForeignKey } from '@app/constants/app.enums';
+import { TableName, ForeignKey, CheckinStatus } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
 export class CreateTableCheckins1594009182120 implements MigrationInterface {
@@ -13,41 +13,32 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
         isGenerated: true,
       },
       {
-        name: 'valueObtained',
-        type: 'integer',
-        isNullable: false,
-      },
-      {
         name: 'confidentLevel',
         type: 'integer',
-        isNullable: false,
-      },
-      {
-        name: 'content',
-        type: 'varchar',
       },
       {
         name: 'checkinAt',
         type: 'date',
+        default: 'now()',
       },
       {
         name: 'nextCheckinDate',
         type: 'date',
+        isNullable: true,
       },
       {
-        name: 'status',
-        type: 'bool',
+        name: 'status', // Save status of Checkin: Draf, Pedding, Done
+        type: 'enum',
+        enum: [CheckinStatus.DRAFT, CheckinStatus.PEDDING, CheckinStatus.DONE],
+        isNullable: false,
       },
       {
         name: 'teamLeaderId',
         type: 'integer',
+        isNullable: true,
       },
       {
-        name: 'templateCheckinId',
-        type: 'integer',
-      },
-      {
-        name: ForeignKey.KEY_RESULTS_ID,
+        name: ForeignKey.OBJECTIVE_ID,
         type: 'integer',
       },
       {
@@ -59,9 +50,9 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
   });
 
   private tableForeignKey: TableForeignKey = new TableForeignKey({
-    columnNames: [ForeignKey.KEY_RESULTS_ID],
+    columnNames: [ForeignKey.OBJECTIVE_ID],
     referencedColumnNames: ['id'],
-    referencedTableName: TableName.KeyResult,
+    referencedTableName: TableName.Objective,
     onDelete: 'CASCADE',
   });
 

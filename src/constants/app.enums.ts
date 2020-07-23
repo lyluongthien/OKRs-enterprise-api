@@ -18,6 +18,7 @@ export enum TableName {
   UserStar = 'user_stars',
   Lesson = 'lessons',
   InviteToken = 'invite_tokens',
+  CheckinDetail = 'checkin_details',
 }
 
 export enum DbConfig {
@@ -74,13 +75,14 @@ export enum RouterEnum {
   EVALUATION_CRITERIA_ROUTE = 'localhost:3000/api/v1/evaluation-criterias',
   MEASURE_UNIT_ROUTE = 'localhost:3000/api/v1/measure-units',
   API_HOST_ROUTER = 'http://localhost:3000',
-  FE_HOST_ROUTER = 'http://localhost:5000',
+  FE_HOST_ROUTER = 'http://localhost:8000',
   USER_ROUTE = 'http://localhost:3000/api/v1/users',
   TEAM_ROUTE = 'http://localhost:3000/api/v1/teams',
 }
 
 export enum CommonMessage {
   SUCCESS = 'success',
+  CYCLE_DATE = 'End date must be greater than start date',
   BAD_REQUEST = 'Bad request',
   INTERNAL_SERVER_ERROR = 'Internal server error',
   PASSWORD_UPDATE_SUCCESS = 'Password successfully updated',
@@ -101,4 +103,20 @@ export enum Status {
   ACTIVE = 1,
   PENDING = 0,
   DEAVCTIVE = -1,
+}
+
+export enum CheckinStatus {
+  DRAFT = 'Draft',
+  PEDDING = 'Pedding',
+  DONE = 'Done',
+}
+
+export enum ConfidentLevel {
+  GOOD = 3,
+  NORMAL = 2,
+  BAD = 1,
+}
+
+export enum CycleStatus {
+  CURRENT = 'current',
 }

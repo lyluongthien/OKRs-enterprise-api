@@ -11,6 +11,7 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
     try {
       return await this.createQueryBuilder('feedBackEntity')
         .leftJoinAndSelect('feedBackEntity.checkIn', 'checkIn')
+        .where('checkIn')
         .getMany();
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);

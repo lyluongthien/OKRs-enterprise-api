@@ -36,15 +36,19 @@ export class PasswordDTO {
 
 export class UserDTO {
   @Optional()
+  @ApiProperty()
   public isLeader: boolean;
 
   @Optional()
+  @ApiProperty()
   public roleId: number;
 
   @Optional()
+  @ApiProperty()
   public teamId: number;
 
   @Optional()
+  @ApiProperty()
   public jobPositionId: number;
 }
 
