@@ -17,6 +17,7 @@ import { ObjectiveModule } from './modules/objective/objective.module';
 import { KeyResultModule } from './modules/keyresult/keyresult.module';
 import { LessonModule } from './modules/lesson/lesson.module';
 import { CheckinModule } from './modules/checkin/checkin.module';
+import { RoleModule } from './modules/role/role.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CheckinModule } from './modules/checkin/checkin.module';
     KeyResultModule,
     LessonModule,
     CheckinModule,
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
