@@ -50,6 +50,10 @@ export class UserDTO {
   @Optional()
   @ApiProperty()
   public jobPositionId: number;
+
+  @Optional()
+  @ApiProperty()
+  public isActive: boolean;
 }
 
 export class UserProfileDTO {
