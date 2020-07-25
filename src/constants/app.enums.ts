@@ -111,6 +111,11 @@ export enum CheckinStatus {
   DONE = 'Done',
 }
 
+export enum CheckinType {
+  TEAM_LEADER = 1,
+  MEMBER = 2,
+}
+
 export enum ConfidentLevel {
   GOOD = 3,
   NORMAL = 2,

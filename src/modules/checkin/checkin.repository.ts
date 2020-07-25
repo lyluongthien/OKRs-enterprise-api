@@ -4,6 +4,7 @@ import { HttpStatus, HttpException } from '@nestjs/common';
 import { CheckinEntity } from '@app/db/entities/checkin.entity';
 import { CreateCheckinDTO } from './checkin.dto';
 import { CheckinDetailEntity } from '@app/db/entities/checkin-detail.entity';
+import { CheckinStatus, CheckinType } from '@app/constants/app.enums';
 
 @EntityRepository(CheckinEntity)
 export class CheckinRepository extends Repository<CheckinEntity> {
@@ -72,6 +73,33 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       const checkins = this.find({ where: { objectiveId: id } });
 
       return checkins;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  public getDoneCheckinById(id: number, type: number): Promise<CheckinEntity[]> {
+    try {
+      const condition =
+        type == CheckinType.MEMBER ? 'user.id = :id AND checkin.teamLeaderId IS NULL' : 'checkin.teamLeaderId = :id';
+      return this.createQueryBuilder('checkin')
+        .select([
+          'checkin.id',
+          'checkin.confidentLevel',
+          'checkin.checkinAt',
+          'checkin.nextCheckinDate',
+          'checkin.status',
+          'objective.id',
+          'objective.title',
+          'user.id',
+          'user.fullName',
+        ])
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('objective.user', 'user')
+        .leftJoin('checkin.checkinDetails', 'checkinDetails')
+        .where(condition, { id })
+        .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
+        .getMany();
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
     }

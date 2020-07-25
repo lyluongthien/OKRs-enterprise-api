@@ -34,14 +34,4 @@ export class CheckinEntity {
 
   @ManyToOne(() => ObjectiveEntity, (objective) => objective.checkins)
   public objective: ObjectiveEntity;
-
-  // public toJSON() {
-  //   return {
-  //     id: this.id,
-  //     confident_level: this.confidentLevel,
-  //     checkin_at: this.checkinAt,
-  //     next_checkin_date: this.nextCheckinDate,
-  //     status: this.status,
-  //   };
-  // }
 }
