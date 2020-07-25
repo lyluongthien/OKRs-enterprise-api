@@ -17,6 +17,14 @@ export class TeamRepository extends Repository<TeamEntity> {
     }
   }
 
+  public async getListTeams(): Promise<TeamEntity[]> {
+    try {
+      return await this.createQueryBuilder('team').getMany();
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
+
   public async getDetailTeam(id: number): Promise<TeamEntity> {
     try {
       return await this.findOne({ where: { id } });
