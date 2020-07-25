@@ -1,24 +1,20 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 
 export class FeedbackDTO {
   @IsNotEmpty()
-  @IsNumber()
-  public inferiorId: number;
+  public senderId: number;
 
-  public superiorId: number;
+  @IsNotEmpty()
+  public receiverId: number;
 
   @IsNotEmpty()
   public content: string;
 
   @IsNotEmpty()
-  @IsNumber()
   public evaluationCriteriaId: number;
 
-  @IsNotEmpty()
-  @IsNumber()
-  public objectiveId: number;
+  public isLeaderToStaff?: boolean;
 
   @IsNotEmpty()
-  @IsNumber()
-  public cycleId: number;
+  public checkinId: number;
 }

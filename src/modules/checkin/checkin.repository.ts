@@ -80,8 +80,12 @@ export class CheckinRepository extends Repository<CheckinEntity> {
 
   public getDoneCheckinById(id: number, type: number): Promise<CheckinEntity[]> {
     try {
-      const condition =
-        type == CheckinType.MEMBER ? 'user.id = :id AND checkin.teamLeaderId IS NULL' : 'checkin.teamLeaderId = :id';
+      let condition = null;
+      if (type == CheckinType.MEMBER) {
+        condition = 'user.id = :id AND checkin.teamLeaderId IS NULL';
+      } else {
+        condition = 'checkin.teamLeaderId = :id';
+      }
       return this.createQueryBuilder('checkin')
         .select([
           'checkin.id',

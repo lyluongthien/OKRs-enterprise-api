@@ -5,6 +5,7 @@ import { CommonMessage, CheckinType } from '@app/constants/app.enums';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { UserRepository } from '../user/user.repository';
+import { FeedbackDTO } from './feedback.dto';
 
 @Injectable()
 export class FeedbackService {
@@ -27,6 +28,15 @@ export class FeedbackService {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
       data: data,
+    };
+  }
+
+  public async createFeedBack(data: FeedbackDTO): Promise<ResponseModel> {
+    this._feedBackRepository.createFeedBack(data);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: CommonMessage.SUCCESS,
+      data: {},
     };
   }
 }

@@ -9,7 +9,7 @@ import { AuthorizationGuard } from './authorization.guard';
 import { Roles } from '../role/role.decorator';
 import { RoleEnum } from '@app/constants/app.enums';
 
-@Controller('auth')
+@Controller('/api/v1/auth')
 export class AuthController {
   constructor(private readonly _authService: AuthService) {}
 
@@ -40,7 +40,7 @@ export class AuthController {
   /**
    * @description: Generate a link, user can access this link to register an account
    */
-  @Get('/link-invite')
+  @Get('/link_invite')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @ApiOkResponse({ description: 'Success' })

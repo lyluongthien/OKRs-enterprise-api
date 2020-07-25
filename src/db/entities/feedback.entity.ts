@@ -8,10 +8,10 @@ export class FeedbackEntity {
   public id: number;
 
   @Column()
-  public inferiorId: number;
+  public senderId: number;
 
   @Column()
-  public superiorId: number;
+  public receiverId: number;
 
   @Column()
   public content: string;

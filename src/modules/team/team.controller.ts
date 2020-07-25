@@ -1,5 +1,4 @@
-import { Controller, Post, Body, Put, Param, Delete, Get, Query, UseGuards } from '@nestjs/common';
-import { currentPage, limitPagination } from '@app/constants/app.magic-number';
+import { Controller, Post, Body, Put, Param, Delete, Get, UseGuards } from '@nestjs/common';
 
 import { TeamDTO } from './team.dto';
 import { AuthenticationGuard } from '../auth/authentication.guard';
@@ -20,15 +19,20 @@ export class TeamController {
   /**
    * @description: Get list of teams in company
    */
+  // @Get()
+  // public async getTeams(@Query('page') page: number, @Query('limit') limit: number): Promise<ResponseModel> {
+  //   page = page ? page : currentPage;
+  //   limit = limit ? limit : limitPagination;
+  //   return this._teamService.getTeams({
+  //     page,
+  //     limit,
+  //     route: '',
+  //   });
+  // }
+
   @Get()
-  public async getTeams(@Query('page') page: number, @Query('limit') limit: number): Promise<ResponseModel> {
-    page = page ? page : currentPage;
-    limit = limit ? limit : limitPagination;
-    return this._teamService.getTeams({
-      page,
-      limit,
-      route: '',
-    });
+  public async getListTeams(): Promise<ResponseModel> {
+    return this._teamService.getListTeams();
   }
 
   @Get(':id')

@@ -7,12 +7,9 @@ import { FeedbackDTO } from './feedback.dto';
 
 @EntityRepository(FeedbackEntity)
 export class FeedbackRepository extends Repository<FeedbackEntity> {
-  public async viewListCFRsTeam(id: number): Promise<FeedbackEntity[]> {
+  public async createFeedBack(data: FeedbackDTO): Promise<void> {
     try {
-      return await this.createQueryBuilder('feedBackEntity')
-        .leftJoinAndSelect('feedBackEntity.checkIn', 'checkIn')
-        .where('checkIn')
-        .getMany();
+      this.save(data);
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }

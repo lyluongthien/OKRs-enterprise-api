@@ -19,6 +19,7 @@ import { LessonModule } from './modules/lesson/lesson.module';
 import { RecognitionModule } from './modules/recognition/recognition.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { CheckinModule } from './modules/checkin/checkin.module';
+import { RoleModule } from './modules/role/role.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { CheckinModule } from './modules/checkin/checkin.module';
     RecognitionModule,
     FeedbackModule,
     CheckinModule,
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
