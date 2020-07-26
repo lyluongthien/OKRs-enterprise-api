@@ -1,4 +1,4 @@
-export const httpEmailExists = 'Email already exists';
+export const httpEmailExists = 'Email đã tồn tại';
 export const httpUnauthenticated = `Not authenticated`;
 export const httpUnauthorized = `Unauthorized access`;
 export const httpDatabaseException = `Exception when handle with database`;

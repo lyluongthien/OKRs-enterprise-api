@@ -170,10 +170,27 @@ export class UserService {
 
   public async getUserByID(id: number): Promise<ResponseModel> {
     const data = await this._userRepository.getUserByID(id);
+    const responseData = {
+      id: data.id,
+      email: data.email,
+      name: data.fullName,
+      gender: data.gender,
+      date_of_birth: data.dateOfBirth,
+      image_url: data.avatarURL ? data.avatarURL : data.gravatarURL,
+      role_id: data.role.id,
+      role_name: data.role.name,
+      job_position_id: data.jobPosition.id,
+      job_position_name: data.jobPosition.name,
+      team_id: data.team.id,
+      team_name: data.team.name,
+      is_leader: data.isLeader,
+      is_active: data.isActive,
+      is_approved: data.isApproved,
+    };
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: responseData,
     };
   }
 
