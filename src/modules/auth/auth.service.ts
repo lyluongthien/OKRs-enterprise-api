@@ -2,7 +2,7 @@ import { JwtService } from '@nestjs/jwt';
 import { Injectable, UnauthorizedException, BadRequestException, HttpStatus, HttpException } from '@nestjs/common';
 import { SignInDTO } from './auth.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
-import { invalidCredential, httpEmailExists } from '@app/constants/app.exeption';
+import { httpEmailExists } from '@app/constants/app.exeption';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, RouterEnum } from '@app/constants/app.enums';
 import { generate } from 'generate-password';
@@ -41,15 +41,15 @@ export class AuthService {
     try {
       const user = await this._userRepository.getUserByEmail(email);
       if (!user) {
-        throw new BadRequestException();
+        throw new BadRequestException(CommonMessage.EMAIL_NOT_FOUND);
       }
       const isMatchedPassword = await compareSync(password, user.password);
       if (!isMatchedPassword) {
-        throw new BadRequestException(invalidCredential);
+        throw new BadRequestException(CommonMessage.PASSWORD_FAIL);
       }
       return await this.createBearerToken(user);
     } catch (error) {
-      throw new UnauthorizedException(invalidCredential);
+      throw new UnauthorizedException(error.message);
     }
   }
 
