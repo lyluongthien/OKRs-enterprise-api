@@ -38,7 +38,7 @@ export class UserRepository extends Repository<UserEntity> {
         .leftJoinAndSelect('user.role', 'roles')
         .leftJoinAndSelect('user.jobPosition', 'jobPositions')
         .leftJoinAndSelect('user.team', 'teams')
-        .where('user.isApproved = false');
+        .where('user.isActive = true and user.isApproved = false');
       return await paginate<UserEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
