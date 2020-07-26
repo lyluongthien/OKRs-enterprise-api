@@ -1,8 +1,8 @@
 import { JwtService } from '@nestjs/jwt';
-import { Injectable, UnauthorizedException, BadRequestException, HttpStatus, HttpException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, HttpStatus, HttpException } from '@nestjs/common';
 import { SignInDTO } from './auth.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
-import { httpEmailExists } from '@app/constants/app.exeption';
+import { httpEmailExists, EMAIL_NOT_FOUND, PASSWORD_WRONG, INTERNAL_SERVER_ERROR } from '@app/constants/app.exeption';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, RouterEnum } from '@app/constants/app.enums';
 import { generate } from 'generate-password';
@@ -41,15 +41,15 @@ export class AuthService {
     try {
       const user = await this._userRepository.getUserByEmail(email);
       if (!user) {
-        throw new BadRequestException(CommonMessage.EMAIL_NOT_FOUND);
+        throw new HttpException(EMAIL_NOT_FOUND.message, EMAIL_NOT_FOUND.statusCode);
       }
       const isMatchedPassword = await compareSync(password, user.password);
       if (!isMatchedPassword) {
-        throw new BadRequestException(CommonMessage.PASSWORD_FAIL);
+        throw new HttpException(PASSWORD_WRONG.message, PASSWORD_WRONG.statusCode);
       }
       return await this.createBearerToken(user);
     } catch (error) {
-      throw new UnauthorizedException(error.message);
+      throw new HttpException(INTERNAL_SERVER_ERROR.message, INTERNAL_SERVER_ERROR.statusCode);
     }
   }
 
