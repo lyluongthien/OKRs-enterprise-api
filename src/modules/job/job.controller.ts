@@ -10,34 +10,31 @@ import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 
 @Controller('/api/v1/jobs')
-@UseGuards(AuthenticationGuard)
 @SwaggerAPI()
 export class JobController {
   constructor(private jobService: JobService) {}
 
   @Get()
-  @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public showAllJob(): any {
     return this.jobService.getListJob();
   }
 
   @Post()
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public createJob(@Body() role: JobDTO): any {
     return this.jobService.createJob(role);
   }
 
   @Get(':id')
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public getDetailJob(@Param('id', ParseIntPipe) id: number): any {
     return this.jobService.getJobDetail(id);
   }
 
   @Put(':id')
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
   public updateJob(@Param('id', ParseIntPipe) id: number, @Body() data: Partial<JobDTO>): any {
@@ -45,7 +42,7 @@ export class JobController {
   }
 
   @Delete(':id')
-  @UseGuards(AuthorizationGuard)
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public deleteJob(@Param('id', ParseIntPipe) id: number): any {
     return this.jobService.deleteJob(id);
