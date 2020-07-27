@@ -2,7 +2,7 @@ import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
 import { CycleEntity } from '@app/db/entities/cycle.entity';
-import { CycleDTO } from './cycle.dto';
+import { CycleDTO, updateCycleDTO } from './cycle.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 
 @EntityRepository(CycleEntity)
@@ -31,7 +31,7 @@ export class CycleRepository extends Repository<CycleEntity> {
     }
   }
 
-  public async updateCycle(id: number, data: Partial<CycleDTO>): Promise<CycleEntity> {
+  public async updateCycle(id: number, data: updateCycleDTO): Promise<CycleEntity> {
     try {
       await this.update({ id }, data);
       return await this.findOne({ id });
