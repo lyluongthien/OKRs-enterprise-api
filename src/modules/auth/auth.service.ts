@@ -1,17 +1,27 @@
 import { JwtService } from '@nestjs/jwt';
 import { Injectable, UnauthorizedException, HttpStatus, HttpException } from '@nestjs/common';
+import { generate } from 'generate-password';
+import { compareSync } from 'bcryptjs';
+
 import { SignInDTO } from './auth.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
-import { httpEmailExists, EMAIL_NOT_FOUND, PASSWORD_WRONG, INTERNAL_SERVER_ERROR } from '@app/constants/app.exeption';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, RouterEnum } from '@app/constants/app.enums';
-import { generate } from 'generate-password';
+import { CommonMessage, RouterEnum, RoleEnum } from '@app/constants/app.enums';
 import { TokenRepository } from './auth.repository';
 import { expireInviteToken } from '@app/constants/app.magic-number';
 import { UserRepository } from '../user/user.repository';
 import { RegisterDTO } from '../auth/auth.dto';
-import { compareSync } from 'bcryptjs';
 import { JwtPayload } from './auth.interface';
+import {
+  EMAIL_EXIST,
+  EMAIL_NOT_FOUND,
+  PASSWORD_WRONG,
+  INVALID_TOKEN,
+  EXPIRED_TOKEN,
+  USER_PENDING,
+  USER_LOOKED,
+} from '@app/constants/app.exeption';
+import { RoleRepository } from '../role/role.repository';
 
 @Injectable()
 export class AuthService {
@@ -19,38 +29,60 @@ export class AuthService {
     private _jwtService: JwtService,
     private _tokenRepository: TokenRepository,
     private _userRepository: UserRepository,
+    private _roleRepository: RoleRepository,
   ) {}
 
-  public async createUser(data: RegisterDTO): Promise<UserEntity> {
-    try {
-      const emailExists = await this._userRepository.getUserByEmail(data.email);
-      if (emailExists) {
-        throw new HttpException(httpEmailExists, HttpStatus.BAD_REQUEST);
-      }
-      const newUser = this._userRepository.create(data);
-      await this._userRepository.save(newUser);
-
-      const user = await this._userRepository.getUserByEmail(data.email);
-      return user;
-    } catch (error) {
-      throw new HttpException(httpEmailExists, HttpStatus.BAD_REQUEST);
+  public async createUser(data: RegisterDTO): Promise<ResponseModel> {
+    const currentToken = await this._tokenRepository.getToken();
+    // Checkin token when register
+    if (currentToken.token !== data.token) {
+      throw new HttpException(INVALID_TOKEN.message, INVALID_TOKEN.statusCode);
     }
+    // Checkin token is expire
+    const now = new Date().getTime();
+    const expireTime = currentToken.createdAt.getTime();
+    const dueTime = now - expireTime;
+    if (dueTime > expireInviteToken) {
+      throw new HttpException(EXPIRED_TOKEN.message, EXPIRED_TOKEN.statusCode);
+    }
+
+    const emailExists = await this._userRepository.getUserByEmail(data.email);
+    if (emailExists) {
+      throw new HttpException(EMAIL_EXIST.message, EMAIL_EXIST.statusCode);
+    }
+    const role = await this._roleRepository.getRoleByName(RoleEnum.STAFF);
+    const newUser = this._userRepository.create(data);
+    newUser.isActive = true;
+    newUser.isApproved = false;
+    newUser.roleId = role.id;
+    await this._userRepository.save(newUser);
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: CommonMessage.SUCCESS,
+      data: newUser,
+    };
   }
 
   public async authenticate({ email, password }: SignInDTO): Promise<ResponseModel> {
-    try {
-      const user = await this._userRepository.getUserByEmail(email);
-      if (!user) {
-        throw new HttpException(EMAIL_NOT_FOUND.message, EMAIL_NOT_FOUND.statusCode);
-      }
-      const isMatchedPassword = await compareSync(password, user.password);
-      if (!isMatchedPassword) {
-        throw new HttpException(PASSWORD_WRONG.message, PASSWORD_WRONG.statusCode);
-      }
-      return await this.createBearerToken(user);
-    } catch (error) {
-      throw new HttpException(INTERNAL_SERVER_ERROR.message, INTERNAL_SERVER_ERROR.statusCode);
+    const user = await this._userRepository.getUserByEmail(email);
+    if (!user) {
+      throw new HttpException(EMAIL_NOT_FOUND.message, EMAIL_NOT_FOUND.statusCode);
     }
+    // When user not yet approved
+    if (!user.isApproved) {
+      throw new HttpException(USER_PENDING.message, USER_PENDING.statusCode);
+    }
+
+    // When user is looked
+    if (!user.isActive) {
+      throw new HttpException(USER_LOOKED.message, USER_LOOKED.statusCode);
+    }
+    const isMatchedPassword = await compareSync(password, user.password);
+    if (!isMatchedPassword) {
+      throw new HttpException(PASSWORD_WRONG.message, PASSWORD_WRONG.statusCode);
+    }
+    return await this.createBearerToken(user);
   }
 
   public async validateUserFromJwtPayload(payload: JwtPayload): Promise<any> {
@@ -124,7 +156,7 @@ export class AuthService {
   public async verifyLinkInvite(token: string): Promise<ResponseModel> {
     const tokenEntity = await this._tokenRepository.getToken(token);
     if (!tokenEntity) {
-      throw new HttpException(CommonMessage.INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+      throw new HttpException(INVALID_TOKEN.message, INVALID_TOKEN.statusCode);
     }
 
     return {

@@ -21,6 +21,11 @@ export const EMAIL_NOT_FOUND = {
   message: `Email không tồn tại`,
 };
 
+export const EMAIL_EXIST = {
+  statusCode: 432,
+  message: `Email đã tồn tại`,
+};
+
 export const PASSWORD_WRONG = {
   statusCode: 409,
   message: `Mât khẩu không chính xác`,
@@ -34,4 +39,14 @@ export const INVALID_TOKEN = {
 export const EXPIRED_TOKEN = {
   statusCode: 414,
   message: `Token đã hết hạn`,
+};
+
+export const USER_LOOKED = {
+  statusCode: 420,
+  message: `Tài khoản của bạn đã bị khóa`,
+};
+
+export const USER_PENDING = {
+  statusCode: 422,
+  message: `Tài khoản của bạn đang chờ phê duyệt`,
 };

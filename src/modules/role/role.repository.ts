@@ -12,4 +12,12 @@ export class RoleRepository extends Repository<RoleEntity> {
       throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
     }
   }
+
+  public async getRoleByName(name: string): Promise<RoleEntity> {
+    try {
+      return await this.findOne({ where: { name } });
+    } catch (error) {
+      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+    }
+  }
 }
