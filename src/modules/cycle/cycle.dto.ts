@@ -1,16 +1,27 @@
-import { IsNotEmpty } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty } from 'class-validator';
 
 export class CycleDTO {
-  @IsNotEmpty()
   @ApiProperty()
+  @IsNotEmpty()
   public name: string;
 
-  @IsNotEmpty()
   @ApiProperty()
+  @IsNotEmpty()
   public startDate: Date;
 
-  @IsNotEmpty()
   @ApiProperty()
+  @IsNotEmpty()
   public endDate: Date;
+}
+
+export class updateCycleDTO {
+  @ApiProperty()
+  public name?: string;
+
+  @ApiProperty()
+  public startDate?: Date;
+
+  @ApiProperty()
+  public endDate?: Date;
 }

@@ -1,7 +1,7 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { CycleRepository } from './cycle.repository';
-import { CycleDTO } from './cycle.dto';
+import { CycleDTO, updateCycleDTO } from './cycle.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, CycleStatus } from '@app/constants/app.enums';
 
@@ -48,7 +48,13 @@ export class CycleService {
     };
   }
 
-  public async updateCycle(id: number, cycleDTO: Partial<CycleDTO>): Promise<ResponseModel> {
+  public async updateCycle(id: number, cycleDTO: updateCycleDTO): Promise<ResponseModel> {
+    const startDate = new Date(cycleDTO.startDate).getTime();
+    const endDate = new Date(cycleDTO.endDate).getTime();
+
+    if (startDate >= endDate) {
+      throw new HttpException(CommonMessage.CYCLE_DATE, HttpStatus.BAD_REQUEST);
+    }
     const data = await this._cycleRepository.updateCycle(id, cycleDTO);
     return {
       statusCode: HttpStatus.OK,
