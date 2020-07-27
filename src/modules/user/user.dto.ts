@@ -58,6 +58,10 @@ export class UserDTO {
   @Optional()
   @ApiProperty()
   public isActive: boolean;
+
+  @Optional()
+  @ApiProperty()
+  public isApproved: boolean;
 }
 
 export class UserProfileDTO {
