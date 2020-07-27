@@ -89,7 +89,7 @@ export class UserService {
     }
     // Hash password
     data.password = hashSync(data.password, _salt);
-    await this._userRepository.updatePassword(user.id, data, false);
+    await this._userRepository.updatePassword(user.id, { password: data.password }, false);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.PASSWORD_UPDATE_SUCCESS,
