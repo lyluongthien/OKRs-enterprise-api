@@ -1,9 +1,10 @@
 import { Repository, EntityRepository, EntityManager } from 'typeorm';
-import { HttpStatus, HttpException } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 import { CheckinEntity } from '@app/db/entities/checkin.entity';
 import { CreateCheckinDTO } from './checkin.dto';
 import { CheckinDetailEntity } from '@app/db/entities/checkin-detail.entity';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(CheckinEntity)
 export class CheckinRepository extends Repository<CheckinEntity> {
@@ -29,7 +30,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         checkin_details: checkinDetailModel,
       };
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -63,7 +64,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
 
       return await queryBuilder;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -73,7 +74,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
 
       return checkins;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }

@@ -50,3 +50,8 @@ export const USER_PENDING = {
   statusCode: 422,
   message: `Tài khoản của bạn đang chờ phê duyệt`,
 };
+
+export const DATABASE_EXCEPTION = {
+  statusCode: 430,
+  message: `Có lỗi xảy ra khi thao tác với database`,
+};

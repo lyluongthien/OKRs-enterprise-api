@@ -1,10 +1,10 @@
 import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
-import { InternalServerErrorException, HttpException, HttpStatus } from '@nestjs/common';
+import { InternalServerErrorException, HttpException } from '@nestjs/common';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
-import { CommonMessage } from '@app/constants/app.enums';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -27,7 +27,7 @@ export class UserRepository extends Repository<UserEntity> {
         .where('user.isActive = true and user.isApproved = true');
       return await paginate<UserEntity>(queryBuilder, options);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -41,7 +41,7 @@ export class UserRepository extends Repository<UserEntity> {
         .where('user.isActive = true and user.isApproved = false');
       return await paginate<UserEntity>(queryBuilder, options);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -55,7 +55,7 @@ export class UserRepository extends Repository<UserEntity> {
         .where('user.isActive = false');
       return await paginate<UserEntity>(queryBuilder, options);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -86,7 +86,7 @@ export class UserRepository extends Repository<UserEntity> {
         .orderBy('user.id', 'ASC');
       return await paginate<UserEntity>(queryBuilder, options);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -116,7 +116,7 @@ export class UserRepository extends Repository<UserEntity> {
         .orderBy('user.id', 'ASC');
       return await paginate<UserEntity>(queryBuilder, options);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -146,7 +146,7 @@ export class UserRepository extends Repository<UserEntity> {
         .orderBy('user.id', 'ASC');
       return await paginate<UserEntity>(queryBuilder, options);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -160,7 +160,7 @@ export class UserRepository extends Repository<UserEntity> {
         .getOne();
       return await queryBuilder;
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -174,7 +174,7 @@ export class UserRepository extends Repository<UserEntity> {
         .getOne();
       return await queryBuilder;
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -184,7 +184,7 @@ export class UserRepository extends Repository<UserEntity> {
       await this.update({ id }, data);
       return await this.findOne({ id });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -194,7 +194,7 @@ export class UserRepository extends Repository<UserEntity> {
       await this.update({ id }, data);
       return await this.findOne({ id });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -205,7 +205,7 @@ export class UserRepository extends Repository<UserEntity> {
         where: { id },
       });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -214,7 +214,7 @@ export class UserRepository extends Repository<UserEntity> {
       await this.update({ email }, data);
       return await this.findOne({ email });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -222,7 +222,7 @@ export class UserRepository extends Repository<UserEntity> {
     try {
       return await this.findOne({ where: { resetPasswordToken: token } });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -236,7 +236,7 @@ export class UserRepository extends Repository<UserEntity> {
 
       await this.update({ id }, data);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
   public async approveRequest(id: number[]): Promise<void> {
@@ -247,7 +247,7 @@ export class UserRepository extends Repository<UserEntity> {
         await this.update(id, { isApproved: true, isActive: true });
       }
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }

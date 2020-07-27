@@ -104,10 +104,10 @@ export class AuthService {
 
     const userModel = {
       id: user.id,
-      name: user.fullName,
+      fullName: user.fullName,
       email: user.email,
       role: user.role.name,
-      image_url: urlImage,
+      imageUrl: urlImage,
     };
 
     return {

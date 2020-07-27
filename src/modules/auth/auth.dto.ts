@@ -21,6 +21,10 @@ export class RegisterDTO {
 
   @ApiProperty()
   @IsNotEmpty()
+  public readonly gender: boolean;
+
+  @ApiProperty()
+  @IsNotEmpty()
   public readonly teamId: number;
 
   @ApiProperty()

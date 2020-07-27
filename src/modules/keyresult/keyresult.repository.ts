@@ -2,8 +2,8 @@ import { KeyResultDTO } from './keyresult.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 
 import { Repository, EntityRepository } from 'typeorm';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { CommonMessage } from '@app/constants/app.enums';
+import { HttpException } from '@nestjs/common';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(KeyResultEntity)
 export class KeyResultRepository extends Repository<KeyResultEntity> {
@@ -11,7 +11,7 @@ export class KeyResultRepository extends Repository<KeyResultEntity> {
     try {
       this.save(data);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -19,7 +19,7 @@ export class KeyResultRepository extends Repository<KeyResultEntity> {
     try {
       return (await this.delete({ id })).affected;
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -27,7 +27,7 @@ export class KeyResultRepository extends Repository<KeyResultEntity> {
     try {
       await this.update({ id }, data);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -55,7 +55,7 @@ export class KeyResultRepository extends Repository<KeyResultEntity> {
         .getMany();
       return queryBuilder;
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }
