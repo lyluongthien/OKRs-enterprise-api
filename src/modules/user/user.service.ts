@@ -75,8 +75,8 @@ export class UserService {
   /**
    * @description: Save new password of user
    */
-  public async resetPassword(token: string, data: PasswordDTO): Promise<ResponseModel> {
-    const user = await this._userRepository.getUserByResetPasswordToken(token);
+  public async resetPassword(data: PasswordDTO): Promise<ResponseModel> {
+    const user = await this._userRepository.getUserByResetPasswordToken(data.token);
     if (!user) {
       throw new HttpException(INVALID_TOKEN.message, INVALID_TOKEN.statusCode);
     }

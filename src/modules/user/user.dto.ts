@@ -32,6 +32,10 @@ export class PasswordDTO {
   @IsNotEmpty()
   @ApiProperty()
   public password: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  public readonly token: string;
 }
 
 export class UserDTO {
