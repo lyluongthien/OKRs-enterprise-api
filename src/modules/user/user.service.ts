@@ -6,7 +6,7 @@ import { hashSync, compareSync } from 'bcryptjs';
 import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO, PasswordDTO } from './user.dto';
 import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
-import { INVALID_TOKEN, EXPIRED_TOKEN } from '@app/constants/app.exeption';
+import { INVALID_TOKEN, EXPIRED_TOKEN, PASSWORD_WRONG } from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { RouterEnum, CommonMessage } from '@app/constants/app.enums';
@@ -107,7 +107,7 @@ export class UserService {
     }
     const isMatchedPassword = await compareSync(user.password, currentUser.password);
     if (!isMatchedPassword) {
-      throw new HttpException(CommonMessage.PASSWORD_FAIL, HttpStatus.CONFLICT);
+      throw new HttpException(PASSWORD_WRONG.message, PASSWORD_WRONG.statusCode);
     }
     user.newPassword = hashSync(user.newPassword, _salt);
 
