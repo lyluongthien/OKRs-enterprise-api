@@ -1,9 +1,9 @@
 import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 import { CycleEntity } from '@app/db/entities/cycle.entity';
-import { CycleDTO } from './cycle.dto';
-import { CommonMessage } from '@app/constants/app.enums';
+import { CycleDTO, updateCycleDTO } from './cycle.dto';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(CycleEntity)
 export class CycleRepository extends Repository<CycleEntity> {
@@ -11,7 +11,7 @@ export class CycleRepository extends Repository<CycleEntity> {
     try {
       return await this.find();
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -19,7 +19,7 @@ export class CycleRepository extends Repository<CycleEntity> {
     try {
       return await this.save(data);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -27,16 +27,16 @@ export class CycleRepository extends Repository<CycleEntity> {
     try {
       return await this.findOne({ where: { id } });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public async updateCycle(id: number, data: Partial<CycleDTO>): Promise<CycleEntity> {
+  public async updateCycle(id: number, data: updateCycleDTO): Promise<CycleEntity> {
     try {
       await this.update({ id }, data);
       return await this.findOne({ id });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -45,7 +45,19 @@ export class CycleRepository extends Repository<CycleEntity> {
       await this.delete({ id });
       return { isDeleted: true };
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getCurrentCycle(currentDate: Date): Promise<CycleEntity> {
+    try {
+      return await this.createQueryBuilder('cycle')
+        .where(':date BETWEEN cycle.startDate AND cycle.endDate', {
+          date: currentDate,
+        })
+        .getOne();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }

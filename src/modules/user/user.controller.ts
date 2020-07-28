@@ -1,5 +1,17 @@
 import { ObjectLiteral } from 'typeorm';
-import { Controller, Post, Body, UsePipes, Put, Param, Get, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UsePipes,
+  Put,
+  Param,
+  Get,
+  UseGuards,
+  Query,
+  ParseIntPipe,
+  Delete,
+} from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 
@@ -131,7 +143,7 @@ export class UserController {
    * @description: Reject request of new member, when manage staff
    * @requires: ADMIN + HR
    */
-  @Put('reject_request/:id')
+  @Delete(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public async rejectRequest(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {

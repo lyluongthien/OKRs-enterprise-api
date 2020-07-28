@@ -17,6 +17,10 @@ import { ObjectiveModule } from './modules/objective/objective.module';
 import { KeyResultModule } from './modules/keyresult/keyresult.module';
 import { LessonModule } from './modules/lesson/lesson.module';
 import { RecognitionModule } from './modules/recognition/recognition.module';
+import { UserStarModule } from './modules/user-star/user-star.module';
+import { CheckinModule } from './modules/checkin/checkin.module';
+import { RoleModule } from './modules/role/role.module';
+import { MetaModule } from './modules/meta/meta.module';
 
 @Module({
   imports: [
@@ -34,6 +38,10 @@ import { RecognitionModule } from './modules/recognition/recognition.module';
     KeyResultModule,
     LessonModule,
     RecognitionModule,
+    UserStarModule,
+    CheckinModule,
+    RoleModule,
+    MetaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

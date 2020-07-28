@@ -5,6 +5,7 @@ import { HttpStatus, HttpException } from '@nestjs/common';
 import { LessonEntity } from '@app/db/entities/lesson.entity';
 import { LessonDTO } from './lesson.dto';
 import { ResponseModel } from '@app/constants/app.interface';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(LessonEntity)
 export class LessonRepository extends Repository<LessonEntity> {
@@ -13,7 +14,7 @@ export class LessonRepository extends Repository<LessonEntity> {
       const queryBuilder = this.createQueryBuilder('lesson').orderBy('lesson.id', 'ASC').getMany();
       return await queryBuilder;
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -22,7 +23,7 @@ export class LessonRepository extends Repository<LessonEntity> {
       const queryBuilder = this.createQueryBuilder('lesson').where('lesson.slug = :slug', { slug: slug }).getOne();
       return await queryBuilder;
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -36,7 +37,7 @@ export class LessonRepository extends Repository<LessonEntity> {
         .getMany();
       return await queryBuilder;
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -44,7 +45,7 @@ export class LessonRepository extends Repository<LessonEntity> {
     try {
       return await this.save(data);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -53,7 +54,7 @@ export class LessonRepository extends Repository<LessonEntity> {
       await this.update({ id }, data);
       return await this.findOne({ id });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -69,7 +70,7 @@ export class LessonRepository extends Repository<LessonEntity> {
 
       return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }
