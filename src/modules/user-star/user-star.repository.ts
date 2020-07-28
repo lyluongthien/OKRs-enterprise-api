@@ -1,7 +1,7 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { UserStarEntity } from '@app/db/entities/user-stars.entity';
-import { HttpException, HttpStatus } from '@nestjs/common';
-import { CommonMessage } from '@app/constants/app.enums';
+import { HttpException } from '@nestjs/common';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(UserStarEntity)
 export class UserStarRepository extends Repository<UserStarEntity> {
@@ -13,7 +13,7 @@ export class UserStarRepository extends Repository<UserStarEntity> {
               WHERE "cycleId" in (select "cycleId" from cycles c2) GROUP BY "user"."id", "user"."fullName"
               ORDER BY "sum" desc`);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -25,7 +25,7 @@ export class UserStarRepository extends Repository<UserStarEntity> {
               WHERE "cycleId" in (${id}) GROUP BY "user"."id", "user"."fullName"
               ORDER BY "sum" desc`);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }

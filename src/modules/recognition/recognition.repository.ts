@@ -1,9 +1,9 @@
 import { Repository, EntityRepository } from 'typeorm';
-import { HttpStatus, HttpException } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 import { RecognitionEntity } from '@app/db/entities/recognition.entity';
-import { CommonMessage } from '@app/constants/app.enums';
 import { RecognitionDTO } from './recognition.dto';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(RecognitionEntity)
 export class RecognitionRepository extends Repository<RecognitionEntity> {
@@ -12,7 +12,7 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
       data.superiorId = superiorId;
       return await this.save(data);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }
