@@ -1,0 +1,21 @@
+name: build
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Publish to Github Packages Registry
+
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: ${ GITHUB_ACTOR }/${ GITHUB_REPOSITORY }/back-end
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: Dockerfile
+          tag: ${{ github.sha }}
