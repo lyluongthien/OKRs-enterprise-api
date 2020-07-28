@@ -23,7 +23,7 @@ export class EvaluationCriteriaService {
   public async createCriteria(evaluationDTO: EvaluationDTO): Promise<ResponseModel> {
     const data = await this._evaluationCriteriaRepository.createCriteria(evaluationDTO);
     return {
-      statusCode: HttpStatus.OK,
+      statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: data,
     };

@@ -33,7 +33,7 @@ export class CycleService {
     }
     const data = await this._cycleRepository.createCycle(cycleDTO);
     return {
-      statusCode: HttpStatus.OK,
+      statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: data,
     };

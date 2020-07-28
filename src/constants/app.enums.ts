@@ -51,6 +51,8 @@ export enum ForeignKey {
   PARENT_OBJECTIVE_ID = 'parentObjectiveId',
   ALIGN_OBJECTIVE_ID = 'alignObjectivesId',
   KEY_RESULTS_ID = 'keyResultId',
+  INFERIOR_ID = 'inferiorId',
+  SUPERIOR_ID = 'superiorId',
 }
 
 export enum EvaluationCriteriaEnum {
@@ -108,6 +110,11 @@ export enum CheckinStatus {
   DRAFT = 'Draft',
   PEDDING = 'Pedding',
   DONE = 'Done',
+}
+
+export enum CheckinType {
+  TEAM_LEADER = 1,
+  MEMBER = 2,
 }
 
 export enum ConfidentLevel {

@@ -33,6 +33,14 @@ export class CreateTableRecognitions1594009275111 implements MigrationInterface 
         type: 'integer',
       },
       {
+        name: ForeignKey.OBJECTIVE_ID,
+        type: 'integer',
+      },
+      {
+        name: ForeignKey.CYCLE_ID,
+        type: 'integer',
+      },
+      {
         name: 'createdAt',
         type: 'timestamptz',
         default: 'now()',
@@ -45,17 +53,53 @@ export class CreateTableRecognitions1594009275111 implements MigrationInterface 
     ],
   });
 
+  private pkObjectiveId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.OBJECTIVE_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Objective,
+    onDelete: 'SET NULL',
+  });
+
+  private pkInferiorId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.INFERIOR_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.User,
+    onDelete: 'SET NULL',
+  });
+
+  private pkSuperiorId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.SUPERIOR_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.User,
+    onDelete: 'SET NULL',
+  });
+
+  private pkCycleId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.CYCLE_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Cycle,
+    onDelete: 'SET NULL',
+  });
+
   private pkEvalCriteriaId: TableForeignKey = new TableForeignKey({
     columnNames: [ForeignKey.EVALUATION_CRITERIA_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.EvaluationCriteria,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   });
+
+  private tableForeignKey: TableForeignKey[] = [
+    this.pkObjectiveId,
+    this.pkInferiorId,
+    this.pkSuperiorId,
+    this.pkCycleId,
+    this.pkEvalCriteriaId,
+  ];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.recognitionTable);
 
-    await queryRunner.createForeignKey(TableName.Recognition, this.pkEvalCriteriaId);
+    await queryRunner.createForeignKeys(TableName.Recognition, this.tableForeignKey);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

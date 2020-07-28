@@ -38,7 +38,7 @@ export class JobService {
   public async createJob(jobDTO: JobDTO): Promise<ResponseModel> {
     const data = await this.jobRepository.createJob(jobDTO);
     return {
-      statusCode: HttpStatus.OK,
+      statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: data,
     };

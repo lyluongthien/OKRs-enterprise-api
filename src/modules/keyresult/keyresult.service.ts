@@ -12,7 +12,7 @@ export class KeyResultService {
   public async createKeyResult(data: KeyResultDTO[]): Promise<ResponseModel> {
     await this._keyResultRepository.createKeyResult(data);
     return {
-      statusCode: HttpStatus.OK,
+      statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: {},
     };
