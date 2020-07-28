@@ -33,7 +33,7 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
       },
       {
         name: 'gender',
-        type: 'integer',
+        type: 'bool',
         isNullable: true,
       },
       {

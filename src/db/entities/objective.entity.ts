@@ -3,6 +3,7 @@ import { TableName } from '@app/constants/app.enums';
 import { KeyResultEntity } from './key-result.entity';
 import { UserEntity } from './user.entity';
 import { CycleEntity } from './cycle.entity';
+import { CheckinEntity } from './checkin.entity';
 
 @Entity(TableName.Objective)
 export class ObjectiveEntity {
@@ -54,4 +55,7 @@ export class ObjectiveEntity {
 
   @ManyToOne(() => CycleEntity, (cycle) => cycle.objectives)
   public cycle: CycleEntity;
+
+  @OneToMany(() => CheckinEntity, (checkin) => checkin.objective)
+  public checkins: CheckinEntity[];
 }

@@ -20,6 +20,24 @@ export class TeamService {
     };
   }
 
+  public async searchTeam(text: string, options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._teamRepository.searchTeam(text, options);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async getListTeams(): Promise<ResponseModel> {
+    const data = await this._teamRepository.getListTeams();
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
   public async getDetailTeam(id: number): Promise<ResponseModel> {
     const data = await this._teamRepository.getDetailTeam(id);
     return {

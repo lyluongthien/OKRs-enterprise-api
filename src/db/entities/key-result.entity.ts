@@ -1,7 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { ObjectiveEntity } from './objective.entity';
-import { CheckinEntity } from './checkin.entity';
 
 @Entity(TableName.KeyResult)
 export class KeyResultEntity {
@@ -34,7 +33,4 @@ export class KeyResultEntity {
 
   @ManyToOne(() => ObjectiveEntity, (objective) => objective.keyResults)
   public objective: ObjectiveEntity;
-
-  @OneToMany(() => CheckinEntity, (checkins) => checkins.keyResult, { onDelete: 'CASCADE' })
-  public checkins: CheckinEntity[];
 }

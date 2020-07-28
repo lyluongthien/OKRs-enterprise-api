@@ -5,15 +5,41 @@ import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamDTO } from './team.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 import { HttpStatus, HttpException } from '@nestjs/common';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(TeamEntity)
 export class TeamRepository extends Repository<TeamEntity> {
   public async getTeams(options: IPaginationOptions): Promise<any> {
     try {
-      const queryBuilder = this.createQueryBuilder('team');
+      const queryBuilder = this.createQueryBuilder('team')
+        .select(['team.id', 'team.name', 'team.description', 'team.updatedAt'])
+        .orderBy('team.updatedAt', 'DESC');
       return await paginate<TeamEntity>(queryBuilder, options);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async searchTeam(text: string, options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = this.createQueryBuilder('team')
+        .select(['team.id', 'team.name', 'team.description', 'team.updatedAt'])
+        .where('team.name like :text', { text: '%' + text + '%' })
+        .orderBy('team.updatedAt', 'DESC');
+      return await paginate<TeamEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getListTeams(): Promise<TeamEntity[]> {
+    try {
+      return await this.createQueryBuilder('team')
+        .select(['team.id', 'team.name'])
+        .orderBy('team.updatedAt', 'DESC')
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -21,7 +47,7 @@ export class TeamRepository extends Repository<TeamEntity> {
     try {
       return await this.findOne({ where: { id } });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -29,7 +55,7 @@ export class TeamRepository extends Repository<TeamEntity> {
     try {
       return await this.save(data);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -38,7 +64,7 @@ export class TeamRepository extends Repository<TeamEntity> {
       await this.update({ id }, data);
       return await this.findOne({ id });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -54,7 +80,7 @@ export class TeamRepository extends Repository<TeamEntity> {
 
       return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }

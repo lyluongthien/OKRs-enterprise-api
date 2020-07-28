@@ -6,12 +6,13 @@ import { hashSync, compareSync } from 'bcryptjs';
 import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO, PasswordDTO } from './user.dto';
 import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
-import { invalidTokenResetPassword, tokenExpired } from '@app/constants/app.exeption';
+import { INVALID_TOKEN, EXPIRED_TOKEN } from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { RouterEnum, CommonMessage } from '@app/constants/app.enums';
 import { expireResetPasswordToken } from '@app/constants/app.magic-number';
 import { ResponseModel } from '@app/constants/app.interface';
+import { paginationDataParser } from '@app/libs/pagination';
 
 @Injectable()
 export class UserService {
@@ -35,7 +36,7 @@ export class UserService {
       resetPasswordTokenExpire: expireDate,
     });
 
-    const url = RouterEnum.FE_HOST_ROUTER + `/reset-password?token=${token}`;
+    const url = RouterEnum.FE_HOST_ROUTER + `/dat-lai-mat-khau?token=${token}`;
     const subject = '[Flame-OKRs] | Lấy lại mật khẩu';
     const html = `  <p>Chúng tôi đã nhận được yêu cầu đổi mật khẩu của bạn.</p>
                     <p>Bạn vui lòng truy cập đường link dưới đây để đổi mật khẩu.</p>
@@ -55,14 +56,14 @@ export class UserService {
   public async verifyForgetPassword(token: string): Promise<ResponseModel> {
     const user = await this._userRepository.getUserByResetPasswordToken(token);
     if (!user) {
-      throw new HttpException(CommonMessage.INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+      throw new HttpException(INVALID_TOKEN.message, INVALID_TOKEN.statusCode);
     }
     const now = new Date().getTime();
     const expireTime = user.resetPasswordTokenExpire.getTime();
     const dueTime = now - expireTime;
 
     if (dueTime > expireResetPasswordToken) {
-      throw new HttpException(CommonMessage.EXPIRED_TOKEN, HttpStatus.BAD_REQUEST);
+      throw new HttpException(EXPIRED_TOKEN.message, EXPIRED_TOKEN.statusCode);
     }
     return {
       statusCode: HttpStatus.OK,
@@ -74,21 +75,21 @@ export class UserService {
   /**
    * @description: Save new password of user
    */
-  public async resetPassword(token: string, data: PasswordDTO): Promise<ResponseModel> {
-    const user = await this._userRepository.getUserByResetPasswordToken(token);
+  public async resetPassword(data: PasswordDTO): Promise<ResponseModel> {
+    const user = await this._userRepository.getUserByResetPasswordToken(data.token);
     if (!user) {
-      throw new HttpException(invalidTokenResetPassword, HttpStatus.BAD_REQUEST);
+      throw new HttpException(INVALID_TOKEN.message, INVALID_TOKEN.statusCode);
     }
     const now = new Date().getTime();
     const expireTime = user.resetPasswordTokenExpire.getTime();
     const dueTime = now - expireTime;
 
     if (dueTime > expireResetPasswordToken) {
-      throw new HttpException(tokenExpired, HttpStatus.BAD_REQUEST);
+      throw new HttpException(EXPIRED_TOKEN.message, EXPIRED_TOKEN.statusCode);
     }
     // Hash password
     data.password = hashSync(data.password, _salt);
-    await this._userRepository.updatePassword(user.id, data, false);
+    await this._userRepository.updatePassword(user.id, { password: data.password }, false);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.PASSWORD_UPDATE_SUCCESS,
@@ -139,37 +140,63 @@ export class UserService {
 
   public async getUsersActived(options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.getUsersActived(options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
 
   public async getUsersApproved(options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.getUsersApproved(options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
 
   public async getUsersDeactived(options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.getUsersDeactived(options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
 
   public async getUserByID(id: number): Promise<ResponseModel> {
     const data = await this._userRepository.getUserByID(id);
+    const responseData = {
+      id: data.id,
+      email: data.email,
+      fullName: data.fullName,
+      gender: data.gender,
+      dateOfBirth: data.dateOfBirth,
+      imageUrl: data.avatarURL ? data.avatarURL : data.gravatarURL,
+      role: {
+        id: data.role.id,
+        name: data.role.name,
+      },
+      jobPosition: {
+        id: data.jobPosition.id,
+        name: data.jobPosition.name,
+      },
+      team: {
+        id: data.team.id,
+        name: data.team.name,
+      },
+      isLeader: data.isLeader,
+      isActive: data.isActive,
+      isApproved: data.isApproved,
+    };
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: responseData,
     };
   }
 
@@ -184,27 +211,30 @@ export class UserService {
 
   public async searchUsersActived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.searchUsersActived(text, options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
 
   public async searchUsersApproved(text: string, options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.searchUsersApproved(text, options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
   public async searchUsersDeactived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.searchUsersDeactived(text, options);
+    const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: dataResponse,
     };
   }
 

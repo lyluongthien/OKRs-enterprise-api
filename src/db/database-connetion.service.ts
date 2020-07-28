@@ -17,6 +17,7 @@ import { LessonEntity } from './entities/lesson.entity';
 import { InviteTokenEntity } from './entities/invite-token.entity';
 import { CheckinEntity } from './entities/checkin.entity';
 import { UserStarEntity } from './entities/user-stars.entity';
+import { CheckinDetailEntity } from './entities/checkin-detail.entity';
 
 const type = DbConfig.DB_TYPE;
 const host = accessEnv(DbConfig.DB_HOST);
@@ -59,6 +60,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
         LessonEntity,
         InviteTokenEntity,
         CheckinEntity,
+        CheckinDetailEntity,
         UserStarEntity,
       ],
       migrations: ['dist/db/migrations/*.js'],
