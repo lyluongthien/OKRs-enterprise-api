@@ -13,9 +13,9 @@ jobs:
 
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: ${ GITHUB_ACTOR }/${ GITHUB_REPOSITORY }/back-end
+          name: ${{ github.actor }}/${{ github.repository }}/back-end
           registry: docker.pkg.github.com
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           dockerfile: Dockerfile
-          tag: ${{ github.sha }}
+          tags: ${{ github.sha }}
