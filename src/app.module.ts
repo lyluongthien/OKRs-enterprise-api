@@ -18,6 +18,7 @@ import { KeyResultModule } from './modules/keyresult/keyresult.module';
 import { LessonModule } from './modules/lesson/lesson.module';
 import { CheckinModule } from './modules/checkin/checkin.module';
 import { RoleModule } from './modules/role/role.module';
+import { MetaModule } from './modules/meta/meta.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { RoleModule } from './modules/role/role.module';
     LessonModule,
     CheckinModule,
     RoleModule,
+    MetaModule,
   ],
   controllers: [AppController],
   providers: [AppService],

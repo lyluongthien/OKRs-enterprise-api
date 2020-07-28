@@ -1,4 +1,16 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards, UsePipes, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  UseGuards,
+  UsePipes,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 
 import { JobService } from './job.service';
 import { JobDTO } from './job.dto';
@@ -8,6 +20,8 @@ import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { ResponseModel } from '@app/constants/app.interface';
+import { currentPage, limitPagination } from '@app/constants/app.magic-number';
 
 @Controller('/api/v1/jobs')
 @SwaggerAPI()
@@ -15,8 +29,27 @@ export class JobController {
   constructor(private jobService: JobService) {}
 
   @Get()
-  public showAllJob(): any {
-    return this.jobService.getListJob();
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
+  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  public async getJobs(
+    @Query('text') text: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<ResponseModel> {
+    page = page ? page : currentPage;
+    limit = limit ? limit : limitPagination;
+    if (text) {
+      return this.jobService.searchJob(text, {
+        page,
+        limit,
+        route: '',
+      });
+    }
+    return this.jobService.getJobs({
+      page,
+      limit,
+      route: '',
+    });
   }
 
   @Post()
