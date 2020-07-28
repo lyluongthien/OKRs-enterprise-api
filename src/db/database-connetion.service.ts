@@ -16,6 +16,7 @@ import { MeasureUnitEntity } from './entities/measure-unit.entity';
 import { LessonEntity } from './entities/lesson.entity';
 import { InviteTokenEntity } from './entities/invite-token.entity';
 import { CheckinEntity } from './entities/checkin.entity';
+import { UserStarEntity } from './entities/user-stars.entity';
 import { CheckinDetailEntity } from './entities/checkin-detail.entity';
 
 const type = DbConfig.DB_TYPE;
@@ -60,6 +61,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
         InviteTokenEntity,
         CheckinEntity,
         CheckinDetailEntity,
+        UserStarEntity,
       ],
       migrations: ['dist/db/migrations/*.js'],
       cli: {
