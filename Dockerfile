@@ -27,6 +27,6 @@ RUN yarn install --production=true
 
 COPY . .
 
-COPY --from=development /usr/src/app/dist ./dist
+#COPY --from=development /usr/src/app/dist ./dist
 
 CMD ["yarn", "start"]
