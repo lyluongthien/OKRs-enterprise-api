@@ -73,6 +73,7 @@ export enum GenderEnum {
 
 export enum RouterEnum {
   EVALUATION_CRITERIA_ROUTE = 'localhost:3000/api/v1/evaluation-criterias',
+  CYCLE_ROUTE = 'localhost:3000/api/v1/cycles',
   MEASURE_UNIT_ROUTE = 'localhost:3000/api/v1/measure-units',
   API_HOST_ROUTER = 'http://localhost:3000',
   FE_HOST_ROUTER = 'http://localhost:8080',
