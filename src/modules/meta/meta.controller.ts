@@ -2,7 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ResponseModel } from '@app/constants/app.interface';
 import { MetaService } from './meta.service';
 
-@Controller('/api/v1/metas')
+@Controller('/api/v1/meta_data')
 export class MetaController {
   constructor(private _metaService: MetaService) {}
   @Get('/teams')

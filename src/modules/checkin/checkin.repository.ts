@@ -106,7 +106,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
         .getMany();
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }

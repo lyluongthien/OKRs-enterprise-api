@@ -1,7 +1,6 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { TeamRepository } from '../team/team.repository';
 import { JobRepository } from '../job/job.repository';
-import { CycleRepository } from '../cycle/cycle.repository';
 import { CommonMessage } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 
@@ -10,7 +9,6 @@ export class MetaService {
   constructor(
     private readonly _teamRepository: TeamRepository,
     private readonly _jobPositionRepository: JobRepository,
-    private readonly _cycleRepository: CycleRepository,
   ) {}
 
   public async getListTeams(): Promise<ResponseModel> {
