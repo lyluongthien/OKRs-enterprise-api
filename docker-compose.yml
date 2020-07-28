@@ -1,4 +1,7 @@
 version: '3.7'
+networks:
+  app_net:
+    driver: 'bridge'
 services:
   tool-okrs-db:
     container_name: tool-okrs-db
@@ -14,37 +17,37 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     networks:
-      - webnet
+      - app_net
   # redis:
   #   container_name: re-radio_redis
-  #   image: redis:5.0.9-alpine
-  #   restart: ${RESTART_POLICY}
-  #   ports:
-  #     - "${REDIS_PORT}:6379"
-  # tool-okrs:
-  #   container_name: tool-okrs
-  #   restart: ${RESTART_POLICY}
-  #   build:
-  #     context: .
-  #     target: development
-  #   volumes:
-  #     - .:/usr/src/app
-  #     - /usr/src/app/dist
-  #     - /usr/src/app/node_modules
-  #   ports:
-  #     - 3400:3000 # DON'T CONFLICT WITH MAIN PROTEUS APP LOCALLY
-  #     - 9229:9229 # FOR DEBUG
-  #   command: yarn start:dev
-  #   env_file: .env
-  #   networks:
-  #     - webnet
-  #   depends_on:
-  #     - tool-okrs-db
-  #   logging:
-  #     options:
-  #       max-size: '10m'
-  #       max-file: '3'
-networks:
-  webnet:
+  # image: redis:5.0.9-alpine
+  # restart: ${RESTART_POLICY}
+  # ports:
+  #   - "${REDIS_PORT}:6379"
+  tool-okrs:
+    container_name: tool-okrs
+    image: 0984059992/ducnm:v1
+    restart: ${RESTART_POLICY}
+    build:
+      context: .
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/dist
+      - /usr/src/app/node_modules
+    ports:
+      - 3000:3000 # DON'T CONFLICT WITH MAIN PROTEUS APP LOCALLY
+      - 9229:9229 # FOR DEBUG
+    #command: yarn start:dev
+    # env_file: .env
+    # links:
+    #   - tool-okrs-db
+    networks:
+      - app_net
+    depends_on:
+      - tool-okrs-db
+    logging:
+      options:
+        max-size: '10m'
 volumes:
   pgdata:

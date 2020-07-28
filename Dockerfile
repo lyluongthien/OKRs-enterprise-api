@@ -23,9 +23,11 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN yarn install --production=true
+RUN yarn --production=true
 
 COPY . .
+
+RUN yarn add global @nestjs/cli
 
 #COPY --from=development /usr/src/app/dist ./dist
 
