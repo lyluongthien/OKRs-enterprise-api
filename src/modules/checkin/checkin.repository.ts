@@ -1,5 +1,5 @@
 import { Repository, EntityRepository, EntityManager } from 'typeorm';
-import { HttpException } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 
 import { CheckinEntity } from '@app/db/entities/checkin.entity';
 import { CreateCheckinDTO } from './checkin.dto';
