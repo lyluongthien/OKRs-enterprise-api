@@ -14,9 +14,25 @@ jobs:
 
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
-          name: ${{ github.actor }}/${{ github.repository}}
+          name: ${{ github.repository}}/be
           registry: docker.pkg.github.com
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           dockerfile: Dockerfile
           tags: ${{ github.sha }}
+      - name: Deploy package to digitalocean
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_SHA: ${{ secrets.GITHUB_SHA }}
+          GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          script: |
+            docker login docker.pkg.github.com -u $GITHUB_USERNAME -p $GITHUB_TOKEN
+            docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/be:$GITHUB_SHA
