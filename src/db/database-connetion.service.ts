@@ -18,6 +18,7 @@ import { InviteTokenEntity } from './entities/invite-token.entity';
 import { CheckinEntity } from './entities/checkin.entity';
 import { RecognitionEntity } from './entities/recognition.entity';
 import { FeedbackEntity } from './entities/feedback.entity';
+import { UserStarEntity } from './entities/user-stars.entity';
 import { CheckinDetailEntity } from './entities/checkin-detail.entity';
 
 const type = DbConfig.DB_TYPE;
@@ -64,6 +65,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
         RecognitionEntity,
         FeedbackEntity,
         CheckinDetailEntity,
+        UserStarEntity,
       ],
       migrations: ['dist/db/migrations/*.js'],
       cli: {

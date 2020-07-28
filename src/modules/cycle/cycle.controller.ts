@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 
 import { CycleService } from './cycle.service';
-import { CycleDTO } from './cycle.dto';
+import { CycleDTO, updateCycleDTO } from './cycle.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { AuthorizationGuard } from '../auth/authorization.guard';
@@ -52,7 +52,7 @@ export class CycleController {
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  public updateCycle(@Param('id', ParseIntPipe) id: number, @Body() data: CycleDTO): Promise<ResponseModel> {
+  public updateCycle(@Param('id', ParseIntPipe) id: number, @Body() data: updateCycleDTO): Promise<ResponseModel> {
     return this._cycleService.updateCycle(id, data);
   }
 

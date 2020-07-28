@@ -32,6 +32,10 @@ export class PasswordDTO {
   @IsNotEmpty()
   @ApiProperty()
   public password: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  public readonly token: string;
 }
 
 export class UserDTO {
@@ -54,6 +58,10 @@ export class UserDTO {
   @Optional()
   @ApiProperty()
   public isActive: boolean;
+
+  @Optional()
+  @ApiProperty()
+  public isApproved: boolean;
 }
 
 export class UserProfileDTO {

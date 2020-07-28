@@ -33,7 +33,7 @@ export class UserEntity {
   public fullName: string;
 
   @Column()
-  public gender: number;
+  public gender: boolean;
 
   @Column()
   public dateOfBirth: Date;

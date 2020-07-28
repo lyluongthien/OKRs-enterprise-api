@@ -75,7 +75,7 @@ export enum RouterEnum {
   EVALUATION_CRITERIA_ROUTE = 'localhost:3000/api/v1/evaluation-criterias',
   MEASURE_UNIT_ROUTE = 'localhost:3000/api/v1/measure-units',
   API_HOST_ROUTER = 'http://localhost:3000',
-  FE_HOST_ROUTER = 'http://localhost:8000',
+  FE_HOST_ROUTER = 'http://localhost:8080',
   USER_ROUTE = 'http://localhost:3000/api/v1/users',
   TEAM_ROUTE = 'http://localhost:3000/api/v1/teams',
 }
@@ -86,7 +86,7 @@ export enum CommonMessage {
   BAD_REQUEST = 'Bad request',
   INTERNAL_SERVER_ERROR = 'Internal server error',
   PASSWORD_UPDATE_SUCCESS = 'Password successfully updated',
-  PASSWORD_FAIL = 'Password is incorrect',
+  PASSWORD_FAIL = 'Mật khẩu không chính xác',
   VALID_TOKEN = 'Token is valid',
   INVALID_TOKEN = 'Token is invalid',
   EXPIRED_TOKEN = 'Token is expired',
@@ -97,6 +97,7 @@ export enum CommonMessage {
   LOGOUT_SUCCESS = 'Logout success',
   UNAUTHORIZED = 'Unauthorized Error',
   FORBIDDEN = 'Forbidden',
+  EMAIL_NOT_FOUND = 'Email không tồn tại',
 }
 
 export enum Status {

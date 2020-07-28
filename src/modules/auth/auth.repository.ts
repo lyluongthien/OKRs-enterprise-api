@@ -1,9 +1,9 @@
 import { Repository, EntityRepository } from 'typeorm';
-import { HttpStatus, HttpException } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 import { InviteTokenEntity } from '@app/db/entities/invite-token.entity';
-import { CommonMessage } from '@app/constants/app.enums';
 import { InviteTokenDTO } from './auth.dto';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(InviteTokenEntity)
 export class TokenRepository extends Repository<InviteTokenEntity> {
@@ -14,7 +14,7 @@ export class TokenRepository extends Repository<InviteTokenEntity> {
 
       return tokenEntity;
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -25,7 +25,7 @@ export class TokenRepository extends Repository<InviteTokenEntity> {
       }
       return await this.findOne();
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -33,7 +33,7 @@ export class TokenRepository extends Repository<InviteTokenEntity> {
     try {
       await this.update({ id }, data);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }

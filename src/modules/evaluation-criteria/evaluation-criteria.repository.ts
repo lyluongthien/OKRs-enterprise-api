@@ -1,9 +1,9 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 
 import { EvaluationCriteriaEntity } from '@app/db/entities/evaluation-criteria.entity';
 import { EvaluationDTO } from './evaluation-criteria.dto';
-import { CommonMessage } from '@app/constants/app.enums';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(EvaluationCriteriaEntity)
 export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaEntity> {
@@ -11,7 +11,7 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
     try {
       return await this.find();
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -19,7 +19,7 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
     try {
       return await this.save(data);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -27,7 +27,7 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
     try {
       return await this.findOne({ where: { id } });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -36,7 +36,7 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
       await this.update({ id }, data);
       return await this.findOne({ id });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -45,7 +45,7 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
       await this.delete({ id });
       return { isDeleted: true };
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }
