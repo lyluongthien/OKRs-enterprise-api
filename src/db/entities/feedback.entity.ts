@@ -1,16 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
+import { CheckinEntity } from './checkin.entity';
 
 @Entity(TableName.Feeback)
-export class FeebackEntity {
+export class FeedbackEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
   @Column()
-  public inferiorId: number;
+  public senderId: number;
 
   @Column()
-  public superiorId: number;
+  public receiverId: number;
 
   @Column()
   public content: string;
@@ -23,6 +24,9 @@ export class FeebackEntity {
 
   @Column()
   public checkinId: number;
+
+  @OneToOne(() => CheckinEntity)
+  public checkIn: CheckinEntity;
 
   @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;

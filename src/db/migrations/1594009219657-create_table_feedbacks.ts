@@ -13,12 +13,12 @@ export class CreateTableFeedbacks1594009219657 implements MigrationInterface {
         isGenerated: true,
       },
       {
-        name: 'inferiorId',
+        name: 'senderId',
         type: 'integer',
         isNullable: false,
       },
       {
-        name: 'superiorId',
+        name: 'receiverId',
         type: 'integer',
         isNullable: false,
       },
