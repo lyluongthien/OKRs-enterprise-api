@@ -11,7 +11,21 @@ import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 export class TeamRepository extends Repository<TeamEntity> {
   public async getTeams(options: IPaginationOptions): Promise<any> {
     try {
-      const queryBuilder = this.createQueryBuilder('team');
+      const queryBuilder = this.createQueryBuilder('team')
+        .select(['team.id', 'team.name', 'team.description', 'team.updatedAt'])
+        .orderBy('team.updatedAt', 'DESC');
+      return await paginate<TeamEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async searchTeam(text: string, options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = this.createQueryBuilder('team')
+        .select(['team.id', 'team.name', 'team.description', 'team.updatedAt'])
+        .where('team.name like :text', { text: '%' + text + '%' })
+        .orderBy('team.updatedAt', 'DESC');
       return await paginate<TeamEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
@@ -20,7 +34,10 @@ export class TeamRepository extends Repository<TeamEntity> {
 
   public async getListTeams(): Promise<TeamEntity[]> {
     try {
-      return await this.createQueryBuilder('team').getMany();
+      return await this.createQueryBuilder('team')
+        .select(['team.id', 'team.name'])
+        .orderBy('team.updatedAt', 'DESC')
+        .getMany();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
