@@ -102,7 +102,7 @@ export class UserController {
   /**
    * @description: Update information of current logged in system
    */
-  @Post('me')
+  @Put('me')
   @UsePipes(new ValidationPipe())
   public updateUserProfile(@CurrentUser() user: UserEntity, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
     return this._userService.updateUserProfile(user.id, data);
