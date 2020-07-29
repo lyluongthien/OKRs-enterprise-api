@@ -4,10 +4,20 @@ import { HttpException } from '@nestjs/common';
 import { MeasureUnitEntity } from '@app/db/entities/measure-unit.entity';
 import { MeasureUnitDTO } from './measure-unit.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(MeasureUnitEntity)
 export class MeasureRepository extends Repository<MeasureUnitEntity> {
-  public async getList(): Promise<MeasureUnitEntity[]> {
+  public async getList(options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('measure').orderBy('measure.preset', 'ASC');
+      return paginate<MeasureUnitEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getMeasureUnits(): Promise<MeasureUnitEntity[]> {
     try {
       return await this.find();
     } catch (error) {
