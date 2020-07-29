@@ -13,14 +13,15 @@ import {
 } from '@nestjs/common';
 
 import { CycleService } from './cycle.service';
-import { CycleDTO } from './cycle.dto';
+import { CycleDTO, updateCycleDTO } from './cycle.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
-import { RoleEnum } from '@app/constants/app.enums';
+import { RoleEnum, RouterEnum } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { currentPage, limitPagination } from '@app/constants/app.magic-number';
 
 @Controller('/api/v1/cycles')
 @UseGuards(AuthenticationGuard)
@@ -29,8 +30,18 @@ export class CycleController {
   constructor(private _cycleService: CycleService) {}
 
   @Get()
-  public getCycle(@Query('status') status: string): Promise<ResponseModel> {
-    return this._cycleService.getCycle(status);
+  public getCycle(
+    @Query('status') status: string,
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ): Promise<ResponseModel> {
+    page = page ? page : currentPage;
+    limit = limit ? limit : limitPagination;
+    return this._cycleService.getCycle(status, {
+      page,
+      limit,
+      route: RouterEnum.CYCLE_ROUTE,
+    });
   }
 
   @Get(':id')
@@ -52,7 +63,7 @@ export class CycleController {
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  public updateCycle(@Param('id', ParseIntPipe) id: number, @Body() data: CycleDTO): Promise<ResponseModel> {
+  public updateCycle(@Param('id', ParseIntPipe) id: number, @Body() data: updateCycleDTO): Promise<ResponseModel> {
     return this._cycleService.updateCycle(id, data);
   }
 

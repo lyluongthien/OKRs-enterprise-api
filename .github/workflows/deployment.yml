@@ -1,0 +1,36 @@
+name: build
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Publish to Github Packages Registry
+
+        uses: elgohr/Publish-Docker-Github-Action@master
+        with:
+          name: ${{ github.repository}}/be
+          registry: docker.pkg.github.com
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: Dockerfile
+          tags: ${{ github.sha }}
+      - name: Deploy package to digitalocean
+        uses: appleboy/ssh-action@master
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_SHA: ${{ github.sha }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        with:
+          host: 188.166.253.208
+          username: duc
+          password: duc091198
+          port: 22
+          script: |
+            whoami

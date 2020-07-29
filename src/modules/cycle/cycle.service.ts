@@ -1,21 +1,23 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { CycleRepository } from './cycle.repository';
-import { CycleDTO } from './cycle.dto';
+import { CycleDTO, updateCycleDTO } from './cycle.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, CycleStatus } from '@app/constants/app.enums';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import { CycleEntity } from '@app/db/entities/cycle.entity';
 
 @Injectable()
 export class CycleService {
   constructor(private _cycleRepository: CycleRepository) {}
 
-  public async getCycle(status: string): Promise<ResponseModel> {
+  public async getCycle(status: string, options: IPaginationOptions): Promise<ResponseModel> {
     let data = null;
     if (status && status == CycleStatus.CURRENT) {
       const currentDate = new Date();
       data = await this._cycleRepository.getCurrentCycle(currentDate);
     } else {
-      data = await this._cycleRepository.getList();
+      data = await paginate<CycleEntity>(this._cycleRepository, options);
     }
     return {
       statusCode: HttpStatus.OK,
@@ -33,7 +35,7 @@ export class CycleService {
     }
     const data = await this._cycleRepository.createCycle(cycleDTO);
     return {
-      statusCode: HttpStatus.OK,
+      statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: data,
     };
@@ -48,7 +50,13 @@ export class CycleService {
     };
   }
 
-  public async updateCycle(id: number, cycleDTO: Partial<CycleDTO>): Promise<ResponseModel> {
+  public async updateCycle(id: number, cycleDTO: updateCycleDTO): Promise<ResponseModel> {
+    const startDate = new Date(cycleDTO.startDate).getTime();
+    const endDate = new Date(cycleDTO.endDate).getTime();
+
+    if (startDate >= endDate) {
+      throw new HttpException(CommonMessage.CYCLE_DATE, HttpStatus.BAD_REQUEST);
+    }
     const data = await this._cycleRepository.updateCycle(id, cycleDTO);
     return {
       statusCode: HttpStatus.OK,

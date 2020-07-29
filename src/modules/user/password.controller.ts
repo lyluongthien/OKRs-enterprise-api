@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Put, Param } from '@nestjs/common';
+import { Controller, Get, Post, UsePipes, ValidationPipe, Body, Param, Put } from '@nestjs/common';
 import { ObjectLiteral } from 'typeorm';
 import { UserService } from './user.service';
 import { ResetPasswordDTO, PasswordDTO } from './user.dto';
@@ -30,9 +30,9 @@ export class PasswordController {
   /**
    * @description: Save new password of user
    */
-  @Put(':token')
+  @Put()
   @UsePipes(new ValidationPipe())
-  public async resetPassword(@Param('token') token: string, @Body() data: PasswordDTO): Promise<ResponseModel> {
-    return this._userService.resetPassword(token, data);
+  public async resetPassword(@Body() data: PasswordDTO): Promise<ResponseModel> {
+    return this._userService.resetPassword(data);
   }
 }

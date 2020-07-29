@@ -1,10 +1,10 @@
 import { Repository, EntityRepository, EntityManager } from 'typeorm';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';
-import { CommonMessage } from '@app/constants/app.enums';
 import { OkrsDTO } from './objective.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(ObjectiveEntity)
 export class ObjectiveRepository extends Repository<ObjectiveEntity> {
@@ -19,7 +19,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       });
       await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -58,7 +58,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       }
       return null;
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
   public async getDetailOKRs(id: number): Promise<ObjectiveEntity> {
@@ -68,7 +68,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         where: { id },
       });
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -76,7 +76,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     try {
       return (await this.delete({ id })).affected;
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }

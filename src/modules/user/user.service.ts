@@ -6,7 +6,7 @@ import { hashSync, compareSync } from 'bcryptjs';
 import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO, PasswordDTO } from './user.dto';
 import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
-import { invalidTokenResetPassword, tokenExpired } from '@app/constants/app.exeption';
+import { INVALID_TOKEN, EXPIRED_TOKEN, PASSWORD_WRONG } from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { RouterEnum, CommonMessage } from '@app/constants/app.enums';
@@ -36,7 +36,7 @@ export class UserService {
       resetPasswordTokenExpire: expireDate,
     });
 
-    const url = RouterEnum.FE_HOST_ROUTER + `/reset-password?token=${token}`;
+    const url = RouterEnum.FE_HOST_ROUTER + `/dat-lai-mat-khau?token=${token}`;
     const subject = '[Flame-OKRs] | Lấy lại mật khẩu';
     const html = `  <p>Chúng tôi đã nhận được yêu cầu đổi mật khẩu của bạn.</p>
                     <p>Bạn vui lòng truy cập đường link dưới đây để đổi mật khẩu.</p>
@@ -56,14 +56,14 @@ export class UserService {
   public async verifyForgetPassword(token: string): Promise<ResponseModel> {
     const user = await this._userRepository.getUserByResetPasswordToken(token);
     if (!user) {
-      throw new HttpException(CommonMessage.INVALID_TOKEN, HttpStatus.BAD_REQUEST);
+      throw new HttpException(INVALID_TOKEN.message, INVALID_TOKEN.statusCode);
     }
     const now = new Date().getTime();
     const expireTime = user.resetPasswordTokenExpire.getTime();
     const dueTime = now - expireTime;
 
     if (dueTime > expireResetPasswordToken) {
-      throw new HttpException(CommonMessage.EXPIRED_TOKEN, HttpStatus.BAD_REQUEST);
+      throw new HttpException(EXPIRED_TOKEN.message, EXPIRED_TOKEN.statusCode);
     }
     return {
       statusCode: HttpStatus.OK,
@@ -75,21 +75,21 @@ export class UserService {
   /**
    * @description: Save new password of user
    */
-  public async resetPassword(token: string, data: PasswordDTO): Promise<ResponseModel> {
-    const user = await this._userRepository.getUserByResetPasswordToken(token);
+  public async resetPassword(data: PasswordDTO): Promise<ResponseModel> {
+    const user = await this._userRepository.getUserByResetPasswordToken(data.token);
     if (!user) {
-      throw new HttpException(invalidTokenResetPassword, HttpStatus.BAD_REQUEST);
+      throw new HttpException(INVALID_TOKEN.message, INVALID_TOKEN.statusCode);
     }
     const now = new Date().getTime();
     const expireTime = user.resetPasswordTokenExpire.getTime();
     const dueTime = now - expireTime;
 
     if (dueTime > expireResetPasswordToken) {
-      throw new HttpException(tokenExpired, HttpStatus.BAD_REQUEST);
+      throw new HttpException(EXPIRED_TOKEN.message, EXPIRED_TOKEN.statusCode);
     }
     // Hash password
     data.password = hashSync(data.password, _salt);
-    await this._userRepository.updatePassword(user.id, data, false);
+    await this._userRepository.updatePassword(user.id, { password: data.password }, false);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.PASSWORD_UPDATE_SUCCESS,
@@ -107,7 +107,7 @@ export class UserService {
     }
     const isMatchedPassword = await compareSync(user.password, currentUser.password);
     if (!isMatchedPassword) {
-      throw new HttpException(CommonMessage.PASSWORD_FAIL, HttpStatus.CONFLICT);
+      throw new HttpException(PASSWORD_WRONG.message, PASSWORD_WRONG.statusCode);
     }
     user.newPassword = hashSync(user.newPassword, _salt);
 
@@ -173,20 +173,26 @@ export class UserService {
     const responseData = {
       id: data.id,
       email: data.email,
-      name: data.fullName,
+      fullName: data.fullName,
       gender: data.gender,
-      date_of_birth: data.dateOfBirth,
-      image_url: data.avatarURL ? data.avatarURL : data.gravatarURL,
-      role: data.role.name,
-      job_position_id: data.jobPosition.id,
-      job_position_name: data.jobPosition.name,
-      team_id: data.team.id,
-      team_name: data.team.name,
-      is_leader: data.isLeader,
-      is_active: data.isActive,
-      is_approved: data.isApproved,
+      dateOfBirth: data.dateOfBirth,
+      imageUrl: data.avatarURL ? data.avatarURL : data.gravatarURL,
+      role: {
+        id: data.role.id,
+        name: data.role.name,
+      },
+      jobPosition: {
+        id: data.jobPosition.id,
+        name: data.jobPosition.name,
+      },
+      team: {
+        id: data.team.id,
+        name: data.team.name,
+      },
+      isLeader: data.isLeader,
+      isActive: data.isActive,
+      isApproved: data.isApproved,
     };
-
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

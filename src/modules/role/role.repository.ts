@@ -1,7 +1,7 @@
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { Repository, EntityRepository } from 'typeorm';
-import { CommonMessage } from '@app/constants/app.enums';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(RoleEntity)
 export class RoleRepository extends Repository<RoleEntity> {
@@ -9,7 +9,15 @@ export class RoleRepository extends Repository<RoleEntity> {
     try {
       return await this.createQueryBuilder('role').getMany();
     } catch (error) {
-      throw new HttpException(CommonMessage.DATABASE_EXCEPTION, HttpStatus.BAD_REQUEST);
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getRoleByName(name: string): Promise<RoleEntity> {
+    try {
+      return await this.findOne({ where: { name } });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 }

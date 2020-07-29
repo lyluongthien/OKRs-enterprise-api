@@ -51,6 +51,8 @@ export enum ForeignKey {
   PARENT_OBJECTIVE_ID = 'parentObjectiveId',
   ALIGN_OBJECTIVE_ID = 'alignObjectivesId',
   KEY_RESULTS_ID = 'keyResultId',
+  INFERIOR_ID = 'inferiorId',
+  SUPERIOR_ID = 'superiorId',
 }
 
 export enum EvaluationCriteriaEnum {
@@ -71,9 +73,10 @@ export enum GenderEnum {
 
 export enum RouterEnum {
   EVALUATION_CRITERIA_ROUTE = 'localhost:3000/api/v1/evaluation-criterias',
+  CYCLE_ROUTE = 'localhost:3000/api/v1/cycles',
   MEASURE_UNIT_ROUTE = 'localhost:3000/api/v1/measure-units',
   API_HOST_ROUTER = 'http://localhost:3000',
-  FE_HOST_ROUTER = 'http://localhost:8000',
+  FE_HOST_ROUTER = 'http://localhost:8080',
   USER_ROUTE = 'http://localhost:3000/api/v1/users',
   TEAM_ROUTE = 'http://localhost:3000/api/v1/teams',
 }
@@ -84,7 +87,7 @@ export enum CommonMessage {
   BAD_REQUEST = 'Bad request',
   INTERNAL_SERVER_ERROR = 'Internal server error',
   PASSWORD_UPDATE_SUCCESS = 'Password successfully updated',
-  PASSWORD_FAIL = 'Password is incorrect',
+  PASSWORD_FAIL = 'Mật khẩu không chính xác',
   VALID_TOKEN = 'Token is valid',
   INVALID_TOKEN = 'Token is invalid',
   EXPIRED_TOKEN = 'Token is expired',
@@ -95,6 +98,7 @@ export enum CommonMessage {
   LOGOUT_SUCCESS = 'Logout success',
   UNAUTHORIZED = 'Unauthorized Error',
   FORBIDDEN = 'Forbidden',
+  EMAIL_NOT_FOUND = 'Email không tồn tại',
 }
 
 export enum Status {
@@ -107,6 +111,11 @@ export enum CheckinStatus {
   DRAFT = 'Draft',
   PEDDING = 'Pedding',
   DONE = 'Done',
+}
+
+export enum CheckinType {
+  TEAM_LEADER = 1,
+  MEMBER = 2,
 }
 
 export enum ConfidentLevel {

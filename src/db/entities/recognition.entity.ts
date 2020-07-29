@@ -18,6 +18,12 @@ export class RecognitionEntity {
   @Column()
   public evaluationCriteriaId: number;
 
+  @Column()
+  public objectiveId: number;
+
+  @Column()
+  public cycleId: number;
+
   @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;
 
