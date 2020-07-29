@@ -4,8 +4,8 @@ import { CycleRepository } from './cycle.repository';
 import { CycleDTO, updateCycleDTO } from './cycle.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, CycleStatus } from '@app/constants/app.enums';
-import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
-import { CycleEntity } from '@app/db/entities/cycle.entity';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { CYCLE_EXIST } from '@app/constants/app.exeption';
 
 @Injectable()
 export class CycleService {
@@ -17,7 +17,7 @@ export class CycleService {
       const currentDate = new Date();
       data = await this._cycleRepository.getCurrentCycle(currentDate);
     } else {
-      data = await paginate<CycleEntity>(this._cycleRepository, options);
+      data = await this._cycleRepository.getCycles(options);
     }
     return {
       statusCode: HttpStatus.OK,
@@ -29,7 +29,11 @@ export class CycleService {
   public async createCycle(cycleDTO: CycleDTO): Promise<ResponseModel> {
     const startDate = new Date(cycleDTO.startDate).getTime();
     const endDate = new Date(cycleDTO.endDate).getTime();
-
+    const cycles = await this._cycleRepository.getList();
+    const checkCycleExist = (cycleParam) => cycles.some(({ name }) => name == cycleParam);
+    if (checkCycleExist(cycleDTO.name)) {
+      throw new HttpException(CYCLE_EXIST.message, CYCLE_EXIST.statusCode);
+    }
     if (startDate >= endDate) {
       throw new HttpException(CommonMessage.CYCLE_DATE, HttpStatus.BAD_REQUEST);
     }
@@ -53,7 +57,11 @@ export class CycleService {
   public async updateCycle(id: number, cycleDTO: updateCycleDTO): Promise<ResponseModel> {
     const startDate = new Date(cycleDTO.startDate).getTime();
     const endDate = new Date(cycleDTO.endDate).getTime();
-
+    const cycles = await this._cycleRepository.getList();
+    const checkCycleExist = (cycleParam) => cycles.some(({ name }) => name == cycleParam);
+    if (checkCycleExist(cycleDTO.name)) {
+      throw new HttpException(CYCLE_EXIST.message, CYCLE_EXIST.statusCode);
+    }
     if (startDate >= endDate) {
       throw new HttpException(CommonMessage.CYCLE_DATE, HttpStatus.BAD_REQUEST);
     }

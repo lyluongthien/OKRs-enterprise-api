@@ -1,6 +1,6 @@
 import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 import { JobEntity } from '@app/db/entities/job.entity';
-import { JobDTO } from './job.dto';
+import { JobDTO, updateJobDTO } from './job.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 import { HttpException } from '@nestjs/common';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
@@ -53,7 +53,7 @@ export class JobRepository extends Repository<JobEntity> {
     }
   }
 
-  public async updateJob(id: number, data: Partial<JobDTO>): Promise<JobEntity> {
+  public async updateJob(id: number, data: Partial<updateJobDTO>): Promise<JobEntity> {
     try {
       await this.update({ id }, data);
       return await this.findOne({ id });

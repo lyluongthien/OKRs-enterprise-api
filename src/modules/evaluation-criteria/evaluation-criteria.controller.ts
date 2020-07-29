@@ -14,7 +14,7 @@ import {
 
 import { EvaluationDTO } from './evaluation-criteria.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
-import { RouterEnum, RoleEnum } from '@app/constants/app.enums';
+import { RoleEnum } from '@app/constants/app.enums';
 import { EvaluationCriteriaService } from './evaluation-criteria.service';
 import { currentPage, limitPagination } from '@app/constants/app.magic-number';
 import { AuthenticationGuard } from '../auth/authentication.guard';
@@ -39,7 +39,6 @@ export class EvaluationCriteriaController {
     return this._evaluationCriteriaService.getEvaluationCriterias({
       page,
       limit,
-      route: RouterEnum.EVALUATION_CRITERIA_ROUTE,
     });
   }
 

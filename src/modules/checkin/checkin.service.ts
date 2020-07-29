@@ -5,10 +5,11 @@ import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
 import { EntityManager } from 'typeorm';
+import { UserRepository } from '../user/user.repository';
 
 @Injectable()
 export class CheckinService {
-  constructor(private readonly _checkinRepository: CheckinRepository) {}
+  constructor(private readonly _checkinRepository: CheckinRepository, private _userRepository: UserRepository) {}
 
   public async getCheckinDetail(checkinId: number): Promise<ResponseModel> {
     const checkin = await this._checkinRepository.getCheckinById(checkinId);
@@ -35,6 +36,28 @@ export class CheckinService {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: dataResponse,
+    };
+  }
+
+  public async getCheckinRequest(userId: number, cycleId: number): Promise<ResponseModel> {
+    let message = null;
+    let data = null;
+    const user = await this._userRepository.getUserByID(userId);
+    const team = {
+      id: user.teamId,
+      isTeamLeader: user.isLeader,
+    };
+    if (team.isTeamLeader) {
+      message = CommonMessage.SUCCESS;
+      data = await this._checkinRepository.getCheckinRequest(team.id, cycleId);
+    } else {
+      message = CommonMessage.NOT_TEAM_LEADER;
+      data = {};
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: message,
+      data: data,
     };
   }
 }

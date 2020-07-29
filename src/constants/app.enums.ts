@@ -99,6 +99,7 @@ export enum CommonMessage {
   UNAUTHORIZED = 'Unauthorized Error',
   FORBIDDEN = 'Forbidden',
   EMAIL_NOT_FOUND = 'Email không tồn tại',
+  NOT_TEAM_LEADER = 'User is not a team leader',
 }
 
 export enum Status {

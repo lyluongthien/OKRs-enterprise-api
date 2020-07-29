@@ -13,11 +13,7 @@ export class CreateTableUserStars1594008773951 implements MigrationInterface {
         isGenerated: true,
       },
       {
-        name: 'accumulatedStar',
-        type: 'integer',
-      },
-      {
-        name: 'currentCycleStar',
+        name: 'star',
         type: 'integer',
       },
       {
