@@ -40,7 +40,6 @@ export class CycleController {
     return this._cycleService.getCycle(status, {
       page,
       limit,
-      route: RouterEnum.CYCLE_ROUTE,
     });
   }
 

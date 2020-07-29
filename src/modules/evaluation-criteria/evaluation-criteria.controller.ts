@@ -39,7 +39,6 @@ export class EvaluationCriteriaController {
     return this._evaluationCriteriaService.getEvaluationCriterias({
       page,
       limit,
-      route: RouterEnum.EVALUATION_CRITERIA_ROUTE,
     });
   }
 

@@ -36,7 +36,7 @@ export class MeasureUnitController {
   ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    return this._measureService.getMeasureUnits({ page, limit, route: RouterEnum.MEASURE_UNIT_ROUTE });
+    return this._measureService.getMeasureUnits({ page, limit });
   }
 
   @Get(':id')

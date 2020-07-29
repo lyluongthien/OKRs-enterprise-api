@@ -42,13 +42,11 @@ export class JobController {
       return this.jobService.searchJob(text, {
         page,
         limit,
-        route: '',
       });
     }
     return this.jobService.getJobs({
       page,
       limit,
-      route: '',
     });
   }
 
