@@ -12,7 +12,7 @@ export class MeasureUnitService {
   constructor(private _measureRepository: MeasureRepository) {}
 
   public async getMeasureUnits(options: IPaginationOptions): Promise<ResponseModel> {
-    const data = this._measureRepository.getList(options);
+    const data = await this._measureRepository.getList(options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
