@@ -66,13 +66,20 @@ export class UserDTO {
 
 export class UserProfileDTO {
   @Optional()
+  @ApiProperty()
   public fullName: string;
 
   @Optional()
+  @ApiProperty()
   public avatarURl: string;
 
   @Optional()
-  public gravatarURL: string;
+  @ApiProperty()
+  public gender: boolean;
+
+  @Optional()
+  @ApiProperty()
+  public dateOfBirth: Date;
 }
 
 export class ResetPasswordTokenDTO {

@@ -250,11 +250,11 @@ export class UserService {
 
   //Staff
   public async updateUserProfile(id: number, data: UserProfileDTO): Promise<ResponseModel> {
-    const userProfile = await this._userRepository.updateUserProfile(id, data);
+    await this._userRepository.updateUserProfile(id, data);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: userProfile,
+      data: {},
     };
   }
   public async getRoleByUserID(id: number): Promise<RoleEntity> {
