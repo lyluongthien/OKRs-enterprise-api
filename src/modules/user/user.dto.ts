@@ -71,7 +71,7 @@ export class UserProfileDTO {
 
   @Optional()
   @ApiProperty()
-  public avatarURl: string;
+  public avatarURL: string;
 
   @Optional()
   @ApiProperty()
