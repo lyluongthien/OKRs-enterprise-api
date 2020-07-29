@@ -28,10 +28,10 @@ jobs:
           GITHUB_SHA: ${{ secrets.GITHUB_SHA }}
           GITHUB_REPOSITORY: ${{ secrets.GITHUB_REPOSITORY }}
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          port: ${{ secrets.PORT }}
+          host: 188.166.253.208
+          username: duc
+          password: duc091198
+          port: 22
           script: |
             whoami
             docker login docker.pkg.github.com -u $GITHUB_USERNAME -p $GITHUB_TOKEN
