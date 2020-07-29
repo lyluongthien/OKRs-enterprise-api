@@ -1,5 +1,5 @@
 import { ObjectLiteral } from 'typeorm';
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 import { TeamDTO } from './team.dto';
@@ -49,6 +49,11 @@ export class TeamService {
 
   public async createTeam(data: TeamDTO): Promise<ResponseModel> {
     const team = await this._teamRepository.createTeam(data);
+    const teams = await this._teamRepository.getListTeams();
+    const checkCycleExist = (teamParam) => teams.some(({ name }) => name == teamParam);
+    if (checkCycleExist(data.name)) {
+      throw new HttpException(CommonMessage.TEAM_EXIST, HttpStatus.BAD_REQUEST);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -58,6 +63,11 @@ export class TeamService {
 
   public async updateTeam(id: number, data: TeamDTO): Promise<ResponseModel> {
     const team = await this._teamRepository.updateTeam(id, data);
+    const teams = await this._teamRepository.getListTeams();
+    const checkCycleExist = (teamParam) => teams.some(({ name }) => name == teamParam);
+    if (checkCycleExist(data.name)) {
+      throw new HttpException(CommonMessage.TEAM_EXIST, HttpStatus.BAD_REQUEST);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

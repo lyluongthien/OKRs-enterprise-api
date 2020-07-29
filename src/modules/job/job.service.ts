@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { JobRepository } from './job.repository';
 import { JobDTO, updateJobDTO } from './job.dto';
 import { CommonMessage } from '@app/constants/app.enums';
@@ -7,10 +7,10 @@ import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class JobService {
-  constructor(private jobRepository: JobRepository) {}
+  constructor(private _jobRepository: JobRepository) {}
 
   public async getListJob(): Promise<ResponseModel> {
-    const data = await this.jobRepository.getListJob();
+    const data = await this._jobRepository.getListJob();
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -19,7 +19,7 @@ export class JobService {
   }
 
   public async getJobs(options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this.jobRepository.getJobs(options);
+    const data = await this._jobRepository.getJobs(options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -28,7 +28,7 @@ export class JobService {
   }
 
   public async searchJob(text: string, options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this.jobRepository.searchJob(text, options);
+    const data = await this._jobRepository.searchJob(text, options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -36,7 +36,12 @@ export class JobService {
     };
   }
   public async createJob(jobDTO: JobDTO): Promise<ResponseModel> {
-    const data = await this.jobRepository.createJob(jobDTO);
+    const data = await this._jobRepository.createJob(jobDTO);
+    const jobs = await this._jobRepository.getListJob();
+    const checkJobExist = (jobParam) => jobs.some(({ name }) => name == jobParam);
+    if (checkJobExist(jobDTO.name)) {
+      throw new HttpException(CommonMessage.JOB_EXIST, HttpStatus.BAD_REQUEST);
+    }
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
@@ -45,7 +50,7 @@ export class JobService {
   }
 
   public async getJobDetail(id: number): Promise<ResponseModel> {
-    const data = await this.jobRepository.getJobDetail(id);
+    const data = await this._jobRepository.getJobDetail(id);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -54,7 +59,12 @@ export class JobService {
   }
 
   public async updateJob(id: number, jobDTO: Partial<updateJobDTO>): Promise<ResponseModel> {
-    const data = await this.jobRepository.updateJob(id, jobDTO);
+    const data = await this._jobRepository.updateJob(id, jobDTO);
+    const jobs = await this._jobRepository.getListJob();
+    const checkJobExist = (jobParam) => jobs.some(({ name }) => name == jobParam);
+    if (checkJobExist(jobDTO.name)) {
+      throw new HttpException(CommonMessage.JOB_EXIST, HttpStatus.BAD_REQUEST);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -63,7 +73,7 @@ export class JobService {
   }
 
   public async deleteJob(id: number): Promise<ResponseModel> {
-    const data = await this.jobRepository.deleteJob(id);
+    const data = await this._jobRepository.deleteJob(id);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 import { MeasureUnitEntity } from '@app/db/entities/measure-unit.entity';
@@ -22,6 +22,11 @@ export class MeasureUnitService {
 
   public async createMeasureUnit(measureUnitDTO: MeasureUnitDTO): Promise<ResponseModel> {
     const data = await this._measureRepository.createMeasureUnit(measureUnitDTO);
+    const measures = await this._measureRepository.getList();
+    const checkMeasureExist = (measureParam) => measures.some(({ preset }) => preset == measureParam);
+    if (checkMeasureExist(measureUnitDTO.preset)) {
+      throw new HttpException(CommonMessage.MEASURE_EXIST, HttpStatus.BAD_REQUEST);
+    }
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
@@ -40,6 +45,11 @@ export class MeasureUnitService {
 
   public async updateMeasureUnit(id: number, measureUnitDTO: Partial<MeasureUnitDTO>): Promise<ResponseModel> {
     const data = await this._measureRepository.updateMeasureUnit(id, measureUnitDTO);
+    const measures = await this._measureRepository.getList();
+    const checkMeasureExist = (measureParam) => measures.some(({ preset }) => preset == measureParam);
+    if (checkMeasureExist(measureUnitDTO.preset)) {
+      throw new HttpException(CommonMessage.MEASURE_EXIST, HttpStatus.BAD_REQUEST);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

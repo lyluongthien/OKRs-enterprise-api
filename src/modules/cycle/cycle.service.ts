@@ -29,7 +29,11 @@ export class CycleService {
   public async createCycle(cycleDTO: CycleDTO): Promise<ResponseModel> {
     const startDate = new Date(cycleDTO.startDate).getTime();
     const endDate = new Date(cycleDTO.endDate).getTime();
-
+    const cycles = await this._cycleRepository.getList();
+    const checkCycleExist = (cycleParam) => cycles.some(({ name }) => name == cycleParam);
+    if (checkCycleExist(cycleDTO.name)) {
+      throw new HttpException(CommonMessage.CYCLE_EXIST, HttpStatus.BAD_REQUEST);
+    }
     if (startDate >= endDate) {
       throw new HttpException(CommonMessage.CYCLE_DATE, HttpStatus.BAD_REQUEST);
     }
@@ -53,7 +57,11 @@ export class CycleService {
   public async updateCycle(id: number, cycleDTO: updateCycleDTO): Promise<ResponseModel> {
     const startDate = new Date(cycleDTO.startDate).getTime();
     const endDate = new Date(cycleDTO.endDate).getTime();
-
+    const cycles = await this._cycleRepository.getList();
+    const checkCycleExist = (cycleParam) => cycles.some(({ name }) => name == cycleParam);
+    if (checkCycleExist(cycleDTO.name)) {
+      throw new HttpException(CommonMessage.CYCLE_EXIST, HttpStatus.BAD_REQUEST);
+    }
     if (startDate >= endDate) {
       throw new HttpException(CommonMessage.CYCLE_DATE, HttpStatus.BAD_REQUEST);
     }
