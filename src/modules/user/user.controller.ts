@@ -1,4 +1,5 @@
 import { ObjectLiteral } from 'typeorm';
+import { diskStorage } from 'multer';
 import {
   Controller,
   Post,
@@ -11,6 +12,8 @@ import {
   Query,
   ParseIntPipe,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
@@ -25,6 +28,7 @@ import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
 import { RoleEnum, Status } from '@app/constants/app.enums';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('/api/v1/users')
 @UseGuards(AuthenticationGuard)
