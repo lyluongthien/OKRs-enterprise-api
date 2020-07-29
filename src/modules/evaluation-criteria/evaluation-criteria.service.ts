@@ -6,6 +6,7 @@ import { EvaluationCriteriaRepository } from './evaluation-criteria.repository';
 import { EvaluationDTO } from './evaluation-criteria.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage } from '@app/constants/app.enums';
+import { EVALUATION_CRITERIA_EXIST } from '@app/constants/app.exeption';
 
 @Injectable()
 export class EvaluationCriteriaService {
@@ -25,7 +26,7 @@ export class EvaluationCriteriaService {
     const evaluationCriterias = await this._evaluationCriteriaRepository.getList();
     const checkCriteriaExist = (criteriaParam) => evaluationCriterias.some(({ content }) => content == criteriaParam);
     if (checkCriteriaExist(evaluationDTO.content)) {
-      throw new HttpException(CommonMessage.EVALUATION_CRITERIA_EXIST, HttpStatus.BAD_REQUEST);
+      throw new HttpException(EVALUATION_CRITERIA_EXIST.message, EVALUATION_CRITERIA_EXIST.statusCode);
     }
     return {
       statusCode: HttpStatus.CREATED,
@@ -48,7 +49,7 @@ export class EvaluationCriteriaService {
     const evaluationCriterias = await this._evaluationCriteriaRepository.getList();
     const checkCriteriaExist = (criteriaParam) => evaluationCriterias.some(({ content }) => content == criteriaParam);
     if (checkCriteriaExist(evaluationDTO.content)) {
-      throw new HttpException(CommonMessage.EVALUATION_CRITERIA_EXIST, HttpStatus.BAD_REQUEST);
+      throw new HttpException(EVALUATION_CRITERIA_EXIST.message, EVALUATION_CRITERIA_EXIST.statusCode);
     }
     return {
       statusCode: HttpStatus.OK,

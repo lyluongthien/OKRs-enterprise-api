@@ -100,11 +100,6 @@ export enum CommonMessage {
   FORBIDDEN = 'Forbidden',
   EMAIL_NOT_FOUND = 'Email không tồn tại',
   NOT_TEAM_LEADER = 'User is not a team leader',
-  CYCLE_EXIST = `The cycle's name already exists. Please use a different cycle's name`,
-  EVALUATION_CRITERIA_EXIST = `The criteria's name already exists. Please use a different criteria's name`,
-  JOB_EXIST = `The job's name already exists. Please use a different job's name`,
-  MEASURE_EXIST = `The measure unit preset already exists. Please use a different preset`,
-  TEAM_EXIST = `The team name already exists. Please use a different name`,
 }
 
 export enum Status {

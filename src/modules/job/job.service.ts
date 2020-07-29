@@ -4,6 +4,7 @@ import { JobDTO, updateJobDTO } from './job.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { JOB_EXIST } from '@app/constants/app.exeption';
 
 @Injectable()
 export class JobService {
@@ -40,7 +41,7 @@ export class JobService {
     const jobs = await this._jobRepository.getListJob();
     const checkJobExist = (jobParam) => jobs.some(({ name }) => name == jobParam);
     if (checkJobExist(jobDTO.name)) {
-      throw new HttpException(CommonMessage.JOB_EXIST, HttpStatus.BAD_REQUEST);
+      throw new HttpException(JOB_EXIST.message, JOB_EXIST.statusCode);
     }
     return {
       statusCode: HttpStatus.CREATED,
@@ -63,7 +64,7 @@ export class JobService {
     const jobs = await this._jobRepository.getListJob();
     const checkJobExist = (jobParam) => jobs.some(({ name }) => name == jobParam);
     if (checkJobExist(jobDTO.name)) {
-      throw new HttpException(CommonMessage.JOB_EXIST, HttpStatus.BAD_REQUEST);
+      throw new HttpException(JOB_EXIST.message, JOB_EXIST.statusCode);
     }
     return {
       statusCode: HttpStatus.OK,

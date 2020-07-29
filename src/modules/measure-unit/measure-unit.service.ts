@@ -6,6 +6,7 @@ import { MeasureRepository } from './measure-unit.repository';
 import { MeasureUnitDTO } from './measure-unit.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
+import { MEASURE_EXIST } from '@app/constants/app.exeption';
 
 @Injectable()
 export class MeasureUnitService {
@@ -25,7 +26,7 @@ export class MeasureUnitService {
     const measures = await this._measureRepository.getList();
     const checkMeasureExist = (measureParam) => measures.some(({ preset }) => preset == measureParam);
     if (checkMeasureExist(measureUnitDTO.preset)) {
-      throw new HttpException(CommonMessage.MEASURE_EXIST, HttpStatus.BAD_REQUEST);
+      throw new HttpException(MEASURE_EXIST.message, MEASURE_EXIST.statusCode);
     }
     return {
       statusCode: HttpStatus.CREATED,
@@ -48,7 +49,7 @@ export class MeasureUnitService {
     const measures = await this._measureRepository.getList();
     const checkMeasureExist = (measureParam) => measures.some(({ preset }) => preset == measureParam);
     if (checkMeasureExist(measureUnitDTO.preset)) {
-      throw new HttpException(CommonMessage.MEASURE_EXIST, HttpStatus.BAD_REQUEST);
+      throw new HttpException(MEASURE_EXIST.message, MEASURE_EXIST.statusCode);
     }
     return {
       statusCode: HttpStatus.OK,

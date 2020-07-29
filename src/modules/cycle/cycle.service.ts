@@ -6,6 +6,7 @@ import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, CycleStatus } from '@app/constants/app.enums';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { CycleEntity } from '@app/db/entities/cycle.entity';
+import { CYCLE_EXIST } from '@app/constants/app.exeption';
 
 @Injectable()
 export class CycleService {
@@ -32,7 +33,7 @@ export class CycleService {
     const cycles = await this._cycleRepository.getList();
     const checkCycleExist = (cycleParam) => cycles.some(({ name }) => name == cycleParam);
     if (checkCycleExist(cycleDTO.name)) {
-      throw new HttpException(CommonMessage.CYCLE_EXIST, HttpStatus.BAD_REQUEST);
+      throw new HttpException(CYCLE_EXIST.message, CYCLE_EXIST.statusCode);
     }
     if (startDate >= endDate) {
       throw new HttpException(CommonMessage.CYCLE_DATE, HttpStatus.BAD_REQUEST);
@@ -60,7 +61,7 @@ export class CycleService {
     const cycles = await this._cycleRepository.getList();
     const checkCycleExist = (cycleParam) => cycles.some(({ name }) => name == cycleParam);
     if (checkCycleExist(cycleDTO.name)) {
-      throw new HttpException(CommonMessage.CYCLE_EXIST, HttpStatus.BAD_REQUEST);
+      throw new HttpException(CYCLE_EXIST.message, CYCLE_EXIST.statusCode);
     }
     if (startDate >= endDate) {
       throw new HttpException(CommonMessage.CYCLE_DATE, HttpStatus.BAD_REQUEST);
