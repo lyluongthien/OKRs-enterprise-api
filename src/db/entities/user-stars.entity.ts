@@ -1,6 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
-import { UserEntity } from './user.entity';
 
 @Entity(TableName.UserStar)
 export class UserStarEntity {
@@ -15,6 +14,4 @@ export class UserStarEntity {
 
   @Column()
   public userId: number;
-
-  public users: UserEntity;
 }
