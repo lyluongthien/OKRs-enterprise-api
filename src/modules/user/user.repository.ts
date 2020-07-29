@@ -249,4 +249,12 @@ export class UserRepository extends Repository<UserEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+
+  public async uploadAvatar(userId: number, path: string): Promise<any> {
+    try {
+      return await this.update(userId, { avatarURL: path });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 }

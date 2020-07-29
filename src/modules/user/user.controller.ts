@@ -1,5 +1,6 @@
 import { ObjectLiteral } from 'typeorm';
 import { diskStorage } from 'multer';
+import { extname } from 'path';
 import {
   Controller,
   Post,
@@ -36,6 +37,24 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class UserController {
   constructor(private _userService: UserService) {}
 
+  @Put('upload_avatar/:id')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './avatars',
+        filename: (req, file, cb) => {
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          return cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  public uploadAvatar(@Param('id', ParseIntPipe) userId: number, @UploadedFile() file): Promise<ResponseModel> {
+    return this._userService.uploadAvatar(userId, `${file.path}`);
+  }
   /**
    * @description: Get list of user by status
    * 1: Active, -1: Deactive, 0: Pending
