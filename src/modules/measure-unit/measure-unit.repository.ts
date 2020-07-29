@@ -10,7 +10,7 @@ import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 export class MeasureRepository extends Repository<MeasureUnitEntity> {
   public async getList(options: IPaginationOptions): Promise<any> {
     try {
-      const queryBuilder = await this.createQueryBuilder('measure').orderBy('measure.preset', 'ASC');
+      const queryBuilder = await this.createQueryBuilder('measure').orderBy('measure.index', 'ASC');
       return paginate<MeasureUnitEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
