@@ -4,8 +4,7 @@ import { CycleRepository } from './cycle.repository';
 import { CycleDTO, updateCycleDTO } from './cycle.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, CycleStatus } from '@app/constants/app.enums';
-import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
-import { CycleEntity } from '@app/db/entities/cycle.entity';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { CYCLE_EXIST } from '@app/constants/app.exeption';
 
 @Injectable()
@@ -18,7 +17,7 @@ export class CycleService {
       const currentDate = new Date();
       data = await this._cycleRepository.getCurrentCycle(currentDate);
     } else {
-      data = await paginate<CycleEntity>(this._cycleRepository, options);
+      data = await this._cycleRepository.getCycles(options);
     }
     return {
       statusCode: HttpStatus.OK,

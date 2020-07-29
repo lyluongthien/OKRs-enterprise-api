@@ -1,7 +1,6 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
-import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
-import { EvaluationCriteriaEntity } from '@app/db/entities/evaluation-criteria.entity';
 import { EvaluationCriteriaRepository } from './evaluation-criteria.repository';
 import { EvaluationDTO } from './evaluation-criteria.dto';
 import { ResponseModel } from '@app/constants/app.interface';
@@ -13,7 +12,7 @@ export class EvaluationCriteriaService {
   constructor(private _evaluationCriteriaRepository: EvaluationCriteriaRepository) {}
 
   public async getEvaluationCriterias(options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await paginate<EvaluationCriteriaEntity>(this._evaluationCriteriaRepository, options);
+    const data = this._evaluationCriteriaRepository.getEvaluationCriterias(options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

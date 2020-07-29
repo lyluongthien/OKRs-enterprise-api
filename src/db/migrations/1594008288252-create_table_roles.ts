@@ -18,6 +18,16 @@ export class CreateTableRoles1594008288252 implements MigrationInterface {
         enum: [RoleEnum.ADMIN, RoleEnum.HR, RoleEnum.STAFF],
         enumName: 'roleName',
       },
+      {
+        name: 'createdAt',
+        type: 'timestamptz',
+        default: 'now()',
+      },
+      {
+        name: 'updatedAt',
+        type: 'timestamptz',
+        default: 'now()',
+      },
     ],
   });
 
