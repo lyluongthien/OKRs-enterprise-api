@@ -28,9 +28,9 @@ jobs:
           GITHUB_SHA: ${{ github.sha }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         with:
-          host: 188.166.253.208
-          username: duc
-          password: duc091198
+          host: ${{ secrets.HOST}}
+          username: ${{ secrets.USERNAME}}
+          password: ${{ secrets.PASSWORD}}
           port: 22
           script: |
             whoami
