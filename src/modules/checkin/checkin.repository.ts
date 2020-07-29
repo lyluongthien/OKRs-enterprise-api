@@ -109,4 +109,28 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+
+  public async getCheckinRequest(teamId: number, cycleId: number): Promise<CheckinEntity[]> {
+    try {
+      return await this.createQueryBuilder('checkin')
+        .select([
+          'checkin.id',
+          'checkin.checkinAt',
+          'objective.id',
+          'objective.title',
+          'user.id',
+          'user.fullName',
+          'team.name',
+        ])
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('objective.user', 'user')
+        .leftJoin('objective.cycle', 'cycle')
+        .leftJoin('user.team', 'team')
+        .where('team.id= :team', { team: teamId })
+        .andWhere('cycle.id = :cycle', { cycle: cycleId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 }

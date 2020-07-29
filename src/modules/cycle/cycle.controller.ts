@@ -18,7 +18,7 @@ import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
-import { RoleEnum, RouterEnum } from '@app/constants/app.enums';
+import { RoleEnum } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 import { currentPage, limitPagination } from '@app/constants/app.magic-number';
@@ -40,7 +40,6 @@ export class CycleController {
     return this._cycleService.getCycle(status, {
       page,
       limit,
-      route: RouterEnum.CYCLE_ROUTE,
     });
   }
 

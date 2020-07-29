@@ -4,12 +4,22 @@ import { HttpException } from '@nestjs/common';
 import { CycleEntity } from '@app/db/entities/cycle.entity';
 import { CycleDTO, updateCycleDTO } from './cycle.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(CycleEntity)
 export class CycleRepository extends Repository<CycleEntity> {
   public async getList(): Promise<CycleEntity[]> {
     try {
       return await this.find();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getCycles(options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('cycle').orderBy('cycle.updatedAt', 'DESC');
+      return await paginate<CycleEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

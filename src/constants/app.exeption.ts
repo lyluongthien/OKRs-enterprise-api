@@ -51,7 +51,32 @@ export const USER_PENDING = {
   message: `Tài khoản của bạn đang chờ phê duyệt`,
 };
 
+export const CYCLE_EXIST = {
+  statusCode: 440,
+  message: `Tên chu kì đã tồn tại`,
+};
+
+export const EVALUATION_CRITERIA_EXIST = {
+  statusCode: 441,
+  message: `Tiêu chí đã tồn tại`,
+};
+
+export const JOB_EXIST = {
+  statusCode: 442,
+  message: `Vị trí công việc đã tồn tại`,
+};
+
+export const MEASURE_EXIST = {
+  statusCode: 443,
+  message: `Đơn vị đo đã tồn tại`,
+};
+
+export const TEAM_EXIST = {
+  statusCode: 444,
+  message: `Nhóm đã tồn tại`,
+};
+
 export const DATABASE_EXCEPTION = {
-  statusCode: 430,
+  statusCode: 490,
   message: `Có lỗi xảy ra khi thao tác với database`,
 };

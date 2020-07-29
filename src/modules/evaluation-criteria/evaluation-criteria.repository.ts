@@ -4,12 +4,22 @@ import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 import { EvaluationCriteriaEntity } from '@app/db/entities/evaluation-criteria.entity';
 import { EvaluationDTO } from './evaluation-criteria.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(EvaluationCriteriaEntity)
 export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaEntity> {
   public async getList(): Promise<EvaluationCriteriaEntity[]> {
     try {
       return await this.find();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getEvaluationCriterias(option: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('criteria').orderBy('updatedAt');
+      return await paginate<EvaluationCriteriaEntity>(queryBuilder, option);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

@@ -1,18 +1,18 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
-import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
-import { EvaluationCriteriaEntity } from '@app/db/entities/evaluation-criteria.entity';
 import { EvaluationCriteriaRepository } from './evaluation-criteria.repository';
 import { EvaluationDTO } from './evaluation-criteria.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage } from '@app/constants/app.enums';
+import { EVALUATION_CRITERIA_EXIST } from '@app/constants/app.exeption';
 
 @Injectable()
 export class EvaluationCriteriaService {
   constructor(private _evaluationCriteriaRepository: EvaluationCriteriaRepository) {}
 
   public async getEvaluationCriterias(options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await paginate<EvaluationCriteriaEntity>(this._evaluationCriteriaRepository, options);
+    const data = this._evaluationCriteriaRepository.getEvaluationCriterias(options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -22,6 +22,11 @@ export class EvaluationCriteriaService {
 
   public async createCriteria(evaluationDTO: EvaluationDTO): Promise<ResponseModel> {
     const data = await this._evaluationCriteriaRepository.createCriteria(evaluationDTO);
+    const evaluationCriterias = await this._evaluationCriteriaRepository.getList();
+    const checkCriteriaExist = (criteriaParam) => evaluationCriterias.some(({ content }) => content == criteriaParam);
+    if (checkCriteriaExist(evaluationDTO.content)) {
+      throw new HttpException(EVALUATION_CRITERIA_EXIST.message, EVALUATION_CRITERIA_EXIST.statusCode);
+    }
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
@@ -40,6 +45,11 @@ export class EvaluationCriteriaService {
 
   public async updateCriteria(id: number, evaluationDTO: Partial<EvaluationDTO>): Promise<ResponseModel> {
     const data = await this._evaluationCriteriaRepository.updateCriteria(id, evaluationDTO);
+    const evaluationCriterias = await this._evaluationCriteriaRepository.getList();
+    const checkCriteriaExist = (criteriaParam) => evaluationCriterias.some(({ content }) => content == criteriaParam);
+    if (checkCriteriaExist(evaluationDTO.content)) {
+      throw new HttpException(EVALUATION_CRITERIA_EXIST.message, EVALUATION_CRITERIA_EXIST.statusCode);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

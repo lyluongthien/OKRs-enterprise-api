@@ -16,7 +16,7 @@ import { MeasureUnitService } from './measure-unit.service';
 import { MeasureUnitDTO } from './measure-unit.dto';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { currentPage, limitPagination } from '@app/constants/app.magic-number';
-import { RouterEnum, RoleEnum } from '@app/constants/app.enums';
+import { RoleEnum } from '@app/constants/app.enums';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
@@ -36,7 +36,7 @@ export class MeasureUnitController {
   ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    return this._measureService.getMeasureUnits({ page, limit, route: RouterEnum.MEASURE_UNIT_ROUTE });
+    return this._measureService.getMeasureUnits({ page, limit });
   }
 
   @Get(':id')
