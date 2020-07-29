@@ -1,6 +1,6 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { JobRepository } from './job.repository';
-import { JobDTO } from './job.dto';
+import { JobDTO, updateJobDTO } from './job.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
@@ -53,7 +53,7 @@ export class JobService {
     };
   }
 
-  public async updateJob(id: number, jobDTO: Partial<JobDTO>): Promise<ResponseModel> {
+  public async updateJob(id: number, jobDTO: Partial<updateJobDTO>): Promise<ResponseModel> {
     const data = await this.jobRepository.updateJob(id, jobDTO);
     return {
       statusCode: HttpStatus.OK,

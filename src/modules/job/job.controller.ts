@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 
 import { JobService } from './job.service';
-import { JobDTO } from './job.dto';
+import { JobDTO, updateJobDTO } from './job.dto';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { RoleEnum } from '@app/constants/app.enums';
 import { AuthorizationGuard } from '../auth/authorization.guard';
@@ -70,7 +70,7 @@ export class JobController {
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  public updateJob(@Param('id', ParseIntPipe) id: number, @Body() data: Partial<JobDTO>): any {
+  public updateJob(@Param('id', ParseIntPipe) id: number, @Body() data: Partial<updateJobDTO>): any {
     return this.jobService.updateJob(id, data);
   }
 
