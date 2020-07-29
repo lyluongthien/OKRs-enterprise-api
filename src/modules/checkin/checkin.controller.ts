@@ -6,6 +6,8 @@ import { ResponseModel } from '@app/constants/app.interface';
 import { CreateCheckinDTO } from './checkin.dto';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 import { TransactionManager, EntityManager, Transaction } from 'typeorm';
+import { CurrentUser } from '../user/user.decorator';
+import { UserEntity } from '@app/db/entities/user.entity';
 
 @Controller('/api/v1/checkins')
 @UseGuards(AuthenticationGuard)
@@ -31,6 +33,15 @@ export class CheckinController {
   @UsePipes(new ValidationPipe())
   public async getHistoryCheckin(@Param('objectiveId', ParseIntPipe) objectiveId: number): Promise<ResponseModel> {
     return this._checkinService.getHistoryCheckin(objectiveId);
+  }
+
+  @Get('checkin_request/:cycleId')
+  @UsePipes(new ValidationPipe())
+  public async getCheckinRequest(
+    @Param('cycleId', ParseIntPipe) cycleId: number,
+    @CurrentUser() user: UserEntity,
+  ): Promise<ResponseModel> {
+    return this._checkinService.getCheckinRequest(user.id, cycleId);
   }
 
   @Post()

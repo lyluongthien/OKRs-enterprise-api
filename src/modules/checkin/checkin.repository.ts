@@ -117,7 +117,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
           'checkin.id',
           'checkin.checkinAt',
           'objective.id',
-          'objective.tilte',
+          'objective.title',
           'user.id',
           'user.fullName',
           'team.name',
