@@ -179,10 +179,9 @@ export class UserRepository extends Repository<UserEntity> {
   }
 
   //Staff
-  public async updateUserProfile(id: number, data: UserProfileDTO): Promise<UserEntity> {
+  public async updateUserProfile(id: number, data: UserProfileDTO): Promise<void> {
     try {
       await this.update({ id }, data);
-      return await this.findOne({ id });
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
