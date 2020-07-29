@@ -34,5 +34,3 @@ jobs:
           port: 22
           script: |
             whoami
-            docker login docker.pkg.github.com -u $GITHUB_USERNAME -p $GITHUB_TOKEN
-            docker pull docker.pkg.github.com/$GITHUB_REPOSITORY/be:$GITHUB_SHA
