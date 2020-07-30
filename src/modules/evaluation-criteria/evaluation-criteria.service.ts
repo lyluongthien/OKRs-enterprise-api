@@ -45,8 +45,9 @@ export class EvaluationCriteriaService {
 
   public async updateCriteria(id: number, evaluationDTO: Partial<EvaluationDTO>): Promise<ResponseModel> {
     const evaluationCriterias = await this._evaluationCriteriaRepository.getList();
-    const checkCriteriaExist = (criteriaParam) => evaluationCriterias.some(({ content }) => content == criteriaParam);
-    if (checkCriteriaExist(evaluationDTO.content)) {
+    const checkCriteriaExist = (criteriaParam, currentId) =>
+      evaluationCriterias.some(({ content, id }) => content == criteriaParam && id !== currentId);
+    if (checkCriteriaExist(evaluationDTO.content, id)) {
       throw new HttpException(EVALUATION_CRITERIA_EXIST.message, EVALUATION_CRITERIA_EXIST.statusCode);
     }
     const data = await this._evaluationCriteriaRepository.updateCriteria(id, evaluationDTO);

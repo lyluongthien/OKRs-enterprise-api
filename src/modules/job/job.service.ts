@@ -61,8 +61,8 @@ export class JobService {
 
   public async updateJob(id: number, jobDTO: Partial<updateJobDTO>): Promise<ResponseModel> {
     const jobs = await this._jobRepository.getListJob();
-    const checkJobExist = (jobParam) => jobs.some(({ name }) => name == jobParam);
-    if (checkJobExist(jobDTO.name)) {
+    const checkJobExist = (jobParam, currentId) => jobs.some(({ name, id }) => name == jobParam && currentId !== id);
+    if (checkJobExist(jobDTO.name, id)) {
       throw new HttpException(JOB_EXIST.message, JOB_EXIST.statusCode);
     }
     const data = await this._jobRepository.updateJob(id, jobDTO);
