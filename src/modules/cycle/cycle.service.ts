@@ -58,8 +58,9 @@ export class CycleService {
     const startDate = new Date(cycleDTO.startDate).getTime();
     const endDate = new Date(cycleDTO.endDate).getTime();
     const cycles = await this._cycleRepository.getList();
-    const checkCycleExist = (cycleParam) => cycles.some(({ name }) => name == cycleParam);
-    if (checkCycleExist(cycleDTO.name)) {
+    const checkCycleExist = (cycleParam, currentId) =>
+      cycles.some(({ name, id }) => name == cycleParam && id !== currentId);
+    if (checkCycleExist(cycleDTO.name, id)) {
       throw new HttpException(CYCLE_EXIST.message, CYCLE_EXIST.statusCode);
     }
     if (startDate >= endDate) {
