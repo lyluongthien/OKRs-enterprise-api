@@ -44,11 +44,6 @@ export class UserController {
     const avatarURL = accessEnv('API_HOST') + AvatarURL.URL + file.filename;
     return this._userService.uploadAvatar(user.id, avatarURL);
   }
-
-  @Get('avatars/:fileName')
-  public async serveAvatar(@Param('fileName') fileName: string, @Res() res: ObjectLiteral): Promise<any> {
-    res.sendFile(fileName, { root: 'avatars' });
-  }
   /**
    * @description: Get list of user by status
    * 1: Active, -1: Deactive, 0: Pending
