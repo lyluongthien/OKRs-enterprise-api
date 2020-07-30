@@ -131,5 +131,5 @@ export enum CycleStatus {
 }
 
 export enum AvatarURL {
-  URL = '/api/v1/users/avatars/',
+  URL = '/avatars/',
 }

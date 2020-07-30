@@ -13,7 +13,6 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
-  Res,
 } from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
@@ -43,11 +42,6 @@ export class UserController {
   public uploadAvatar(@CurrentUser() user: UserEntity, @UploadedFile() file: ObjectLiteral): Promise<ResponseModel> {
     const avatarURL = accessEnv('API_HOST') + AvatarURL.URL + file.filename;
     return this._userService.uploadAvatar(user.id, avatarURL);
-  }
-
-  @Get('avatars/:fileName')
-  public async serveAvatar(@Param('fileName') fileName: string, @Res() res: ObjectLiteral): Promise<any> {
-    res.sendFile(fileName, { root: 'avatars' });
   }
   /**
    * @description: Get list of user by status
