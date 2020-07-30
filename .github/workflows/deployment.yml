@@ -12,6 +12,7 @@ jobs:
       - uses: actions/checkout@v1
       - name: run docker-compose
         run: |
+          cp .env.example .env
           docker-compose -f docker-compose-deploy.yml down
           docker-compose -f docker-compose-deploy.yml up -d
       # - name: Publish to Github Packages Registry
