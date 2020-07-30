@@ -13,7 +13,6 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
-  Res,
 } from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
