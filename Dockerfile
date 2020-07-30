@@ -24,6 +24,7 @@ RUN yarn install
 
 COPY . .
 
+RUN cp .env.example .env
 #COPY --from=development /usr/src/app/dist ./dist
 
 CMD ["yarn", "start"]
