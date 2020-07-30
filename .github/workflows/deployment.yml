@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: label-macos
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v1
       # - name: Publish to Github Packages Registry
