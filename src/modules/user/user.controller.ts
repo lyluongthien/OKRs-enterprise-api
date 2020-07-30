@@ -1,6 +1,4 @@
 import { ObjectLiteral } from 'typeorm';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
 import {
   Controller,
   Post,
@@ -15,6 +13,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
@@ -30,6 +29,7 @@ import { Roles } from '../role/role.decorator';
 import { RoleEnum, Status } from '@app/constants/app.enums';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from './uploadfile.config';
 
 @Controller('/api/v1/users')
 @UseGuards(AuthenticationGuard)
@@ -37,23 +37,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class UserController {
   constructor(private _userService: UserService) {}
 
-  @Put('upload_avatar/:id')
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: './avatars',
-        filename: (req, file, cb) => {
-          const randomName = Array(32)
-            .fill(null)
-            .map(() => Math.round(Math.random() * 16).toString(16))
-            .join('');
-          return cb(null, `${randomName}${extname(file.originalname)}`);
-        },
-      }),
-    }),
-  )
-  public uploadAvatar(@Param('id', ParseIntPipe) userId: number, @UploadedFile() file): Promise<ResponseModel> {
-    return this._userService.uploadAvatar(userId, `${file.path}`);
+  @Put('upload_avatar')
+  @UseInterceptors(FileInterceptor('file', multerOptions))
+  public uploadAvatar(@CurrentUser() user: UserEntity, @UploadedFile() file: ObjectLiteral): Promise<ResponseModel> {
+    return this._userService.uploadAvatar(user.id, file.path);
+  }
+
+  @Get('avatars/:fileName')
+  public async serveAvatar(@Param('fileName') fileName: string, @Res() res: ObjectLiteral): Promise<any> {
+    res.sendFile(fileName, { root: 'avatars' });
   }
   /**
    * @description: Get list of user by status

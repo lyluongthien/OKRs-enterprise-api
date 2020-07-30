@@ -277,7 +277,7 @@ export class UserService {
     const data = await this._userRepository.uploadAvatar(id, path);
     return {
       statusCode: HttpStatus.OK,
-      message: CommonMessage.LOGOUT_SUCCESS,
+      message: CommonMessage.UPLOAD_SUCCESS,
       data: data,
     };
   }

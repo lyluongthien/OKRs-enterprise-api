@@ -100,6 +100,7 @@ export enum CommonMessage {
   FORBIDDEN = 'Forbidden',
   EMAIL_NOT_FOUND = 'Email không tồn tại',
   NOT_TEAM_LEADER = 'User is not a team leader',
+  UPLOAD_SUCCESS = 'Upload successful',
 }
 
 export enum Status {

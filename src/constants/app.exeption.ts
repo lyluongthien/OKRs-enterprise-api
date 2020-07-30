@@ -76,6 +76,11 @@ export const TEAM_EXIST = {
   message: `Nhóm đã tồn tại`,
 };
 
+export const UNSUPPORTED_FILE_TYPE = {
+  statusCode: 450,
+  message: `Định dạng file không hỗ trợ`,
+};
+
 export const DATABASE_EXCEPTION = {
   statusCode: 490,
   message: `Có lỗi xảy ra khi thao tác với database`,
