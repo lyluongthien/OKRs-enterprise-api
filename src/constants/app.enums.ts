@@ -129,3 +129,7 @@ export enum ConfidentLevel {
 export enum CycleStatus {
   CURRENT = 'current',
 }
+
+export enum AvatarURL {
+  URL = '/api/v1/users/avatars/',
+}

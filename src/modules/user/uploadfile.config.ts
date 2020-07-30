@@ -2,10 +2,11 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { HttpException } from '@nestjs/common';
 import { UNSUPPORTED_FILE_TYPE } from '@app/constants/app.exeption';
+import { limitFileUploadSize } from '@app/constants/app.magic-number';
 
 export const multerOptions = {
   limits: {
-    fileSize: 1024 * 1024 * 5,
+    fileSize: limitFileUploadSize,
   },
   storage: diskStorage({
     destination: './avatars',
