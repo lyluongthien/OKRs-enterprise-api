@@ -100,6 +100,7 @@ export enum CommonMessage {
   FORBIDDEN = 'Forbidden',
   EMAIL_NOT_FOUND = 'Email không tồn tại',
   NOT_TEAM_LEADER = 'User is not a team leader',
+  UPLOAD_SUCCESS = 'Upload successful',
 }
 
 export enum Status {
@@ -127,4 +128,8 @@ export enum ConfidentLevel {
 
 export enum CycleStatus {
   CURRENT = 'current',
+}
+
+export enum AvatarURL {
+  URL = '/api/v1/users/avatars/',
 }

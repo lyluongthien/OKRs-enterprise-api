@@ -11,6 +11,9 @@ import {
   Query,
   ParseIntPipe,
   Delete,
+  UseInterceptors,
+  UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
@@ -23,8 +26,11 @@ import { UserEntity } from '@app/db/entities/user.entity';
 import { ResponseModel } from '@app/constants/app.interface';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
-import { RoleEnum, Status } from '@app/constants/app.enums';
+import { RoleEnum, Status, AvatarURL } from '@app/constants/app.enums';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from './uploadfile.config';
+import accessEnv from '@app/libs/accessEnv';
 
 @Controller('/api/v1/users')
 @UseGuards(AuthenticationGuard)
@@ -32,6 +38,17 @@ import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 export class UserController {
   constructor(private _userService: UserService) {}
 
+  @Put('upload_avatar')
+  @UseInterceptors(FileInterceptor('file', multerOptions))
+  public uploadAvatar(@CurrentUser() user: UserEntity, @UploadedFile() file: ObjectLiteral): Promise<ResponseModel> {
+    const avatarURL = accessEnv('API_HOST') + AvatarURL.URL + file.filename;
+    return this._userService.uploadAvatar(user.id, avatarURL);
+  }
+
+  @Get('avatars/:fileName')
+  public async serveAvatar(@Param('fileName') fileName: string, @Res() res: ObjectLiteral): Promise<any> {
+    res.sendFile(fileName, { root: 'avatars' });
+  }
   /**
    * @description: Get list of user by status
    * 1: Active, -1: Deactive, 0: Pending

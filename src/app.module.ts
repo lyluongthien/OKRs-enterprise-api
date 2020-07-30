@@ -1,4 +1,5 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppService } from './app.service';
 import { AppController } from './app.controller';
@@ -44,6 +45,7 @@ import { MetaModule } from './modules/meta/meta.module';
     CheckinModule,
     RoleModule,
     MetaModule,
+    MulterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

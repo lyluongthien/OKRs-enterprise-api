@@ -272,4 +272,13 @@ export class UserService {
       data: {},
     };
   }
+
+  public async uploadAvatar(id: number, path: string): Promise<ResponseModel> {
+    const data = await this._userRepository.uploadAvatar(id, path);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.UPLOAD_SUCCESS,
+      data: data,
+    };
+  }
 }

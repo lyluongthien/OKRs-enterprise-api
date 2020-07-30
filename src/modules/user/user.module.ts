@@ -6,9 +6,10 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { UserRepository } from './user.repository';
 import { PasswordController } from './password.controller';
+import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserEntity, UserRepository])],
+  imports: [MulterModule, TypeOrmModule.forFeature([UserEntity, UserRepository])],
   controllers: [UserController, PasswordController],
   providers: [UserService],
   exports: [UserService],
