@@ -12,7 +12,7 @@ export class EvaluationCriteriaService {
   constructor(private _evaluationCriteriaRepository: EvaluationCriteriaRepository) {}
 
   public async getEvaluationCriterias(options: IPaginationOptions): Promise<ResponseModel> {
-    const data = this._evaluationCriteriaRepository.getEvaluationCriterias(options);
+    const data = await this._evaluationCriteriaRepository.getEvaluationCriterias(options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
