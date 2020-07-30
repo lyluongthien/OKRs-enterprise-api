@@ -6,7 +6,9 @@ services:
   tool-okrs-db:
     container_name: tool-okrs-db
     image: postgres:11-alpine
-    restart: ${RESTART_POLICY}
+    build:
+      context: .
+    restart: always
     ports:
       - ${DB_PORT}:5432
     environment:
