@@ -9,11 +9,10 @@ import { _salt } from '@app/constants/app.config';
 import { INVALID_TOKEN, EXPIRED_TOKEN, PASSWORD_WRONG } from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
 import { RoleEntity } from '@app/db/entities/role.entity';
-import { RouterEnum, CommonMessage, AvatarURL } from '@app/constants/app.enums';
+import { RouterEnum, CommonMessage } from '@app/constants/app.enums';
 import { expireResetPasswordToken } from '@app/constants/app.magic-number';
 import { ResponseModel } from '@app/constants/app.interface';
 import { paginationDataParser } from '@app/libs/pagination';
-import accessEnv from '@app/libs/accessEnv';
 
 @Injectable()
 export class UserService {
