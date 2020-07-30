@@ -21,12 +21,12 @@ export class MeasureUnitService {
   }
 
   public async createMeasureUnit(measureUnitDTO: MeasureUnitDTO): Promise<ResponseModel> {
-    const data = await this._measureRepository.createMeasureUnit(measureUnitDTO);
     const measures = await this._measureRepository.getMeasureUnits();
     const checkMeasureExist = (measureParam) => measures.some(({ preset }) => preset == measureParam);
     if (checkMeasureExist(measureUnitDTO.preset)) {
       throw new HttpException(MEASURE_EXIST.message, MEASURE_EXIST.statusCode);
     }
+    const data = await this._measureRepository.createMeasureUnit(measureUnitDTO);
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
@@ -44,12 +44,12 @@ export class MeasureUnitService {
   }
 
   public async updateMeasureUnit(id: number, measureUnitDTO: Partial<MeasureUnitDTO>): Promise<ResponseModel> {
-    const data = await this._measureRepository.updateMeasureUnit(id, measureUnitDTO);
     const measures = await this._measureRepository.getMeasureUnits();
     const checkMeasureExist = (measureParam) => measures.some(({ preset }) => preset == measureParam);
     if (checkMeasureExist(measureUnitDTO.preset)) {
       throw new HttpException(MEASURE_EXIST.message, MEASURE_EXIST.statusCode);
     }
+    const data = await this._measureRepository.updateMeasureUnit(id, measureUnitDTO);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
