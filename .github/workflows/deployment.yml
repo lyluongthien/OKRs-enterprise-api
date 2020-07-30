@@ -7,30 +7,29 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: label-macos
     steps:
       - uses: actions/checkout@v1
-      - name: Publish to Github Packages Registry
-
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: ${{ github.repository}}/be
-          registry: docker.pkg.github.com
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          dockerfile: Dockerfile
-          tags: ${{ github.sha }}
-      - name: Deploy package to digitalocean
-        uses: appleboy/ssh-action@master
-        env:
-          GITHUB_USERNAME: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_SHA: ${{ github.sha }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        with:
-          host: ${{ secrets.HOST}}
-          username: ${{ secrets.USERNAME}}
-          password: ${{ secrets.PASSWORD}}
-          port: 22
-          script: |
-            whoami
+      # - name: Publish to Github Packages Registry
+      #   uses: elgohr/Publish-Docker-Github-Action@master
+      #   with:
+      #     name: ${{ github.repository}}/be
+      #     registry: docker.pkg.github.com
+      #     username: ${{ github.actor }}
+      #     password: ${{ secrets.GITHUB_TOKEN }}
+      #     dockerfile: Dockerfile
+      #     tags: ${{ github.sha }}
+      # - name: Deploy package to digitalocean
+      #   uses: appleboy/ssh-action@master
+      #   env:
+      #     GITHUB_USERNAME: ${{ github.actor }}
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     GITHUB_SHA: ${{ github.sha }}
+      #     GITHUB_REPOSITORY: ${{ github.repository }}
+      #   with:
+      #     host: ${{ secrets.HOST}}
+      #     username: ${{ secrets.USERNAME}}
+      #     password: ${{ secrets.PASSWORD}}
+      #     port: 22
+      #     script: |
+      #       whoami
