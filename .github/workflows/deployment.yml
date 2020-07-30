@@ -11,7 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: run docker-compose
-        run: pwd
+        run: |
+          docker-compose -f docker-compose-deploy.yml down
+          docker-compose -f docker-compose-deploy.yml up -d
       # - name: Publish to Github Packages Registry
       #   uses: elgohr/Publish-Docker-Github-Action@master
       #   with:
