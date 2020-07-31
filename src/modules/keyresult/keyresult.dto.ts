@@ -20,8 +20,12 @@ export class KeyResultDTO {
   public progress: number;
 
   @ApiProperty()
-  public links: string;
+  public linkPlans: string;
 
+  @ApiProperty()
+  public linkResults: string;
+
+  @ApiProperty()
   public objectiveId: number;
 
   @ApiProperty()
