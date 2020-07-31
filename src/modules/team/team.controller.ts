@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Put, Param, Delete, Get, UseGuards, Query } from '@nestjs/common';
+import { Controller, Post, Body, Put, Param, Delete, Get, UseGuards, Query, ParseIntPipe } from '@nestjs/common';
 
 import { TeamDTO } from './team.dto';
 import { AuthenticationGuard } from '../auth/authentication.guard';
@@ -44,7 +44,7 @@ export class TeamController {
   @Get(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public getDetailTeam(@Param('id') id: number): Promise<ResponseModel> {
+  public getDetailTeam(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._teamService.getDetailTeam(id);
   }
 
@@ -58,14 +58,15 @@ export class TeamController {
   @Put(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public updateTeam(@Param('id') id: number, @Body() data: TeamDTO): Promise<ResponseModel> {
+  public updateTeam(@Param('id', ParseIntPipe) id: number, @Body() data: TeamDTO): Promise<ResponseModel> {
+    console.log(typeof id);
     return this._teamService.updateTeam(id, data);
   }
 
   @Delete(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public deteleTeam(@Param('id') id: number): Promise<ObjectLiteral> {
+  public deteleTeam(@Param('id', ParseIntPipe) id: number): Promise<ObjectLiteral> {
     return this._teamService.deteleTeam(id);
   }
 }

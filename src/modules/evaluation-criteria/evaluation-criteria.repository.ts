@@ -18,7 +18,7 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
 
   public async getEvaluationCriterias(option: IPaginationOptions): Promise<any> {
     try {
-      const queryBuilder = await this.createQueryBuilder('criteria').orderBy('criteria.updatedAt');
+      const queryBuilder = await this.createQueryBuilder('criteria').orderBy('criteria.updatedAt', 'DESC');
       return await paginate<EvaluationCriteriaEntity>(queryBuilder, option);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);

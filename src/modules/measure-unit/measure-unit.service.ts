@@ -22,8 +22,8 @@ export class MeasureUnitService {
 
   public async createMeasureUnit(measureUnitDTO: MeasureUnitDTO): Promise<ResponseModel> {
     const measures = await this._measureRepository.getMeasureUnits();
-    const checkMeasureExist = (measureParam) => measures.some(({ preset }) => preset == measureParam);
-    if (checkMeasureExist(measureUnitDTO.preset)) {
+    const checkMeasureExist = (measureParam) => measures.some(({ type }) => type == measureParam);
+    if (checkMeasureExist(measureUnitDTO.type)) {
       throw new HttpException(MEASURE_EXIST.message, MEASURE_EXIST.statusCode);
     }
     const data = await this._measureRepository.createMeasureUnit(measureUnitDTO);
@@ -46,8 +46,8 @@ export class MeasureUnitService {
   public async updateMeasureUnit(id: number, measureUnitDTO: Partial<MeasureUnitDTO>): Promise<ResponseModel> {
     const measures = await this._measureRepository.getMeasureUnits();
     const checkMeasureExist = (measureParam, currentId) =>
-      measures.some(({ preset, id }) => preset == measureParam && currentId !== id);
-    if (checkMeasureExist(measureUnitDTO.preset, id)) {
+      measures.some(({ type, id }) => type == measureParam && currentId !== id);
+    if (checkMeasureExist(measureUnitDTO.type, id)) {
       throw new HttpException(MEASURE_EXIST.message, MEASURE_EXIST.statusCode);
     }
     const data = await this._measureRepository.updateMeasureUnit(id, measureUnitDTO);

@@ -191,6 +191,10 @@ export class UserRepository extends Repository<UserEntity> {
   public async updateUserInfor(id: number, data: UserDTO): Promise<UserEntity> {
     try {
       await this.update({ id }, data);
+      if (!data.isActive) {
+        const now = new Date();
+        await this.update({ id }, { deactivatedAt: now });
+      }
       return await this.findOne({ id });
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
