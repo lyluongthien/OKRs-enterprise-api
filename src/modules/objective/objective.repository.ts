@@ -5,6 +5,7 @@ import { ObjectiveEntity } from '@app/db/entities/objective.entity';
 import { OkrsDTO } from './objective.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 import { DATABASE_EXCEPTION, TARGET_VALUE_INVALID } from '@app/constants/app.exeption';
+import { CustomException } from '@app/services/exceptions/HandlerException';
 
 @EntityRepository(ObjectiveEntity)
 export class ObjectiveRepository extends Repository<ObjectiveEntity> {
@@ -15,14 +16,18 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
 
       okrDTo.keyResult.map((data) => {
         if (data.targetValue <= 0 || data.targetValue <= data.valueObtained) {
-          throw new HttpException(TARGET_VALUE_INVALID.message, TARGET_VALUE_INVALID.statusCode);
+          throw new CustomException();
         }
         data.objectiveId = objective.id;
         return data.objectiveId;
       });
       await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
     } catch (error) {
-      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+      if (error instanceof CustomException) {
+        throw new HttpException(TARGET_VALUE_INVALID.message, TARGET_VALUE_INVALID.statusCode);
+      } else {
+        throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+      }
     }
   }
 
