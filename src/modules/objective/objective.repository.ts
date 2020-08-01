@@ -4,7 +4,7 @@ import { HttpException } from '@nestjs/common';
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';
 import { OkrsDTO } from './objective.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
-import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { DATABASE_EXCEPTION, TARGET_VALUE_INVALID } from '@app/constants/app.exeption';
 
 @EntityRepository(ObjectiveEntity)
 export class ObjectiveRepository extends Repository<ObjectiveEntity> {
@@ -14,6 +14,9 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
 
       okrDTo.keyResult.map((data) => {
+        if (data.targetValue <= 0 || data.targetValue <= data.valueObtained) {
+          throw new HttpException(TARGET_VALUE_INVALID.message, TARGET_VALUE_INVALID.statusCode);
+        }
         data.objectiveId = objective.id;
         return data.objectiveId;
       });
