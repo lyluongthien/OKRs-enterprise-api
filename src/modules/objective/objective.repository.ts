@@ -15,7 +15,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
 
       okrDTo.keyResult.map((data) => {
-        if (data.targetValue <= 0 || data.targetValue <= data.valueObtained) {
+        if (data.targetValue < 1 || data.targetValue <= data.valueObtained) {
           throw new CustomException();
         }
         data.objectiveId = objective.id;
