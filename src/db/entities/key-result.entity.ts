@@ -23,7 +23,10 @@ export class KeyResultEntity {
   public progress: number;
 
   @Column()
-  public links: string;
+  public linkPlans: string;
+
+  @Column()
+  public linkResults: string;
 
   @Column()
   public objectiveId: number;

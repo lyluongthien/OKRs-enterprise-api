@@ -5,9 +5,10 @@ import { ObjectiveEntity } from '@app/db/entities/objective.entity';
 import { ObjectiveRepository } from './objective.repository';
 import { ObjectiveController } from './objective.controller';
 import { ObjectiveService } from './objective.service';
+import { UserRepository } from '../user/user.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ObjectiveEntity, ObjectiveRepository])],
+  imports: [TypeOrmModule.forFeature([ObjectiveEntity, ObjectiveRepository, UserRepository])],
   controllers: [ObjectiveController],
   providers: [ObjectiveService],
 })

@@ -134,3 +134,9 @@ export enum AvatarURL {
   URL = '/avatars/',
   DELETE_URL = 'avatars/',
 }
+
+export enum OKRsType {
+  ROOT = 1,
+  TEAM = 2,
+  PERSONAL = 3,
+}
