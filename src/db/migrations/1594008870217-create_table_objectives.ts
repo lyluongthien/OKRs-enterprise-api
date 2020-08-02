@@ -15,7 +15,7 @@ export class CreateTableObjectives1594008870217 implements MigrationInterface {
       {
         name: 'progress',
         type: 'integer',
-        isNullable: false,
+        isNullable: true,
       },
       {
         name: 'title',

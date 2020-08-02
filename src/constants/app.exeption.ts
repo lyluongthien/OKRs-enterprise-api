@@ -76,6 +76,11 @@ export const TEAM_EXIST = {
   message: `Nhóm đã tồn tại`,
 };
 
+export const TARGET_VALUE_INVALID = {
+  statusCode: 441,
+  message: `Giá trị mục tiêu phải lớn hơn giá trị đã đạt được`,
+};
+
 export const UNSUPPORTED_FILE_TYPE = {
   statusCode: 450,
   message: `Định dạng file không hỗ trợ`,

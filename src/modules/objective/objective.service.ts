@@ -3,12 +3,13 @@ import { EntityManager } from 'typeorm';
 
 import { OkrsDTO } from './objective.dto';
 import { ObjectiveRepository } from './objective.repository';
+import { UserRepository } from '../user/user.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage } from '@app/constants/app.enums';
+import { CommonMessage, OKRsType } from '@app/constants/app.enums';
 
 @Injectable()
 export class ObjectiveService {
-  constructor(private _objectiveRepository: ObjectiveRepository) {}
+  constructor(private _objectiveRepository: ObjectiveRepository, private _userRepository: UserRepository) {}
 
   public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<ResponseModel> {
     await this._objectiveRepository.createAndUpdateOKRs(okrDTo, manager, userID);
@@ -19,8 +20,22 @@ export class ObjectiveService {
     };
   }
 
-  public async viewOKRs(cycleID: number, text: string): Promise<ResponseModel> {
-    const data = await this._objectiveRepository.viewOKRs(cycleID, text);
+  public async searchOKRs(cycleID: number, id: number): Promise<ResponseModel> {
+    const data = await this._objectiveRepository.searchOKRs(cycleID, id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async viewListOKRs(cycleID: number, userId: number): Promise<ResponseModel> {
+    const data: any = {};
+    const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;
+
+    data.personal = await this._objectiveRepository.viewListOKRs(cycleID, OKRsType.PERSONAL, userId);
+    data.team = await this._objectiveRepository.viewListOKRs(cycleID, OKRsType.TEAM, teamLeadId);
+    data.root = await this._objectiveRepository.viewListOKRs(cycleID, OKRsType.ROOT);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
