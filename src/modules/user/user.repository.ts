@@ -270,7 +270,7 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  public async uploadAvatar(userId: number, path: string): Promise<any> {
+  public async updateAvatarUrl(userId: number, path: string): Promise<any> {
     try {
       const avatarName = (await this.getUserByID(userId)).avatarURL;
       await this.update(userId, { avatarURL: path });

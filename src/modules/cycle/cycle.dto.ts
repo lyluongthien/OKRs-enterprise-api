@@ -15,7 +15,7 @@ export class CycleDTO {
   public endDate: Date;
 }
 
-export class updateCycleDTO {
+export class UpdateCycleDTO {
   @ApiProperty()
   public name?: string;
 

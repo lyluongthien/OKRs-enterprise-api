@@ -18,7 +18,7 @@ export class LessonController {
   @Get()
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public searchLessons(@Query('text') text: string): Promise<ResponseModel> {
+  public getLessons(@Query('text') text: string): Promise<ResponseModel> {
     if (text) {
       return this._lessonService.searchLessons(text);
     }
@@ -28,7 +28,7 @@ export class LessonController {
   @Get(':slug')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public getDetailLesson(@Param('slug') slug: string): Promise<ResponseModel> {
+  public getLessonDetail(@Param('slug') slug: string): Promise<ResponseModel> {
     return this._lessonService.getDetailLesson(slug);
   }
 

@@ -228,6 +228,7 @@ export class UserService {
       data: dataResponse,
     };
   }
+
   public async searchUsersDeactived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.searchUsersDeactived(text, options);
     const dataResponse = paginationDataParser(data);
@@ -253,6 +254,7 @@ export class UserService {
     await this._userRepository.updateUserProfile(id, data);
     return this.getUserByID(id);
   }
+
   public async getRoleByUserID(id: number): Promise<RoleEntity> {
     const userRole = await this._userRepository.getUserRole(id);
     return userRole.role;
@@ -273,8 +275,8 @@ export class UserService {
     };
   }
 
-  public async uploadAvatar(id: number, path: string): Promise<ResponseModel> {
-    const data = await this._userRepository.uploadAvatar(id, path);
+  public async updateAvatarUrl(id: number, path: string): Promise<ResponseModel> {
+    const data = await this._userRepository.updateAvatarUrl(id, path);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.UPLOAD_SUCCESS,

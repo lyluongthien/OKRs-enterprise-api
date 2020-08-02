@@ -39,7 +39,8 @@ export class UserController {
   @Put('upload_avatar')
   @UseInterceptors(FileInterceptor('file', multerOptions))
   public uploadAvatar(@CurrentUser() user: UserEntity, @UploadedFile() file: ObjectLiteral): Promise<ResponseModel> {
-    return this._userService.uploadAvatar(user.id, file.filename);
+    const avatarURL = accessEnv('API_HOST') + AvatarURL.URL + file.filename;
+    return this._userService.updateAvatarUrl(user.id, avatarURL);
   }
   /**
    * @description: Get list of user by status
@@ -48,7 +49,7 @@ export class UserController {
   @Get()
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public async searchUsersActived(
+  public async getUsers(
     @Query('status') status: number,
     @Query('text') text: string,
     @Query('page') page: number,
@@ -104,7 +105,7 @@ export class UserController {
    * @description: Get information of current logged in system
    */
   @Get('me')
-  public async me(@CurrentUser() user: UserEntity): Promise<any> {
+  public async getMe(@CurrentUser() user: UserEntity): Promise<ResponseModel> {
     return this._userService.getUserByID(user.id);
   }
 
@@ -113,7 +114,7 @@ export class UserController {
    */
   @Put('me')
   @UsePipes(new ValidationPipe())
-  public updateUserProfile(@CurrentUser() user: UserEntity, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
+  public updateUserProfile(@CurrentUser() user: UserEntity, @Body() data: UserProfileDTO): Promise<ResponseModel> {
     return this._userService.updateUserProfile(user.id, data);
   }
 
@@ -178,7 +179,7 @@ export class UserController {
   @Put(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public updateUserInfo(@Param('id') id: number, @Body() data: UserDTO): Promise<ObjectLiteral> {
+  public updateUserInfo(@Param('id') id: number, @Body() data: UserDTO): Promise<ResponseModel> {
     return this._userService.updateUserInfor(id, data);
   }
 }

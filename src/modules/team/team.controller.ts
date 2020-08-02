@@ -3,7 +3,6 @@ import { Controller, Post, Body, Put, Param, Delete, Get, UseGuards, Query, Pars
 import { TeamDTO } from './team.dto';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { ResponseModel } from '@app/constants/app.interface';
-import { ObjectLiteral } from 'typeorm';
 import { RoleEnum } from '@app/constants/app.enums';
 import { Roles } from '../role/role.decorator';
 import { TeamService } from './team.service';
@@ -44,7 +43,7 @@ export class TeamController {
   @Get(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public getDetailTeam(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
+  public getTeamDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._teamService.getDetailTeam(id);
   }
 
@@ -66,7 +65,7 @@ export class TeamController {
   @Delete(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public deteleTeam(@Param('id', ParseIntPipe) id: number): Promise<ObjectLiteral> {
+  public deteleTeam(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._teamService.deteleTeam(id);
   }
 }

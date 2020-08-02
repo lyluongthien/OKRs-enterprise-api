@@ -50,8 +50,8 @@ export class MeasureUnitController {
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  public createMeasureUnit(@Body() role: MeasureUnitDTO): Promise<ResponseModel> {
-    return this._measureService.createMeasureUnit(role);
+  public createMeasureUnit(@Body() data: MeasureUnitDTO): Promise<ResponseModel> {
+    return this._measureService.createMeasureUnit(data);
   }
 
   @Put(':id')
