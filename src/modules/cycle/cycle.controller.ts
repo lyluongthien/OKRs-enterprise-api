@@ -29,7 +29,7 @@ import { currentPage, limitPagination } from '@app/constants/app.magic-number';
 export class CycleController {
   constructor(private _cycleService: CycleService) {}
 
-  @Get('/current_cycle')
+  @Get('/current')
   public getCurrentCycle(): Promise<ResponseModel> {
     return this._cycleService.getCycle(CycleStatus.CURRENT);
   }
