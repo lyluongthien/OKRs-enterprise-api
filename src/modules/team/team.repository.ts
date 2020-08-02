@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, ObjectLiteral } from 'typeorm';
+import { EntityRepository, Repository } from 'typeorm';
 import { paginate, IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 import { TeamEntity } from '@app/db/entities/team.entity';
@@ -6,6 +6,7 @@ import { TeamDTO } from './team.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 import { HttpStatus, HttpException } from '@nestjs/common';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { ResponseModel } from '@app/constants/app.interface';
 
 @EntityRepository(TeamEntity)
 export class TeamRepository extends Repository<TeamEntity> {
@@ -68,7 +69,7 @@ export class TeamRepository extends Repository<TeamEntity> {
     }
   }
 
-  public async deteleTeam(id: number): Promise<ObjectLiteral> {
+  public async deteleTeam(id: number): Promise<ResponseModel> {
     try {
       const rowEffected: number = (await this.delete({ id })).affected;
       if (rowEffected == 1)

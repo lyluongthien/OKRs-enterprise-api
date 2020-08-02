@@ -1,4 +1,3 @@
-import { ObjectLiteral } from 'typeorm';
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
@@ -77,7 +76,7 @@ export class TeamService {
     };
   }
 
-  public async deteleTeam(id: number): Promise<ObjectLiteral> {
+  public async deteleTeam(id: number): Promise<ResponseModel> {
     return await this._teamRepository.deteleTeam(id);
   }
 }

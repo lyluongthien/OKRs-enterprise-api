@@ -267,7 +267,7 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  public async uploadAvatar(userId: number, path: string): Promise<any> {
+  public async updateAvatarUrl(userId: number, path: string): Promise<any> {
     try {
       await this.update(userId, { avatarURL: path });
       return (await this.getUserByID(userId)).avatarURL;

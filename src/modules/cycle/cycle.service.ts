@@ -1,7 +1,7 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { CycleRepository } from './cycle.repository';
-import { CycleDTO, updateCycleDTO } from './cycle.dto';
+import { CycleDTO, UpdateCycleDTO } from './cycle.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, CycleStatus } from '@app/constants/app.enums';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
@@ -54,7 +54,7 @@ export class CycleService {
     };
   }
 
-  public async updateCycle(id: number, cycleDTO: updateCycleDTO): Promise<ResponseModel> {
+  public async updateCycle(id: number, cycleDTO: UpdateCycleDTO): Promise<ResponseModel> {
     const startDate = new Date(cycleDTO.startDate).getTime();
     const endDate = new Date(cycleDTO.endDate).getTime();
     const cycles = await this._cycleRepository.getList();
