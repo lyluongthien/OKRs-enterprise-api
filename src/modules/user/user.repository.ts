@@ -59,6 +59,19 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
+  public async getTeamLeaderId(userId: number): Promise<UserEntity> {
+    try {
+      const teamId = (await this.getUserByID(userId)).teamId;
+      return await this.createQueryBuilder('user')
+        .select(['user.id'])
+        .where('user.teamId = :teamId', { teamId: teamId })
+        .andWhere('user.isLeader = :isLead', { isLead: true })
+        .getOne();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async searchUsersActived(text: string, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')

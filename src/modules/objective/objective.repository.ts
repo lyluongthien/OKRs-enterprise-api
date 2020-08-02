@@ -6,6 +6,7 @@ import { OkrsDTO } from './objective.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 import { DATABASE_EXCEPTION, TARGET_VALUE_INVALID } from '@app/constants/app.exeption';
 import { CustomException } from '@app/services/exceptions/HandlerException';
+import { OKRsType } from '@app/constants/app.enums';
 
 @EntityRepository(ObjectiveEntity)
 export class ObjectiveRepository extends Repository<ObjectiveEntity> {
@@ -31,7 +32,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async viewOKRs(cycleID: number, text: string): Promise<ObjectiveEntity[]> {
+  public async searchOKRs(cycleId: number, userId: number): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
         .select([
@@ -39,14 +40,49 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objective.progress',
           'objective.title',
           'objective.isRootObjective',
-          'objective.userId',
           'objective.cycleId',
-          'objective.alignObjectivesId',
           'users.id',
           'users.fullName',
           'users.isLeader',
         ])
-        .leftJoin('objective.parentObjectives', 'parentObjective')
+        .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
+        .leftJoinAndSelect('objective.keyResults', 'keyresults')
+        .leftJoinAndMapMany(
+          'objective.alignmentObjective',
+          ObjectiveEntity,
+          'objectiveAlignment',
+          'objectiveAlignment.id = any (objective.alignObjectivesId)',
+        )
+        .leftJoin('objective.user', 'users');
+      if (cycleId) {
+        if (userId) {
+          return await queryBuilder
+            .where('objective.cycleId = :cycleId', { cycleId: cycleId })
+            .andWhere('users.id = :userId', { userId: userId })
+            .getMany();
+        }
+        return await queryBuilder.where('objective.cycleId = :cycleId', { cycleId: cycleId }).getMany();
+      }
+      return null;
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async viewListOKRs(cycleID: number, type: number, id?: number): Promise<ObjectiveEntity[]> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('objective')
+        .select([
+          'objective.id',
+          'objective.progress',
+          'objective.title',
+          'objective.isRootObjective',
+          'objective.cycleId',
+          'users.id',
+          'users.fullName',
+          'users.isLeader',
+        ])
+        .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
         .leftJoinAndMapMany(
           'objective.alignmentObjective',
@@ -56,19 +92,23 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         )
         .leftJoin('objective.user', 'users');
       if (cycleID) {
-        if (text) {
-          return await queryBuilder
-            .where('objective.cycleId = :id', { id: cycleID })
-            .andWhere('objective.title like :text', { text: '%' + text + '%' })
-            .getMany();
+        await queryBuilder.where('objective.cycleId = :id', { id: cycleID });
+        switch (type) {
+          case OKRsType.ROOT:
+            return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: true }).getMany();
+          case OKRsType.PERSONAL:
+          case OKRsType.TEAM:
+            return await queryBuilder.andWhere('users.id = :user', { user: id }).getMany();
+          default:
+            return await queryBuilder.getMany();
         }
-        return await queryBuilder.where('objective.cycleId = :id', { id: cycleID }).getMany();
       }
       return null;
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+
   public async getDetailOKRs(id: number): Promise<ObjectiveEntity> {
     try {
       return await this.findOne({

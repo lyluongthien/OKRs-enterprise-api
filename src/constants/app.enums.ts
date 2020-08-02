@@ -133,3 +133,9 @@ export enum CycleStatus {
 export enum AvatarURL {
   URL = '/avatars/',
 }
+
+export enum OKRsType {
+  ROOT = 1,
+  TEAM = 2,
+  PERSONAL = 3,
+}
