@@ -1,10 +1,13 @@
 import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 import { InternalServerErrorException, HttpException } from '@nestjs/common';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import * as fs from 'fs';
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import accessEnv from '@app/libs/accessEnv';
+import { AvatarURL } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -269,8 +272,12 @@ export class UserRepository extends Repository<UserEntity> {
 
   public async updateAvatarUrl(userId: number, path: string): Promise<any> {
     try {
+      const avatarName = (await this.getUserByID(userId)).avatarURL;
       await this.update(userId, { avatarURL: path });
-      return (await this.getUserByID(userId)).avatarURL;
+      if (avatarName) {
+        fs.unlinkSync(AvatarURL.DELETE_URL + avatarName);
+      }
+      return accessEnv('API_HOST') + AvatarURL.URL + (await this.getUserByID(userId)).avatarURL;
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

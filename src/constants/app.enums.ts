@@ -132,6 +132,7 @@ export enum CycleStatus {
 
 export enum AvatarURL {
   URL = '/avatars/',
+  DELETE_URL = 'avatars/',
 }
 
 export enum OKRsType {
