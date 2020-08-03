@@ -30,8 +30,13 @@ export class CheckinService {
     };
   }
 
-  public async createUpdateCheckin(data: CreateCheckinDTO, manager: EntityManager): Promise<ResponseModel> {
-    const dataResponse = await this._checkinRepository.createUpdateCheckin(data, manager);
+  public async createUpdateCheckin(
+    data: CreateCheckinDTO,
+    manager: EntityManager,
+    userId: number,
+  ): Promise<ResponseModel> {
+    const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;
+    const dataResponse = await this._checkinRepository.createUpdateCheckin(data, manager, teamLeadId);
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,

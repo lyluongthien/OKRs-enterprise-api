@@ -14,10 +14,9 @@ export class CheckinRepository extends Repository<CheckinEntity> {
    * @param manager
    * @description: Create and update checkin. If id null => create new checkin else => Update
    */
-  public async createUpdateCheckin(data: CreateCheckinDTO, manager: EntityManager): Promise<any> {
+  public async createUpdateCheckin(data: CreateCheckinDTO, manager: EntityManager, teamLeadId: number): Promise<any> {
     try {
-      const teamLeaderId = 1;
-      data.checkin.teamLeaderId = teamLeaderId;
+      data.checkin.teamLeaderId = teamLeadId;
       const checkinModel = await manager.getRepository(CheckinEntity).save(data.checkin);
 
       data.checkinDetails.map((data) => {

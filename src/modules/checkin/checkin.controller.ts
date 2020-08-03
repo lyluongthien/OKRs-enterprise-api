@@ -50,7 +50,8 @@ export class CheckinController {
   public async createCheckin(
     @Body() data: CreateCheckinDTO,
     @TransactionManager() manager: EntityManager,
+    @CurrentUser() user: UserEntity,
   ): Promise<ResponseModel> {
-    return this._checkinService.createUpdateCheckin(data, manager);
+    return this._checkinService.createUpdateCheckin(data, manager, user.id);
   }
 }
