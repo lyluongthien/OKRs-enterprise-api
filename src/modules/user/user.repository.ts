@@ -279,7 +279,6 @@ export class UserRepository extends Repository<UserEntity> {
         const fileName = avatarArray[avatarArray.length - 1];
         fs.unlinkSync(AvatarURL.DELETE_URL + fileName);
       }
-      console.log(avatarName);
       return (await this.getUserByID(userId)).avatarURL;
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
