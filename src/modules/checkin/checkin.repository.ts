@@ -6,6 +6,7 @@ import { CreateCheckinDTO } from './checkin.dto';
 import { CheckinDetailEntity } from '@app/db/entities/checkin-detail.entity';
 import { CheckinStatus, CheckinType } from '@app/constants/app.enums';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 
 @EntityRepository(CheckinEntity)
 export class CheckinRepository extends Repository<CheckinEntity> {
@@ -18,13 +19,14 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     try {
       data.checkin.teamLeaderId = teamLeadId;
       const checkinModel = await manager.getRepository(CheckinEntity).save(data.checkin);
-
+      const keyResultValue = [];
       data.checkinDetails.map((data) => {
+        keyResultValue.push({ id: data.keyResultId, valueObtained: data.valueObtained });
         data.checkinId = checkinModel.id;
         return data;
       });
-
       const checkinDetailModel = await manager.getRepository(CheckinDetailEntity).save(data.checkinDetails);
+      await manager.getRepository(KeyResultEntity).save(keyResultValue);
       return {
         checkin: checkinModel,
         checkin_details: checkinDetailModel,
