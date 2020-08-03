@@ -2,7 +2,7 @@ import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 import { HttpException } from '@nestjs/common';
 
 import { CycleEntity } from '@app/db/entities/cycle.entity';
-import { CycleDTO, updateCycleDTO } from './cycle.dto';
+import { CycleDTO, UpdateCycleDTO } from './cycle.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
@@ -41,7 +41,7 @@ export class CycleRepository extends Repository<CycleEntity> {
     }
   }
 
-  public async updateCycle(id: number, data: updateCycleDTO): Promise<CycleEntity> {
+  public async updateCycle(id: number, data: UpdateCycleDTO): Promise<CycleEntity> {
     try {
       await this.update({ id }, data);
       return await this.findOne({ id });

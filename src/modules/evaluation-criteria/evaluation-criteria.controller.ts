@@ -53,8 +53,8 @@ export class EvaluationCriteriaController {
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  public createCriteria(@Body() role: EvaluationDTO): Promise<ResponseModel> {
-    return this._evaluationCriteriaService.createCriteria(role);
+  public createCriteria(@Body() data: EvaluationDTO): Promise<ResponseModel> {
+    return this._evaluationCriteriaService.createCriteria(data);
   }
 
   @Put(':id')

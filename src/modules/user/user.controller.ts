@@ -11,6 +11,8 @@ import {
   Query,
   ParseIntPipe,
   Delete,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { limitPagination, currentPage } from '@app/constants/app.magic-number';
 import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
@@ -25,6 +27,8 @@ import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
 import { RoleEnum, Status } from '@app/constants/app.enums';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { multerOptions } from './uploadfile.config';
 
 @Controller('/api/v1/users')
 @UseGuards(AuthenticationGuard)
@@ -32,6 +36,12 @@ import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 export class UserController {
   constructor(private _userService: UserService) {}
 
+  @Put('upload_avatar')
+  @UseInterceptors(FileInterceptor('file', multerOptions))
+  public uploadAvatar(@CurrentUser() user: UserEntity, @UploadedFile() file: ObjectLiteral): Promise<ResponseModel> {
+    const avatarURL = accessEnv('API_HOST') + AvatarURL.URL + file.filename;
+    return this._userService.updateAvatarUrl(user.id, avatarURL);
+  }
   /**
    * @description: Get list of user by status
    * 1: Active, -1: Deactive, 0: Pending
@@ -39,7 +49,7 @@ export class UserController {
   @Get()
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public async searchUsersActived(
+  public async getUsers(
     @Query('status') status: number,
     @Query('text') text: string,
     @Query('page') page: number,
@@ -95,7 +105,7 @@ export class UserController {
    * @description: Get information of current logged in system
    */
   @Get('me')
-  public async me(@CurrentUser() user: UserEntity): Promise<any> {
+  public async getMe(@CurrentUser() user: UserEntity): Promise<ResponseModel> {
     return this._userService.getUserByID(user.id);
   }
 
@@ -104,7 +114,7 @@ export class UserController {
    */
   @Put('me')
   @UsePipes(new ValidationPipe())
-  public updateUserProfile(@CurrentUser() user: UserEntity, @Body() data: UserProfileDTO): Promise<ObjectLiteral> {
+  public updateUserProfile(@CurrentUser() user: UserEntity, @Body() data: UserProfileDTO): Promise<ResponseModel> {
     return this._userService.updateUserProfile(user.id, data);
   }
 
@@ -169,7 +179,7 @@ export class UserController {
   @Put(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public updateUserInfo(@Param('id') id: number, @Body() data: UserDTO): Promise<ObjectLiteral> {
+  public updateUserInfo(@Param('id') id: number, @Body() data: UserDTO): Promise<ResponseModel> {
     return this._userService.updateUserInfor(id, data);
   }
 }

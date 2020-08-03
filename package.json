@@ -35,7 +35,8 @@
     "migration:create": "typeorm migration:create -n",
     "migration:run": "yarn typeorm migration:run",
     "migration:revert": "yarn typeorm migration:revert",
-    "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed"
+    "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed",
+    "setup:db": "yarn migration:run && yarn seed:run"
   },
   "engines": {
     "node": ">=12.18.1"
@@ -49,7 +50,7 @@
     "@nestjs/core": "^7.0.0",
     "@nestjs/jwt": "^7.1.0",
     "@nestjs/passport": "^7.1.0",
-    "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/platform-express": "^7.4.0",
     "@nestjs/swagger": "^4.5.12",
     "@nestjs/typeorm": "7.0.0",
     "@types/bcryptjs": "^2.4.2",

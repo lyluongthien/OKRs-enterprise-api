@@ -27,17 +27,25 @@ export class ObjectiveController {
     return this._objectiveService.createAndUpdateOKRs(data, manager, user.id);
   }
 
+  @Get()
+  public async searchOKRs(
+    @Query('cycleID', ParseIntPipe) cycleID: number,
+    @Query('id', ParseIntPipe) id: number,
+  ): Promise<ResponseModel> {
+    return this._objectiveService.searchOKRs(cycleID, id);
+  }
+
+  @Get('/view_list')
+  public async viewListOKRs(
+    @Query('cycleID', ParseIntPipe) cycleID: number,
+    @CurrentUser() user: UserEntity,
+  ): Promise<ResponseModel> {
+    return this._objectiveService.viewListOKRs(cycleID, user.id);
+  }
+
   @Get(':id')
   public async viewDetailOKRs(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._objectiveService.getDetailOKRs(id);
-  }
-
-  @Get()
-  public async viewOKRs(
-    @Query('cycleID', ParseIntPipe) cycleID: number,
-    @Query('text') text: string,
-  ): Promise<ResponseModel> {
-    return this._objectiveService.viewOKRs(cycleID, text);
   }
 
   @Delete(':id')

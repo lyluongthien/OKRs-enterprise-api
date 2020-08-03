@@ -57,23 +57,33 @@ export const CYCLE_EXIST = {
 };
 
 export const EVALUATION_CRITERIA_EXIST = {
-  statusCode: 441,
+  statusCode: 440,
   message: `Tiêu chí đã tồn tại`,
 };
 
 export const JOB_EXIST = {
-  statusCode: 442,
+  statusCode: 440,
   message: `Vị trí công việc đã tồn tại`,
 };
 
 export const MEASURE_EXIST = {
-  statusCode: 443,
+  statusCode: 440,
   message: `Đơn vị đo đã tồn tại`,
 };
 
 export const TEAM_EXIST = {
-  statusCode: 444,
+  statusCode: 440,
   message: `Nhóm đã tồn tại`,
+};
+
+export const TARGET_VALUE_INVALID = {
+  statusCode: 441,
+  message: `Giá trị mục tiêu phải lớn hơn giá trị đã đạt được`,
+};
+
+export const UNSUPPORTED_FILE_TYPE = {
+  statusCode: 450,
+  message: `Định dạng file không hỗ trợ`,
 };
 
 export const DATABASE_EXCEPTION = {

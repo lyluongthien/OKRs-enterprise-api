@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 
 import { JobService } from './job.service';
-import { JobDTO, updateJobDTO } from './job.dto';
+import { JobDTO, UpdateJobDTO } from './job.dto';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { RoleEnum } from '@app/constants/app.enums';
 import { AuthorizationGuard } from '../auth/authorization.guard';
@@ -53,14 +53,14 @@ export class JobController {
   @Post()
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public createJob(@Body() role: JobDTO): any {
-    return this.jobService.createJob(role);
+  public createJob(@Body() data: JobDTO): Promise<ResponseModel> {
+    return this.jobService.createJob(data);
   }
 
   @Get(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public getDetailJob(@Param('id', ParseIntPipe) id: number): any {
+  public getDetailJob(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this.jobService.getJobDetail(id);
   }
 
@@ -68,14 +68,14 @@ export class JobController {
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
-  public updateJob(@Param('id', ParseIntPipe) id: number, @Body() data: Partial<updateJobDTO>): any {
+  public updateJob(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateJobDTO): Promise<ResponseModel> {
     return this.jobService.updateJob(id, data);
   }
 
   @Delete(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public deleteJob(@Param('id', ParseIntPipe) id: number): any {
+  public deleteJob(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this.jobService.deleteJob(id);
   }
 }

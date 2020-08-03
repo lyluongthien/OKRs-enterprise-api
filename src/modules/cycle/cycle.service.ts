@@ -1,7 +1,7 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { CycleRepository } from './cycle.repository';
-import { CycleDTO, updateCycleDTO } from './cycle.dto';
+import { CycleDTO, UpdateCycleDTO } from './cycle.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, CycleStatus } from '@app/constants/app.enums';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
@@ -11,7 +11,7 @@ import { CYCLE_EXIST } from '@app/constants/app.exeption';
 export class CycleService {
   constructor(private _cycleRepository: CycleRepository) {}
 
-  public async getCycle(status: string, options: IPaginationOptions): Promise<ResponseModel> {
+  public async getCycle(status?: string, options?: IPaginationOptions): Promise<ResponseModel> {
     let data = null;
     if (status && status == CycleStatus.CURRENT) {
       const currentDate = new Date();
@@ -54,12 +54,13 @@ export class CycleService {
     };
   }
 
-  public async updateCycle(id: number, cycleDTO: updateCycleDTO): Promise<ResponseModel> {
+  public async updateCycle(id: number, cycleDTO: UpdateCycleDTO): Promise<ResponseModel> {
     const startDate = new Date(cycleDTO.startDate).getTime();
     const endDate = new Date(cycleDTO.endDate).getTime();
     const cycles = await this._cycleRepository.getList();
-    const checkCycleExist = (cycleParam) => cycles.some(({ name }) => name == cycleParam);
-    if (checkCycleExist(cycleDTO.name)) {
+    const checkCycleExist = (cycleParam, currentId) =>
+      cycles.some(({ name, id }) => name == cycleParam && id !== currentId);
+    if (checkCycleExist(cycleDTO.name, id)) {
       throw new HttpException(CYCLE_EXIST.message, CYCLE_EXIST.statusCode);
     }
     if (startDate >= endDate) {

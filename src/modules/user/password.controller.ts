@@ -15,15 +15,15 @@ export class PasswordController {
    */
   @Post()
   @UsePipes(new ValidationPipe())
-  public async forgetPassword(@Body() user: ResetPasswordDTO): Promise<ResponseModel> {
-    return this._userService.forgetPassword(user);
+  public async forgetPassword(@Body() data: ResetPasswordDTO): Promise<ResponseModel> {
+    return this._userService.forgetPassword(data);
   }
 
   /**
    * @description: Verify token in links
    */
   @Get(':token')
-  public async verifyForgotPassword(@Param('token') token: string): Promise<ObjectLiteral> {
+  public async verifyForgetPassword(@Param('token') token: string): Promise<ObjectLiteral> {
     return this._userService.verifyForgetPassword(token);
   }
 

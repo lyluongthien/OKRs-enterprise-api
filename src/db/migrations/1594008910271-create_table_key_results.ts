@@ -39,9 +39,16 @@ export class CreateTableKeyResults1594008910271 implements MigrationInterface {
         isNullable: false,
       },
       {
-        name: 'links',
+        name: 'linkPlans',
         type: 'varchar',
         length: '255',
+        isNullable: true,
+      },
+      {
+        name: 'linkResults',
+        type: 'varchar',
+        length: '255',
+        isNullable: true,
       },
       {
         name: ForeignKey.OBJECTIVE_ID,

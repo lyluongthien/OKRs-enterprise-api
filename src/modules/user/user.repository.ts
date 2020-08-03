@@ -1,10 +1,13 @@
 import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 import { InternalServerErrorException, HttpException } from '@nestjs/common';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import * as fs from 'fs';
 
 import { UserEntity } from '@app/db/entities/user.entity';
 import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import accessEnv from '@app/libs/accessEnv';
+import { AvatarURL } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -54,6 +57,19 @@ export class UserRepository extends Repository<UserEntity> {
         .leftJoinAndSelect('user.team', 'teams')
         .where('user.isActive = false');
       return await paginate<UserEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getTeamLeaderId(userId: number): Promise<UserEntity> {
+    try {
+      const teamId = (await this.getUserByID(userId)).teamId;
+      return await this.createQueryBuilder('user')
+        .select(['user.id'])
+        .where('user.teamId = :teamId', { teamId: teamId })
+        .andWhere('user.isLeader = :isLead', { isLead: true })
+        .getOne();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -191,6 +207,10 @@ export class UserRepository extends Repository<UserEntity> {
   public async updateUserInfor(id: number, data: UserDTO): Promise<UserEntity> {
     try {
       await this.update({ id }, data);
+      if (!data.isActive) {
+        const now = new Date();
+        await this.update({ id }, { deactivatedAt: now });
+      }
       return await this.findOne({ id });
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
@@ -245,6 +265,19 @@ export class UserRepository extends Repository<UserEntity> {
       } else {
         await this.update(id, { isApproved: true, isActive: true });
       }
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async updateAvatarUrl(userId: number, path: string): Promise<any> {
+    try {
+      const avatarName = (await this.getUserByID(userId)).avatarURL;
+      await this.update(userId, { avatarURL: path });
+      if (avatarName) {
+        fs.unlinkSync(AvatarURL.DELETE_URL + avatarName);
+      }
+      return accessEnv('API_HOST') + AvatarURL.URL + (await this.getUserByID(userId)).avatarURL;
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

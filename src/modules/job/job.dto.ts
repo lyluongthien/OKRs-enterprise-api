@@ -9,7 +9,7 @@ export class JobDTO {
   @ApiProperty()
   public description?: string;
 }
-export class updateJobDTO {
+export class UpdateJobDTO {
   @ApiProperty()
   public name: string;
 

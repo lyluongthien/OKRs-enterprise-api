@@ -71,10 +71,6 @@ export class UserProfileDTO {
 
   @Optional()
   @ApiProperty()
-  public avatarURl: string;
-
-  @Optional()
-  @ApiProperty()
   public gender: boolean;
 
   @Optional()
