@@ -53,6 +53,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objectiveAlignment',
           'objectiveAlignment.id = any (objective.alignObjectivesId)',
         )
+        .leftJoinAndSelect('objectiveAlignment.keyResults', 'aligmentKeyResults')
         .leftJoin('objective.user', 'users');
       if (cycleId) {
         if (userId) {
@@ -90,6 +91,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objectiveAlignment',
           'objectiveAlignment.id = any (objective.alignObjectivesId)',
         )
+        .leftJoinAndSelect('objectiveAlignment.keyResults', 'aligmentKeyResults')
         .leftJoin('objective.user', 'users');
       if (cycleID) {
         await queryBuilder.where('objective.cycleId = :id', { id: cycleID });
