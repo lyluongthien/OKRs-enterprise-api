@@ -35,3 +35,5 @@ pgdata/*
 .yarn-packages-cache
 
 documentation
+
+/avatars

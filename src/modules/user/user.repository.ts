@@ -6,7 +6,6 @@ import * as fs from 'fs';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
-import accessEnv from '@app/libs/accessEnv';
 import { AvatarURL } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
@@ -273,11 +272,15 @@ export class UserRepository extends Repository<UserEntity> {
   public async updateAvatarUrl(userId: number, path: string): Promise<any> {
     try {
       const avatarName = (await this.getUserByID(userId)).avatarURL;
+
       await this.update(userId, { avatarURL: path });
       if (avatarName) {
-        fs.unlinkSync(AvatarURL.DELETE_URL + avatarName);
+        const avatarArray = avatarName.split('/');
+        const fileName = avatarArray[avatarArray.length - 1];
+        fs.unlinkSync(AvatarURL.DELETE_URL + fileName);
       }
-      return accessEnv('API_HOST') + AvatarURL.URL + (await this.getUserByID(userId)).avatarURL;
+      console.log(avatarName);
+      return (await this.getUserByID(userId)).avatarURL;
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
