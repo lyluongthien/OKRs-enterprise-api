@@ -25,10 +25,11 @@ import { UserEntity } from '@app/db/entities/user.entity';
 import { ResponseModel } from '@app/constants/app.interface';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { Roles } from '../role/role.decorator';
-import { RoleEnum, Status } from '@app/constants/app.enums';
+import { RoleEnum, Status, AvatarURL } from '@app/constants/app.enums';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from './uploadfile.config';
+import accessEnv from '@app/libs/accessEnv';
 
 @Controller('/api/v1/users')
 @UseGuards(AuthenticationGuard)

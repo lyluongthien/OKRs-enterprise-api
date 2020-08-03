@@ -129,8 +129,8 @@ export class Seeder2001User implements Seeder {
           roleId: 3,
           teamId: 3,
           isActive: true,
-          isApproved: false,
-          isLeader: false,
+          isApproved: true,
+          isLeader: true,
         },
         {
           email: 'jpprivalskyf@misworkbar.ga',
@@ -183,6 +183,19 @@ export class Seeder2001User implements Seeder {
           isActive: true,
           isApproved: true,
           isLeader: false,
+        },
+        {
+          email: 'quangnvse05839@fpt.edu.vn',
+          password: hashSync(seedPassword, _salt),
+          fullName: 'Nguyễn Văn Quang',
+          gender: true,
+          gravatarURL: generateGravatar('quangnvse05839@fpt.edu.vn'),
+          jobPositionId: 1,
+          roleId: 1,
+          teamId: 2,
+          isActive: true,
+          isApproved: true,
+          isLeader: true,
         },
       ])
       .execute();

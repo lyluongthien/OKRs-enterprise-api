@@ -47,10 +47,11 @@ export class CheckinController {
   @Post()
   @UsePipes(new ValidationPipe())
   @Transaction({ isolation: 'SERIALIZABLE' })
-  public async createCheckin(
+  public async createAndUpdateCheckin(
     @Body() data: CreateCheckinDTO,
+    @CurrentUser() user: UserEntity,
     @TransactionManager() manager: EntityManager,
   ): Promise<ResponseModel> {
-    return this._checkinService.createUpdateCheckin(data, manager);
+    return this._checkinService.createUpdateCheckin(data, manager, user.id);
   }
 }

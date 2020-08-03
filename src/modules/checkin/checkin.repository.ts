@@ -6,6 +6,7 @@ import { CreateCheckinDTO } from './checkin.dto';
 import { CheckinDetailEntity } from '@app/db/entities/checkin-detail.entity';
 import { CheckinStatus, CheckinType } from '@app/constants/app.enums';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 
 @EntityRepository(CheckinEntity)
 export class CheckinRepository extends Repository<CheckinEntity> {
@@ -14,18 +15,18 @@ export class CheckinRepository extends Repository<CheckinEntity> {
    * @param manager
    * @description: Create and update checkin. If id null => create new checkin else => Update
    */
-  public async createUpdateCheckin(data: CreateCheckinDTO, manager: EntityManager): Promise<any> {
+  public async createUpdateCheckin(data: CreateCheckinDTO, manager: EntityManager, teamLeadId: number): Promise<any> {
     try {
-      const teamLeaderId = 1;
-      data.checkin.teamLeaderId = teamLeaderId;
+      data.checkin.teamLeaderId = teamLeadId;
       const checkinModel = await manager.getRepository(CheckinEntity).save(data.checkin);
-
+      const keyResultValue = [];
       data.checkinDetails.map((data) => {
+        keyResultValue.push({ id: data.keyResultId, valueObtained: data.valueObtained });
         data.checkinId = checkinModel.id;
         return data;
       });
-
       const checkinDetailModel = await manager.getRepository(CheckinDetailEntity).save(data.checkinDetails);
+      await manager.getRepository(KeyResultEntity).save(keyResultValue);
       return {
         checkin: checkinModel,
         checkin_details: checkinDetailModel,
