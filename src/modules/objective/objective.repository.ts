@@ -13,22 +13,28 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
   public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<void> {
     try {
       okrDTo.objective.userId = userID;
-      const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
-
+      const objectiveEntity = await manager.getRepository(ObjectiveEntity).create(okrDTo.objective);
+      let sumDataTarget = 0,
+        sumDataObtained = 0;
       okrDTo.keyResult.map((data) => {
         if (data.targetValue < 1 || data.targetValue <= data.valueObtained) {
           throw new CustomException();
         }
-        data.objectiveId = objective.id;
+        sumDataTarget += data.targetValue;
+        sumDataObtained += data.valueObtained;
+        data.objectiveId = objectiveEntity.id;
         return data.objectiveId;
       });
+      if (sumDataTarget > 0 && sumDataObtained > 0) {
+        okrDTo.objective.progress = (sumDataObtained / sumDataTarget) * 100;
+      }
+      await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
       await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
     } catch (error) {
       if (error instanceof CustomException) {
         throw new HttpException(TARGET_VALUE_INVALID.message, TARGET_VALUE_INVALID.statusCode);
-      } else {
-        throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
       }
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
