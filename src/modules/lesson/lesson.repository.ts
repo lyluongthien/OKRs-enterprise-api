@@ -77,8 +77,8 @@ export class LessonRepository extends Repository<LessonEntity> {
   }
   public async getLengthLesson(): Promise<any> {
     try {
-      const queryBuilder = this.count();
-      return queryBuilder;
+      const length = await this.count();
+      return length;
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
