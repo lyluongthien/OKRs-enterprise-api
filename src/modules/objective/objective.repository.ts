@@ -13,7 +13,6 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
   public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<void> {
     try {
       okrDTo.objective.userId = userID;
-      const objectiveEntity = await manager.getRepository(ObjectiveEntity).create(okrDTo.objective);
       let sumDataTarget = 0,
         sumDataObtained = 0;
       okrDTo.keyResult.map((data) => {
@@ -22,13 +21,16 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         }
         sumDataTarget += data.targetValue;
         sumDataObtained += data.valueObtained;
+      });
+      const objectiveEntity = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
+      okrDTo.keyResult.map((data) => {
         data.objectiveId = objectiveEntity.id;
         return data.objectiveId;
       });
       if (sumDataTarget > 0 && sumDataObtained > 0) {
         okrDTo.objective.progress = (sumDataObtained / sumDataTarget) * 100;
       }
-      await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
+
       await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
     } catch (error) {
       if (error instanceof CustomException) {
