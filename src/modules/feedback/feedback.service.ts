@@ -31,8 +31,8 @@ export class FeedbackService {
     };
   }
 
-  public async createFeedBack(data: FeedbackDTO): Promise<ResponseModel> {
-    this._feedBackRepository.createFeedBack(data);
+  public async createFeedBack(data: FeedbackDTO, senderId: number): Promise<ResponseModel> {
+    this._feedBackRepository.createFeedBack(data, senderId);
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,

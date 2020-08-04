@@ -28,8 +28,8 @@ export class ObjectiveEntity {
   @Column({ nullable: true })
   public parentObjectiveId?: number | null;
 
-  @Column({ array: true, nullable: true })
-  public alignObjectivesId?: number | null;
+  @Column('int', { array: true, nullable: true })
+  public alignObjectivesId?: number[] | null;
 
   @ManyToOne(() => ObjectiveEntity, (objective) => objective.parentObjectives)
   @JoinColumn([{ name: 'id', referencedColumnName: 'parentObjectiveId' }])

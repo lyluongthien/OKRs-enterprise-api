@@ -8,8 +8,8 @@ import { CommonMessage } from '@app/constants/app.enums';
 export class RecognitionService {
   constructor(private _recognitionRepository: RecognitionRepository) {}
 
-  public async createRecognition(recognition: RecognitionDTO, superiorId: number): Promise<ResponseModel> {
-    await this._recognitionRepository.createRecognition(recognition, superiorId);
+  public async createRecognition(recognition: RecognitionDTO, senderId: number): Promise<ResponseModel> {
+    await this._recognitionRepository.createRecognition(recognition, senderId);
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
