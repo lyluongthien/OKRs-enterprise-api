@@ -12,6 +12,9 @@ export class Seeder1004Cycle implements Seeder {
         { name: 'Fall 2019', startDate: '2019-09-01', endDate: '2019-12-31' },
         { name: 'Spring 2020', startDate: '2020-01-01', endDate: '2020-04-30' },
         { name: 'Summer 2020', startDate: '2020-05-01', endDate: '2020-08-31' },
+        { name: 'Fall 2021', startDate: '2021-09-01', endDate: '2021-12-31' },
+        { name: 'Spring 2021', startDate: '2021-01-01', endDate: '2021-04-30' },
+        { name: 'Summer 2021', startDate: '2021-05-01', endDate: '2021-08-31' },
       ])
       .execute();
   }

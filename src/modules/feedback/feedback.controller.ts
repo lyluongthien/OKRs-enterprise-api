@@ -20,7 +20,7 @@ export class FeedbackController {
   }
 
   @Post()
-  public async createFeedBack(@Body() data: FeedbackDTO): Promise<ResponseModel> {
-    return this._feedBackService.createFeedBack(data);
+  public async createFeedBack(@Body() data: FeedbackDTO, @CurrentUser() me: UserEntity): Promise<ResponseModel> {
+    return this._feedBackService.createFeedBack(data, me.id);
   }
 }

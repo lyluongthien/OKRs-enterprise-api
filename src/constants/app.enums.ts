@@ -51,8 +51,8 @@ export enum ForeignKey {
   PARENT_OBJECTIVE_ID = 'parentObjectiveId',
   ALIGN_OBJECTIVE_ID = 'alignObjectivesId',
   KEY_RESULTS_ID = 'keyResultId',
-  INFERIOR_ID = 'inferiorId',
-  SUPERIOR_ID = 'superiorId',
+  SENDER_ID = 'senderId',
+  RECEIVER_ID = 'receiverId',
 }
 
 export enum EvaluationCriteriaEnum {
