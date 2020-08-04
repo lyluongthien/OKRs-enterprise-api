@@ -23,6 +23,11 @@ export class CreateTableLessons1594697448722 implements MigrationInterface {
         isNullable: false,
       },
       {
+        name: 'index',
+        type: 'integer',
+        isNullable: false,
+      },
+      {
         name: 'createdAt',
         type: 'timestamptz',
         default: 'now()',
