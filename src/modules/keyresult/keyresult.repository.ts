@@ -15,16 +15,16 @@ export class KeyResultRepository extends Repository<KeyResultEntity> {
     }
   }
 
-  // public async getDataObtainedByIds(id: number[]): Promise<KeyResultEntity[]> {
-  //   try {
-  //     return await this.createQueryBuilder('keyresult')
-  //       .select(['keyresult.valueObtained'])
-  //       .where('keyresult.id IN (:id)', { id: id })
-  //       .getMany();
-  //   } catch (error) {
-  //     throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
-  //   }
-  // }
+  public async getDataObtainedByIds(id: number[]): Promise<KeyResultEntity[]> {
+    try {
+      return await this.createQueryBuilder('keyresult')
+        .select(['keyresult.valueObtained'])
+        .where('keyresult.id IN (:id)', { id: id })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 
   public async deleteKeyResults(id: number): Promise<number> {
     try {

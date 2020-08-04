@@ -6,10 +6,15 @@ import { CommonMessage } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
 import { EntityManager } from 'typeorm';
 import { UserRepository } from '../user/user.repository';
+import { KeyResultRepository } from '../keyresult/keyresult.repository';
 
 @Injectable()
 export class CheckinService {
-  constructor(private readonly _checkinRepository: CheckinRepository, private _userRepository: UserRepository) {}
+  constructor(
+    private readonly _checkinRepository: CheckinRepository,
+    private _userRepository: UserRepository,
+    private _keyResultRepository: KeyResultRepository,
+  ) {}
 
   public async getCheckinDetail(checkinId: number): Promise<ResponseModel> {
     const checkin = await this._checkinRepository.getCheckinById(checkinId);

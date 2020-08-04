@@ -6,13 +6,16 @@ import { LessonEntity } from '@app/db/entities/lesson.entity';
 import { LessonDTO } from './lesson.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(LessonEntity)
 export class LessonRepository extends Repository<LessonEntity> {
-  public async getLessons(): Promise<LessonEntity[]> {
+  public async getLessons(options: IPaginationOptions): Promise<any> {
     try {
-      const queryBuilder = this.createQueryBuilder('lesson').orderBy('lesson.id', 'ASC').getMany();
-      return await queryBuilder;
+      const queryBuilder = this.createQueryBuilder('lesson')
+        .orderBy('lesson.index', 'ASC')
+        .addOrderBy('lesson.updatedAt', 'DESC');
+      return await paginate<LessonEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -27,15 +30,14 @@ export class LessonRepository extends Repository<LessonEntity> {
     }
   }
 
-  public async searchLessons(title: string): Promise<LessonEntity[]> {
+  public async searchLessons(title: string, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('lesson')
         .where('lesson.title like :text', {
           text: '%' + title + '%',
         })
-        .orderBy('lesson.id', 'ASC')
-        .getMany();
-      return await queryBuilder;
+        .orderBy('lesson.id', 'ASC');
+      return await paginate<LessonEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -69,6 +71,14 @@ export class LessonRepository extends Repository<LessonEntity> {
         };
 
       return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+  public async getLengthLesson(): Promise<any> {
+    try {
+      const length = await this.count();
+      return length;
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

@@ -12,6 +12,9 @@ export class LessonEntity {
   @Column()
   public content: string;
 
+  @Column()
+  public index: number;
+
   @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;
 

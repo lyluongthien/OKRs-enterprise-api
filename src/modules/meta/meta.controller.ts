@@ -13,4 +13,8 @@ export class MetaController {
   public async getListJobPositions(): Promise<ResponseModel> {
     return this._metaService.getListJob();
   }
+  @Get('/lessons')
+  public async getLengthLesson(): Promise<ResponseModel> {
+    return this._metaService.getLengthLesson();
+  }
 }
