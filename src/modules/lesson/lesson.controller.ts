@@ -8,6 +8,7 @@ import { RoleEnum } from '@app/constants/app.enums';
 import { Roles } from '../role/role.decorator';
 import { AuthorizationGuard } from '../auth/authorization.guard';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { currentPage, limitPagination } from '@app/constants/app.magic-number';
 
 @Controller('/api/v1/lessons')
 @UseGuards(AuthenticationGuard)
@@ -18,11 +19,17 @@ export class LessonController {
   @Get()
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public getLessons(@Query('text') text: string): Promise<ResponseModel> {
+  public getLessons(
+    @Query('text') text: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ): Promise<ResponseModel> {
+    page = page ? page : currentPage;
+    limit = limit ? limit : limitPagination;
     if (text) {
-      return this._lessonService.searchLessons(text);
+      return this._lessonService.searchLessons(text, { page, limit });
     }
-    return this._lessonService.getLessons();
+    return this._lessonService.getLessons({ page, limit });
   }
 
   @Get(':slug')

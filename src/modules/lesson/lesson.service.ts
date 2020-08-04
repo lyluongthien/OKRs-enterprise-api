@@ -1,6 +1,7 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { LessonRepository } from './lesson.repository';
 import slugify from 'slugify';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage } from '@app/constants/app.enums';
@@ -11,8 +12,8 @@ import { generate } from 'generate-password';
 export class LessonService {
   constructor(private _lessonRepository: LessonRepository) {}
 
-  public async getLessons(): Promise<ResponseModel> {
-    const data = await this._lessonRepository.getLessons();
+  public async getLessons(options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._lessonRepository.getLessons(options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -29,8 +30,8 @@ export class LessonService {
     };
   }
 
-  public async searchLessons(text: string): Promise<ResponseModel> {
-    const data = await this._lessonRepository.searchLessons(text);
+  public async searchLessons(text: string, options: IPaginationOptions): Promise<ResponseModel> {
+    const data = await this._lessonRepository.searchLessons(text, options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
