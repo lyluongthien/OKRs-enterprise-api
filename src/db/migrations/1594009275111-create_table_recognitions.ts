@@ -13,19 +13,17 @@ export class CreateTableRecognitions1594009275111 implements MigrationInterface 
         isGenerated: true,
       },
       {
-        name: 'inferiorId',
+        name: ForeignKey.SENDER_ID,
         type: 'integer',
-        isNullable: false,
       },
       {
-        name: 'superiorId',
+        name: ForeignKey.RECEIVER_ID,
         type: 'integer',
-        isNullable: false,
       },
       {
         name: 'content',
         type: 'varchar',
-        isNullable: false,
+        isNullable: true,
         length: '255',
       },
       {
@@ -60,15 +58,15 @@ export class CreateTableRecognitions1594009275111 implements MigrationInterface 
     onDelete: 'SET NULL',
   });
 
-  private pkInferiorId: TableForeignKey = new TableForeignKey({
-    columnNames: [ForeignKey.INFERIOR_ID],
+  private pkSenderId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.SENDER_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.User,
     onDelete: 'SET NULL',
   });
 
-  private pkSuperiorId: TableForeignKey = new TableForeignKey({
-    columnNames: [ForeignKey.SUPERIOR_ID],
+  private pkReceiverId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.RECEIVER_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.User,
     onDelete: 'SET NULL',
@@ -90,8 +88,8 @@ export class CreateTableRecognitions1594009275111 implements MigrationInterface 
 
   private tableForeignKey: TableForeignKey[] = [
     this.pkObjectiveId,
-    this.pkInferiorId,
-    this.pkSuperiorId,
+    this.pkSenderId,
+    this.pkReceiverId,
     this.pkCycleId,
     this.pkEvalCriteriaId,
   ];

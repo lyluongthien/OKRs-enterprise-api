@@ -13,12 +13,12 @@ export class CreateTableFeedbacks1594009219657 implements MigrationInterface {
         isGenerated: true,
       },
       {
-        name: 'senderId',
+        name: ForeignKey.SENDER_ID,
         type: 'integer',
         isNullable: false,
       },
       {
-        name: 'receiverId',
+        name: ForeignKey.RECEIVER_ID,
         type: 'integer',
         isNullable: false,
       },
@@ -58,16 +58,34 @@ export class CreateTableFeedbacks1594009219657 implements MigrationInterface {
     columnNames: [ForeignKey.EVALUATION_CRITERIA_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.EvaluationCriteria,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   });
   private pkCheckinId: TableForeignKey = new TableForeignKey({
     columnNames: [ForeignKey.CHECKIN_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.Checkin,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
+  });
+  private pkSenderId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.SENDER_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.User,
+    onDelete: 'SET NULL',
   });
 
-  private tableForeignKey: TableForeignKey[] = [this.pkEvalCriteriaId, this.pkCheckinId];
+  private pkReceiverId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.RECEIVER_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.User,
+    onDelete: 'SET NULL',
+  });
+
+  private tableForeignKey: TableForeignKey[] = [
+    this.pkEvalCriteriaId,
+    this.pkCheckinId,
+    this.pkSenderId,
+    this.pkReceiverId,
+  ];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(this.feedbackTable);
