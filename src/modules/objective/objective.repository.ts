@@ -21,6 +21,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         }
         sumDataTarget += data.targetValue;
         sumDataObtained += data.valueObtained;
+        return data.objectiveId;
       });
       const objectiveEntity = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
       okrDTo.keyResult.map((data) => {
