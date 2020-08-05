@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { LessonRepository } from './lesson.repository';
 import slugify from 'slugify';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
@@ -24,11 +24,7 @@ export class LessonService {
   public async getDetailLesson(slug: string): Promise<ResponseModel> {
     const data = await this._lessonRepository.getDetailLesson(slug);
     if (!data) {
-      return {
-        statusCode: HttpStatus.NOT_FOUND,
-        message: CommonMessage.POST_NOT_FOUND,
-        data: {},
-      };
+      throw new HttpException(CommonMessage.POST_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
     return {
       statusCode: HttpStatus.OK,
