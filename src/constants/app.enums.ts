@@ -101,6 +101,7 @@ export enum CommonMessage {
   EMAIL_NOT_FOUND = 'Email không tồn tại',
   NOT_TEAM_LEADER = 'User is not a team leader',
   UPLOAD_SUCCESS = 'Upload successful',
+  POST_NOT_FOUND = 'Không thể tìm thấy bài viết',
 }
 
 export enum Status {
