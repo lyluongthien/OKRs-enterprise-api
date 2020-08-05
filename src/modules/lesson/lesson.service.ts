@@ -23,7 +23,7 @@ export class LessonService {
 
   public async getDetailLesson(slug: string): Promise<ResponseModel> {
     const data = await this._lessonRepository.getDetailLesson(slug);
-    if (data) {
+    if (!data) {
       return {
         statusCode: HttpStatus.NOT_FOUND,
         message: CommonMessage.POST_NOT_FOUND,
