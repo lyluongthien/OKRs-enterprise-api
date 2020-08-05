@@ -20,7 +20,7 @@ export class CreateTableKeyResults1594008910271 implements MigrationInterface {
       {
         name: 'valueObtained',
         type: 'integer',
-        isNullable: false,
+        default: 0,
       },
       {
         name: 'targetValue',
@@ -32,11 +32,6 @@ export class CreateTableKeyResults1594008910271 implements MigrationInterface {
         type: 'varchar',
         isNullable: false,
         length: '255',
-      },
-      {
-        name: 'progress',
-        type: 'integer',
-        isNullable: false,
       },
       {
         name: 'linkPlans',

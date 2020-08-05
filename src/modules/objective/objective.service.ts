@@ -29,6 +29,15 @@ export class ObjectiveService {
     };
   }
 
+  public async getAllTeamLeaderOKRs(cycleId: number): Promise<ResponseModel> {
+    const data = await this._objectiveRepository.getAllTeamLeaderOKRs(cycleId);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
   public async viewListOKRs(cycleID: number, userId: number): Promise<ResponseModel> {
     const data: any = {};
     const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;

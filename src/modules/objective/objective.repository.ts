@@ -13,22 +13,30 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
   public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<void> {
     try {
       okrDTo.objective.userId = userID;
-      const objective = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
-
+      let sumDataTarget = 0,
+        sumDataObtained = 0;
       okrDTo.keyResult.map((data) => {
         if (data.targetValue < 1 || data.targetValue <= data.valueObtained) {
           throw new CustomException();
         }
-        data.objectiveId = objective.id;
+        sumDataTarget += data.targetValue;
+        sumDataObtained += data.valueObtained;
         return data.objectiveId;
       });
+      const objectiveEntity = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
+      okrDTo.keyResult.map((data) => {
+        data.objectiveId = objectiveEntity.id;
+        return data.objectiveId;
+      });
+      if (sumDataTarget > 0 && sumDataObtained > 0) {
+        okrDTo.objective.progress = (sumDataObtained / sumDataTarget) * 100;
+      }
       await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
     } catch (error) {
       if (error instanceof CustomException) {
         throw new HttpException(TARGET_VALUE_INVALID.message, TARGET_VALUE_INVALID.statusCode);
-      } else {
-        throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
       }
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
@@ -63,6 +71,41 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
             .getMany();
         }
         return await queryBuilder.where('objective.cycleId = :cycleId', { cycleId: cycleId }).getMany();
+      }
+      return null;
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getAllTeamLeaderOKRs(cycleId: number): Promise<ObjectiveEntity[]> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('objective')
+        .select([
+          'objective.id',
+          'objective.progress',
+          'objective.title',
+          'objective.isRootObjective',
+          'objective.cycleId',
+          'users.id',
+          'users.fullName',
+          'users.isLeader',
+        ])
+        .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
+        .leftJoinAndSelect('objective.keyResults', 'keyresults')
+        .leftJoinAndMapMany(
+          'objective.alignmentObjective',
+          ObjectiveEntity,
+          'objectiveAlignment',
+          'objectiveAlignment.id = any (objective.alignObjectivesId)',
+        )
+        .leftJoinAndSelect('objectiveAlignment.keyResults', 'aligmentKeyResults')
+        .leftJoin('objective.user', 'users');
+      if (cycleId) {
+        return await queryBuilder
+          .where('objective.cycleId = :cycleId', { cycleId: cycleId })
+          .andWhere('users.isLeader = :isLead', { isLead: true })
+          .getMany();
       }
       return null;
     } catch (error) {

@@ -20,9 +20,6 @@ export class KeyResultEntity {
   public content: string;
 
   @Column()
-  public progress: number;
-
-  @Column()
   public linkPlans: string;
 
   @Column()

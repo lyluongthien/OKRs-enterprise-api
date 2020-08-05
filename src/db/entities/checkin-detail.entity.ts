@@ -15,9 +15,6 @@ export class CheckinDetailEntity {
   public confidentLevel: number;
 
   @Column()
-  public progress: string;
-
-  @Column()
   public problems: string;
 
   @Column()

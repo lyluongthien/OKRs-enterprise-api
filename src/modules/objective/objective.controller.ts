@@ -28,9 +28,14 @@ export class ObjectiveController {
   }
 
   @Get()
+  public async getAllTeamLeaderOKRs(@Query('cycleId', ParseIntPipe) cycleId: number): Promise<ResponseModel> {
+    return this._objectiveService.getAllTeamLeaderOKRs(cycleId);
+  }
+
+  @Get()
   public async searchOKRs(
     @Query('cycleID', ParseIntPipe) cycleID: number,
-    @Query('id', ParseIntPipe) id: number,
+    @Query('userId', ParseIntPipe) id: number,
   ): Promise<ResponseModel> {
     return this._objectiveService.searchOKRs(cycleID, id);
   }
