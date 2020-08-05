@@ -46,6 +46,7 @@ export class LessonService {
       title: lessons.title,
       content: lessons.content,
       slug: slug,
+      index: lessons.index,
     });
     return {
       statusCode: HttpStatus.CREATED,

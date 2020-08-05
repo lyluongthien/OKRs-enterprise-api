@@ -30,7 +30,6 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       if (sumDataTarget > 0 && sumDataObtained > 0) {
         okrDTo.objective.progress = (sumDataObtained / sumDataTarget) * 100;
       }
-
       await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
     } catch (error) {
       if (error instanceof CustomException) {
@@ -71,6 +70,41 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
             .getMany();
         }
         return await queryBuilder.where('objective.cycleId = :cycleId', { cycleId: cycleId }).getMany();
+      }
+      return null;
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getAllTeamLeaderOKRs(cycleId: number): Promise<ObjectiveEntity[]> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('objective')
+        .select([
+          'objective.id',
+          'objective.progress',
+          'objective.title',
+          'objective.isRootObjective',
+          'objective.cycleId',
+          'users.id',
+          'users.fullName',
+          'users.isLeader',
+        ])
+        .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
+        .leftJoinAndSelect('objective.keyResults', 'keyresults')
+        .leftJoinAndMapMany(
+          'objective.alignmentObjective',
+          ObjectiveEntity,
+          'objectiveAlignment',
+          'objectiveAlignment.id = any (objective.alignObjectivesId)',
+        )
+        .leftJoinAndSelect('objectiveAlignment.keyResults', 'aligmentKeyResults')
+        .leftJoin('objective.user', 'users');
+      if (cycleId) {
+        return await queryBuilder
+          .where('objective.cycleId = :cycleId', { cycleId: cycleId })
+          .andWhere('users.isLeader = :isLead', { isLead: true })
+          .getMany();
       }
       return null;
     } catch (error) {

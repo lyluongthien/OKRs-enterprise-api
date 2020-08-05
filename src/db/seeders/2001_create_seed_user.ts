@@ -23,10 +23,10 @@ export class Seeder2001User implements Seeder {
           gravatarURL: generateGravatar('ducpvse05320@fpt.edu.vn'),
           jobPositionId: 1,
           roleId: 1,
-          teamId: 1,
+          teamId: 3,
           isActive: true,
           isApproved: true,
-          isLeader: true,
+          isLeader: false,
         },
         {
           email: 'ducnmhe130666@fpt.edu.vn',
@@ -36,10 +36,10 @@ export class Seeder2001User implements Seeder {
           gravatarURL: generateGravatar('ducnmhe130666@fpt.edu.vn'),
           jobPositionId: 2,
           roleId: 2,
-          teamId: 1,
+          teamId: 3,
           isActive: true,
           isApproved: true,
-          isLeader: false,
+          isLeader: true,
         },
         {
           email: 'hiepdqse05627@fpt.edu.vn',
@@ -52,7 +52,7 @@ export class Seeder2001User implements Seeder {
           teamId: 2,
           isActive: true,
           isApproved: true,
-          isLeader: false,
+          isLeader: true,
         },
         {
           email: 'phanduc0908@gmail.com',
@@ -195,7 +195,7 @@ export class Seeder2001User implements Seeder {
           teamId: 2,
           isActive: true,
           isApproved: true,
-          isLeader: true,
+          isLeader: false,
         },
       ])
       .execute();
