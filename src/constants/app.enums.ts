@@ -141,3 +141,8 @@ export enum OKRsType {
   TEAM = 2,
   PERSONAL = 3,
 }
+
+export enum TopStarType {
+  SENDER = 1,
+  RECEIVER = 2,
+}

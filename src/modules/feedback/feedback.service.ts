@@ -1,7 +1,7 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { FeedbackRepository } from './feedback.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, CheckinType } from '@app/constants/app.enums';
+import { CommonMessage, CheckinType, TopStarType } from '@app/constants/app.enums';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { UserRepository } from '../user/user.repository';
@@ -37,6 +37,15 @@ export class FeedbackService {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: {},
+    };
+  }
+
+  public async getTopStars(cycleId: number, type: TopStarType): Promise<ResponseModel> {
+    const data = await this._feedBackRepository.getTopStars(cycleId, type);
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: CommonMessage.SUCCESS,
+      data: data,
     };
   }
 }
