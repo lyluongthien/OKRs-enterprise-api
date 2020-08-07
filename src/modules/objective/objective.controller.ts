@@ -9,6 +9,7 @@ import { AuthenticationGuard } from '../auth/authentication.guard';
 import { CurrentUser } from '../user/user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { OKRsLeaderType } from '@app/constants/app.enums';
 
 @Controller('/api/v1/objectives')
 @UseGuards(AuthenticationGuard)
@@ -27,25 +28,28 @@ export class ObjectiveController {
     return this._objectiveService.createAndUpdateOKRs(data, manager, user.id);
   }
 
-  @Get()
-  public async getAllTeamLeaderOKRs(@Query('cycleId', ParseIntPipe) cycleId: number): Promise<ResponseModel> {
-    return this._objectiveService.getAllTeamLeaderOKRs(cycleId);
+  @Get('/team_leaders')
+  public async getAllTeamLeaderOKRs(
+    @Query('id', ParseIntPipe) id: number,
+    @Query('type', ParseIntPipe) type: OKRsLeaderType,
+  ): Promise<ResponseModel> {
+    return this._objectiveService.getTeamLeaderOKRs(id, type);
   }
 
   @Get()
   public async searchOKRs(
-    @Query('cycleID', ParseIntPipe) cycleID: number,
+    @Query('cycleId', ParseIntPipe) cycleId: number,
     @Query('userId', ParseIntPipe) id: number,
   ): Promise<ResponseModel> {
-    return this._objectiveService.searchOKRs(cycleID, id);
+    return this._objectiveService.searchOKRs(cycleId, id);
   }
 
   @Get('/view_list')
   public async viewListOKRs(
-    @Query('cycleID', ParseIntPipe) cycleID: number,
+    @Query('cycleId', ParseIntPipe) cycleId: number,
     @CurrentUser() user: UserEntity,
   ): Promise<ResponseModel> {
-    return this._objectiveService.viewListOKRs(cycleID, user.id);
+    return this._objectiveService.viewListOKRs(cycleId, user.id);
   }
 
   @Get(':id')

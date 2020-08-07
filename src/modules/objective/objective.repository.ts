@@ -6,7 +6,7 @@ import { OkrsDTO } from './objective.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 import { DATABASE_EXCEPTION, TARGET_VALUE_INVALID } from '@app/constants/app.exeption';
 import { CustomException } from '@app/services/exceptions/HandlerException';
-import { OKRsType } from '@app/constants/app.enums';
+import { OKRsType, OKRsLeaderType } from '@app/constants/app.enums';
 
 @EntityRepository(ObjectiveEntity)
 export class ObjectiveRepository extends Repository<ObjectiveEntity> {
@@ -78,7 +78,28 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async getAllTeamLeaderOKRs(cycleId: number): Promise<ObjectiveEntity[]> {
+  public async getTeamLeaderOKRs(id: number, type: number): Promise<ObjectiveEntity[]> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('objective')
+        .select(['objective.id', 'objective.title', 'users.id', 'users.email'])
+        .leftJoin('objective.user', 'users');
+      switch (type) {
+        case OKRsLeaderType.CURRENT:
+          return await queryBuilder.where('users.id = :id', { id: id }).getMany();
+        case OKRsLeaderType.ALL:
+          return await queryBuilder
+            .where('objective.cycleId = :cycleId', { cycleId: id })
+            .andWhere('users.isLeader = :isLead', { isLead: true })
+            .getMany();
+        default:
+          return null;
+      }
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async viewListOKRs(cycleId: number, type: number, id?: number): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
         .select([
@@ -102,10 +123,16 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .leftJoinAndSelect('objectiveAlignment.keyResults', 'aligmentKeyResults')
         .leftJoin('objective.user', 'users');
       if (cycleId) {
-        return await queryBuilder
-          .where('objective.cycleId = :cycleId', { cycleId: cycleId })
-          .andWhere('users.isLeader = :isLead', { isLead: true })
-          .getMany();
+        await queryBuilder.where('objective.cycleId = :id', { id: cycleId });
+        switch (type) {
+          case OKRsType.ROOT:
+            return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: true }).getMany();
+          case OKRsType.PERSONAL:
+          case OKRsType.TEAM:
+            return await queryBuilder.andWhere('users.id = :user', { user: id }).getMany();
+          default:
+            return await queryBuilder.getMany();
+        }
       }
       return null;
     } catch (error) {
@@ -113,31 +140,13 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async viewListOKRs(cycleID: number, type: number, id?: number): Promise<ObjectiveEntity[]> {
+  public async getOKRsProgress(cycleId: number, type: number, id?: number): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
-        .select([
-          'objective.id',
-          'objective.progress',
-          'objective.title',
-          'objective.isRootObjective',
-          'objective.cycleId',
-          'users.id',
-          'users.fullName',
-          'users.isLeader',
-        ])
-        .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
-        .leftJoinAndSelect('objective.keyResults', 'keyresults')
-        .leftJoinAndMapMany(
-          'objective.alignmentObjective',
-          ObjectiveEntity,
-          'objectiveAlignment',
-          'objectiveAlignment.id = any (objective.alignObjectivesId)',
-        )
-        .leftJoinAndSelect('objectiveAlignment.keyResults', 'aligmentKeyResults')
+        .select(['objective.progress'])
         .leftJoin('objective.user', 'users');
-      if (cycleID) {
-        await queryBuilder.where('objective.cycleId = :id', { id: cycleID });
+      if (cycleId) {
+        await queryBuilder.where('objective.cycleId = :id', { id: cycleId });
         switch (type) {
           case OKRsType.ROOT:
             return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: true }).getMany();

@@ -5,6 +5,8 @@ import { ResponseModel } from '@app/constants/app.interface';
 import { DashboardService } from './dashboard.service';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { CurrentUser } from '../user/user.decorator';
+import { UserEntity } from '@app/db/entities/user.entity';
 
 @Controller('/api/v1/dashboard')
 @UseGuards(AuthenticationGuard)
@@ -18,5 +20,13 @@ export class DashboardController {
     @Query('type') type: TopStarType,
   ): Promise<ResponseModel> {
     return this._dashBoardService.getTopStars(cycleId, type);
+  }
+
+  @Get('/view_progress')
+  public async viewProgressOKRs(
+    @Query('cycleId', ParseIntPipe) cycleId: number,
+    @CurrentUser() user: UserEntity,
+  ): Promise<ResponseModel> {
+    return this._dashBoardService.viewOKRsProgress(cycleId, user.id);
   }
 }
