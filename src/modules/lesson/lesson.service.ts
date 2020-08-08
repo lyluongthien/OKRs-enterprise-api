@@ -23,13 +23,39 @@ export class LessonService {
 
   public async getDetailLesson(slug: string): Promise<ResponseModel> {
     const data = await this._lessonRepository.getDetailLesson(slug);
+    const listLesson = await this._lessonRepository.getOrderedLessons();
     if (!data) {
       throw new HttpException(CommonMessage.POST_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
+    let nextLesson = null;
+    let preLesson = null;
+    // Get next and previous lesson
+    listLesson.map((lesson, index, listLesson) => {
+      const length = listLesson.length;
+      if (lesson.id === data.id && index < length - 1) {
+        nextLesson = listLesson[index + 1];
+      }
+      if (lesson.id === data.id && index > 0) {
+        preLesson = listLesson[index - 1];
+      }
+    });
+
+    const resData = {
+      id: data.id,
+      slug: data.slug,
+      title: data.title,
+      index: data.index,
+      content: data.content,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+      nextLesson: nextLesson,
+      preLesson: preLesson,
+    };
+
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: resData,
     };
   }
 

@@ -21,6 +21,18 @@ export class LessonRepository extends Repository<LessonEntity> {
     }
   }
 
+  public async getOrderedLessons(): Promise<LessonEntity[]> {
+    try {
+      const querybBuilder = this.createQueryBuilder('lesson')
+        .select(['lesson.id', 'lesson.slug', 'lesson.title'])
+        .orderBy('lesson.index', 'ASC')
+        .addOrderBy('lesson.updatedAt', 'DESC');
+      return querybBuilder.getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getDetailLesson(slug: string): Promise<LessonEntity> {
     try {
       const queryBuilder = this.createQueryBuilder('lesson').where('lesson.slug = :slug', { slug: slug }).getOne();
