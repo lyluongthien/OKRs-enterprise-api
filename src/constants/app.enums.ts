@@ -140,4 +140,15 @@ export enum OKRsType {
   ROOT = 1,
   TEAM = 2,
   PERSONAL = 3,
+  ONLY_PROGRESS = 4,
+}
+
+export enum TopStarType {
+  SENDER = 1,
+  RECEIVER = 2,
+}
+
+export enum OKRsLeaderType {
+  CURRENT = 1,
+  ALL = 2,
 }

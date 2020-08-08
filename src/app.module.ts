@@ -23,6 +23,7 @@ import { UserStarModule } from './modules/user-star/user-star.module';
 import { CheckinModule } from './modules/checkin/checkin.module';
 import { RoleModule } from './modules/role/role.module';
 import { MetaModule } from './modules/meta/meta.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { MetaModule } from './modules/meta/meta.module';
     RoleModule,
     MetaModule,
     MulterModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService],

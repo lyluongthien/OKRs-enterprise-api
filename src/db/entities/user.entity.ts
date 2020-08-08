@@ -10,6 +10,7 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { _salt } from '@app/constants/app.config';
@@ -17,6 +18,7 @@ import { JobEntity } from './job.entity';
 import { RoleEntity } from './role.entity';
 import { TeamEntity } from './team.entity';
 import { ObjectiveEntity } from './objective.entity';
+import { FeedbackEntity } from './feedback.entity';
 
 @Entity({ name: TableName.User })
 export class UserEntity {
@@ -91,6 +93,14 @@ export class UserEntity {
 
   @OneToMany(() => ObjectiveEntity, (objectives) => objectives.user)
   public objectives: ObjectiveEntity;
+
+  @OneToMany(() => FeedbackEntity, (feedback) => feedback.sender)
+  @JoinColumn([{ name: 'id', referencedColumnName: 'senderId' }])
+  public sender: FeedbackEntity[];
+
+  @OneToMany(() => FeedbackEntity, (feedback) => feedback.receiver)
+  @JoinColumn([{ name: 'id', referencedColumnName: 'receiverId' }])
+  public receiver: FeedbackEntity[];
 
   @BeforeInsert()
   public async hashPassword(): Promise<void> {

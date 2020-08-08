@@ -5,7 +5,7 @@ import { OkrsDTO } from './objective.dto';
 import { ObjectiveRepository } from './objective.repository';
 import { UserRepository } from '../user/user.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, OKRsType } from '@app/constants/app.enums';
+import { CommonMessage, OKRsType, OKRsLeaderType } from '@app/constants/app.enums';
 
 @Injectable()
 export class ObjectiveService {
@@ -20,8 +20,8 @@ export class ObjectiveService {
     };
   }
 
-  public async searchOKRs(cycleID: number, id: number): Promise<ResponseModel> {
-    const data = await this._objectiveRepository.searchOKRs(cycleID, id);
+  public async searchOKRs(cycleId: number, id: number): Promise<ResponseModel> {
+    const data = await this._objectiveRepository.searchOKRs(cycleId, id);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -29,8 +29,21 @@ export class ObjectiveService {
     };
   }
 
-  public async getAllTeamLeaderOKRs(cycleId: number): Promise<ResponseModel> {
-    const data = await this._objectiveRepository.getAllTeamLeaderOKRs(cycleId);
+  public async getTeamLeaderOKRs(id: OKRsLeaderType, type: number): Promise<ResponseModel> {
+    let data = null;
+    if (type == OKRsLeaderType.CURRENT) {
+      const teamLeadId = (await this._userRepository.getTeamLeaderId(id)).id;
+      data = await this._objectiveRepository.getTeamLeaderOKRs(teamLeadId, type);
+    } else {
+      data = await this._objectiveRepository.getTeamLeaderOKRs(id, type);
+    }
+    data.map((value) => {
+      const email = value.user.email.split('@');
+      if (email) {
+        value.user.email = email[0];
+      }
+      return data;
+    });
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -38,13 +51,13 @@ export class ObjectiveService {
     };
   }
 
-  public async viewListOKRs(cycleID: number, userId: number): Promise<ResponseModel> {
+  public async viewListOKRs(cycleId: number, userId: number): Promise<ResponseModel> {
     const data: any = {};
     const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;
 
-    data.personal = await this._objectiveRepository.viewListOKRs(cycleID, OKRsType.PERSONAL, userId);
-    data.team = await this._objectiveRepository.viewListOKRs(cycleID, OKRsType.TEAM, teamLeadId);
-    data.root = await this._objectiveRepository.viewListOKRs(cycleID, OKRsType.ROOT);
+    data.personal = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.PERSONAL, userId);
+    data.team = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.TEAM, teamLeadId);
+    data.root = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.ROOT);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
