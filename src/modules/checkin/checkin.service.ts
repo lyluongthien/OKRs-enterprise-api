@@ -128,6 +128,7 @@ export class CheckinService {
             } else {
               subData.confidentLevel = value;
             }
+            return value;
           });
           if (dataLastWeek) {
             confidentLevel.some((value) => {
@@ -139,8 +140,10 @@ export class CheckinService {
                   } else {
                     subData.changing = CurrentWeekValue.numberoflevel;
                   }
+                  return { confidentLevel, numberoflevel };
                 });
               }
+              return value;
             });
           }
           data.push(subData);

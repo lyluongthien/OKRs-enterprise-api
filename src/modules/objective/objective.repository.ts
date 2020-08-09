@@ -157,11 +157,4 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
-
-  public async getConfidentLevelProgress(): Promise<any> {
-    try {
-    } catch (error) {
-      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
-    }
-  }
 }

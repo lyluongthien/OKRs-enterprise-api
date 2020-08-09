@@ -15,6 +15,7 @@ export class KeyResultRepository extends Repository<KeyResultEntity> {
           if (value.targetValue < 1 || value.targetValue <= value.valueObtained) {
             throw new CustomException();
           }
+          return value;
         });
         await manager.getRepository(KeyResultEntity).save(data);
       } else {
