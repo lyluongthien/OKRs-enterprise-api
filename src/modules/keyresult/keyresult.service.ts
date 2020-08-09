@@ -9,8 +9,8 @@ import { CommonMessage } from '@app/constants/app.enums';
 export class KeyResultService {
   constructor(private _keyResultRepository: KeyResultRepository) {}
 
-  public async createKeyResult(data: KeyResultDTO[]): Promise<ResponseModel> {
-    await this._keyResultRepository.createKeyResult(data);
+  public async createAndUpdateKeyResult(data: KeyResultDTO[]): Promise<ResponseModel> {
+    await this._keyResultRepository.createAndUpdateKeyResult(data);
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,

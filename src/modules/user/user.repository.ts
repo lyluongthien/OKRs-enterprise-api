@@ -33,6 +33,14 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
+  public async getAdmin(): Promise<UserEntity> {
+    try {
+      return this.findOne({ where: { roleId: 1 } });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getUsersApproved(options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')

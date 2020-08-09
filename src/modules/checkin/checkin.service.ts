@@ -2,7 +2,7 @@ import { Injectable, HttpStatus } from '@nestjs/common';
 
 import { CheckinRepository } from './checkin.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage } from '@app/constants/app.enums';
+import { CommonMessage, ConfidentLevel } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
 import { EntityManager } from 'typeorm';
 import { UserRepository } from '../user/user.repository';
@@ -38,10 +38,31 @@ export class CheckinService {
   public async createUpdateCheckin(
     data: CreateCheckinDTO,
     manager: EntityManager,
-    userId: number,
+    userId?: number,
   ): Promise<ResponseModel> {
-    const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;
-    const dataResponse = await this._checkinRepository.createUpdateCheckin(data, manager, teamLeadId);
+    if (userId) {
+      const isLeader = (await this._userRepository.getUserByID(userId)).isLeader;
+      if (isLeader) {
+        data.checkin.teamLeaderId = (await this._userRepository.getAdmin()).id;
+      } else {
+        data.checkin.teamLeaderId = (await this._userRepository.getTeamLeaderId(userId)).id;
+      }
+    }
+    const checkinModel = await this._checkinRepository.createUpdateCheckin(data.checkin, manager);
+    const keyResultValue = [];
+    if (data.checkinDetails) {
+      data.checkinDetails.map((value) => {
+        keyResultValue.push({ id: value.keyResultId, valueObtained: value.valueObtained });
+        value.checkinId = checkinModel.id;
+        return value;
+      });
+    }
+    const checkinDetailModel = await this._checkinRepository.createUpdateCheckinDetail(data.checkinDetails, manager);
+    await this._keyResultRepository.createAndUpdateKeyResult(keyResultValue, manager);
+    const dataResponse = {
+      checkin: checkinModel,
+      checkin_details: checkinDetailModel,
+    };
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
@@ -67,6 +88,69 @@ export class CheckinService {
     return {
       statusCode: HttpStatus.OK,
       message: message,
+      data: data,
+    };
+  }
+
+  public async getWeeklyCheckin(): Promise<ResponseModel> {
+    const today = new Date('2020-08-12');
+    const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+    const todayValue = today.getTime();
+    const lastWeekValue = lastWeek.getTime();
+    const currentWeekIds = [],
+      lastWeekIds = [];
+    const data = [];
+    const confidentLevel = [ConfidentLevel.BAD, ConfidentLevel.GOOD, ConfidentLevel.NORMAL];
+    let dataLastWeek = null;
+    const checkins = await this._checkinRepository.getCheckin();
+    if (checkins) {
+      checkins.map((value) => {
+        if (todayValue >= value.checkinAt.getTime() && todayValue < value.nextCheckinDate.getTime()) {
+          currentWeekIds.push(value.id);
+        }
+        if (lastWeekValue >= value.checkinAt.getTime() && lastWeekValue < value.nextCheckinDate.getTime()) {
+          lastWeekIds.push(value.id);
+        }
+        return value;
+      });
+      if (lastWeekIds.length > 1) {
+        dataLastWeek = await this._checkinRepository.getWeeklyCheckin(lastWeekIds);
+      }
+      if (currentWeekIds.length > 1) {
+        const dataCurrentWeek = await this._checkinRepository.getWeeklyCheckin(currentWeekIds);
+        dataCurrentWeek.map((CurrentWeekValue) => {
+          const subData: any = {};
+          confidentLevel.some((value) => {
+            const levelExist = (param) => dataCurrentWeek.some(({ confidentLevel }) => param == confidentLevel);
+            if (levelExist(value)) {
+              subData.confidentLevel = CurrentWeekValue.confidentLevel;
+              subData.numberoflevel = CurrentWeekValue.numberoflevel;
+            } else {
+              subData.confidentLevel = value;
+            }
+          });
+          if (dataLastWeek) {
+            confidentLevel.some((value) => {
+              const levelExist = (param) => dataLastWeek.some(({ confidentLevel }) => param == confidentLevel);
+              if (levelExist(value)) {
+                dataLastWeek.some(({ confidentLevel, numberoflevel }) => {
+                  if (CurrentWeekValue.confidentLevel == confidentLevel) {
+                    subData.changing = CurrentWeekValue.numberoflevel - numberoflevel;
+                  } else {
+                    subData.changing = CurrentWeekValue.numberoflevel;
+                  }
+                });
+              }
+            });
+          }
+          data.push(subData);
+          return dataCurrentWeek;
+        });
+      }
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
       data: data,
     };
   }
