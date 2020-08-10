@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { DbConfig } from '@app/constants/app.enums';
-import { isDevMode } from '@app/constants/app.config';
 import accessEnv from '@app/libs/accessEnv';
 import { RoleEntity } from './entities/role.entity';
 import { UserEntity } from './entities/user.entity';
@@ -73,7 +72,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
         entitiesDir: 'src/db/entities/*.ts',
       },
       dropSchema: false,
-      logging: isDevMode ? true : false,
+      logging: false,
       synchronize: false,
     };
   }
