@@ -112,8 +112,9 @@ export enum Status {
 
 export enum CheckinStatus {
   DRAFT = 'Draft',
-  PEDDING = 'Pedding',
+  PENDING = 'Pending',
   DONE = 'Done',
+  CLOSED = 'Closed',
 }
 
 export enum CheckinType {

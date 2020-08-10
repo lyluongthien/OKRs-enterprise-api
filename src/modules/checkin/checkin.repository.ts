@@ -73,6 +73,14 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
+  public async updateCheckinStatus(id: number, status: CheckinStatus, manager: EntityManager): Promise<void> {
+    try {
+      await manager.getRepository(CheckinEntity).update({ id }, { status: status });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getCheckinByObjectiveId(id: number): Promise<CheckinEntity[]> {
     try {
       const checkins = this.find({ where: { objectiveId: id } });
@@ -94,18 +102,16 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       return this.createQueryBuilder('checkin')
         .select([
           'checkin.id',
-          'checkin.confidentLevel',
           'checkin.checkinAt',
-          'checkin.nextCheckinDate',
-          'checkin.status',
           'objective.id',
           'objective.title',
+          'cycle.name',
           'user.id',
           'user.fullName',
         ])
         .leftJoin('checkin.objective', 'objective')
+        .leftJoin('objective.cycle', 'cycle')
         .leftJoin('objective.user', 'user')
-        .leftJoin('checkin.checkinDetails', 'checkinDetails')
         .where(condition, { id })
         .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
         .getMany();

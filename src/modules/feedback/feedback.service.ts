@@ -1,10 +1,11 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { FeedbackRepository } from './feedback.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, CheckinType } from '@app/constants/app.enums';
+import { CommonMessage, CheckinType, CheckinStatus } from '@app/constants/app.enums';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserRepository } from '../user/user.repository';
 import { FeedbackDTO } from './feedback.dto';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class FeedbackService {
@@ -31,8 +32,9 @@ export class FeedbackService {
     };
   }
 
-  public async createFeedBack(data: FeedbackDTO, senderId: number): Promise<ResponseModel> {
-    this._feedBackRepository.createFeedBack(data, senderId);
+  public async createFeedBack(data: FeedbackDTO, senderId: number, manager: EntityManager): Promise<ResponseModel> {
+    await this._feedBackRepository.createFeedBack(data, senderId, manager);
+    await this._checkinRepository.updateCheckinStatus(data.checkinId, CheckinStatus.CLOSED, manager);
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
