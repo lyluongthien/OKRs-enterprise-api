@@ -21,6 +21,11 @@ export class CreateTableCheckinDetails1595388563967 implements MigrationInterfac
         type: 'integer',
       },
       {
+        name: 'progress',
+        type: 'varchar',
+        length: '255',
+      },
+      {
         name: 'problems',
         type: 'varchar',
         length: '255',
