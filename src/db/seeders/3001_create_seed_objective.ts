@@ -92,7 +92,7 @@ export class Seeder3001bjective implements Seeder {
         {
           title: 'Cải thiện các chỉ số trong quy trình bán hàng',
           progress: 0,
-          userId: 11,
+          userId: 13,
           isRootObjective: false,
           cycleId: 3,
           parentObjectiveId: 4,
@@ -100,7 +100,7 @@ export class Seeder3001bjective implements Seeder {
         {
           title: 'Hiểu khách hàng và phân tích hành vi khách hàng',
           progress: 0,
-          userId: 11,
+          userId: 13,
           isRootObjective: false,
           cycleId: 3,
           parentObjectiveId: 5,
@@ -108,7 +108,7 @@ export class Seeder3001bjective implements Seeder {
         {
           title: 'Cải thiện tài liệu quản trị nội bộ',
           progress: 0,
-          userId: 12,
+          userId: 14,
           isRootObjective: false,
           cycleId: 3,
           parentObjectiveId: 4,
@@ -116,7 +116,7 @@ export class Seeder3001bjective implements Seeder {
         {
           title: 'Cải thiện sự hài lòng với công việc lễ tân',
           progress: 0,
-          userId: 12,
+          userId: 14,
           isRootObjective: false,
           cycleId: 3,
           parentObjectiveId: 5,

@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { CheckinRepository } from './checkin.repository';
 import { ResponseModel } from '@app/constants/app.interface';
@@ -7,6 +7,7 @@ import { CreateCheckinDTO } from './checkin.dto';
 import { EntityManager } from 'typeorm';
 import { UserRepository } from '../user/user.repository';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
+import { isNotEmptyObject } from 'class-validator';
 
 @Injectable()
 export class CheckinService {
@@ -40,29 +41,38 @@ export class CheckinService {
     manager: EntityManager,
     userId?: number,
   ): Promise<ResponseModel> {
-    if (userId) {
+    if (!isNotEmptyObject(data)) {
+      throw new HttpException(CommonMessage.BODY_EMPTY, HttpStatus.PAYMENT_REQUIRED);
+    }
+
+    let checkinModel = null;
+    if (userId && data.checkin) {
       const isLeader = (await this._userRepository.getUserByID(userId)).isLeader;
       if (isLeader) {
         data.checkin.teamLeaderId = (await this._userRepository.getAdmin()).id;
       } else {
         data.checkin.teamLeaderId = (await this._userRepository.getTeamLeaderId(userId)).id;
       }
+      checkinModel = await this._checkinRepository.createUpdateCheckin(data.checkin, manager);
     }
-    const checkinModel = await this._checkinRepository.createUpdateCheckin(data.checkin, manager);
+    console.log(checkinModel);
+
     const keyResultValue = [];
+    let checkinDetailModel = null;
     if (data.checkinDetails) {
       data.checkinDetails.map((value) => {
         keyResultValue.push({ id: value.keyResultId, valueObtained: value.valueObtained });
         value.checkinId = checkinModel.id;
         return value;
       });
+      checkinDetailModel = await this._checkinRepository.createUpdateCheckinDetail(data.checkinDetails, manager);
     }
-    const checkinDetailModel = await this._checkinRepository.createUpdateCheckinDetail(data.checkinDetails, manager);
-    await this._keyResultRepository.createAndUpdateKeyResult(keyResultValue, manager);
+    // await this._keyResultRepository.createAndUpdateKeyResult(keyResultValue, manager);
     const dataResponse = {
       checkin: checkinModel,
       checkin_details: checkinDetailModel,
     };
+    console.log(dataResponse);
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,

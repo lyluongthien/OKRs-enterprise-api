@@ -15,7 +15,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
    */
   public async createUpdateCheckin(data: ObjectLiteral, manager: EntityManager): Promise<any> {
     try {
-      manager.getRepository(CheckinEntity).save(data);
+      return manager.getRepository(CheckinEntity).save(data);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -23,7 +23,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
 
   public async createUpdateCheckinDetail(data: ObjectLiteral, manager: EntityManager): Promise<any> {
     try {
-      manager.getRepository(CheckinDetailEntity).save(data);
+      return manager.getRepository(CheckinDetailEntity).save(data);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
