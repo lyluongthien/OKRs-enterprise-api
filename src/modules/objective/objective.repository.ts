@@ -171,4 +171,35 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+
+  public async getListOKRsCheckin(userId: number, cycleId: number): Promise<ObjectiveEntity[]> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('objective')
+        .select([
+          'objective.id',
+          'objective.title',
+          'objective.progress',
+          'objective.isCompleted',
+          'keyresults.id',
+          'keyresults.targetValue',
+          'keyresults.startValue',
+          'keyresults.valueObtained',
+          'keyresults.content',
+          'keyresults.linkPlans',
+          'keyresults.linkResults',
+          'checkins.status',
+          'checkins.checkinAt',
+        ])
+        .leftJoin('objective.keyResults', 'keyresults')
+        .leftJoin('objective.user', 'users')
+        .leftJoin('objective.checkins', 'checkins')
+        .where('objective.cycleId = :cycleId', { cycleId: cycleId })
+        .andWhere('users.id = :userId', { userId: userId })
+        .getMany();
+
+      return queryBuilder;
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 }

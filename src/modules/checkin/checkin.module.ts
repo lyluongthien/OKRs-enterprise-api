@@ -18,6 +18,7 @@ import { UserRepository } from '../user/user.repository';
       KeyResultRepository,
       ObjectiveRepository,
       UserRepository,
+      ObjectiveRepository,
     ]),
   ],
   controllers: [CheckinController],
