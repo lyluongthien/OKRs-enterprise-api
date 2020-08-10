@@ -1,12 +1,10 @@
-import { Repository, EntityRepository, EntityManager } from 'typeorm';
+import { Repository, EntityRepository, EntityManager, getConnection, ObjectLiteral } from 'typeorm';
 import { HttpException } from '@nestjs/common';
 
 import { CheckinEntity } from '@app/db/entities/checkin.entity';
-import { CreateCheckinDTO } from './checkin.dto';
-import { CheckinDetailEntity } from '@app/db/entities/checkin-detail.entity';
 import { CheckinStatus, CheckinType } from '@app/constants/app.enums';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
-import { KeyResultEntity } from '@app/db/entities/key-result.entity';
+import { CheckinDetailEntity } from '@app/db/entities/checkin-detail.entity';
 
 @EntityRepository(CheckinEntity)
 export class CheckinRepository extends Repository<CheckinEntity> {
@@ -15,22 +13,27 @@ export class CheckinRepository extends Repository<CheckinEntity> {
    * @param manager
    * @description: Create and update checkin. If id null => create new checkin else => Update
    */
-  public async createUpdateCheckin(data: CreateCheckinDTO, manager: EntityManager, teamLeadId: number): Promise<any> {
+  public async createUpdateCheckin(data: ObjectLiteral, manager: EntityManager): Promise<any> {
     try {
-      data.checkin.teamLeaderId = teamLeadId;
-      const checkinModel = await manager.getRepository(CheckinEntity).save(data.checkin);
-      const keyResultValue = [];
-      data.checkinDetails.map((data) => {
-        keyResultValue.push({ id: data.keyResultId, valueObtained: data.valueObtained });
-        data.checkinId = checkinModel.id;
-        return data;
-      });
-      const checkinDetailModel = await manager.getRepository(CheckinDetailEntity).save(data.checkinDetails);
-      await manager.getRepository(KeyResultEntity).save(keyResultValue);
-      return {
-        checkin: checkinModel,
-        checkin_details: checkinDetailModel,
-      };
+      manager.getRepository(CheckinEntity).save(data);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async createUpdateCheckinDetail(data: ObjectLiteral, manager: EntityManager): Promise<any> {
+    try {
+      manager.getRepository(CheckinDetailEntity).save(data);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getWeeklyCheckin(id: number[]): Promise<ObjectLiteral[]> {
+    try {
+      return await getConnection().query(`select c."confidentLevel", count(c.id) as numberOfLevel from checkins c
+      where c.id in (${id})
+      group by c."confidentLevel"`);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -70,6 +73,14 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
+  public async updateCheckinStatus(id: number, status: CheckinStatus, manager: EntityManager): Promise<void> {
+    try {
+      await manager.getRepository(CheckinEntity).update({ id }, { status: status });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getCheckinByObjectiveId(id: number): Promise<CheckinEntity[]> {
     try {
       const checkins = this.find({ where: { objectiveId: id } });
@@ -84,25 +95,23 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     try {
       let condition = null;
       if (type == CheckinType.MEMBER) {
-        condition = 'user.id = :id AND checkin.teamLeaderId IS NULL';
+        condition = 'user.id = :id AND objective.isRootObjective = false';
       } else {
         condition = 'checkin.teamLeaderId = :id';
       }
       return this.createQueryBuilder('checkin')
         .select([
           'checkin.id',
-          'checkin.confidentLevel',
           'checkin.checkinAt',
-          'checkin.nextCheckinDate',
-          'checkin.status',
           'objective.id',
           'objective.title',
+          'cycle.name',
           'user.id',
           'user.fullName',
         ])
         .leftJoin('checkin.objective', 'objective')
+        .leftJoin('objective.cycle', 'cycle')
         .leftJoin('objective.user', 'user')
-        .leftJoin('checkin.checkinDetails', 'checkinDetails')
         .where(condition, { id })
         .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
         .getMany();
@@ -130,6 +139,14 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .where('team.id= :team', { team: teamId })
         .andWhere('cycle.id = :cycle', { cycle: cycleId })
         .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public getCheckin(): Promise<CheckinEntity[]> {
+    try {
+      return this.find();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

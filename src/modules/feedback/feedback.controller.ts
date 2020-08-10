@@ -7,6 +7,7 @@ import { ResponseModel } from '@app/constants/app.interface';
 import { CurrentUser } from '../user/user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { FeedbackDTO } from './feedback.dto';
+import { TransactionManager, EntityManager } from 'typeorm';
 
 @Controller('/api/v1/feedback')
 @UseGuards(AuthenticationGuard)
@@ -15,12 +16,16 @@ export class FeedbackController {
   constructor(private _feedBackService: FeedbackService) {}
 
   @Get()
-  public async getCFRsTeam(@CurrentUser() me: UserEntity): Promise<ResponseModel> {
-    return this._feedBackService.viewListCFRs(me);
+  public async ListWaitingFeedBack(@CurrentUser() me: UserEntity): Promise<ResponseModel> {
+    return this._feedBackService.ListWaitingFeedBack(me.id);
   }
 
   @Post()
-  public async createFeedBack(@Body() data: FeedbackDTO, @CurrentUser() me: UserEntity): Promise<ResponseModel> {
-    return this._feedBackService.createFeedBack(data, me.id);
+  public async createFeedBack(
+    @CurrentUser() me: UserEntity,
+    @Body() data: FeedbackDTO,
+    @TransactionManager() manager: EntityManager,
+  ): Promise<ResponseModel> {
+    return this._feedBackService.createFeedBack(data, me.id, manager);
   }
 }

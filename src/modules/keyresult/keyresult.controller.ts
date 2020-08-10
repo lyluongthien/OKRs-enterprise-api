@@ -16,7 +16,7 @@ export class KeyResultController {
   @Post()
   @UsePipes(new ValidationPipe())
   public createKeyResult(@Body() keyresult: KeyResultDTO[]): Promise<ResponseModel> {
-    return this._keyResultService.createKeyResult(keyresult);
+    return this._keyResultService.createAndUpdateKeyResult(keyresult);
   }
 
   @Delete(':id')

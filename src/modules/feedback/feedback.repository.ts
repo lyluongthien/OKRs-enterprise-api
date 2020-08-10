@@ -1,4 +1,4 @@
-import { Repository, EntityRepository, ObjectLiteral, getConnection } from 'typeorm';
+import { Repository, EntityRepository, ObjectLiteral, getConnection, EntityManager } from 'typeorm';
 import { HttpException } from '@nestjs/common';
 
 import { FeedbackEntity } from '@app/db/entities/feedback.entity';
@@ -8,10 +8,10 @@ import { TopStarType } from '@app/constants/app.enums';
 
 @EntityRepository(FeedbackEntity)
 export class FeedbackRepository extends Repository<FeedbackEntity> {
-  public async createFeedBack(data: FeedbackDTO, senderId: number): Promise<void> {
+  public async createFeedBack(data: FeedbackDTO, senderId: number, manager: EntityManager): Promise<void> {
     try {
       data.senderId = senderId;
-      this.save(data);
+      await manager.getRepository(FeedbackEntity).save(data);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
