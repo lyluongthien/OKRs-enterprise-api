@@ -71,16 +71,6 @@ export enum GenderEnum {
   OTHER = 2,
 }
 
-export enum RouterEnum {
-  EVALUATION_CRITERIA_ROUTE = 'localhost:3000/api/v1/evaluation-criterias',
-  CYCLE_ROUTE = 'localhost:3000/api/v1/cycles',
-  MEASURE_UNIT_ROUTE = 'localhost:3000/api/v1/measure-units',
-  API_HOST_ROUTER = 'http://localhost:3000',
-  FE_HOST_ROUTER = 'http://localhost:8080',
-  USER_ROUTE = 'http://localhost:3000/api/v1/users',
-  TEAM_ROUTE = 'http://localhost:3000/api/v1/teams',
-}
-
 export enum CommonMessage {
   SUCCESS = 'success',
   CYCLE_DATE = 'End date must be greater than start date',
