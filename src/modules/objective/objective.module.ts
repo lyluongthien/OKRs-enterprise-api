@@ -7,9 +7,18 @@ import { ObjectiveController } from './objective.controller';
 import { ObjectiveService } from './objective.service';
 import { UserRepository } from '../user/user.repository';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
+import { CycleRepository } from '../cycle/cycle.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ObjectiveEntity, ObjectiveRepository, UserRepository, KeyResultRepository])],
+  imports: [
+    TypeOrmModule.forFeature([
+      ObjectiveEntity,
+      ObjectiveRepository,
+      UserRepository,
+      KeyResultRepository,
+      CycleRepository,
+    ]),
+  ],
   controllers: [ObjectiveController],
   providers: [ObjectiveService],
 })

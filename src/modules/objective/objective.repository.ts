@@ -54,6 +54,20 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
+  public async getOKRsByCycleId(cycleId: number): Promise<ObjectiveEntity[]> {
+    try {
+      return await this.createQueryBuilder('objective')
+        .select(['objective.id', 'objective.title', 'users.id', 'users.email'])
+        .leftJoin('objective.user', 'users')
+        .where('objective.cycleId = :id', { id: cycleId })
+        .andWhere('users.isLeader = :isLeader', { isLeader: false })
+        .andWhere('objective.isRootObjective = :root', { root: false })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getTeamLeaderOKRs(id: number, type: OKRsLeaderType): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
