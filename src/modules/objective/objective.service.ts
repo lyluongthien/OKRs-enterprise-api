@@ -7,6 +7,7 @@ import { UserRepository } from '../user/user.repository';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, OKRsType, OKRsLeaderType } from '@app/constants/app.enums';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
+import { CycleRepository } from '../cycle/cycle.repository';
 
 @Injectable()
 export class ObjectiveService {
@@ -14,6 +15,7 @@ export class ObjectiveService {
     private _objectiveRepository: ObjectiveRepository,
     private _userRepository: UserRepository,
     private _keyResultRepository: KeyResultRepository,
+    private _cycleRepository: CycleRepository,
   ) {}
 
   public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userId?: number): Promise<ResponseModel> {
@@ -63,6 +65,25 @@ export class ObjectiveService {
     } else {
       data = await this._objectiveRepository.getTeamLeaderOKRs(id, type);
     }
+    if (data) {
+      data.map((value) => {
+        const email = value.user.email.split('@');
+        if (email) {
+          value.user.email = email[0];
+        }
+        return data;
+      });
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async getOKRsStaffs(): Promise<ResponseModel> {
+    const currentCycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+    const data = await this._objectiveRepository.getOKRsByCycleId(currentCycleId);
     if (data) {
       data.map((value) => {
         const email = value.user.email.split('@');
