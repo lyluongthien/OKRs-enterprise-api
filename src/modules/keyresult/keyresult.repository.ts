@@ -1,16 +1,30 @@
 import { KeyResultDTO } from './keyresult.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 
-import { Repository, EntityRepository } from 'typeorm';
+import { Repository, EntityRepository, EntityManager } from 'typeorm';
 import { HttpException } from '@nestjs/common';
-import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { DATABASE_EXCEPTION, TARGET_VALUE_INVALID } from '@app/constants/app.exeption';
+import { CustomException } from '@app/services/exceptions/HandlerException';
 
 @EntityRepository(KeyResultEntity)
 export class KeyResultRepository extends Repository<KeyResultEntity> {
-  public async createKeyResult(data: KeyResultDTO[]): Promise<void> {
+  public async createAndUpdateKeyResult(data: KeyResultDTO[], manager?: EntityManager): Promise<void> {
     try {
-      this.save(data);
+      if (manager) {
+        data.map((value) => {
+          if (value.targetValue < 1 || value.targetValue <= value.valueObtained) {
+            throw new CustomException();
+          }
+          return value;
+        });
+        await manager.getRepository(KeyResultEntity).save(data);
+      } else {
+        this.save(data);
+      }
     } catch (error) {
+      if (error instanceof CustomException) {
+        throw new HttpException(TARGET_VALUE_INVALID.message, TARGET_VALUE_INVALID.statusCode);
+      }
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }

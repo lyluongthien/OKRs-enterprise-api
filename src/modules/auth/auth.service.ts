@@ -6,7 +6,7 @@ import { compareSync } from 'bcryptjs';
 import { SignInDTO } from './auth.dto';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, RouterEnum, RoleEnum } from '@app/constants/app.enums';
+import { CommonMessage, RoleEnum } from '@app/constants/app.enums';
 import { TokenRepository } from './auth.repository';
 import { expireInviteToken } from '@app/constants/app.magic-number';
 import { UserRepository } from '../user/user.repository';
@@ -22,6 +22,7 @@ import {
   USER_LOOKED,
 } from '@app/constants/app.exeption';
 import { RoleRepository } from '../role/role.repository';
+import accessEnv from '@app/libs/accessEnv';
 
 @Injectable()
 export class AuthService {
@@ -148,7 +149,7 @@ export class AuthService {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: {
-        url: RouterEnum.FE_HOST_ROUTER + `/dang-ky?token=${token}`,
+        url: accessEnv('FE_HOST') + `/dang-ky?token=${token}`,
       },
     };
   }

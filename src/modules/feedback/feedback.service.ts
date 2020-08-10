@@ -1,11 +1,11 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { FeedbackRepository } from './feedback.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, CheckinType } from '@app/constants/app.enums';
+import { CommonMessage, CheckinType, CheckinStatus } from '@app/constants/app.enums';
 import { CheckinRepository } from '../checkin/checkin.repository';
-import { UserEntity } from '@app/db/entities/user.entity';
 import { UserRepository } from '../user/user.repository';
 import { FeedbackDTO } from './feedback.dto';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class FeedbackService {
@@ -15,14 +15,15 @@ export class FeedbackService {
     private _userRepository: UserRepository,
   ) {}
 
-  public async viewListCFRs(me: UserEntity): Promise<ResponseModel> {
+  public async ListWaitingFeedBack(id: number): Promise<ResponseModel> {
     const data: any = {};
-    const isLeader = (await this._userRepository.getUserByID(me.id)).isLeader;
-    if (isLeader) {
-      data.team = await this._checkinRepository.getDoneCheckinById(me.id, CheckinType.TEAM_LEADER);
-      data.personal = await this._checkinRepository.getDoneCheckinById(me.id, CheckinType.MEMBER);
+    const isLeader = (await this._userRepository.getUserByID(id)).isLeader;
+    const adminId = (await this._userRepository.getAdmin()).id;
+    if (isLeader || id == adminId) {
+      data.team = await this._checkinRepository.getDoneCheckinById(id, CheckinType.TEAM_LEADER);
+      data.personal = await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER);
     } else {
-      data.personal = await this._checkinRepository.getDoneCheckinById(me.id, CheckinType.MEMBER);
+      data.personal = await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER);
     }
     return {
       statusCode: HttpStatus.OK,
@@ -31,8 +32,9 @@ export class FeedbackService {
     };
   }
 
-  public async createFeedBack(data: FeedbackDTO, senderId: number): Promise<ResponseModel> {
-    this._feedBackRepository.createFeedBack(data, senderId);
+  public async createFeedBack(data: FeedbackDTO, senderId: number, manager: EntityManager): Promise<ResponseModel> {
+    await this._feedBackRepository.createFeedBack(data, senderId, manager);
+    await this._checkinRepository.updateCheckinStatus(data.checkinId, CheckinStatus.CLOSED, manager);
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,

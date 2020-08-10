@@ -2,40 +2,16 @@ import { Repository, EntityRepository, EntityManager } from 'typeorm';
 import { HttpException } from '@nestjs/common';
 
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';
-import { OkrsDTO } from './objective.dto';
-import { KeyResultEntity } from '@app/db/entities/key-result.entity';
-import { DATABASE_EXCEPTION, TARGET_VALUE_INVALID } from '@app/constants/app.exeption';
-import { CustomException } from '@app/services/exceptions/HandlerException';
+import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 import { OKRsType, OKRsLeaderType } from '@app/constants/app.enums';
+import { ObjectiveDTO } from './objective.dto';
 
 @EntityRepository(ObjectiveEntity)
 export class ObjectiveRepository extends Repository<ObjectiveEntity> {
-  public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<void> {
+  public async createAndUpdateObjective(data: ObjectiveDTO, manager: EntityManager): Promise<ObjectiveEntity> {
     try {
-      okrDTo.objective.userId = userID;
-      let sumDataTarget = 0,
-        sumDataObtained = 0;
-      okrDTo.keyResult.map((data) => {
-        if (data.targetValue < 1 || data.targetValue <= data.valueObtained) {
-          throw new CustomException();
-        }
-        sumDataTarget += data.targetValue;
-        sumDataObtained += data.valueObtained;
-        return data.objectiveId;
-      });
-      const objectiveEntity = await manager.getRepository(ObjectiveEntity).save(okrDTo.objective);
-      okrDTo.keyResult.map((data) => {
-        data.objectiveId = objectiveEntity.id;
-        return data.objectiveId;
-      });
-      if (sumDataTarget > 0 && sumDataObtained > 0) {
-        okrDTo.objective.progress = (sumDataObtained / sumDataTarget) * 100;
-      }
-      await manager.getRepository(KeyResultEntity).save(okrDTo.keyResult);
+      return await manager.getRepository(ObjectiveEntity).save(data);
     } catch (error) {
-      if (error instanceof CustomException) {
-        throw new HttpException(TARGET_VALUE_INVALID.message, TARGET_VALUE_INVALID.statusCode);
-      }
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
@@ -78,7 +54,21 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async getTeamLeaderOKRs(id: number, type: number): Promise<ObjectiveEntity[]> {
+  public async getOKRsByCycleId(cycleId: number): Promise<ObjectiveEntity[]> {
+    try {
+      return await this.createQueryBuilder('objective')
+        .select(['objective.id', 'objective.title', 'users.id', 'users.email'])
+        .leftJoin('objective.user', 'users')
+        .where('objective.cycleId = :id', { id: cycleId })
+        .andWhere('users.isLeader = :isLeader', { isLeader: false })
+        .andWhere('objective.isRootObjective = :root', { root: false })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getTeamLeaderOKRs(id: number, type: OKRsLeaderType): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
         .select(['objective.id', 'objective.title', 'users.id', 'users.email'])

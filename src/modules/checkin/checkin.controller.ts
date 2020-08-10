@@ -15,6 +15,10 @@ import { UserEntity } from '@app/db/entities/user.entity';
 export class CheckinController {
   constructor(private readonly _checkinService: CheckinService) {}
 
+  @Get('weekly_checkin')
+  public async getWeeklyCheckin(): Promise<ResponseModel> {
+    return this._checkinService.getWeeklyCheckin();
+  }
   /**
    * @description: Get Checkin detail by checkinId
    * @returns: Checkin in detail

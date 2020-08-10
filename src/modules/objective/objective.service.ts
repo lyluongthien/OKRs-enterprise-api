@@ -6,13 +6,41 @@ import { ObjectiveRepository } from './objective.repository';
 import { UserRepository } from '../user/user.repository';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, OKRsType, OKRsLeaderType } from '@app/constants/app.enums';
+import { KeyResultRepository } from '../keyresult/keyresult.repository';
+import { CycleRepository } from '../cycle/cycle.repository';
 
 @Injectable()
 export class ObjectiveService {
-  constructor(private _objectiveRepository: ObjectiveRepository, private _userRepository: UserRepository) {}
+  constructor(
+    private _objectiveRepository: ObjectiveRepository,
+    private _userRepository: UserRepository,
+    private _keyResultRepository: KeyResultRepository,
+    private _cycleRepository: CycleRepository,
+  ) {}
 
-  public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userID: number): Promise<ResponseModel> {
-    await this._objectiveRepository.createAndUpdateOKRs(okrDTo, manager, userID);
+  public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userId?: number): Promise<ResponseModel> {
+    if (userId) {
+      okrDTo.objective.userId = userId;
+    }
+    if (okrDTo.keyResult) {
+      let sumDataTarget = 0,
+        sumDataObtained = 0;
+      okrDTo.keyResult.map((value) => {
+        sumDataTarget += value.targetValue;
+        sumDataObtained += value.valueObtained;
+        return value.objectiveId;
+      });
+      if (sumDataTarget > 0 && sumDataObtained > 0) {
+        okrDTo.objective.progress = (sumDataObtained / sumDataTarget) * 100;
+      }
+      const objectiveEntity = await this._objectiveRepository.createAndUpdateObjective(okrDTo.objective, manager);
+      okrDTo.keyResult.map((value) => {
+        value.objectiveId = objectiveEntity.id;
+        return value.objectiveId;
+      });
+    }
+    await this._keyResultRepository.createAndUpdateKeyResult(okrDTo.keyResult, manager);
+
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -29,7 +57,7 @@ export class ObjectiveService {
     };
   }
 
-  public async getTeamLeaderOKRs(id: OKRsLeaderType, type: number): Promise<ResponseModel> {
+  public async getTeamLeaderOKRs(id: number, type: OKRsLeaderType): Promise<ResponseModel> {
     let data = null;
     if (type == OKRsLeaderType.CURRENT) {
       const teamLeadId = (await this._userRepository.getTeamLeaderId(id)).id;
@@ -37,13 +65,34 @@ export class ObjectiveService {
     } else {
       data = await this._objectiveRepository.getTeamLeaderOKRs(id, type);
     }
-    data.map((value) => {
-      const email = value.user.email.split('@');
-      if (email) {
-        value.user.email = email[0];
-      }
-      return data;
-    });
+    if (data) {
+      data.map((value) => {
+        const email = value.user.email.split('@');
+        if (email) {
+          value.user.email = email[0];
+        }
+        return data;
+      });
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async getOKRsStaffs(): Promise<ResponseModel> {
+    const currentCycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+    const data = await this._objectiveRepository.getOKRsByCycleId(currentCycleId);
+    if (data) {
+      data.map((value) => {
+        const email = value.user.email.split('@');
+        if (email) {
+          value.user.email = email[0];
+        }
+        return data;
+      });
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

@@ -36,7 +36,12 @@ export class ObjectiveController {
     return this._objectiveService.getTeamLeaderOKRs(id, type);
   }
 
-  @Get()
+  @Get('/staffs')
+  public async getOKRsStaffs(): Promise<ResponseModel> {
+    return this._objectiveService.getOKRsStaffs();
+  }
+
+  @Get('/search')
   public async searchOKRs(
     @Query('cycleId', ParseIntPipe) cycleId: number,
     @Query('userId', ParseIntPipe) id: number,
