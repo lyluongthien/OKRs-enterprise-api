@@ -29,4 +29,9 @@ export class DashboardController {
   ): Promise<ResponseModel> {
     return this._dashBoardService.viewOKRsProgress(cycleId, user.id);
   }
+
+  @Get()
+  public async getAaaa(): Promise<ResponseModel> {
+    return this._dashBoardService.getFirstAndLastDate();
+  }
 }
