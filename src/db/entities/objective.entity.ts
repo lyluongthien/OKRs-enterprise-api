@@ -31,6 +31,9 @@ export class ObjectiveEntity {
   @Column('int', { array: true, nullable: true })
   public alignObjectivesId?: number[] | null;
 
+  @Column()
+  public isCompleted: boolean;
+
   @ManyToOne(() => ObjectiveEntity, (objective) => objective.parentObjectives)
   @JoinColumn([{ name: 'id', referencedColumnName: 'parentObjectiveId' }])
   public objective: ObjectiveEntity;

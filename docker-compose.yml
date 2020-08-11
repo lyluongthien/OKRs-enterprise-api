@@ -1,7 +1,7 @@
 version: '3.7'
 services:
-  tool-okrs-db:
-    container_name: tool-okrs-db
+  flame_db:
+    container_name: flame_db
     image: postgres:11-alpine
     restart: ${RESTART_POLICY}
     ports:
