@@ -1,7 +1,7 @@
 import { KeyResultDTO } from './keyresult.dto';
 import { KeyResultEntity } from '@app/db/entities/key-result.entity';
 
-import { Repository, EntityRepository, EntityManager } from 'typeorm';
+import { Repository, EntityRepository, EntityManager, ObjectLiteral } from 'typeorm';
 import { HttpException } from '@nestjs/common';
 import { DATABASE_EXCEPTION, TARGET_VALUE_INVALID } from '@app/constants/app.exeption';
 import { CustomException } from '@app/services/exceptions/HandlerException';
@@ -40,9 +40,10 @@ export class KeyResultRepository extends Repository<KeyResultEntity> {
     }
   }
 
-  public async deleteKeyResults(id: number): Promise<number> {
+  public async deleteKeyResults(id: number): Promise<ObjectLiteral> {
     try {
-      return (await this.delete({ id })).affected;
+      const rowEffected = (await this.delete({ id })).affected;
+      return { rowEffected: rowEffected };
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

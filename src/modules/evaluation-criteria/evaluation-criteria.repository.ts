@@ -52,8 +52,8 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
 
   public async deleteCriteria(id: number): Promise<ObjectLiteral> {
     try {
-      await this.delete({ id });
-      return { isDeleted: true };
+      const rowEffected: number = (await this.delete({ id })).affected;
+      return { rowEffected: rowEffected };
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

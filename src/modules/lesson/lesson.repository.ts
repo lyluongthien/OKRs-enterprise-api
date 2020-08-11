@@ -1,10 +1,8 @@
 import { EntityRepository, Repository, ObjectLiteral } from 'typeorm';
-import { CommonMessage } from '@app/constants/app.enums';
-import { HttpStatus, HttpException } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 import { LessonEntity } from '@app/db/entities/lesson.entity';
 import { LessonDTO } from './lesson.dto';
-import { ResponseModel } from '@app/constants/app.interface';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
@@ -72,17 +70,10 @@ export class LessonRepository extends Repository<LessonEntity> {
     }
   }
 
-  public async deleteLesson(id: number): Promise<ResponseModel> {
+  public async deleteLesson(id: number): Promise<ObjectLiteral> {
     try {
       const rowEffected: number = (await this.delete({ id })).affected;
-      if (rowEffected == 1)
-        return {
-          statusCode: HttpStatus.OK,
-          message: CommonMessage.SUCCESS,
-          data: { is_deleted: true },
-        };
-
-      return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
+      return { rowEffected: rowEffected };
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
