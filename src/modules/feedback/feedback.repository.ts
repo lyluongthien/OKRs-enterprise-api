@@ -69,7 +69,8 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
     try {
       return await this.query(`select SUM(coalesce (currentLeader.numberOfLeader, 0)) as numberOfLeader, 
       SUM(coalesce(currentLeader.numberOfLeader, 0) - coalesce(lastWeekLeader.numberOfLeader, 0)) as changing from 
-      (select coalesce(feed."senderId", reg."senderId") as id, Count(coalesce(feed."senderId", reg."senderId")) as numberOfLeader
+      (select coalesce(feed."senderId", reg."senderId") as id, 
+      Count(coalesce(feed."senderId", reg."senderId")) as numberOfLeader
       from 
       (select distinct f."senderId" from feedbacks f 
       left join users u on u.id = f."senderId" 
@@ -82,7 +83,8 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
       and r."createdAt" between '${firstDay}' and '${lastDay}') 
       as reg on feed."senderId" = reg."senderId"
       group by id) as currentLeader full outer join 
-      (select coalesce(feed."senderId", reg."senderId") as id, Count(coalesce(feed."senderId", reg."senderId")) as numberOfLeader
+      (select coalesce(feed."senderId", reg."senderId") as id, 
+      Count(coalesce(feed."senderId", reg."senderId")) as numberOfLeader
       from 
       (select distinct f."senderId" from feedbacks f 
       left join users u on u.id = f."senderId" 

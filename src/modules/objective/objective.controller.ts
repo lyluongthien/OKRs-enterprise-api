@@ -57,7 +57,7 @@ export class ObjectiveController {
     return this._objectiveService.viewListOKRs(cycleId, user.id);
   }
 
-  @Get(':id')
+  @Get('/detail/:id')
   public async viewDetailOKRs(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._objectiveService.getDetailOKRs(id);
   }
