@@ -29,7 +29,7 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
       {
         name: 'status', // Save status of Checkin: Draf, Pedding, Done
         type: 'enum',
-        enum: [CheckinStatus.DRAFT, CheckinStatus.PEDDING, CheckinStatus.DONE],
+        enum: [CheckinStatus.DRAFT, CheckinStatus.PENDING, CheckinStatus.DONE, CheckinStatus.CLOSED],
         isNullable: false,
       },
       {
