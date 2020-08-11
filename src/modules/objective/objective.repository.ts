@@ -187,6 +187,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'keyresults.content',
           'keyresults.linkPlans',
           'keyresults.linkResults',
+          'checkins.id',
           'checkins.status',
           'checkins.checkinAt',
         ])
@@ -195,6 +196,8 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .leftJoin('objective.checkins', 'checkins')
         .where('objective.cycleId = :cycleId', { cycleId: cycleId })
         .andWhere('users.id = :userId', { userId: userId })
+        .orderBy('objective.id', 'ASC')
+        .addOrderBy('checkins.checkinAt', 'DESC')
         .getMany();
 
       return queryBuilder;
