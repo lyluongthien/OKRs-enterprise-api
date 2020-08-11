@@ -37,6 +37,14 @@ export class Seeder4001Checkin implements Seeder {
         },
         {
           confidentLevel: 2,
+          checkinAt: '2020/07/11',
+          nextCheckinDate: '2020/07/23',
+          status: CheckinStatus.CLOSED,
+          teamLeaderId: 2,
+          objectiveId: 12,
+        },
+        {
+          confidentLevel: 2,
           checkinAt: '2020/07/29',
           nextCheckinDate: '2020/08/08',
           status: CheckinStatus.PENDING,

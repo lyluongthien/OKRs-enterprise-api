@@ -55,8 +55,8 @@ export class MeasureRepository extends Repository<MeasureUnitEntity> {
 
   public async deleteMeasureUnit(id: number): Promise<ObjectLiteral> {
     try {
-      const rowEffected: number = await (await this.delete({ id })).affected;
-      return { isDeleted: rowEffected === 1 ? true : false };
+      const rowEffected: number = (await this.delete({ id })).affected;
+      return { rowEffected: rowEffected };
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
