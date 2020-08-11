@@ -13,6 +13,10 @@ export class CreateTableCheckinDetails1595388563967 implements MigrationInterfac
         isGenerated: true,
       },
       {
+        name: 'targetValue',
+        type: 'integer',
+      },
+      {
         name: 'valueObtained',
         type: 'integer',
       },

@@ -9,6 +9,9 @@ export class CheckinDetailEntity {
   public id: number;
 
   @Column()
+  public targetValue: number;
+
+  @Column()
   public valueObtained: number;
 
   @Column()

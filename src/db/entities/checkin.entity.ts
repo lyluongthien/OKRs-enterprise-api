@@ -21,6 +21,9 @@ export class CheckinEntity {
   public status: CheckinStatus;
 
   @Column()
+  public progress: number;
+
+  @Column()
   public teamLeaderId: number;
 
   @Column()

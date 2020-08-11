@@ -11,6 +11,7 @@ export class Seeder4001KeyResult implements Seeder {
       .into(CheckinDetailEntity)
       .values([
         {
+          targetValue: 100,
           valueObtained: 50,
           confidentLevel: 1,
           progress: 'Được một nửa',
@@ -20,6 +21,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 23,
         },
         {
+          targetValue: 100,
           valueObtained: 20,
           confidentLevel: 1,
           progress: 'Chưa được nhiều',
@@ -29,6 +31,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 24,
         },
         {
+          targetValue: 100,
           valueObtained: 20,
           confidentLevel: 1,
           progress: 'Được một nửa',
@@ -38,6 +41,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 25,
         },
         {
+          targetValue: 100,
           valueObtained: 60,
           confidentLevel: 1,
           progress: 'Được một nửa',
@@ -47,6 +51,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 26,
         },
         {
+          targetValue: 100,
           valueObtained: 30,
           confidentLevel: 1,
           progress: 'Được một nửa',
@@ -56,6 +61,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 27,
         },
         {
+          targetValue: 100,
           valueObtained: 40,
           confidentLevel: 1,
           progress: 'Được một nửa',
@@ -65,6 +71,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 28,
         },
         {
+          targetValue: 100,
           valueObtained: 10,
           confidentLevel: 1,
           progress: 'Được một nửa',
@@ -74,6 +81,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 29,
         },
         {
+          targetValue: 100,
           valueObtained: 20,
           confidentLevel: 1,
           progress: 'Được một nửa',
@@ -83,6 +91,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 30,
         },
         {
+          targetValue: 100,
           valueObtained: 50,
           confidentLevel: 1,
           progress: 'Được một nửa',
@@ -92,6 +101,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 31,
         },
         {
+          targetValue: 100,
           valueObtained: 20,
           confidentLevel: 1,
           progress: 'Được một nửa',
@@ -101,6 +111,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 32,
         },
         {
+          targetValue: 100,
           valueObtained: 30,
           confidentLevel: 1,
           progress: 'Được một nửa',
@@ -110,6 +121,7 @@ export class Seeder4001KeyResult implements Seeder {
           keyResultId: 33,
         },
         {
+          targetValue: 100,
           valueObtained: 60,
           confidentLevel: 1,
           progress: 'Được một nửa',

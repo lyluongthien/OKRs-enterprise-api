@@ -9,6 +9,7 @@ import {
   Param,
   ParseIntPipe,
   Query,
+  Put,
 } from '@nestjs/common';
 
 import { CheckinService } from './checkin.service';
@@ -68,6 +69,19 @@ export class CheckinController {
     @TransactionManager() manager: EntityManager,
   ): Promise<ResponseModel> {
     return this._checkinService.createUpdateCheckin(data, manager, user.id);
+  }
+
+  @Put(':checkinId')
+  @UsePipes(new ValidationPipe())
+  @Transaction({ isolation: 'SERIALIZABLE' })
+  public async updateCheckin(
+    @Param('checkinId', ParseIntPipe) checkinId: number,
+    @Body() data: CreateCheckinDTO,
+    @CurrentUser() user: UserEntity,
+    @TransactionManager() manager: EntityManager,
+  ): Promise<ResponseModel> {
+    console.log(checkinId);
+    return this._checkinService.createUpdateCheckin(data, manager, user.id, checkinId);
   }
 
   @Get()

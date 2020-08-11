@@ -108,6 +108,14 @@ export enum CheckinStatus {
   CLOSED = 'Closed',
 }
 
+export enum CheckinStatusLogic {
+  DRAFT = 'Draft',
+  PENDING = 'Pending',
+  OVERDUE = 'Overdue',
+  DONE = 'Done',
+  COMPLETED = 'Completed',
+}
+
 export enum CheckinType {
   TEAM_LEADER = 1,
   MEMBER = 2,
