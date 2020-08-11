@@ -18,7 +18,7 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
       },
       {
         name: 'checkinAt',
-        type: 'date',
+        type: 'timestamptz',
         default: 'now()',
       },
       {
@@ -27,7 +27,7 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
         isNullable: true,
       },
       {
-        name: 'status', // Save status of Checkin: Draf, Pedding, Done
+        name: 'status', // Save status of Checkin: Draf, Pending, Done
         type: 'enum',
         enum: [CheckinStatus.DRAFT, CheckinStatus.PENDING, CheckinStatus.DONE, CheckinStatus.CLOSED],
         isNullable: false,

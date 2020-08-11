@@ -47,6 +47,11 @@ export class CreateTableObjectives1594008870217 implements MigrationInterface {
         isArray: true,
         isNullable: true,
       },
+      {
+        name: 'isCompleted',
+        type: 'bool',
+        default: false,
+      },
     ],
   });
 

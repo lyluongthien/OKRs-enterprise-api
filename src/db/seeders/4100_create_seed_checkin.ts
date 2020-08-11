@@ -4,7 +4,7 @@ import { Connection } from 'typeorm';
 import { CheckinEntity } from '../entities/checkin.entity';
 import { CheckinStatus } from '@app/constants/app.enums';
 
-export class Seeder4001KeyResult implements Seeder {
+export class Seeder4001Checkin implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
     await connection
       .createQueryBuilder()
@@ -13,17 +13,33 @@ export class Seeder4001KeyResult implements Seeder {
       .values([
         {
           confidentLevel: 1,
-          checkinAt: '2020/08/04',
-          nextCheckinDate: '2020/08/11',
+          checkinAt: '2020/07/22',
+          nextCheckinDate: '2020/07/29',
+          status: CheckinStatus.DONE,
+          teamLeaderId: 2,
+          objectiveId: 11,
+        },
+        {
+          confidentLevel: 1,
+          checkinAt: '2020/07/29',
+          nextCheckinDate: '2020/08/08',
           status: CheckinStatus.DRAFT,
           teamLeaderId: 2,
           objectiveId: 11,
         },
         {
           confidentLevel: 2,
-          checkinAt: '2020/08/11',
-          nextCheckinDate: '2020/08/18',
+          checkinAt: '2020/07/22',
+          nextCheckinDate: '2020/07/29',
           status: CheckinStatus.DONE,
+          teamLeaderId: 2,
+          objectiveId: 12,
+        },
+        {
+          confidentLevel: 2,
+          checkinAt: '2020/07/29',
+          nextCheckinDate: '2020/08/08',
+          status: CheckinStatus.PENDING,
           teamLeaderId: 2,
           objectiveId: 12,
         },

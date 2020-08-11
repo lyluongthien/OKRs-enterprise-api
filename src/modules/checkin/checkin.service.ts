@@ -8,6 +8,7 @@ import { EntityManager } from 'typeorm';
 import { UserRepository } from '../user/user.repository';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { isNotEmptyObject } from 'class-validator';
+import { ObjectiveRepository } from '../objective/objective.repository';
 
 @Injectable()
 export class CheckinService {
@@ -15,6 +16,7 @@ export class CheckinService {
     private readonly _checkinRepository: CheckinRepository,
     private _userRepository: UserRepository,
     private _keyResultRepository: KeyResultRepository,
+    private _objectiveRepository: ObjectiveRepository,
   ) {}
 
   public async getCheckinDetail(checkinId: number): Promise<ResponseModel> {
@@ -161,6 +163,15 @@ export class CheckinService {
         });
       }
     }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async getListOKRsCheckin(userId: number, cycleId: number): Promise<ResponseModel> {
+    const data = await this._objectiveRepository.getListOKRsCheckin(userId, cycleId);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

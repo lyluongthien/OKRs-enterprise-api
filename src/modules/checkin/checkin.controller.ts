@@ -1,4 +1,15 @@
-import { Controller, Get, UseGuards, Post, Body, UsePipes, ValidationPipe, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  UseGuards,
+  Post,
+  Body,
+  UsePipes,
+  ValidationPipe,
+  Param,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 
 import { CheckinService } from './checkin.service';
 import { AuthenticationGuard } from '../auth/authentication.guard';
@@ -57,5 +68,11 @@ export class CheckinController {
     @TransactionManager() manager: EntityManager,
   ): Promise<ResponseModel> {
     return this._checkinService.createUpdateCheckin(data, manager, user.id);
+  }
+
+  @Get()
+  @UsePipes(new ValidationPipe())
+  public async getListOKRs(@CurrentUser() user: UserEntity, @Query('cycleId') cycleId: number): Promise<ResponseModel> {
+    return await this._checkinService.getListOKRsCheckin(user.id, cycleId);
   }
 }
