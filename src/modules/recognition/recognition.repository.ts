@@ -23,15 +23,22 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
     lastOfLastWeek: string,
   ): Promise<ObjectLiteral[]> {
     try {
-      return await this.query(`select Sum(reg.numberOfRecognition) as numberOfRecognition, 
-      Sum(coalesce(reg.numberOfRecognition, 0) - coalesce(regLastWeek.numberOfLastRecognition, 0)) as changing from
-      (select r.id, count(r.id) as numberOfRecognition from recognitions r 
-      where r."createdAt" between '${firstDay}' and '${lastDay}'
-      group by r.id)as reg
-      full outer join 
-      (select r.id, count(r.id) as numberOfLastRecognition from recognitions r 
-      where r."createdAt" between '${firstOfLastWeek}' and '${lastOfLastWeek}'
-      group by r.id) as regLastWeek on reg.id = regLastWeek.id`);
+      const query = ` SELECT 
+          Sum(reg.numberOfRecognition) AS numberOfRecognition,
+          Sum(coalesce(reg.numberOfRecognition, 0) - coalesce(regLastWeek.numberOfLastRecognition, 0)) AS changing
+        FROM
+        (SELECT r.id,
+         count(r.id) AS numberOfRecognition
+          FROM recognitions r
+          WHERE r."createdAt" BETWEEN '${firstDay}' AND '${lastDay}'
+          GROUP BY r.id)AS reg
+        FULL OUTER JOIN
+        (SELECT r.id,
+                count(r.id) AS numberOfLastRecognition
+          FROM recognitions r
+          WHERE r."createdAt" BETWEEN '${firstOfLastWeek}' AND '${lastOfLastWeek}'
+          GROUP BY r.id) AS regLastWeek ON reg.id = regLastWeek.id`;
+      return await this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

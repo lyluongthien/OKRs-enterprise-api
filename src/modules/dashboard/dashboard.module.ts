@@ -8,11 +8,18 @@ import { FeedbackRepository } from '../feedback/feedback.repository';
 import { UserRepository } from '../user/user.repository';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { RecognitionRepository } from '../recognition/recognition.repository';
+import { RoleRepository } from '../role/role.repository';
 
 @Module({
   imports: [
     UserModule,
-    TypeOrmModule.forFeature([FeedbackRepository, UserRepository, ObjectiveRepository, RecognitionRepository]),
+    TypeOrmModule.forFeature([
+      FeedbackRepository,
+      UserRepository,
+      ObjectiveRepository,
+      RecognitionRepository,
+      RoleRepository,
+    ]),
   ],
   controllers: [DashboardController],
   providers: [DashboardService],

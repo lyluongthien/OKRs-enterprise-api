@@ -1,9 +1,10 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 
-import { TopStarType, CommonMessage, OKRsType } from '@app/constants/app.enums';
+import { TopStarType, CommonMessage, OKRsType, RoleEnum } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { FeedbackRepository } from '../feedback/feedback.repository';
 import { UserRepository } from '../user/user.repository';
+import { RoleRepository } from '../role/role.repository';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { RecognitionRepository } from '../recognition/recognition.repository';
 
@@ -14,6 +15,7 @@ export class DashboardService {
     private _recognitionRepository: RecognitionRepository,
     private _userRepository: UserRepository,
     private _objectiveRepository: ObjectiveRepository,
+    private _roleRepository: RoleRepository,
   ) {}
 
   public async getTopStars(cycleId: number, type: TopStarType): Promise<ResponseModel> {
@@ -53,6 +55,8 @@ export class DashboardService {
     const firstDayOfLastWeek = new Date(lastWeek.setDate(firstOfLastWeek)).toISOString();
     const lastDayOfLastWeek = new Date(lastWeek.setDate(lastOfLastWeek)).toISOString();
 
+    const adminId = (await this._roleRepository.getRoleByName(RoleEnum.ADMIN)).id;
+
     const numberoffeedback = await this._feedBackRepository.getFeedBackInWeek(
       firstday,
       lastday,
@@ -70,6 +74,7 @@ export class DashboardService {
       lastday,
       firstDayOfLastWeek,
       lastDayOfLastWeek,
+      adminId,
     );
 
     const data = { numberoffeedback, numberOfRecognition, numberOfManager };

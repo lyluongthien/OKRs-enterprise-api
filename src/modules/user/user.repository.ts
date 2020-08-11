@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
-import { AvatarURL } from '@app/constants/app.enums';
+import { AvatarURL, RoleEnum } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -35,7 +35,10 @@ export class UserRepository extends Repository<UserEntity> {
 
   public async getAdmin(): Promise<UserEntity> {
     try {
-      return this.findOne({ where: { roleId: 1 } });
+      return this.createQueryBuilder('user')
+        .leftJoin('user.role', 'role')
+        .where('role.name = :type', { type: RoleEnum.ADMIN })
+        .getOne();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
