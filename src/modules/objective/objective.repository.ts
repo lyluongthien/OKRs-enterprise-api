@@ -16,6 +16,14 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
+  public async updateProgressOKRs(id: number, progress: number, manager: EntityManager): Promise<any> {
+    try {
+      return await manager.getRepository(ObjectiveEntity).update({ id }, { progress });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async searchOKRs(cycleId: number, userId: number): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
@@ -190,6 +198,8 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'checkins.id',
           'checkins.status',
           'checkins.checkinAt',
+          'checkins.nextCheckinDate',
+          'checkins.progress',
         ])
         .leftJoin('objective.keyResults', 'keyresults')
         .leftJoin('objective.user', 'users')

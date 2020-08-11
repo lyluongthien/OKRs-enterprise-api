@@ -31,11 +31,17 @@ export class CheckinDTO {
 
   @ApiProperty()
   public status: CheckinStatus;
+
+  @ApiProperty()
+  public progress: number;
 }
 
 export class CheckinDetailDTO {
   @Optional()
   public id: number;
+
+  @ApiProperty()
+  public targetValue: number;
 
   @IsNotEmpty()
   @ApiProperty()
