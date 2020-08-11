@@ -80,7 +80,6 @@ export class CheckinController {
     @CurrentUser() user: UserEntity,
     @TransactionManager() manager: EntityManager,
   ): Promise<ResponseModel> {
-    console.log(checkinId);
     return this._checkinService.createUpdateCheckin(data, manager, user.id, checkinId);
   }
 

@@ -44,7 +44,7 @@ export class CheckinService {
     userId?: number,
     checkinId?: number,
   ): Promise<ResponseModel> {
-    if (!isNotEmptyObject(data)) {
+    if (!isNotEmptyObject(data) || !data) {
       throw new HttpException(CommonMessage.BODY_EMPTY, HttpStatus.PAYMENT_REQUIRED);
     }
     if (checkinId) {
