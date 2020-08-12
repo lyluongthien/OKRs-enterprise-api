@@ -24,6 +24,14 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
+  public async updateStatusOKRs(id: number, isCompleted: boolean, manager: EntityManager): Promise<any> {
+    try {
+      return await manager.getRepository(ObjectiveEntity).update({ id }, { isCompleted });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async searchOKRs(cycleId: number, userId: number): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')

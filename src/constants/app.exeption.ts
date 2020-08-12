@@ -90,3 +90,13 @@ export const DATABASE_EXCEPTION = {
   statusCode: 490,
   message: `Có lỗi xảy ra khi thao tác với database`,
 };
+
+export const CHECKIN_FOBIDDEN = {
+  statusCode: 470,
+  message: `Bạn không có quền checkin nhân viên này`,
+};
+
+export const CHECKIN_STATUS = {
+  statusCode: 475,
+  message: `Bạn chỉ có thể checkin những form mà member gửi lên`,
+};

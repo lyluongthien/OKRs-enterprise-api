@@ -34,6 +34,8 @@ export class CheckinDTO {
 
   @ApiProperty()
   public progress: number;
+
+  public isCompleted?: boolean;
 }
 
 export class CheckinDetailDTO {

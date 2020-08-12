@@ -31,15 +31,6 @@ export class CheckinController {
   public async getWeeklyCheckin(): Promise<ResponseModel> {
     return this._checkinService.getWeeklyCheckin();
   }
-  /**
-   * @description: Get Checkin detail by checkinId
-   * @returns: Checkin in detail
-   */
-  @Get(':checkinId')
-  @UsePipes(new ValidationPipe())
-  public async getCheckin(@Param('checkinId', ParseIntPipe) checkinId: number): Promise<ResponseModel> {
-    return this._checkinService.getCheckinDetail(checkinId);
-  }
 
   /**
    * @description: Get Checkin history of each objective
@@ -51,19 +42,50 @@ export class CheckinController {
     return this._checkinService.getHistoryCheckin(objectiveId);
   }
 
-  @Get('checkin_request/:cycleId')
+  /**
+   * @description: Leader get list checkin request of team member
+   */
+  @Get('checkin_request')
   @UsePipes(new ValidationPipe())
   public async getCheckinRequest(
-    @Param('cycleId', ParseIntPipe) cycleId: number,
+    @Query('cycleId') cycleId: number,
     @CurrentUser() user: UserEntity,
   ): Promise<ResponseModel> {
     return this._checkinService.getCheckinRequest(user.id, cycleId);
   }
 
+  /**
+   * @description: Leader Checkin detail request checkin
+   */
+  @Put('checkin_request/:checkinId')
+  @UsePipes(new ValidationPipe())
+  @Transaction({ isolation: 'SERIALIZABLE' })
+  public async updateCheckinRequest(
+    @Param('checkinId', ParseIntPipe) checkinId: number,
+    @Body() data: CreateCheckinDTO,
+    @CurrentUser() user: UserEntity,
+    @TransactionManager() manager: EntityManager,
+  ): Promise<ResponseModel> {
+    return this._checkinService.updateCheckinRequest(data, manager, user.id, checkinId);
+  }
+
+  /**
+   * @description: Get Checkin detail by checkinId
+   * @returns: Checkin in detail
+   */
+  @Get(':checkinId')
+  @UsePipes(new ValidationPipe())
+  public async getCheckinDetail(
+    @Param('checkinId', ParseIntPipe) checkinId: number,
+    @CurrentUser() user: UserEntity,
+  ): Promise<ResponseModel> {
+    return this._checkinService.getCheckinDetail(checkinId, user.id);
+  }
+
   @Post()
   @UsePipes(new ValidationPipe())
   @Transaction({ isolation: 'SERIALIZABLE' })
-  public async createAndUpdateCheckin(
+  public async createCheckin(
     @Body() data: CreateCheckinDTO,
     @CurrentUser() user: UserEntity,
     @TransactionManager() manager: EntityManager,
@@ -71,6 +93,9 @@ export class CheckinController {
     return this._checkinService.createUpdateCheckin(data, manager, user.id);
   }
 
+  /**
+   * @description: Staff update checkin information
+   */
   @Put(':checkinId')
   @UsePipes(new ValidationPipe())
   @Transaction({ isolation: 'SERIALIZABLE' })
@@ -85,7 +110,10 @@ export class CheckinController {
 
   @Get()
   @UsePipes(new ValidationPipe())
-  public async getListOKRs(@CurrentUser() user: UserEntity, @Query('cycleId') cycleId: number): Promise<ResponseModel> {
+  public async getListOKRsCheckin(
+    @CurrentUser() user: UserEntity,
+    @Query('cycleId') cycleId: number,
+  ): Promise<ResponseModel> {
     return await this._checkinService.getListOKRsCheckin(user.id, cycleId);
   }
 }
