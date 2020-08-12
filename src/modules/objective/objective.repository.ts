@@ -167,6 +167,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .select([
           'objective.title',
           'objective.progress',
+          'objective.isRootObjective',
           'parentObjective.id',
           'parentObjective.title',
           'users.id',

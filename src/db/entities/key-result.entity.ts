@@ -31,6 +31,8 @@ export class KeyResultEntity {
   @Column()
   public measureUnitId: number;
 
+  public progress: number;
+
   @ManyToOne(() => ObjectiveEntity, (objective) => objective.keyResults)
   public objective: ObjectiveEntity;
 }
