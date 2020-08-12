@@ -20,6 +20,7 @@ import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 import { TransactionManager, EntityManager, Transaction } from 'typeorm';
 import { CurrentUser } from '../user/user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
+import { currentPage, limitPagination } from '@app/constants/app.magic-number';
 
 @Controller('/api/v1/checkins')
 @UseGuards(AuthenticationGuard)
@@ -54,9 +55,17 @@ export class CheckinController {
   @UsePipes(new ValidationPipe())
   public async getCheckinRequest(
     @Query('cycleId') cycleId: number,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
     @CurrentUser() user: UserEntity,
   ): Promise<ResponseModel> {
-    return this._checkinService.getCheckinRequest(user.id, cycleId);
+    page = page ? page : currentPage;
+    limit = limit ? limit : limitPagination;
+    return this._checkinService.getCheckinRequest(user.id, cycleId, {
+      page,
+      limit,
+      route: '',
+    });
   }
 
   /**

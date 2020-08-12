@@ -5,6 +5,7 @@ import { CheckinEntity } from '@app/db/entities/checkin.entity';
 import { CheckinStatus, CheckinType } from '@app/constants/app.enums';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 import { CheckinDetailEntity } from '@app/db/entities/checkin-detail.entity';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(CheckinEntity)
 export class CheckinRepository extends Repository<CheckinEntity> {
@@ -122,9 +123,9 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public async getCheckinRequest(teamId: number, cycleId: number): Promise<CheckinEntity[]> {
+  public async getCheckinRequest(teamId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
-      return await this.createQueryBuilder('checkin')
+      const queryBuilder = this.createQueryBuilder('checkin')
         .select([
           'checkin.id',
           'checkin.checkinAt',
@@ -140,8 +141,8 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .leftJoin('user.team', 'team')
         .where('team.id= :team', { team: teamId })
         .andWhere('cycle.id = :cycle', { cycle: cycleId })
-        .andWhere('checkin.status = :status', { status: CheckinStatus.PENDING })
-        .getMany();
+        .andWhere('checkin.status = :status', { status: CheckinStatus.PENDING });
+      return await paginate<CheckinEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

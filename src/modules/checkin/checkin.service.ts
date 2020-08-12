@@ -11,6 +11,7 @@ import { isNotEmptyObject } from 'class-validator';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { CHECKIN_FOBIDDEN, CHECKIN_STATUS } from '@app/constants/app.exeption';
 import { CycleRepository } from '../cycle/cycle.repository';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class CheckinService {
@@ -199,7 +200,7 @@ export class CheckinService {
     };
   }
 
-  public async getCheckinRequest(userId: number, cycleId: number): Promise<ResponseModel> {
+  public async getCheckinRequest(userId: number, cycleId: number, options: IPaginationOptions): Promise<ResponseModel> {
     let message = null;
     let data = null;
     const user = await this._userRepository.getUserByID(userId);
@@ -209,7 +210,7 @@ export class CheckinService {
     };
     if (team.isTeamLeader) {
       message = CommonMessage.SUCCESS;
-      data = await this._checkinRepository.getCheckinRequest(team.id, cycleId);
+      data = await this._checkinRepository.getCheckinRequest(team.id, cycleId, options);
     } else {
       message = CommonMessage.NOT_TEAM_LEADER;
       data = {};
