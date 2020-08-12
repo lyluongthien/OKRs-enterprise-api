@@ -346,6 +346,10 @@ export class CheckinService {
         }
       }
 
+      if (item.isCompleted) {
+        itemModel.status = CheckinStatusLogic.COMPLETED;
+      }
+
       responseData.push(itemModel);
     });
 
