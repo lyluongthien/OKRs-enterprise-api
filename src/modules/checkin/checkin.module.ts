@@ -8,6 +8,7 @@ import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { UserModule } from '../user/user.module';
 import { UserRepository } from '../user/user.repository';
+import { CycleRepository } from '../cycle/cycle.repository';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UserRepository } from '../user/user.repository';
       ObjectiveRepository,
       UserRepository,
       ObjectiveRepository,
+      CycleRepository,
     ]),
   ],
   controllers: [CheckinController],

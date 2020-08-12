@@ -33,6 +33,11 @@ export class CheckinController {
     return this._checkinService.getWeeklyCheckin();
   }
 
+  @Get('checkin_status')
+  public async getCheckinStatus(): Promise<ResponseModel> {
+    return this._checkinService.getCheckinStatus();
+  }
+
   /**
    * @description: Get Checkin history of each objective
    * @returns: List history checkin getHistoryCheckin

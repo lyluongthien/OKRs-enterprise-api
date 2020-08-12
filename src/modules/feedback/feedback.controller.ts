@@ -16,8 +16,8 @@ export class FeedbackController {
   constructor(private _feedBackService: FeedbackService) {}
 
   @Get('/list_waiting')
-  public async ListWaitingFeedBack(@CurrentUser() me: UserEntity): Promise<ResponseModel> {
-    return this._feedBackService.ListWaitingFeedBack(me.id);
+  public async listWaitingFeedBack(@CurrentUser() me: UserEntity): Promise<ResponseModel> {
+    return this._feedBackService.listWaitingFeedBack(me.id);
   }
 
   @Post()

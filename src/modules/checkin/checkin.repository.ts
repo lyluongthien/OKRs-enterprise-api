@@ -155,4 +155,64 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+
+  public getIndueCheckin(cycleId: number): Promise<CheckinEntity> {
+    try {
+      const query = `SELECT count(c.id) AS inDueCheckin
+      FROM checkins c
+      LEFT JOIN objectives o ON c."objectiveId" = o.id
+      WHERE c."checkinAt" <=
+          (SELECT c2."nextCheckinDate"
+           FROM checkins c2
+           WHERE c2."objectiveId" = c."objectiveId"
+             AND c2.id <> c.id
+             AND (c2.status = '${CheckinStatus.DONE}'
+                  OR c2.status = '${CheckinStatus.CLOSED}')
+           ORDER BY c2."nextCheckinDate" DESC
+           LIMIT 1)
+        AND c.status = '${CheckinStatus.PENDING}'
+        AND o."cycleId" = ${cycleId}`;
+      return this.query(query);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public getOverdueCheckin(cycleId: number): Promise<CheckinEntity[]> {
+    try {
+      const query = `SELECT count(c.id) AS overDueCheckin
+      FROM checkins c
+      LEFT JOIN objectives o ON c."objectiveId" = o.id
+      WHERE c."checkinAt" >
+          (SELECT c2."nextCheckinDate"
+           FROM checkins c2
+           WHERE c2."objectiveId" = c."objectiveId"
+             AND c2.id <> c.id
+             AND (c2.status = '${CheckinStatus.DONE}'
+                  OR c2.status = '${CheckinStatus.CLOSED}')
+           ORDER BY c2."nextCheckinDate" DESC
+           LIMIT 1)
+        AND c.status = '${CheckinStatus.PENDING}'
+        AND o."cycleId" = ${cycleId}`;
+      return this.query(query);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getNotYetCheckin(cycleId: number): Promise<CheckinEntity[]> {
+    try {
+      const query = `SELECT count(o.id) as notYetCheckin
+      FROM objectives o
+      WHERE o."isCompleted" = FALSE
+        AND o."cycleId" = ${cycleId}
+        AND o.id NOT IN
+          (SELECT DISTINCT c."objectiveId"
+           FROM checkins c
+           WHERE c.status = '${CheckinStatus.DRAFT}' )`;
+      return this.query(query);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 }
