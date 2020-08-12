@@ -34,19 +34,19 @@ export class ObjectiveEntity {
   @Column()
   public isCompleted: boolean;
 
-  @ManyToOne(() => ObjectiveEntity, (objective) => objective.parentObjectives)
+  @OneToMany(() => ObjectiveEntity, (objective) => objective.parentObjective)
   @JoinColumn([{ name: 'id', referencedColumnName: 'parentObjectiveId' }])
-  public objective: ObjectiveEntity;
+  public childObjectives: ObjectiveEntity[];
 
-  @OneToMany(() => ObjectiveEntity, (objectives) => objectives.objective)
+  @ManyToOne(() => ObjectiveEntity, (objectives) => objectives.childObjectives)
   @JoinColumn([{ name: 'parentObjectiveId', referencedColumnName: 'id' }])
-  public parentObjectives: ObjectiveEntity[];
+  public parentObjective: ObjectiveEntity;
 
   @ManyToMany(() => ObjectiveEntity, (objectives) => objectives.objectiveAlignment)
   @JoinColumn([{ name: 'alignObjectivesId', referencedColumnName: 'id' }])
-  public alignmentObjective: ObjectiveEntity[];
+  public alignmentObjectives: ObjectiveEntity[];
 
-  @ManyToMany(() => ObjectiveEntity, (objective) => objective.alignmentObjective)
+  @ManyToMany(() => ObjectiveEntity, (objective) => objective.alignmentObjectives)
   @JoinColumn([{ name: 'id', referencedColumnName: 'alignObjectivesId' }])
   public objectiveAlignment: ObjectiveEntity;
 

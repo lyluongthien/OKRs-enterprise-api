@@ -116,6 +116,18 @@ export class ObjectiveService {
 
   public async getDetailOKRs(id: number): Promise<ResponseModel> {
     const data = await this._objectiveRepository.getDetailOKRs(id);
+    if (data) {
+      if (data.keyResults) {
+        data.keyResults.map((value) => {
+          if (value.targetValue > 0) {
+            value.progress = Math.floor((value.valueObtained / value.targetValue) * 100);
+          } else {
+            value.progress = 0;
+          }
+          return data;
+        });
+      }
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

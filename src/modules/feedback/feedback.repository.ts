@@ -39,4 +39,82 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+  public async getFeedBackInWeek(
+    firstDay: string,
+    lastDay: string,
+    firstOfLastWeek: string,
+    lastOfLastWeek: string,
+  ): Promise<ObjectLiteral[]> {
+    try {
+      const query = `SELECT 
+        Sum(feed.numberOfFeedback) AS numberOfFeedback,
+        Sum(coalesce(feed.numberOfFeedback, 0) - coalesce(feedLastWeek.numberOfLastFeedback, 0)) AS changing
+      FROM
+        (SELECT f.id, count(f.id) AS numberOfFeedback
+        FROM feedbacks f
+        WHERE f."createdAt" BETWEEN '${firstDay}' AND '${lastDay}'
+        GROUP BY f.id) AS feed
+      FULL OUTER JOIN
+        (SELECT f.id, count(f.id) AS numberOfLastFeedback
+        FROM feedbacks f
+        WHERE f."createdAt" BETWEEN '${firstOfLastWeek}' AND '${lastOfLastWeek}'
+        GROUP BY f.id) AS feedLastWeek ON feed.id = feedLastWeek.id`;
+
+      return await this.query(query);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getTopManagerUseCFRsInWeek(
+    firstDay: string,
+    lastDay: string,
+    firstOfLastWeek: string,
+    lastOfLastWeek: string,
+    adminId: number,
+  ): Promise<ObjectLiteral[]> {
+    try {
+      const query = `SELECT SUM(COALESCE (currentLeader.numberOfLeader, 0)) AS numberOfLeader,
+              SUM(coalesce(currentLeader.numberOfLeader, 0) - coalesce(lastWeekLeader.numberOfLeader, 0)) AS changing
+        FROM
+        (SELECT coalesce(feed."senderId", reg."senderId") AS id,
+                Count(coalesce(feed."senderId", reg."senderId")) AS numberOfLeader
+          FROM
+            (SELECT DISTINCT f."senderId"
+            FROM feedbacks f
+            LEFT JOIN users u ON u.id = f."senderId"
+            WHERE (u."isLeader" = TRUE
+                    OR u."roleId" = ${adminId})
+              AND f."createdAt" BETWEEN '${firstDay}' AND '${lastDay}' ) AS feed
+          FULL OUTER JOIN
+            (SELECT DISTINCT r."senderId"
+            FROM recognitions r
+            LEFT JOIN users u ON u.id = r."senderId"
+            WHERE (u."isLeader" = TRUE
+                    OR u."roleId" = ${adminId})
+              AND r."createdAt" BETWEEN '${firstDay}' AND '${lastDay}') AS reg ON feed."senderId" = reg."senderId"
+          GROUP BY id) AS currentLeader
+        FULL OUTER JOIN
+        (SELECT coalesce(feed."senderId", reg."senderId") AS id,
+                Count(coalesce(feed."senderId", reg."senderId")) AS numberOfLeader
+          FROM
+            (SELECT DISTINCT f."senderId"
+            FROM feedbacks f
+            LEFT JOIN users u ON u.id = f."senderId"
+            WHERE (u."isLeader" = TRUE
+                    OR u."roleId" = ${adminId})
+              AND f."createdAt" BETWEEN '${firstOfLastWeek}' AND '${lastOfLastWeek}' ) AS feed
+          FULL OUTER JOIN
+            (SELECT DISTINCT r."senderId"
+            FROM recognitions r
+            LEFT JOIN users u ON u.id = r."senderId"
+            WHERE (u."isLeader" = TRUE
+                    OR u."roleId" = ${adminId})
+              AND r."createdAt" BETWEEN '${firstOfLastWeek}' AND '${lastOfLastWeek}') AS reg ON feed."senderId" = reg."senderId"
+          GROUP BY id) AS lastWeekLeader ON currentLeader.id = lastWeekLeader.id`;
+      return await this.query(query);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 }

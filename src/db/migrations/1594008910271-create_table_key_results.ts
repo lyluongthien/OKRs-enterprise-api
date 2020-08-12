@@ -15,7 +15,7 @@ export class CreateTableKeyResults1594008910271 implements MigrationInterface {
       {
         name: 'startValue',
         type: 'integer',
-        isNullable: false,
+        default: 0,
       },
       {
         name: 'valueObtained',

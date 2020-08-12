@@ -45,10 +45,10 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'users.fullName',
           'users.isLeader',
         ])
-        .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
+        .leftJoinAndSelect('objective.childObjectives', 'childObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
         .leftJoinAndMapMany(
-          'objective.alignmentObjective',
+          'objective.alignmentObjectives',
           ObjectiveEntity,
           'objectiveAlignment',
           'objectiveAlignment.id = any (objective.alignObjectivesId)',
@@ -118,10 +118,10 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'users.fullName',
           'users.isLeader',
         ])
-        .leftJoinAndSelect('objective.parentObjectives', 'parentObjective')
+        .leftJoinAndSelect('objective.childObjectives', 'childObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
         .leftJoinAndMapMany(
-          'objective.alignmentObjective',
+          'objective.alignmentObjectives',
           ObjectiveEntity,
           'objectiveAlignment',
           'objectiveAlignment.id = any (objective.alignObjectivesId)',
@@ -171,10 +171,28 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
 
   public async getDetailOKRs(id: number): Promise<ObjectiveEntity> {
     try {
-      return await this.findOne({
-        relations: ['keyResults', 'user'],
-        where: { id },
-      });
+      return await this.createQueryBuilder('objective')
+        .select([
+          'objective.id',
+          'objective.title',
+          'objective.progress',
+          'objective.isRootObjective',
+          'parentObjective.id',
+          'parentObjective.title',
+          'users.id',
+          'users.fullName',
+        ])
+        .leftJoin('objective.parentObjective', 'parentObjective')
+        .leftJoinAndSelect('objective.keyResults', 'keyresults')
+        .leftJoinAndMapMany(
+          'objective.alignmentObjectives',
+          ObjectiveEntity,
+          'objectiveAlignment',
+          'objectiveAlignment.id = any (objective.alignObjectivesId)',
+        )
+        .leftJoin('objective.user', 'users')
+        .where('objective.id = :id', { id: id })
+        .getOne();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

@@ -64,8 +64,8 @@ export class JobRepository extends Repository<JobEntity> {
 
   public async deleteJob(id: number): Promise<ObjectLiteral> {
     try {
-      await this.delete({ id });
-      return { isDeleted: true };
+      const rowEffected = (await this.delete({ id })).affected;
+      return { rowEffected: rowEffected };
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

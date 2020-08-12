@@ -30,7 +30,7 @@ export class ObjectiveController {
 
   @Get('/team_leaders')
   public async getAllTeamLeaderOKRs(
-    @Query('id', ParseIntPipe) id: number,
+    @Query('userId', ParseIntPipe) id: number,
     @Query('type', ParseIntPipe) type: OKRsLeaderType,
   ): Promise<ResponseModel> {
     return this._objectiveService.getTeamLeaderOKRs(id, type);
@@ -57,7 +57,7 @@ export class ObjectiveController {
     return this._objectiveService.viewListOKRs(cycleId, user.id);
   }
 
-  @Get(':id')
+  @Get('/detail/:id')
   public async viewDetailOKRs(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._objectiveService.getDetailOKRs(id);
   }

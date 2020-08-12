@@ -19,14 +19,12 @@ export class KeyResultService {
   }
 
   public async deleteKeyResult(id: number): Promise<ResponseModel> {
-    const rowEffected: string = (await this._keyResultRepository.deleteKeyResults(id)).toString();
-    if (rowEffected === '1')
-      return {
-        statusCode: HttpStatus.OK,
-        message: CommonMessage.SUCCESS,
-        data: { isDeleted: true },
-      };
-    return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { isDeleted: false } };
+    const data = await this._keyResultRepository.deleteKeyResults(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
   }
 
   public async updateKeyresults(id: number, data: KeyResultDTO): Promise<ResponseModel> {
