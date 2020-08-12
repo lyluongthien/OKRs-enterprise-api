@@ -165,6 +165,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     try {
       return await this.createQueryBuilder('objective')
         .select([
+          'objective.id',
           'objective.title',
           'objective.progress',
           'objective.isRootObjective',
