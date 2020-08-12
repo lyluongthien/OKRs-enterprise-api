@@ -121,6 +121,8 @@ export class ObjectiveService {
         data.keyResults.map((value) => {
           if (value.targetValue > 0) {
             value.progress = Math.floor((value.valueObtained / value.targetValue) * 100);
+          } else {
+            value.progress = 0;
           }
           return data;
         });
