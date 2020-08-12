@@ -4,6 +4,7 @@ import { JobRepository } from '../job/job.repository';
 import { CommonMessage } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { LessonRepository } from '../lesson/lesson.repository';
+import { CycleRepository } from '../cycle/cycle.repository';
 
 @Injectable()
 export class MetaService {
@@ -11,6 +12,7 @@ export class MetaService {
     private readonly _teamRepository: TeamRepository,
     private readonly _jobPositionRepository: JobRepository,
     private readonly _lessonRepository: LessonRepository,
+    private readonly _cycleRepository: CycleRepository,
   ) {}
 
   public async getListTeams(): Promise<ResponseModel> {
@@ -39,6 +41,17 @@ export class MetaService {
       data: {
         length: data,
       },
+    };
+  }
+  public async getCycles(): Promise<ResponseModel> {
+    const data = {
+      current: await this._cycleRepository.getCurrentCycle(new Date()),
+      all: await this._cycleRepository.getList(),
+    };
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
     };
   }
 }
