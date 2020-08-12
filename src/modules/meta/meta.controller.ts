@@ -17,4 +17,9 @@ export class MetaController {
   public async getLengthLesson(): Promise<ResponseModel> {
     return this._metaService.getLengthLesson();
   }
+
+  @Get('/cycles')
+  public async getCycles(): Promise<ResponseModel> {
+    return this._metaService.getCycles();
+  }
 }
