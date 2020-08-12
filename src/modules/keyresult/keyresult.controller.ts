@@ -26,7 +26,7 @@ export class KeyResultController {
 
   @Put(':id')
   @UsePipes(new ValidationPipe())
-  public updateLesson(@Param('id', ParseIntPipe) id: number, @Body() data: KeyResultDTO): Promise<ResponseModel> {
+  public updateKeyResults(@Param('id', ParseIntPipe) id: number, @Body() data: KeyResultDTO): Promise<ResponseModel> {
     return this._keyResultService.updateKeyresults(id, data);
   }
 }

@@ -1,4 +1,5 @@
 import { Controller, UseGuards, Get, Post, Body } from '@nestjs/common';
+import { TransactionManager, EntityManager, Transaction } from 'typeorm';
 
 import { AuthenticationGuard } from '@app/modules/auth/authentication.guard';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
@@ -7,7 +8,6 @@ import { ResponseModel } from '@app/constants/app.interface';
 import { CurrentUser } from '../user/user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { FeedbackDTO } from './feedback.dto';
-import { TransactionManager, EntityManager } from 'typeorm';
 
 @Controller('/api/v1/feedback')
 @UseGuards(AuthenticationGuard)
@@ -21,6 +21,7 @@ export class FeedbackController {
   }
 
   @Post()
+  @Transaction({ isolation: 'SERIALIZABLE' })
   public async createFeedBack(
     @CurrentUser() me: UserEntity,
     @Body() data: FeedbackDTO,
