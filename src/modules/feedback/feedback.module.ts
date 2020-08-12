@@ -8,11 +8,22 @@ import { FeedbackController } from './feedback.controller';
 import { FeedbackService } from './feedback.service';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserRepository } from '../user/user.repository';
+import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
+import { UserStarRepository } from '../user-star/user-star.repository';
+import { CycleRepository } from '../cycle/cycle.repository';
 
 @Module({
   imports: [
     UserModule,
-    TypeOrmModule.forFeature([FeedbackEntity, FeedbackRepository, CheckinRepository, UserRepository]),
+    TypeOrmModule.forFeature([
+      FeedbackEntity,
+      FeedbackRepository,
+      CheckinRepository,
+      UserRepository,
+      EvaluationCriteriaRepository,
+      UserStarRepository,
+      CycleRepository,
+    ]),
   ],
   controllers: [FeedbackController],
   providers: [FeedbackService],

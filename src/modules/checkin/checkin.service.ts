@@ -10,6 +10,7 @@ import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { isNotEmptyObject } from 'class-validator';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { CHECKIN_FOBIDDEN, CHECKIN_STATUS } from '@app/constants/app.exeption';
+import { CycleRepository } from '../cycle/cycle.repository';
 
 @Injectable()
 export class CheckinService {
@@ -18,6 +19,7 @@ export class CheckinService {
     private _userRepository: UserRepository,
     private _keyResultRepository: KeyResultRepository,
     private _objectiveRepository: ObjectiveRepository,
+    private _cycleRepository: CycleRepository,
   ) {}
 
   public async getCheckinDetail(checkinId: number, userId: number): Promise<ResponseModel> {
@@ -346,6 +348,10 @@ export class CheckinService {
         }
       }
 
+      if (item.isCompleted) {
+        itemModel.status = CheckinStatusLogic.COMPLETED;
+      }
+
       responseData.push(itemModel);
     });
 
@@ -353,6 +359,21 @@ export class CheckinService {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
       data: responseData,
+    };
+  }
+
+  public async getCheckinStatus(): Promise<ResponseModel> {
+    const currentCycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+    const data: any = {};
+    if (currentCycleId) {
+      data.inDue = await this._checkinRepository.getIndueCheckin(currentCycleId);
+      data.overDue = await this._checkinRepository.getOverdueCheckin(currentCycleId);
+      data.notYet = await this._checkinRepository.getNotYetCheckin(currentCycleId);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
     };
   }
 }

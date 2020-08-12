@@ -6,6 +6,9 @@ import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserRepository } from '../user/user.repository';
 import { FeedbackDTO } from './feedback.dto';
 import { EntityManager } from 'typeorm';
+import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
+import { UserStarRepository } from '../user-star/user-star.repository';
+import { CycleRepository } from '../cycle/cycle.repository';
 
 @Injectable()
 export class FeedbackService {
@@ -13,9 +16,12 @@ export class FeedbackService {
     private _feedBackRepository: FeedbackRepository,
     private _checkinRepository: CheckinRepository,
     private _userRepository: UserRepository,
+    private _evaluationCriteriaRepository: EvaluationCriteriaRepository,
+    private _userStarsRepository: UserStarRepository,
+    private _cycleRepository: CycleRepository,
   ) {}
 
-  public async ListWaitingFeedBack(id: number): Promise<ResponseModel> {
+  public async listWaitingFeedBack(id: number): Promise<ResponseModel> {
     const data: any = {};
     const isLeader = (await this._userRepository.getUserByID(id)).isLeader;
     const adminId = (await this._userRepository.getAdmin()).id;
@@ -33,8 +39,16 @@ export class FeedbackService {
   }
 
   public async createFeedBack(data: FeedbackDTO, senderId: number, manager: EntityManager): Promise<ResponseModel> {
-    await this._feedBackRepository.createFeedBack(data, senderId, manager);
-    await this._checkinRepository.updateCheckinStatus(data.checkinId, CheckinStatus.CLOSED, manager);
+    if (data && senderId) {
+      await this._feedBackRepository.createFeedBack(data, senderId, manager);
+      await this._checkinRepository.updateCheckinStatus(data.checkinId, CheckinStatus.CLOSED, manager);
+      const userStar = {
+        star: (await this._evaluationCriteriaRepository.getCriteriaDetail(data.evaluationCriteriaId)).numberOfStar,
+        cycleId: (await this._cycleRepository.getCurrentCycle(new Date())).id,
+        userId: data.receiverId,
+      };
+      await this._userStarsRepository.createUserStar(userStar, manager);
+    }
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,

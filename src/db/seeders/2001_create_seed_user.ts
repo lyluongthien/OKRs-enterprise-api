@@ -130,7 +130,7 @@ export class Seeder2001User implements Seeder {
           teamId: 3,
           isActive: true,
           isApproved: true,
-          isLeader: true,
+          isLeader: false,
         },
         {
           email: 'jpprivalskyf@misworkbar.ga',

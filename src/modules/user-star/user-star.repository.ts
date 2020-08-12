@@ -1,7 +1,8 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, EntityManager } from 'typeorm';
 import { UserStarEntity } from '@app/db/entities/user-stars.entity';
 import { HttpException } from '@nestjs/common';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { UserStarDTO } from './user-star.dto';
 
 @EntityRepository(UserStarEntity)
 export class UserStarRepository extends Repository<UserStarEntity> {
@@ -24,6 +25,14 @@ export class UserStarRepository extends Repository<UserStarEntity> {
               FROM "user_stars" "user_stars" LEFT JOIN "users" "user" ON "user"."id"="user_stars"."userId" 
               WHERE "cycleId" in (${id}) GROUP BY "user"."id", "user"."fullName"
               ORDER BY "sum" desc`);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async createUserStar(data: UserStarDTO, manager: EntityManager): Promise<void> {
+    try {
+      await manager.getRepository(UserStarEntity).save(data);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

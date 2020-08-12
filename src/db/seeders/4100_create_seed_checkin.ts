@@ -38,7 +38,7 @@ export class Seeder4001Checkin implements Seeder {
         {
           confidentLevel: 2,
           checkinAt: '2020/07/11',
-          nextCheckinDate: '2020/07/23',
+          nextCheckinDate: '2020/08/18',
           status: CheckinStatus.CLOSED,
           teamLeaderId: 2,
           objectiveId: 12,
@@ -49,15 +49,23 @@ export class Seeder4001Checkin implements Seeder {
           nextCheckinDate: '2020/08/08',
           status: CheckinStatus.PENDING,
           teamLeaderId: 3,
-          objectiveId: 12,
+          objectiveId: 13,
         },
         {
           confidentLevel: 2,
           checkinAt: '2020/08/04',
-          nextCheckinDate: '2020/08/11',
-          status: CheckinStatus.DRAFT,
+          nextCheckinDate: '2020/08/18',
+          status: CheckinStatus.DONE,
           teamLeaderId: 3,
-          objectiveId: 13,
+          objectiveId: 14,
+        },
+        {
+          confidentLevel: 3,
+          checkinAt: '2020/08/11',
+          nextCheckinDate: '2020/08/05',
+          status: CheckinStatus.DONE,
+          teamLeaderId: 3,
+          objectiveId: 15,
         },
         {
           confidentLevel: 3,
@@ -65,7 +73,7 @@ export class Seeder4001Checkin implements Seeder {
           nextCheckinDate: '2020/08/18',
           status: CheckinStatus.DONE,
           teamLeaderId: 3,
-          objectiveId: 14,
+          objectiveId: 16,
         },
       ])
       .execute();
