@@ -167,12 +167,12 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .select([
           'objective.title',
           'objective.progress',
-          'childObjective.id',
-          'childObjective.title',
+          'parentObjective.id',
+          'parentObjective.title',
           'users.id',
           'users.fullName',
         ])
-        .leftJoin('objective.childObjectives', 'childObjective')
+        .leftJoin('objective.parentObjective', 'parentObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
         .leftJoinAndMapMany(
           'objective.alignmentObjectives',
