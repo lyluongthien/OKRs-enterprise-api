@@ -9,6 +9,7 @@ import { UserRepository } from '../user/user.repository';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { isNotEmptyObject } from 'class-validator';
 import { ObjectiveRepository } from '../objective/objective.repository';
+import { CHECKIN_FOBIDDEN, CHECKIN_STATUS } from '@app/constants/app.exeption';
 
 @Injectable()
 export class CheckinService {
@@ -19,14 +20,17 @@ export class CheckinService {
     private _objectiveRepository: ObjectiveRepository,
   ) {}
 
-  public async getCheckinDetail(checkinId: number): Promise<ResponseModel> {
+  public async getCheckinDetail(checkinId: number, userId: number): Promise<ResponseModel> {
     const checkin = await this._checkinRepository.getCheckinById(checkinId);
-
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: checkin,
-    };
+    if (checkin.objective.userId === userId || checkin.teamLeaderId === userId) {
+      return {
+        statusCode: HttpStatus.OK,
+        message: CommonMessage.SUCCESS,
+        data: checkin,
+      };
+    } else {
+      throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
+    }
   }
 
   public async getHistoryCheckin(objectiveId: number): Promise<ResponseModel> {
@@ -41,16 +45,24 @@ export class CheckinService {
   public async createUpdateCheckin(
     data: CreateCheckinDTO,
     manager: EntityManager,
-    userId?: number,
+    userId: number,
     checkinId?: number,
   ): Promise<ResponseModel> {
     if (!isNotEmptyObject(data) || !data) {
       throw new HttpException(CommonMessage.BODY_EMPTY, HttpStatus.PAYMENT_REQUIRED);
     }
     if (checkinId) {
+      const checkinDetail = await this._checkinRepository.getCheckinById(checkinId);
+      // Wrong checkin id
+      if (!checkinDetail) {
+        throw new HttpException(CommonMessage.DATA_NOT_FOUND, HttpStatus.NOT_FOUND);
+      }
+      // Staff just view checkin of themselft only
+      if (checkinDetail.objective.userId !== userId) {
+        throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
+      }
       data.checkin.id = checkinId;
     }
-
     // Calculate progress checkin
     let progressOKR = 0;
     let totalTarget = 0;
@@ -60,9 +72,8 @@ export class CheckinService {
       totalObtained += value.valueObtained;
     });
     progressOKR = Math.round(100 * (totalObtained / totalTarget));
-    console.log(progressOKR);
 
-    // If staff draft checkin => Do not apdate progress
+    // If staff draft checkin => Do not update progress
     if (data.checkin.status !== CheckinStatus.DRAFT) {
       data.checkin.progress = progressOKR;
     }
@@ -97,6 +108,83 @@ export class CheckinService {
       // Update progress in Objective
       await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, manager);
     }
+    const dataResponse = {
+      checkin: checkinModel,
+      checkin_details: checkinDetailModel,
+    };
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: CommonMessage.SUCCESS,
+      data: dataResponse,
+    };
+  }
+
+  public async updateCheckinRequest(
+    data: CreateCheckinDTO,
+    manager: EntityManager,
+    userId: number,
+    checkinId: number,
+  ): Promise<ResponseModel> {
+    if (!isNotEmptyObject(data) || !data) {
+      throw new HttpException(CommonMessage.BODY_EMPTY, HttpStatus.PAYMENT_REQUIRED);
+    }
+    // Check user is leader of team or not
+    const checkinDetail = await this._checkinRepository.getCheckinById(checkinId);
+    if (!checkinDetail) {
+      throw new HttpException(CommonMessage.DATA_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    // Check current user can checkin their members
+    if (checkinDetail.teamLeaderId !== userId) {
+      throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
+    }
+    // Just checkin that their status id pending
+    if (checkinDetail.status !== CheckinStatus.PENDING) {
+      throw new HttpException(CHECKIN_STATUS.message, CHECKIN_STATUS.statusCode);
+    }
+
+    // Set checkin.id, checkin.status
+    data.checkin.id = checkinId;
+    data.checkin.status = CheckinStatus.DONE;
+
+    // Calculate progress checkin
+    let progressOKR = 0;
+    let totalTarget = 0;
+    let totalObtained = 0;
+    data.checkinDetails.map((value) => {
+      totalTarget += value.targetValue;
+      totalObtained += value.valueObtained;
+    });
+    progressOKR = Math.round(100 * (totalObtained / totalTarget));
+
+    // Set checkin.progress
+    data.checkin.progress = progressOKR;
+
+    let checkinModel = null;
+    if (data.checkin) {
+      checkinModel = await this._checkinRepository.createUpdateCheckin(data.checkin, manager);
+    }
+
+    const keyResultValue = [];
+    let checkinDetailModel = null;
+    if (data.checkinDetails) {
+      data.checkinDetails.map((value) => {
+        keyResultValue.push({ id: value.keyResultId, valueObtained: value.valueObtained });
+        value.checkinId = checkinModel.id;
+        return value;
+      });
+      checkinDetailModel = await this._checkinRepository.createUpdateCheckinDetail(data.checkinDetails, manager);
+    }
+
+    // Update ValueObtained in KeyResult
+    await this._keyResultRepository.createAndUpdateKeyResult(keyResultValue, manager);
+
+    // Update progress in Objective
+    await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, manager);
+
+    // Update isCompleted in Objective
+    await this._objectiveRepository.updateStatusOKRs(data.checkin.objectiveId, data.checkin.isCompleted, manager);
+
     const dataResponse = {
       checkin: checkinModel,
       checkin_details: checkinDetailModel,
@@ -199,6 +287,9 @@ export class CheckinService {
 
   public async getListOKRsCheckin(userId: number, cycleId: number): Promise<ResponseModel> {
     const data = await this._objectiveRepository.getListOKRsCheckin(userId, cycleId);
+    if (!data) {
+      throw new HttpException(CommonMessage.DATA_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
 
     const responseData = [];
 

@@ -45,11 +45,13 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .select([
           'checkin.id',
           'checkin.confidentLevel',
+          'checkin.teamLeaderId',
           'checkin.checkinAt',
           'checkin.nextCheckinDate',
           'checkin.status',
           'objective.id',
           'objective.title',
+          'objective.userId',
           'checkinDetails.id',
           'checkinDetails.valueObtained',
           'checkinDetails.confidentLevel',
@@ -138,6 +140,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .leftJoin('user.team', 'team')
         .where('team.id= :team', { team: teamId })
         .andWhere('cycle.id = :cycle', { cycle: cycleId })
+        .andWhere('checkin.status = :status', { status: CheckinStatus.PENDING })
         .getMany();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);

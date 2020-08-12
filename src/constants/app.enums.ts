@@ -93,6 +93,7 @@ export enum CommonMessage {
   UPLOAD_SUCCESS = 'Upload successful',
   POST_NOT_FOUND = 'Không thể tìm thấy bài viết',
   BODY_EMPTY = 'Body is empty',
+  DATA_NOT_FOUND = 'Không thể tìm thấy dữ liệu',
 }
 
 export enum Status {
