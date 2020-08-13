@@ -17,8 +17,6 @@ export class LessonController {
   constructor(private _lessonService: LessonService) {}
 
   @Get()
-  @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public getLessons(
     @Query('text') text: string,
     @Query('page') page: number,
@@ -33,8 +31,6 @@ export class LessonController {
   }
 
   @Get(':slug')
-  @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public getLessonDetail(@Param('slug') slug: string): Promise<ResponseModel> {
     return this._lessonService.getDetailLesson(slug);
   }
