@@ -86,9 +86,22 @@ export class CheckinRepository extends Repository<CheckinEntity> {
 
   public async getCheckinByObjectiveId(id: number): Promise<CheckinEntity[]> {
     try {
-      const checkins = this.find({ where: { objectiveId: id } });
+      const queryBuilder = this.createQueryBuilder('checkin')
+        .select([
+          'checkin.id',
+          'checkin.confidentLevel',
+          'checkin.teamLeaderId',
+          'checkin.checkinAt',
+          'checkin.nextCheckinDate',
+          'checkin.status',
+          'objective.id',
+          'objective.title',
+        ])
+        .leftJoin('checkin.objective', 'objective')
+        .where('objective.id= :id', { id })
+        .getMany();
 
-      return checkins;
+      return await queryBuilder;
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
