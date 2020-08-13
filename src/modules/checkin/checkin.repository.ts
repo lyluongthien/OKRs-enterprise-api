@@ -218,4 +218,21 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+
+  public async getChartCheckin(userId: number, cycleId: number): Promise<CheckinEntity[]> {
+    try {
+      const queryBuilder = this.createQueryBuilder('checkin')
+        .select(['checkin.progress', 'checkin.checkinAt'])
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('objective.cycle', 'cycle')
+        .where('objective.userId= :userId', { userId: userId })
+        .andWhere('cycle.id = :cycle', { cycle: cycleId })
+        .andWhere('checkin.status != :status', { status: CheckinStatus.PENDING })
+        .orderBy('checkin.checkinAt', 'ASC');
+
+      return queryBuilder.getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 }
