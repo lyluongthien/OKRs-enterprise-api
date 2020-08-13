@@ -116,7 +116,7 @@ export class CheckinController {
     @CurrentUser() user: UserEntity,
     @TransactionManager() manager: EntityManager,
   ): Promise<ResponseModel> {
-    return this._checkinService.createUpdateCheckin(data, manager, user.id);
+    return this._checkinService.createUpdateCheckin(data, manager, 14);
   }
 
   /**

@@ -120,6 +120,7 @@ export enum CheckinStatusLogic {
 export enum CheckinType {
   TEAM_LEADER = 1,
   MEMBER = 2,
+  PERSONAL = 3,
 }
 
 export enum ConfidentLevel {

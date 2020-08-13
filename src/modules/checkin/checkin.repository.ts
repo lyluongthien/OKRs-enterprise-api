@@ -94,13 +94,13 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public getDoneCheckinById(id: number, type: number): Promise<CheckinEntity[]> {
+  public getDoneCheckinById(id: number, type: CheckinType): Promise<CheckinEntity[]> {
     try {
       let condition = null;
       if (type == CheckinType.MEMBER) {
-        condition = 'user.id = :id AND objective.isRootObjective = false';
-      } else {
         condition = 'checkin.teamLeaderId = :id';
+      } else {
+        condition = 'user.id = :id';
       }
       return this.createQueryBuilder('checkin')
         .select([
@@ -108,9 +108,12 @@ export class CheckinRepository extends Repository<CheckinEntity> {
           'checkin.checkinAt',
           'objective.id',
           'objective.title',
+          'cycle.id',
           'cycle.name',
           'user.id',
           'user.fullName',
+          'user.gravatarURL',
+          'user.avatarURL',
         ])
         .leftJoin('checkin.objective', 'objective')
         .leftJoin('objective.cycle', 'cycle')

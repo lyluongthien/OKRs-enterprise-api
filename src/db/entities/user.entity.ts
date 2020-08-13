@@ -82,6 +82,8 @@ export class UserEntity {
   @UpdateDateColumn({ type: 'timestamptz' })
   public updatedAt: Date;
 
+  public avatar: string;
+
   @ManyToOne(() => RoleEntity, (role) => role.users)
   public role: RoleEntity;
 
