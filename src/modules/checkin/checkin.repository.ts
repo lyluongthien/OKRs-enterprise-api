@@ -52,6 +52,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
           'checkin.status',
           'objective.id',
           'objective.title',
+          'objective.progress',
           'objective.userId',
           'checkinDetails.id',
           'checkinDetails.valueObtained',
