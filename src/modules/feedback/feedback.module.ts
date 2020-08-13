@@ -11,6 +11,7 @@ import { UserRepository } from '../user/user.repository';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
 import { UserStarRepository } from '../user-star/user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
+import { TeamRepository } from '../team/team.repository';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { CycleRepository } from '../cycle/cycle.repository';
       EvaluationCriteriaRepository,
       UserStarRepository,
       CycleRepository,
+      TeamRepository,
     ]),
   ],
   controllers: [FeedbackController],
