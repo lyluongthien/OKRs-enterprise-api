@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { ObjectiveEntity } from './objective.entity';
+import { MeasureUnitEntity } from './measure-unit.entity';
 
 @Entity(TableName.KeyResult)
 export class KeyResultEntity {
@@ -35,4 +36,8 @@ export class KeyResultEntity {
 
   @ManyToOne(() => ObjectiveEntity, (objective) => objective.keyResults)
   public objective: ObjectiveEntity;
+
+  @OneToOne(() => MeasureUnitEntity)
+  @JoinColumn()
+  public measureUnit: MeasureUnitEntity;
 }
