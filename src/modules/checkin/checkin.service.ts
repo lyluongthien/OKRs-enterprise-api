@@ -378,4 +378,13 @@ export class CheckinService {
       data: data,
     };
   }
+
+  public async getChartCheckin(userId: number, cycleId: number): Promise<ResponseModel> {
+    const data = await this._checkinRepository.getChartCheckin(userId, cycleId);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
 }

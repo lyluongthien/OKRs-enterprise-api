@@ -134,6 +134,7 @@ export class ObjectiveService {
       data: data,
     };
   }
+
   public async deleteOKRs(id: number): Promise<ResponseModel> {
     const rowEffected: string = (await this._objectiveRepository.deleteOKRs(id)).toString();
     if (rowEffected === '1')
