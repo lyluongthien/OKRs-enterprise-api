@@ -34,7 +34,7 @@ export class FeedbackService {
       data.member = await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER);
     } else {
       const teamLeaderId = (await this._userRepository.getTeamLeaderId(id)).id;
-      data.team = data.team = await this._checkinRepository.getDoneCheckinById(teamLeaderId, CheckinType.TEAM_LEADER);
+      data.team = await this._checkinRepository.getDoneCheckinById(teamLeaderId, CheckinType.TEAM_LEADER);
       data.member = [];
     }
     return {
