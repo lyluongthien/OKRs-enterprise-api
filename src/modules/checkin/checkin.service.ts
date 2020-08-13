@@ -83,9 +83,10 @@ export class CheckinService {
 
     let checkinModel = null;
     if (userId && data.checkin) {
+      const adminId = (await this._userRepository.getAdmin()).id;
       const isLeader = (await this._userRepository.getUserByID(userId)).isLeader;
-      if (isLeader) {
-        data.checkin.teamLeaderId = (await this._userRepository.getAdmin()).id;
+      if (isLeader || userId == adminId) {
+        data.checkin.teamLeaderId = adminId;
       } else {
         data.checkin.teamLeaderId = (await this._userRepository.getTeamLeaderId(userId)).id;
       }

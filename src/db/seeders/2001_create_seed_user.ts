@@ -22,7 +22,7 @@ export class Seeder2001User implements Seeder {
           gender: true,
           gravatarURL: generateGravatar('ducpvse05320@fpt.edu.vn'),
           jobPositionId: 1,
-          roleId: 1,
+          roleId: 2,
           teamId: 3,
           isActive: true,
           isApproved: true,

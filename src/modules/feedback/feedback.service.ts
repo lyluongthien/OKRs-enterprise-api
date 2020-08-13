@@ -23,13 +23,19 @@ export class FeedbackService {
 
   public async listWaitingFeedBack(id: number): Promise<ResponseModel> {
     const data: any = {};
-    const isLeader = (await this._userRepository.getUserByID(id)).isLeader;
+    const user = await this._userRepository.getUserByID(id);
+    const isLeader = user.isLeader;
     const adminId = (await this._userRepository.getAdmin()).id;
-    if (isLeader || id == adminId) {
-      data.team = await this._checkinRepository.getDoneCheckinById(id, CheckinType.TEAM_LEADER);
-      data.personal = await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER);
+    if (isLeader) {
+      data.team = await this._checkinRepository.getDoneCheckinById(adminId, CheckinType.TEAM_LEADER);
+      data.member = await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER);
+    } else if (id == adminId) {
+      data.personal = await this._checkinRepository.getDoneCheckinById(id, CheckinType.PERSONAL);
+      data.member = await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER);
     } else {
-      data.personal = await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER);
+      const teamLeaderId = (await this._userRepository.getTeamLeaderId(id)).id;
+      data.team = data.team = await this._checkinRepository.getDoneCheckinById(teamLeaderId, CheckinType.TEAM_LEADER);
+      data.member = [];
     }
     return {
       statusCode: HttpStatus.OK,
