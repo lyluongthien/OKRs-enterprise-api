@@ -9,6 +9,7 @@ import { EntityManager } from 'typeorm';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
 import { UserStarRepository } from '../user-star/user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
+import { TeamRepository } from '../team/team.repository';
 
 @Injectable()
 export class FeedbackService {
@@ -19,6 +20,7 @@ export class FeedbackService {
     private _evaluationCriteriaRepository: EvaluationCriteriaRepository,
     private _userStarsRepository: UserStarRepository,
     private _cycleRepository: CycleRepository,
+    private _teamRepository: TeamRepository,
   ) {}
 
   public async listWaitingFeedBack(id: number): Promise<ResponseModel> {
@@ -27,15 +29,32 @@ export class FeedbackService {
     const isLeader = user.isLeader;
     const adminId = (await this._userRepository.getAdmin()).id;
     if (isLeader) {
-      data.team = await this._checkinRepository.getDoneCheckinById(adminId, CheckinType.TEAM_LEADER);
-      data.member = await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER);
+      const teamName = (await this._teamRepository.getDetailTeam(user.teamId)).name;
+      data.list2 = {
+        name: (await this._userRepository.getAdmin()).fullName,
+        list: await this._checkinRepository.getDoneCheckinById(adminId, CheckinType.TEAM_LEADER),
+      };
+      data.list1 = {
+        name: teamName,
+        list: await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER),
+      };
     } else if (id == adminId) {
-      data.personal = await this._checkinRepository.getDoneCheckinById(id, CheckinType.PERSONAL);
-      data.member = await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER);
+      data.list2 = {
+        name: user.fullName,
+        list: await this._checkinRepository.getDoneCheckinById(id, CheckinType.PERSONAL),
+      };
+      data.list1 = {
+        name: 'Team Bạn',
+        list: await this._checkinRepository.getDoneCheckinById(id, CheckinType.MEMBER),
+      };
     } else {
       const teamLeaderId = (await this._userRepository.getTeamLeaderId(id)).id;
-      data.team = await this._checkinRepository.getDoneCheckinById(teamLeaderId, CheckinType.TEAM_LEADER);
-      data.member = [];
+      const teamName = (await this._teamRepository.getDetailTeam(user.teamId)).name;
+      data.list2 = {
+        name: teamName,
+        list: await this._checkinRepository.getDoneCheckinById(teamLeaderId, CheckinType.TEAM_LEADER),
+      };
+      data.list1 = [];
     }
     return {
       statusCode: HttpStatus.OK,
@@ -59,6 +78,15 @@ export class FeedbackService {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: {},
+    };
+  }
+
+  public async searchListWaitingFeedBack(text: string): Promise<ResponseModel> {
+    const data = await this._checkinRepository.searchDoneCheckin(text);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
     };
   }
 }

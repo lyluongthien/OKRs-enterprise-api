@@ -94,7 +94,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public getDoneCheckinById(id: number, type: CheckinType): Promise<CheckinEntity[]> {
+  public async getDoneCheckinById(id: number, type: CheckinType): Promise<CheckinEntity[]> {
     try {
       let condition = null;
       if (type == CheckinType.MEMBER) {
@@ -102,7 +102,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       } else {
         condition = 'user.id = :id';
       }
-      return this.createQueryBuilder('checkin')
+      return await this.createQueryBuilder('checkin')
         .select([
           'checkin.id',
           'checkin.checkinAt',
@@ -118,7 +118,24 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .leftJoin('checkin.objective', 'objective')
         .leftJoin('objective.cycle', 'cycle')
         .leftJoin('objective.user', 'user')
+        .leftJoin('user.team', 'team')
         .where(condition, { id })
+        .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async searchDoneCheckin(text: string): Promise<CheckinEntity[]> {
+    try {
+      return await this.createQueryBuilder('checkin')
+        .select(['objective.id', 'objective.title', 'user.fullName'])
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('objective.cycle', 'cycle')
+        .leftJoin('objective.user', 'user')
+        .where('objective.title like :text', { text: '%' + text + '%' })
+        .orWhere('user.fullName like :text', { text: '%' + text + '%' })
         .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
         .getMany();
     } catch (error) {
@@ -151,15 +168,15 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public getCheckin(): Promise<CheckinEntity[]> {
+  public async getCheckin(): Promise<CheckinEntity[]> {
     try {
-      return this.find();
+      return await this.find();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public getIndueCheckin(cycleId: number): Promise<CheckinEntity> {
+  public async getIndueCheckin(cycleId: number): Promise<CheckinEntity> {
     try {
       const query = `SELECT count(c.id) AS inDueCheckin
       FROM checkins c
@@ -175,13 +192,13 @@ export class CheckinRepository extends Repository<CheckinEntity> {
            LIMIT 1)
         AND c.status = '${CheckinStatus.PENDING}'
         AND o."cycleId" = ${cycleId}`;
-      return this.query(query);
+      return await this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public getOverdueCheckin(cycleId: number): Promise<CheckinEntity[]> {
+  public async getOverdueCheckin(cycleId: number): Promise<CheckinEntity[]> {
     try {
       const query = `SELECT count(c.id) AS overDueCheckin
       FROM checkins c
@@ -197,7 +214,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
            LIMIT 1)
         AND c.status = '${CheckinStatus.PENDING}'
         AND o."cycleId" = ${cycleId}`;
-      return this.query(query);
+      return await this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -213,7 +230,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
           (SELECT DISTINCT c."objectiveId"
            FROM checkins c
            WHERE c.status = '${CheckinStatus.DRAFT}' )`;
-      return this.query(query);
+      return await this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -221,7 +238,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
 
   public async getChartCheckin(userId: number, cycleId: number): Promise<CheckinEntity[]> {
     try {
-      const queryBuilder = this.createQueryBuilder('checkin')
+      const queryBuilder = await this.createQueryBuilder('checkin')
         .select(['checkin.progress', 'checkin.checkinAt'])
         .leftJoin('checkin.objective', 'objective')
         .leftJoin('objective.cycle', 'cycle')

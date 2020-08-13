@@ -29,6 +29,8 @@ export class CheckinEntity {
   @Column()
   public objectiveId: number;
 
+  public titleName: string;
+
   @UpdateDateColumn({ type: 'timestamptz' })
   public updatedAt: Date;
 

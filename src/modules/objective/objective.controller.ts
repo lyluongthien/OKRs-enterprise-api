@@ -30,7 +30,7 @@ export class ObjectiveController {
 
   @Get('/team_leaders')
   public async getAllTeamLeaderOKRs(
-    @Query('userId', ParseIntPipe) id: number,
+    @Query('id', ParseIntPipe) id: number,
     @Query('type', ParseIntPipe) type: OKRsLeaderType,
   ): Promise<ResponseModel> {
     return this._objectiveService.getTeamLeaderOKRs(id, type);
