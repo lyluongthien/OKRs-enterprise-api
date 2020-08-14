@@ -154,3 +154,12 @@ export enum OKRsLeaderType {
   CURRENT = 1,
   ALL = 2,
 }
+
+export enum TypeCFRsHistory {
+  FEED_BACK = 'feedback',
+  RECOGNITION = 'recognition',
+}
+export enum DeleteKeyresultType {
+  KEY_RESULT = 1,
+  OKR = 2,
+}
