@@ -62,8 +62,13 @@ export class ObjectiveController {
     return this._objectiveService.getDetailOKRs(id);
   }
 
-  @Delete(':id')
-  public deleteOKRs(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
-    return this._objectiveService.deleteOKRs(id);
+  @Delete(':objectiveId')
+  @Transaction({ isolation: 'SERIALIZABLE' })
+  public deleteOKRs(
+    @CurrentUser() me: UserEntity,
+    @Param('objectiveId', ParseIntPipe) objectiveId: number,
+    @TransactionManager() manager: EntityManager,
+  ): Promise<ResponseModel> {
+    return this._objectiveService.deleteOKRs(objectiveId, me.id, manager);
   }
 }

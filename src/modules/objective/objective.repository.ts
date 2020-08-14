@@ -47,6 +47,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         ])
         .leftJoinAndSelect('objective.childObjectives', 'childObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
+        .leftJoinAndSelect('childObjective.keyResults', 'krs')
         .leftJoinAndMapMany(
           'objective.alignmentObjectives',
           ObjectiveEntity,
@@ -58,11 +59,11 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       if (cycleId) {
         if (userId) {
           return await queryBuilder
-            .where('objective.cycleId = :cycleId', { cycleId: cycleId })
-            .andWhere('users.id = :userId', { userId: userId })
+            .where('objective.cycleId = :cycleId', { cycleId })
+            .andWhere('users.id = :userId', { userId })
             .getMany();
         }
-        return await queryBuilder.where('objective.cycleId = :cycleId', { cycleId: cycleId }).getMany();
+        return await queryBuilder.where('objective.cycleId = :cycleId', { cycleId }).getMany();
       }
       return null;
     } catch (error) {
@@ -91,7 +92,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .leftJoin('objective.user', 'users');
       switch (type) {
         case OKRsLeaderType.CURRENT:
-          return await queryBuilder.where('users.id = :id', { id: id }).getMany();
+          return await queryBuilder.where('users.id = :id', { id }).getMany();
         case OKRsLeaderType.ALL:
           return await queryBuilder
             .where('objective.cycleId = :cycleId', { cycleId: id })
@@ -120,6 +121,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         ])
         .leftJoinAndSelect('objective.childObjectives', 'childObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
+        .leftJoinAndSelect('childObjective.keyResults', 'krs')
         .leftJoinAndMapMany(
           'objective.alignmentObjectives',
           ObjectiveEntity,
@@ -191,16 +193,32 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objectiveAlignment.id = any (objective.alignObjectivesId)',
         )
         .leftJoin('objective.user', 'users')
-        .where('objective.id = :id', { id: id })
+        .where('objective.id = :id', { id })
         .getOne();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public async deleteOKRs(id: number): Promise<number> {
+  public async deleteObjective(id: number, manager: EntityManager): Promise<number> {
     try {
-      return (await this.delete({ id })).affected;
+      return (await manager.getRepository(ObjectiveEntity).delete({ id })).affected;
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getListOKRsIds(): Promise<ObjectiveEntity[]> {
+    try {
+      return await this.find({ select: ['id'] });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getOKRsByUserId(userId: number): Promise<ObjectiveEntity[]> {
+    try {
+      return await this.find({ select: ['id'], where: { userId } });
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -232,8 +250,8 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .leftJoin('objective.user', 'users')
         .leftJoin('objective.checkins', 'checkins')
         .leftJoin('keyresults.measureUnit', 'measureUnit')
-        .where('objective.cycleId = :cycleId', { cycleId: cycleId })
-        .andWhere('users.id = :userId', { userId: userId })
+        .where('objective.cycleId = :cycleId', { cycleId })
+        .andWhere('users.id = :userId', { userId })
         .orderBy('objective.id', 'ASC')
         .addOrderBy('checkins.checkinAt', 'DESC')
         .getMany();

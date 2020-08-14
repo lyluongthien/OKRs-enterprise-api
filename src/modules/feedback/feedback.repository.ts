@@ -17,6 +17,80 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
     }
   }
 
+  public async getSentFeedback(userId: number, cycleId: number): Promise<FeedbackEntity[]> {
+    try {
+      return await this.createQueryBuilder('feedback')
+        .select([
+          'feedback.id',
+          'criteria.content',
+          'receiver.fullName',
+          'feedback.createdAt',
+          'receiver.avatarURL',
+          'receiver.gravatarURL',
+        ])
+        .leftJoin('feedback.evaluationCriteria', 'criteria')
+        .leftJoin('feedback.receiver', 'receiver')
+        .leftJoin('feedback.sender', 'sender')
+        .leftJoin('feedback.checkin', 'checkin')
+        .leftJoin('checkin.objective', 'objective')
+        .where('sender.id = :id', { id: userId })
+        .andWhere('objective.cycleId = :cycleId', { cycleId: cycleId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getReceivedFeedback(userId: number, cycleId: number): Promise<FeedbackEntity[]> {
+    try {
+      return await this.createQueryBuilder('feedback')
+        .select([
+          'feedback.id',
+          'criteria.content',
+          'sender.fullName',
+          'feedback.createdAt',
+          'sender.avatarURL',
+          'sender.gravatarURL',
+        ])
+        .leftJoin('feedback.evaluationCriteria', 'criteria')
+        .leftJoin('feedback.sender', 'sender')
+        .leftJoin('feedback.receiver', 'receiver')
+        .leftJoin('feedback.checkin', 'checkin')
+        .leftJoin('checkin.objective', 'objective')
+        .where('receiver.id = :id', { id: userId })
+        .andWhere('objective.cycleId = :cycleId', { cycleId: cycleId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getAllFeedBacks(cycleId: number): Promise<ObjectLiteral[]> {
+    try {
+      return await this.createQueryBuilder('feedback')
+        .select([
+          'feedback.id',
+          'criteria.content',
+          'sender.fullName',
+          'sender.avatarURL',
+          'sender.gravatarURL',
+          'receiver.fullName',
+          'receiver.avatarURL',
+          'receiver.gravatarURL',
+          'feedback.createdAt',
+        ])
+        .leftJoin('feedback.checkin', 'checkin')
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('feedback.evaluationCriteria', 'criteria')
+        .leftJoin('feedback.sender', 'sender')
+        .leftJoin('feedback.receiver', 'receiver')
+        .where('objective.cycleId = :cycleId', { cycleId: cycleId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getTopStars(cycleId: number, type: TopStarType): Promise<ObjectLiteral[]> {
     try {
       const databaseType = type == TopStarType.SENDER ? 'senderId' : 'receiverId';

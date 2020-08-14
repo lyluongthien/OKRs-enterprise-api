@@ -1,13 +1,14 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { EntityManager } from 'typeorm';
 
 import { OkrsDTO } from './objective.dto';
 import { ObjectiveRepository } from './objective.repository';
 import { UserRepository } from '../user/user.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, OKRsType, OKRsLeaderType } from '@app/constants/app.enums';
+import { CommonMessage, OKRsType, OKRsLeaderType, DeleteKeyresultType } from '@app/constants/app.enums';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
+import { OKR_INVALID, DELETE_OKR } from '@app/constants/app.exeption';
 
 @Injectable()
 export class ObjectiveService {
@@ -135,14 +136,31 @@ export class ObjectiveService {
     };
   }
 
-  public async deleteOKRs(id: number): Promise<ResponseModel> {
-    const rowEffected: string = (await this._objectiveRepository.deleteOKRs(id)).toString();
-    if (rowEffected === '1')
-      return {
-        statusCode: HttpStatus.OK,
-        message: CommonMessage.SUCCESS,
-        data: { isDeleted: true },
-      };
-    return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { isDeleted: false } };
+  public async deleteOKRs(objectiveId: number, userId: number, manager: EntityManager): Promise<ResponseModel> {
+    let rowEffected = 0;
+    if (objectiveId && manager && userId) {
+      const okrsIds = await this._objectiveRepository.getListOKRsIds();
+      const okrsExist = okrsIds.some(({ id }) => id === objectiveId);
+      if (!okrsExist) {
+        throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
+      }
+      const okrValidIds = await this._objectiveRepository.getOKRsByUserId(userId);
+      const okrValidIdsExist = okrValidIds.some(({ id }) => id == objectiveId);
+      if (!okrValidIdsExist) {
+        throw new HttpException(DELETE_OKR.message, DELETE_OKR.statusCode);
+      }
+      const deleteKeyresults = await this._keyResultRepository.deleteKeyResults(
+        objectiveId,
+        DeleteKeyresultType.OKR,
+        manager,
+      );
+      const deleteObjective = await this._objectiveRepository.deleteObjective(objectiveId, manager);
+      if (deleteObjective == 1 && deleteKeyresults) rowEffected = 1;
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: rowEffected,
+    };
   }
 }

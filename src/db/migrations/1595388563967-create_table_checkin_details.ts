@@ -46,6 +46,7 @@ export class CreateTableCheckinDetails1595388563967 implements MigrationInterfac
       {
         name: ForeignKey.KEY_RESULTS_ID,
         type: 'integer',
+        isNullable: true,
       },
     ],
   });

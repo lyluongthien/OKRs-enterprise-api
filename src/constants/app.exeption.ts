@@ -101,12 +101,22 @@ export const CHECKIN_STATUS = {
   message: `Bạn chỉ có thể checkin những form mà member gửi lên`,
 };
 
-export const KEY_RESULT = {
+export const DELETE_KEY_RESULT = {
   statusCode: 480,
   message: `Bạn không có quyền xóa key result này`,
+};
+
+export const DELETE_OKR = {
+  statusCode: 481,
+  message: `Bạn không có quyền xóa OKRs này`,
 };
 
 export const KEY_RESULT_INVALID = {
   statusCode: 404,
   message: `Key result không tồn tại`,
+};
+
+export const OKR_INVALID = {
+  statusCode: 404,
+  message: `OKRs không tồn tại`,
 };

@@ -3,9 +3,9 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { KeyResultRepository } from './keyresult.repository';
 import { KeyResultDTO } from './keyresult.dto';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage } from '@app/constants/app.enums';
+import { CommonMessage, DeleteKeyresultType } from '@app/constants/app.enums';
 import { ObjectiveRepository } from '../objective/objective.repository';
-import { KEY_RESULT, KEY_RESULT_INVALID } from '@app/constants/app.exeption';
+import { KEY_RESULT_INVALID, DELETE_KEY_RESULT } from '@app/constants/app.exeption';
 
 @Injectable()
 export class KeyResultService {
@@ -31,9 +31,9 @@ export class KeyResultService {
       const keyResultValidIds = await this._keyResultRepository.getKeyResultsByUserId(userId);
       const keyresultValid = keyResultValidIds.some(({ id }) => id === keyResultId);
       if (!keyresultValid) {
-        throw new HttpException(KEY_RESULT.message, KEY_RESULT.statusCode);
+        throw new HttpException(DELETE_KEY_RESULT.message, DELETE_KEY_RESULT.statusCode);
       }
-      data = await this._keyResultRepository.deleteKeyResults(keyResultId);
+      data = await this._keyResultRepository.deleteKeyResults(keyResultId, DeleteKeyresultType.KEY_RESULT);
     }
     return {
       statusCode: HttpStatus.OK,
