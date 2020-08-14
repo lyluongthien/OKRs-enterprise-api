@@ -1,9 +1,8 @@
-import { Controller, UseGuards, Post, UsePipes, Body } from '@nestjs/common';
+import { Controller, UseGuards, Post, Body } from '@nestjs/common';
 
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
 import { RecognitionService } from './recognition.service';
-import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { ResponseModel } from '@app/constants/app.interface';
 import { RecognitionDTO } from './recognition.dto';
 import { CurrentUser } from '../user/user.decorator';
@@ -17,7 +16,6 @@ export class RecognitionController {
   constructor(private _recognitionService: RecognitionService) {}
 
   @Post()
-  @UsePipes(new ValidationPipe())
   @Transaction({ isolation: 'SERIALIZABLE' })
   public createRecognition(
     @Body() recognition: RecognitionDTO,

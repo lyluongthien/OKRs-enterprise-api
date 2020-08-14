@@ -23,11 +23,14 @@ export class RecognitionService {
     manager: EntityManager,
   ): Promise<ResponseModel> {
     if (recognition && senderId) {
-      await this._recognitionRepository.createRecognition(recognition, senderId, manager);
+      recognition.senderId = senderId;
+      const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+      recognition.cycleId = cycleId;
+      await this._recognitionRepository.createRecognition(recognition, manager);
       const userStar = {
         star: (await this._evaluationCriteriaRepository.getCriteriaDetail(recognition.evaluationCriteriaId))
           .numberOfStar,
-        cycleId: (await this._cycleRepository.getCurrentCycle(new Date())).id,
+        cycleId: cycleId,
         userId: recognition.receiverId,
       };
       await this._userStarsRepository.createUserStar(userStar, manager);

@@ -7,13 +7,8 @@ import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(RecognitionEntity)
 export class RecognitionRepository extends Repository<RecognitionEntity> {
-  public async createRecognition(
-    data: RecognitionDTO,
-    senderId: number,
-    manager: EntityManager,
-  ): Promise<RecognitionEntity> {
+  public async createRecognition(data: RecognitionDTO, manager: EntityManager): Promise<RecognitionEntity> {
     try {
-      data.senderId = senderId;
       return await manager.getRepository(RecognitionEntity).save(data);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
