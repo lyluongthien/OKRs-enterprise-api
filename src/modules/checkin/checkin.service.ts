@@ -25,11 +25,24 @@ export class CheckinService {
 
   public async getCheckinDetail(checkinId: number, userId: number): Promise<ResponseModel> {
     const checkin = await this._checkinRepository.getCheckinById(checkinId);
+    const chart = await this._checkinRepository.getChartCheckin(checkin.objective.userId, checkin.objective.id);
     if (checkin.objective.userId === userId || checkin.teamLeaderId === userId) {
+      const responseData = {
+        id: checkin.id,
+        confidentLevel: checkin.confidentLevel,
+        checkinAt: checkin.checkinAt,
+        nextCheckinDate: checkin.nextCheckinDate,
+        status: checkin.status,
+        teamLeaderId: checkin.teamLeaderId,
+        objective: checkin.objective,
+        checkinDetails: checkin.checkinDetails,
+        chart: chart,
+      };
+
       return {
         statusCode: HttpStatus.OK,
         message: CommonMessage.SUCCESS,
-        data: checkin,
+        data: responseData,
       };
     } else {
       throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
