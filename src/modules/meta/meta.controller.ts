@@ -22,4 +22,9 @@ export class MetaController {
   public async getCycles(): Promise<ResponseModel> {
     return this._metaService.getCycles();
   }
+
+  @Get('/evaluation_criteria')
+  public async getEvaluationCriterias(): Promise<ResponseModel> {
+    return this._metaService.getEvaluationCriterias();
+  }
 }

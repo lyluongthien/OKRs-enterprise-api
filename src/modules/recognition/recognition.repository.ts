@@ -1,4 +1,4 @@
-import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
+import { Repository, EntityRepository, ObjectLiteral, EntityManager } from 'typeorm';
 import { HttpException } from '@nestjs/common';
 
 import { RecognitionEntity } from '@app/db/entities/recognition.entity';
@@ -7,10 +7,14 @@ import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 
 @EntityRepository(RecognitionEntity)
 export class RecognitionRepository extends Repository<RecognitionEntity> {
-  public async createRecognition(data: RecognitionDTO, senderId: number): Promise<RecognitionEntity> {
+  public async createRecognition(
+    data: RecognitionDTO,
+    senderId: number,
+    manager: EntityManager,
+  ): Promise<RecognitionEntity> {
     try {
       data.senderId = senderId;
-      return await this.save(data);
+      return await manager.getRepository(RecognitionEntity).save(data);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

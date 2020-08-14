@@ -6,9 +6,18 @@ import { JobRepository } from '../job/job.repository';
 import { TeamRepository } from '../team/team.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
 import { LessonRepository } from '../lesson/lesson.repository';
+import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([JobRepository, TeamRepository, CycleRepository, LessonRepository])],
+  imports: [
+    TypeOrmModule.forFeature([
+      JobRepository,
+      TeamRepository,
+      CycleRepository,
+      LessonRepository,
+      EvaluationCriteriaRepository,
+    ]),
+  ],
   controllers: [MetaController],
   providers: [MetaService],
 })
