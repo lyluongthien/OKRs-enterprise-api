@@ -120,6 +120,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         ])
         .leftJoinAndSelect('objective.childObjectives', 'childObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
+        .leftJoinAndSelect('childObjective.keyResults', 'krs')
         .leftJoinAndMapMany(
           'objective.alignmentObjectives',
           ObjectiveEntity,
@@ -198,9 +199,25 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async deleteOKRs(id: number): Promise<number> {
+  public async deleteObjective(id: number, manager: EntityManager): Promise<number> {
     try {
-      return (await this.delete({ id })).affected;
+      return (await manager.getRepository(ObjectiveEntity).delete({ id })).affected;
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getListOKRsIds(): Promise<ObjectiveEntity[]> {
+    try {
+      return await this.find({ select: ['id'] });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getOKRsByUserId(userId: number): Promise<ObjectiveEntity[]> {
+    try {
+      return await this.find({ select: ['id'], where: { userId: userId } });
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

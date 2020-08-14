@@ -159,3 +159,7 @@ export enum TypeCFRsHistory {
   FEED_BACK = 'feedback',
   RECOGNITION = 'recognition',
 }
+export enum DeleteKeyresultType {
+  KEY_RESULT = 1,
+  OKR = 2,
+}
