@@ -6,6 +6,8 @@ import { ValidationPipe } from '@app/shared/pipes/validation.pipe';
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { ResponseModel } from '@app/constants/app.interface';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
+import { CurrentUser } from '../user/user.decorator';
+import { UserEntity } from '@app/db/entities/user.entity';
 
 @Controller('/api/v1/key_results')
 @UseGuards(AuthenticationGuard)
@@ -20,8 +22,8 @@ export class KeyResultController {
   }
 
   @Delete(':id')
-  public deleteKeyResult(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
-    return this._keyResultService.deleteKeyResult(id);
+  public deleteKeyResult(@CurrentUser() me: UserEntity, @Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
+    return this._keyResultService.deleteKeyResult(id, me.id);
   }
 
   @Put(':id')

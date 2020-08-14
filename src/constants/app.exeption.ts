@@ -100,3 +100,13 @@ export const CHECKIN_STATUS = {
   statusCode: 475,
   message: `Bạn chỉ có thể checkin những form mà member gửi lên`,
 };
+
+export const KEY_RESULT = {
+  statusCode: 480,
+  message: `Bạn không có quyền xóa key result này`,
+};
+
+export const KEY_RESULT_INVALID = {
+  statusCode: 404,
+  message: `Key result không tồn tại`,
+};

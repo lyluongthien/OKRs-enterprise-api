@@ -29,6 +29,26 @@ export class KeyResultRepository extends Repository<KeyResultEntity> {
     }
   }
 
+  public async getKeyResultsByUserId(userId: number): Promise<KeyResultEntity[]> {
+    try {
+      return await this.createQueryBuilder('keyresult')
+        .select(['keyresult.id'])
+        .leftJoin('keyresult.objective', 'objective')
+        .where('objective.userId = :id', { id: userId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getListKeyresultIds(): Promise<KeyResultEntity[]> {
+    try {
+      return this.find({ select: ['id'] });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getDataObtainedByIds(id: number[]): Promise<KeyResultEntity[]> {
     try {
       return await this.createQueryBuilder('keyresult')

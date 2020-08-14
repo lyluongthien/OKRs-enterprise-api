@@ -16,7 +16,7 @@ export class FeedbackController {
   constructor(private _feedBackService: FeedbackService) {}
 
   @Get('/list_waiting/:cycleId')
-  public async listWaitingFeedBack(
+  private async listWaitingFeedBack(
     @CurrentUser() me: UserEntity,
     @Param('cycleId', ParseIntPipe) cycleId: number,
   ): Promise<ResponseModel> {
@@ -24,7 +24,7 @@ export class FeedbackController {
   }
 
   @Get('/search/:cycleId')
-  public async searchListWaitingFeedback(
+  private async searchListWaitingFeedback(
     @CurrentUser() me: UserEntity,
     @Param('cycleId', ParseIntPipe) cycleId: number,
     @Query('text') text: string,
@@ -34,7 +34,7 @@ export class FeedbackController {
 
   @Post()
   @Transaction({ isolation: 'SERIALIZABLE' })
-  public async createFeedBack(
+  private async createFeedBack(
     @CurrentUser() me: UserEntity,
     @Body() data: FeedbackDTO,
     @TransactionManager() manager: EntityManager,

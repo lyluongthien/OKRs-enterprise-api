@@ -111,7 +111,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
   public async getDoneCheckinById(id: number, cycleId: number, type: CheckinType): Promise<CheckinEntity[]> {
     try {
       let condition = null;
-      if (type == CheckinType.MEMBER) {
+      if (type === CheckinType.MEMBER) {
         condition = 'checkin.teamLeaderId = :id and user.id <> :id';
       } else {
         condition = 'user.id = :id';
@@ -150,7 +150,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
   ): Promise<CheckinEntity[]> {
     try {
       let condition = null;
-      if (type == CheckinType.MEMBER) {
+      if (type === CheckinType.MEMBER) {
         condition = 'checkin.teamLeaderId = :id and user.id <> :id';
       } else {
         condition = 'user.id = :id';
