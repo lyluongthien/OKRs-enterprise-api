@@ -47,6 +47,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         ])
         .leftJoinAndSelect('objective.childObjectives', 'childObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
+        .leftJoinAndSelect('childObjective.keyResults', 'krs')
         .leftJoinAndMapMany(
           'objective.alignmentObjectives',
           ObjectiveEntity,
