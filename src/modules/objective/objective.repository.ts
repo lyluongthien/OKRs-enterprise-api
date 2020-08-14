@@ -243,4 +243,47 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+
+  public async getObjectiveCheckin(userId: number, objectiveId: number): Promise<ObjectiveEntity> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('objective')
+        .select([
+          'objective.id',
+          'objective.title',
+          'objective.progress',
+          'keyresults.id',
+          'keyresults.content',
+          'keyresults.targetValue',
+          'checkins.id',
+          'checkins.status',
+          'checkins.checkinAt',
+          'checkins.nextCheckinDate',
+          'checkins.progress',
+          'checkinDetails.id',
+          'checkinDetails.valueObtained',
+          'checkinDetails.confidentLevel',
+          'checkinDetails.progress',
+          'checkinDetails.problems',
+          'checkinDetails.plans',
+          'keyresult.id',
+          'keyresult.content',
+          'keyresult.targetValue',
+          'keyresult.valueObtained',
+        ])
+        .leftJoin('objective.keyResults', 'keyresults')
+        .leftJoin('objective.checkins', 'checkins')
+        .leftJoin('checkins.checkinDetails', 'checkinDetails')
+        .leftJoin('checkinDetails.keyResult', 'keyresult')
+        .where('objective.id = :id', { id: objectiveId })
+        .andWhere('objective.userId = :userId', { userId })
+        .addOrderBy('checkins.checkinAt', 'DESC')
+        .addOrderBy('keyresults.id', 'ASC')
+        .addOrderBy('keyresult.id', 'ASC')
+        .getOne();
+
+      return queryBuilder;
+    } catch (error) {
+      throw new HttpException(error.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 }

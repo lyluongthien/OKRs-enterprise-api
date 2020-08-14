@@ -96,6 +96,18 @@ export class CheckinController {
   }
 
   /**
+   * @description: Get data model when create checkin
+   */
+  @Get('objective/:objectiveId')
+  @UsePipes(new ValidationPipe())
+  public async getCheckinObjective(
+    @CurrentUser() user: UserEntity,
+    @Param('objectiveId', ParseIntPipe) objectiveId: number,
+  ): Promise<ResponseModel> {
+    return await this._checkinService.getCheckinObjective(user.id, objectiveId);
+  }
+
+  /**
    * @description: Get Checkin detail by checkinId
    * @returns: Checkin in detail
    */
