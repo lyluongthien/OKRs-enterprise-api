@@ -392,25 +392,19 @@ export class CheckinService {
     };
   }
 
-  public async getChartCheckin(userId: number, cycleId: number): Promise<ResponseModel> {
-    const data = await this._checkinRepository.getChartCheckin(userId, cycleId);
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: data,
-    };
-  }
-
   public async getCheckinObjective(userId: number, objectiveId: number): Promise<ResponseModel> {
     const data = await this._objectiveRepository.getObjectiveCheckin(userId, objectiveId);
     if (!data) {
       throw new HttpException(CommonMessage.DATA_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
+    const chart = await this._checkinRepository.getChartCheckin(userId, objectiveId);
+
     const responseData = {
       id: data.id,
       title: data.title,
       progress: data.progress,
       keyResults: data.keyResults,
+      chart: chart,
       checkin: {
         id: 0,
         checkinAt: null,

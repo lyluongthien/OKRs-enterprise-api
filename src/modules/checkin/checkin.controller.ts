@@ -69,18 +69,6 @@ export class CheckinController {
   }
 
   /**
-   * @description: Get chart progress checkin
-   */
-  @Get('charts/:objectiveId')
-  @UsePipes(new ValidationPipe())
-  public async getChartCheckin(
-    @CurrentUser() user: UserEntity,
-    @Param('objectiveId', ParseIntPipe) objectiveId: number,
-  ): Promise<ResponseModel> {
-    return await this._checkinService.getChartCheckin(user.id, objectiveId);
-  }
-
-  /**
    * @description: Leader Checkin detail request checkin
    */
   @Put('checkin_request/:checkinId')
