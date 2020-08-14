@@ -71,13 +71,13 @@ export class CheckinController {
   /**
    * @description: Get chart progress checkin
    */
-  @Get('charts')
+  @Get('charts/:objectiveId')
   @UsePipes(new ValidationPipe())
   public async getChartCheckin(
     @CurrentUser() user: UserEntity,
-    @Query('cycleId') cycleId: number,
+    @Param('objectiveId', ParseIntPipe) objectiveId: number,
   ): Promise<ResponseModel> {
-    return await this._checkinService.getChartCheckin(user.id, cycleId);
+    return await this._checkinService.getChartCheckin(user.id, objectiveId);
   }
 
   /**
@@ -93,6 +93,18 @@ export class CheckinController {
     @TransactionManager() manager: EntityManager,
   ): Promise<ResponseModel> {
     return this._checkinService.updateCheckinRequest(data, manager, user.id, checkinId);
+  }
+
+  /**
+   * @description: Get data model when create checkin
+   */
+  @Get('objective/:objectiveId')
+  @UsePipes(new ValidationPipe())
+  public async getCheckinObjective(
+    @CurrentUser() user: UserEntity,
+    @Param('objectiveId', ParseIntPipe) objectiveId: number,
+  ): Promise<ResponseModel> {
+    return await this._checkinService.getCheckinObjective(user.id, objectiveId);
   }
 
   /**

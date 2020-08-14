@@ -48,7 +48,7 @@ export class Seeder4001KeyResult implements Seeder {
           problems: 'Khong co gi',
           plans: 'khong co',
           checkinId: 2,
-          keyResultId: 26,
+          keyResultId: 23,
         },
         {
           targetValue: 100,
@@ -58,7 +58,7 @@ export class Seeder4001KeyResult implements Seeder {
           problems: 'Khong co gi',
           plans: 'khong co',
           checkinId: 2,
-          keyResultId: 27,
+          keyResultId: 24,
         },
         {
           targetValue: 100,
@@ -68,7 +68,7 @@ export class Seeder4001KeyResult implements Seeder {
           problems: 'Khong co gi',
           plans: 'khong co',
           checkinId: 2,
-          keyResultId: 28,
+          keyResultId: 25,
         },
         {
           targetValue: 100,

@@ -264,15 +264,14 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public async getChartCheckin(userId: number, cycleId: number): Promise<CheckinEntity[]> {
+  public async getChartCheckin(userId: number, objectiveId: number): Promise<CheckinEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('checkin')
         .select(['checkin.progress', 'checkin.checkinAt'])
         .leftJoin('checkin.objective', 'objective')
-        .leftJoin('objective.cycle', 'cycle')
         .where('objective.userId= :userId', { userId: userId })
-        .andWhere('cycle.id = :cycle', { cycle: cycleId })
-        .andWhere('checkin.status != :status', { status: CheckinStatus.PENDING })
+        .andWhere('checkin.objectiveId = :objectiveId', { objectiveId: objectiveId })
+        .andWhere('checkin.status != :status', { status: CheckinStatus.DRAFT })
         .orderBy('checkin.checkinAt', 'ASC');
 
       return queryBuilder.getMany();

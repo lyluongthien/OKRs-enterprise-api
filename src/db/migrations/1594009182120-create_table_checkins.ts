@@ -19,11 +19,11 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
       {
         name: 'checkinAt',
         type: 'timestamptz',
-        default: 'now()',
+        isNullable: true,
       },
       {
         name: 'nextCheckinDate',
-        type: 'date',
+        type: 'timestamptz',
         isNullable: true,
       },
       {
@@ -45,6 +45,11 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
       {
         name: ForeignKey.OBJECTIVE_ID,
         type: 'integer',
+      },
+      {
+        name: 'createdAt',
+        type: 'timestamptz',
+        default: 'now()',
       },
       {
         name: 'updatedAt',
