@@ -1,5 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
+import { UserEntity } from './user.entity';
+import { EvaluationCriteriaEntity } from './evaluation-criteria.entity';
 
 @Entity(TableName.Recognition)
 export class RecognitionEntity {
@@ -23,6 +33,17 @@ export class RecognitionEntity {
 
   @Column()
   public cycleId: number;
+
+  @ManyToOne(() => UserEntity, (user) => user.recognitionSender)
+  @JoinColumn([{ name: 'senderId', referencedColumnName: 'id' }])
+  public sender: UserEntity;
+
+  @ManyToOne(() => UserEntity, (user) => user.recognitionReceiver)
+  @JoinColumn([{ name: 'receiverId', referencedColumnName: 'id' }])
+  public receiver: UserEntity;
+
+  @ManyToOne(() => EvaluationCriteriaEntity, (evaluations) => evaluations.recognition)
+  public evaluationCriteria: EvaluationCriteriaEntity;
 
   @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;

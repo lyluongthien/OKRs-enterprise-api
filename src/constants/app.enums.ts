@@ -154,3 +154,8 @@ export enum OKRsLeaderType {
   CURRENT = 1,
   ALL = 2,
 }
+
+export enum TypeCFRsHistory {
+  FEED_BACK = 'feedback',
+  RECOGNITION = 'recognition',
+}

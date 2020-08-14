@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { TableName, EvaluationCriteriaEnum } from '@app/constants/app.enums';
 import { FeedbackEntity } from './feedback.entity';
+import { RecognitionEntity } from './recognition.entity';
 
 @Entity(TableName.EvaluationCriteria)
 export class EvaluationCriteriaEntity {
@@ -18,6 +19,9 @@ export class EvaluationCriteriaEntity {
 
   @OneToMany(() => FeedbackEntity, (feedback) => feedback.evaluationCriteria)
   public feedback: FeedbackEntity[];
+
+  @OneToMany(() => RecognitionEntity, (recognition) => recognition.evaluationCriteria)
+  public recognition: RecognitionEntity[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;

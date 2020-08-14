@@ -4,8 +4,8 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToOne,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { CheckinEntity } from './checkin.entity';
@@ -35,13 +35,15 @@ export class FeedbackEntity {
   @Column()
   public checkinId: number;
 
-  @OneToOne(() => CheckinEntity)
-  public checkIn: CheckinEntity;
+  @ManyToOne(() => CheckinEntity, (checkin) => checkin.feedback)
+  public checkin: CheckinEntity;
 
-  @ManyToOne(() => UserEntity, (user) => user.sender)
+  @ManyToOne(() => UserEntity, (user) => user.feedbackSender)
+  @JoinColumn([{ name: 'senderId', referencedColumnName: 'id' }])
   public sender: UserEntity;
 
-  @ManyToOne(() => UserEntity, (user) => user.receiver)
+  @ManyToOne(() => UserEntity, (user) => user.feedbackReceiver)
+  @JoinColumn([{ name: 'receiverId', referencedColumnName: 'id' }])
   public receiver: UserEntity;
 
   @ManyToOne(() => EvaluationCriteriaEntity, (evaluations) => evaluations.feedback)

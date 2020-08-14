@@ -43,4 +43,28 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+
+  public async getAllRecognitions(cycleId: number): Promise<ObjectLiteral[]> {
+    try {
+      return await this.createQueryBuilder('recognition')
+        .select([
+          'recognition.id',
+          'criteria.content',
+          'sender.fullName',
+          'sender.avatarURL',
+          'sender.gravatarURL',
+          'receiver.fullName',
+          'receiver.avatarURL',
+          'receiver.gravatarURL',
+          'recognition.createdAt',
+        ])
+        .leftJoin('recognition.evaluationCriteria', 'criteria')
+        .leftJoin('recognition.sender', 'sender')
+        .leftJoin('recognition.receiver', 'receiver')
+        .where('recognition.cycleId = :cycleId', { cycleId: cycleId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 }

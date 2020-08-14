@@ -1,7 +1,7 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { FeedbackRepository } from './feedback.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, CheckinType, CheckinStatus } from '@app/constants/app.enums';
+import { CommonMessage, CheckinType, CheckinStatus, TypeCFRsHistory } from '@app/constants/app.enums';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserRepository } from '../user/user.repository';
 import { FeedbackDTO } from './feedback.dto';
@@ -10,11 +10,13 @@ import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-
 import { UserStarRepository } from '../user-star/user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
 import { TeamRepository } from '../team/team.repository';
+import { RecognitionRepository } from '../recognition/recognition.repository';
 
 @Injectable()
 export class FeedbackService {
   constructor(
     private _feedBackRepository: FeedbackRepository,
+    private _recognitionRepository: RecognitionRepository,
     private _checkinRepository: CheckinRepository,
     private _userRepository: UserRepository,
     private _evaluationCriteriaRepository: EvaluationCriteriaRepository,
@@ -23,11 +25,12 @@ export class FeedbackService {
     private _teamRepository: TeamRepository,
   ) {}
 
-  public async listWaitingFeedBack(id: number, cycleId: number): Promise<ResponseModel> {
+  public async listWaitingFeedBack(id: number): Promise<ResponseModel> {
     const data: any = {};
     const user = await this._userRepository.getUserByID(id);
     const isLeader = user.isLeader;
     const adminId = (await this._userRepository.getAdmin()).id;
+    const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
     if (isLeader) {
       const teamName = (await this._teamRepository.getDetailTeam(user.teamId)).name;
       data.list2 = {
@@ -63,10 +66,11 @@ export class FeedbackService {
     };
   }
 
-  public async searchListWaitingFeedBack(text: string, userId: number, cycleId: number): Promise<ResponseModel> {
+  public async searchListWaitingFeedBack(text: string, userId: number): Promise<ResponseModel> {
     const user = await this._userRepository.getUserByID(userId);
     const isLeader = user.isLeader;
     const adminId = (await this._userRepository.getAdmin()).id;
+    const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
     let data = null;
     if (isLeader) {
       data = await this._checkinRepository.searchDoneCheckin(text, adminId, cycleId, CheckinType.TEAM_LEADER);
@@ -99,6 +103,32 @@ export class FeedbackService {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
       data: {},
+    };
+  }
+
+  public async getCFRsHistory(userId: number, cycleId: number): Promise<ResponseModel> {
+    const data: any = {};
+    if (userId && cycleId) {
+      data.sent = await this._feedBackRepository.getSentFeedback(userId, cycleId);
+      data.received = await this._feedBackRepository.getReceivedFeedback(userId, cycleId);
+      const cfrs = await this._feedBackRepository.getAllFeedBacks(cycleId);
+      cfrs.map((value) => {
+        value.type = TypeCFRsHistory.FEED_BACK;
+        return value;
+      });
+      const recognition = await this._recognitionRepository.getAllRecognitions(cycleId);
+      recognition.map((value) => {
+        value.type = TypeCFRsHistory.RECOGNITION;
+        cfrs.push(value);
+        return value;
+      });
+      cfrs.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
+      data.CFRs = cfrs;
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
     };
   }
 }
