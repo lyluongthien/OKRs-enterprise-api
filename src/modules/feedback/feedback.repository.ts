@@ -27,6 +27,8 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
           'feedback.createdAt',
           'receiver.avatarURL',
           'receiver.gravatarURL',
+          'checkin.id',
+          'objective.title',
         ])
         .leftJoin('feedback.evaluationCriteria', 'criteria')
         .leftJoin('feedback.receiver', 'receiver')
@@ -46,6 +48,9 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
       return await this.createQueryBuilder('feedback')
         .select([
           'feedback.id',
+          'checkin.id',
+          'objective.title',
+          'feedback.content',
           'criteria.content',
           'sender.fullName',
           'feedback.createdAt',
@@ -70,6 +75,8 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
       return await this.createQueryBuilder('feedback')
         .select([
           'feedback.id',
+          'checkin.id',
+          'objective.title',
           'criteria.content',
           'sender.fullName',
           'sender.avatarURL',
