@@ -33,7 +33,7 @@ export class FeedbackController {
     @CurrentUser() me: UserEntity,
     @Param('cycleId', ParseIntPipe) cycleId: number,
   ): Promise<ResponseModel> {
-    return this._feedBackService.getCFRsHistory(9, cycleId);
+    return this._feedBackService.getCFRsHistory(me.id, cycleId);
   }
 
   @Get('/detail/:id')
