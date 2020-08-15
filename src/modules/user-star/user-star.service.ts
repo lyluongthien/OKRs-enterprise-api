@@ -9,7 +9,7 @@ import { CycleRepository } from '../cycle/cycle.repository';
 export class UserStarService {
   constructor(private _userStarsRepository: UserStarRepository, private _cycleRepository: CycleRepository) {}
 
-  public async getUserStar(status: string): Promise<ResponseModel> {
+  public async getUserStar(status: CycleStatus): Promise<ResponseModel> {
     let data = null;
     if (status && status == CycleStatus.CURRENT) {
       const id = (await this._cycleRepository.getCurrentCycle(new Date())).id;
