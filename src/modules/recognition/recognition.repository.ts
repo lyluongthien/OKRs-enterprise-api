@@ -71,6 +71,7 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
       return await this.createQueryBuilder('recognition')
         .select([
           'recognition.id',
+          'objective.title',
           'criteria.content',
           'sender.fullName',
           'sender.avatarURL',
@@ -81,6 +82,7 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
           'recognition.createdAt',
         ])
         .leftJoin('recognition.evaluationCriteria', 'criteria')
+        .leftJoin('recognition.objective', 'objective')
         .leftJoin('recognition.sender', 'sender')
         .leftJoin('recognition.receiver', 'receiver')
         .where('recognition.cycleId = :cycleId', { cycleId: cycleId })
