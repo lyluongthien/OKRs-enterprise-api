@@ -191,4 +191,28 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+
+  public async getDetailFeedback(feedbackId: number): Promise<FeedbackEntity> {
+    try {
+      return await this.createQueryBuilder('feedback')
+        .select([
+          'feedback.id',
+          'criteria.content',
+          'sender.fullName',
+          'receiver.fullName',
+          'checkin.checkinAt',
+          'objective.title',
+          'feedback.content',
+        ])
+        .leftJoin('feedback.checkin', 'checkin')
+        .leftJoin('feedback.evaluationCriteria', 'criteria')
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('feedback.receiver', 'receiver')
+        .leftJoin('feedback.sender', 'sender')
+        .where('feedback.id = :id', { id: feedbackId })
+        .getOne();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 }
