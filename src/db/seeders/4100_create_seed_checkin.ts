@@ -75,6 +75,46 @@ export class Seeder4001Checkin implements Seeder {
           teamLeaderId: 3,
           objectiveId: 16,
         },
+        {
+          confidentLevel: 3,
+          checkinAt: '2020/07/22',
+          nextCheckinDate: '2020/07/29',
+          status: CheckinStatus.DONE,
+          teamLeaderId: 14,
+          objectiveId: 2,
+        },
+        {
+          confidentLevel: 3,
+          checkinAt: '2020/08/11',
+          nextCheckinDate: '2020/08/18',
+          status: CheckinStatus.DRAFT,
+          teamLeaderId: 14,
+          objectiveId: 2,
+        },
+        {
+          confidentLevel: 3,
+          checkinAt: '2020/08/11',
+          nextCheckinDate: '2020/08/18',
+          status: CheckinStatus.DONE,
+          teamLeaderId: 14,
+          objectiveId: 3,
+        },
+        {
+          confidentLevel: 3,
+          checkinAt: '2020/08/11',
+          nextCheckinDate: '2020/08/18',
+          status: CheckinStatus.DRAFT,
+          teamLeaderId: 14,
+          objectiveId: 6,
+        },
+        {
+          confidentLevel: 3,
+          checkinAt: '2020/08/11',
+          nextCheckinDate: '2020/08/18',
+          status: CheckinStatus.DONE,
+          teamLeaderId: 14,
+          objectiveId: 6,
+        },
       ])
       .execute();
   }

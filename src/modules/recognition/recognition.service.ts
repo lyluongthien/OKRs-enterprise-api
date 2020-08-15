@@ -26,7 +26,6 @@ export class RecognitionService {
       recognition.senderId = senderId;
       const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
       recognition.cycleId = cycleId;
-      await this._recognitionRepository.createRecognition(recognition, manager);
       const userStar = {
         star: (await this._evaluationCriteriaRepository.getCriteriaDetail(recognition.evaluationCriteriaId))
           .numberOfStar,

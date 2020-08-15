@@ -210,14 +210,14 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       FROM checkins c
       LEFT JOIN objectives o ON c."objectiveId" = o.id
       WHERE c."checkinAt" <=
-          (SELECT c2."nextCheckinDate"
+          coalesce ((SELECT c2."nextCheckinDate"
            FROM checkins c2
            WHERE c2."objectiveId" = c."objectiveId"
              AND c2.id <> c.id
              AND (c2.status = '${CheckinStatus.DONE}'
                   OR c2.status = '${CheckinStatus.CLOSED}')
            ORDER BY c2."nextCheckinDate" DESC
-           LIMIT 1)
+           LIMIT 1), c."checkinAt")
         AND c.status = '${CheckinStatus.PENDING}'
         AND o."cycleId" = ${cycleId}`;
       return await this.query(query);
@@ -264,15 +264,14 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public async getChartCheckin(userId: number, cycleId: number): Promise<CheckinEntity[]> {
+  public async getChartCheckin(userId: number, objectiveId: number): Promise<CheckinEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('checkin')
         .select(['checkin.progress', 'checkin.checkinAt'])
         .leftJoin('checkin.objective', 'objective')
-        .leftJoin('objective.cycle', 'cycle')
         .where('objective.userId= :userId', { userId: userId })
-        .andWhere('cycle.id = :cycle', { cycle: cycleId })
-        .andWhere('checkin.status != :status', { status: CheckinStatus.PENDING })
+        .andWhere('checkin.objectiveId = :objectiveId', { objectiveId: objectiveId })
+        .andWhere('checkin.status != :status', { status: CheckinStatus.DRAFT })
         .orderBy('checkin.checkinAt', 'ASC');
 
       return queryBuilder.getMany();

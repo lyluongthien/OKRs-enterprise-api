@@ -25,11 +25,24 @@ export class CheckinService {
 
   public async getCheckinDetail(checkinId: number, userId: number): Promise<ResponseModel> {
     const checkin = await this._checkinRepository.getCheckinById(checkinId);
+    const chart = await this._checkinRepository.getChartCheckin(checkin.objective.userId, checkin.objective.id);
     if (checkin.objective.userId === userId || checkin.teamLeaderId === userId) {
+      const responseData = {
+        id: checkin.id,
+        confidentLevel: checkin.confidentLevel,
+        checkinAt: checkin.checkinAt,
+        nextCheckinDate: checkin.nextCheckinDate,
+        status: checkin.status,
+        teamLeaderId: checkin.teamLeaderId,
+        objective: checkin.objective,
+        checkinDetails: checkin.checkinDetails,
+        chart: chart,
+      };
+
       return {
         statusCode: HttpStatus.OK,
         message: CommonMessage.SUCCESS,
-        data: checkin,
+        data: responseData,
       };
     } else {
       throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
@@ -379,12 +392,46 @@ export class CheckinService {
     };
   }
 
-  public async getChartCheckin(userId: number, cycleId: number): Promise<ResponseModel> {
-    const data = await this._checkinRepository.getChartCheckin(userId, cycleId);
+  public async getCheckinObjective(userId: number, objectiveId: number): Promise<ResponseModel> {
+    const data = await this._objectiveRepository.getObjectiveCheckin(userId, objectiveId);
+    if (!data) {
+      throw new HttpException(CommonMessage.DATA_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+    const chart = await this._checkinRepository.getChartCheckin(userId, objectiveId);
+
+    const responseData = {
+      id: data.id,
+      title: data.title,
+      progress: data.progress,
+      keyResults: data.keyResults,
+      chart: chart,
+      checkin: {
+        id: 0,
+        checkinAt: null,
+        nextCheckinDate: null,
+        confidentLevel: 0,
+      },
+      checkinDetail: [],
+    };
+    const checkinInfo = data.checkins[0];
+
+    // Mapping data checkin
+    if (checkinInfo) {
+      responseData.checkin.id = checkinInfo.id;
+      responseData.checkin.checkinAt = checkinInfo.checkinAt;
+      responseData.checkin.nextCheckinDate = checkinInfo.nextCheckinDate;
+      responseData.checkin.confidentLevel = checkinInfo.confidentLevel;
+
+      // checkinDetail logic
+      if (checkinInfo.status === CheckinStatus.DRAFT) {
+        responseData.checkinDetail = checkinInfo.checkinDetails;
+      }
+    }
+
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: data,
+      data: responseData,
     };
   }
 }
