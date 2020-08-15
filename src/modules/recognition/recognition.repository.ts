@@ -71,6 +71,7 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
       return await this.createQueryBuilder('recognition')
         .select([
           'recognition.id',
+          'recognition.content',
           'objective.title',
           'criteria.content',
           'sender.fullName',

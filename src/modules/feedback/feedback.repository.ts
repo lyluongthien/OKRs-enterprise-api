@@ -25,6 +25,7 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
           'criteria.content',
           'receiver.fullName',
           'feedback.createdAt',
+          'feedback.content',
           'receiver.avatarURL',
           'receiver.gravatarURL',
           'checkin.id',
@@ -76,6 +77,7 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
         .select([
           'feedback.id',
           'checkin.id',
+          'feedback.content',
           'objective.title',
           'criteria.content',
           'sender.fullName',
