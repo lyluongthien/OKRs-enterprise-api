@@ -131,4 +131,13 @@ export class FeedbackService {
       data: data,
     };
   }
+
+  public async getDetailFeedback(feedbackId: number): Promise<ResponseModel> {
+    const data = await this._feedBackRepository.getDetailFeedback(feedbackId);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
 }

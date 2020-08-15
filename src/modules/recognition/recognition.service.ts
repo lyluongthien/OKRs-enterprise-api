@@ -40,4 +40,13 @@ export class RecognitionService {
       data: {},
     };
   }
+
+  public async getRecognitionDetail(recognitionId: number): Promise<ResponseModel> {
+    const data = await this._recognitionRepository.getRecognitionDetail(recognitionId);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
 }

@@ -4,6 +4,7 @@ import { KeyResultEntity } from './key-result.entity';
 import { UserEntity } from './user.entity';
 import { CycleEntity } from './cycle.entity';
 import { CheckinEntity } from './checkin.entity';
+import { RecognitionEntity } from './recognition.entity';
 
 @Entity(TableName.Objective)
 export class ObjectiveEntity {
@@ -52,6 +53,9 @@ export class ObjectiveEntity {
 
   @OneToMany(() => KeyResultEntity, (keyresult) => keyresult.objective, { onDelete: 'CASCADE' })
   public keyResults: KeyResultEntity[];
+
+  @OneToMany(() => RecognitionEntity, (recognition) => recognition.objective)
+  public recognitions: RecognitionEntity[];
 
   @ManyToOne(() => UserEntity, (user) => user.objectives)
   public user: UserEntity;

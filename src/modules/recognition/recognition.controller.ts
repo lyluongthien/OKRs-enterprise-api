@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Post, Body } from '@nestjs/common';
+import { Controller, UseGuards, Post, Body, Get, Param, ParseIntPipe } from '@nestjs/common';
 
 import { AuthenticationGuard } from '../auth/authentication.guard';
 import { SwaggerAPI } from '@app/shared/decorators/api-swagger.decorator';
@@ -14,6 +14,11 @@ import { Transaction, EntityManager, TransactionManager } from 'typeorm';
 @SwaggerAPI()
 export class RecognitionController {
   constructor(private _recognitionService: RecognitionService) {}
+
+  @Get('/detail/:id')
+  public async getRecognitionDetail(@Param('id', ParseIntPipe) recognitionId: number): Promise<ResponseModel> {
+    return this._recognitionService.getRecognitionDetail(recognitionId);
+  }
 
   @Post()
   @Transaction({ isolation: 'SERIALIZABLE' })

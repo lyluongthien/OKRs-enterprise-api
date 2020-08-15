@@ -36,6 +36,11 @@ export class FeedbackController {
     return this._feedBackService.getCFRsHistory(9, cycleId);
   }
 
+  @Get('/detail/:id')
+  public async getFeedbackDetail(@Param('id', ParseIntPipe) feedbackId: number): Promise<ResponseModel> {
+    return this._feedBackService.getDetailFeedback(feedbackId);
+  }
+
   @Post()
   @Transaction({ isolation: 'SERIALIZABLE' })
   public async createFeedBack(

@@ -43,6 +43,29 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
     }
   }
 
+  public async getRecognitionDetail(recognitionId: number): Promise<RecognitionEntity[]> {
+    try {
+      return await this.createQueryBuilder('recognition')
+        .select([
+          'recognition.id',
+          'criteria.content',
+          'sender.fullName',
+          'receiver.fullName',
+          'recognition.content',
+          'recognition.createdAt',
+          'objective.title',
+        ])
+        .leftJoin('recognition.evaluationCriteria', 'criteria')
+        .leftJoin('recognition.objective', 'objective')
+        .leftJoin('recognition.sender', 'sender')
+        .leftJoin('recognition.receiver', 'receiver')
+        .where('recognition.id = :id', { id: recognitionId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getAllRecognitions(cycleId: number): Promise<ObjectLiteral[]> {
     try {
       return await this.createQueryBuilder('recognition')
