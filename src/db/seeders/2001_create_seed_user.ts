@@ -204,7 +204,7 @@ export class Seeder2001User implements Seeder {
           gender: true,
           gravatarURL: generateGravatar('hoapn@gmail.com'),
           jobPositionId: 1,
-          roleId: 1,
+          roleId: 2,
           teamId: 2,
           isActive: true,
           isApproved: true,

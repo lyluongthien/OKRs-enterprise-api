@@ -210,14 +210,14 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       FROM checkins c
       LEFT JOIN objectives o ON c."objectiveId" = o.id
       WHERE c."checkinAt" <=
-          (SELECT c2."nextCheckinDate"
+          coalesce ((SELECT c2."nextCheckinDate"
            FROM checkins c2
            WHERE c2."objectiveId" = c."objectiveId"
              AND c2.id <> c.id
              AND (c2.status = '${CheckinStatus.DONE}'
                   OR c2.status = '${CheckinStatus.CLOSED}')
            ORDER BY c2."nextCheckinDate" DESC
-           LIMIT 1)
+           LIMIT 1), c."checkinAt")
         AND c.status = '${CheckinStatus.PENDING}'
         AND o."cycleId" = ${cycleId}`;
       return await this.query(query);

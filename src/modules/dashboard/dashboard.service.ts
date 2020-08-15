@@ -76,9 +76,16 @@ export class DashboardService {
       lastDayOfLastWeek,
       adminId,
     );
-
     const data = { numberoffeedback, numberOfRecognition, numberOfManager };
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
 
+  public async getOKRsStatus(): Promise<ResponseModel> {
+    const data = null;
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
