@@ -77,7 +77,7 @@ export class ObjectiveService {
     };
   }
 
-  public async getOKRsStaffs(): Promise<ResponseModel> {
+  public async getListOKRs(): Promise<ResponseModel> {
     const currentCycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
     const data = await this._objectiveRepository.getOKRsByCycleId(currentCycleId);
     if (data) {

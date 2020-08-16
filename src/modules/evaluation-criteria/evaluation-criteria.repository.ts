@@ -5,11 +5,15 @@ import { EvaluationCriteriaEntity } from '@app/db/entities/evaluation-criteria.e
 import { EvaluationDTO } from './evaluation-criteria.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
+import { EvaluationCriteriaEnum } from '@app/constants/app.enums';
 
 @EntityRepository(EvaluationCriteriaEntity)
 export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaEntity> {
-  public async getList(): Promise<EvaluationCriteriaEntity[]> {
+  public async getList(type?: EvaluationCriteriaEnum): Promise<EvaluationCriteriaEntity[]> {
     try {
+      if (type) {
+        return await this.find({ where: { type } });
+      }
       return await this.find();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);

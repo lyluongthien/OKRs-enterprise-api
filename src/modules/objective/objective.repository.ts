@@ -77,7 +77,6 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .select(['objective.id', 'objective.title', 'users.id', 'users.email'])
         .leftJoin('objective.user', 'users')
         .where('objective.cycleId = :id', { id: cycleId })
-        .andWhere('users.isLeader = :isLeader', { isLeader: false })
         .andWhere('objective.isRootObjective = :root', { root: false })
         .getMany();
     } catch (error) {

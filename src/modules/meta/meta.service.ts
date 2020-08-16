@@ -1,7 +1,7 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { TeamRepository } from '../team/team.repository';
 import { JobRepository } from '../job/job.repository';
-import { CommonMessage } from '@app/constants/app.enums';
+import { CommonMessage, EvaluationCriteriaEnum } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { LessonRepository } from '../lesson/lesson.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
@@ -57,8 +57,8 @@ export class MetaService {
     };
   }
 
-  public async getEvaluationCriterias(): Promise<ResponseModel> {
-    const data = await this._evaluationCriteriaRepository.getList();
+  public async getEvaluationCriterias(type: EvaluationCriteriaEnum): Promise<ResponseModel> {
+    const data = await this._evaluationCriteriaRepository.getList(type);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

@@ -1,7 +1,13 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { FeedbackRepository } from './feedback.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, CheckinType, CheckinStatus, TypeCFRsHistory } from '@app/constants/app.enums';
+import {
+  CommonMessage,
+  CheckinType,
+  CheckinStatus,
+  TypeCFRsHistory,
+  EvaluationCriteriaEnum,
+} from '@app/constants/app.enums';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserRepository } from '../user/user.repository';
 import { FeedbackDTO } from './feedback.dto';
@@ -47,7 +53,7 @@ export class FeedbackService {
         list: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.PERSONAL),
       };
       data.list1 = {
-        name: 'Team Bạn',
+        name: 'Team Của Bạn',
         list: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.MEMBER),
       };
     } else {
@@ -59,6 +65,14 @@ export class FeedbackService {
       };
       data.list1 = [];
     }
+
+    if (data.list1.list && data.list1.list.length > 0) {
+      data.list1.list.type = EvaluationCriteriaEnum.LEADER_TO_MEMBER;
+    }
+    if (data.list2.list && data.list2.list.length > 0) {
+      data.list2.list.type = EvaluationCriteriaEnum.MEMBER_TO_LEADER;
+    }
+
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

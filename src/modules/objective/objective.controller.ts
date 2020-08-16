@@ -36,9 +36,9 @@ export class ObjectiveController {
     return this._objectiveService.getParentOKRs(id, type);
   }
 
-  @Get('/staffs')
-  public async getOKRsStaffs(): Promise<ResponseModel> {
-    return this._objectiveService.getOKRsStaffs();
+  @Get('/list_okrs')
+  public async getListOKRs(): Promise<ResponseModel> {
+    return this._objectiveService.getListOKRs();
   }
 
   @Get('/search')

@@ -1,6 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ResponseModel } from '@app/constants/app.interface';
 import { MetaService } from './meta.service';
+import { EvaluationCriteriaEnum } from '@app/constants/app.enums';
 
 @Controller('/api/v1/meta_data')
 export class MetaController {
@@ -24,7 +25,7 @@ export class MetaController {
   }
 
   @Get('/evaluation_criteria')
-  public async getEvaluationCriterias(): Promise<ResponseModel> {
-    return this._metaService.getEvaluationCriterias();
+  public async getEvaluationCriterias(@Query('type') type: EvaluationCriteriaEnum): Promise<ResponseModel> {
+    return this._metaService.getEvaluationCriterias(type);
   }
 }

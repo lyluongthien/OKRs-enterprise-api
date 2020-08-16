@@ -40,6 +40,8 @@ export class CheckinEntity {
 
   public titleName: string;
 
+  public type: string;
+
   @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;
 
