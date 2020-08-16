@@ -58,28 +58,8 @@ export class ObjectiveService {
     };
   }
 
-  public async getParentOKRs(cycleId: number, type: OKRsLeaderType): Promise<ResponseModel> {
-    let data = null;
-    data = await this._objectiveRepository.getParentOKRs(cycleId, type);
-    if (data) {
-      data.map((value) => {
-        const email = value.user.email.split('@');
-        if (email) {
-          value.user.email = email[0];
-        }
-        return data;
-      });
-    }
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: data,
-    };
-  }
-
-  public async getListOKRs(): Promise<ResponseModel> {
-    const currentCycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
-    const data = await this._objectiveRepository.getOKRsByCycleId(currentCycleId);
+  public async getListOKRs(cycleId: number, type: OKRsLeaderType): Promise<ResponseModel> {
+    const data = await this._objectiveRepository.getListOKRs(cycleId, type);
     if (data) {
       data.map((value) => {
         const email = value.user.email.split('@');
