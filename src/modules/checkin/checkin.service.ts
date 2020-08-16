@@ -23,6 +23,15 @@ export class CheckinService {
     private _cycleRepository: CycleRepository,
   ) {}
 
+  public async getDetailListWaitingFeedback(checkinId: number): Promise<ResponseModel> {
+    const data = await this._checkinRepository.getDetailListWaitingFeedback(checkinId);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
   public async getCheckinDetail(checkinId: number, userId: number): Promise<ResponseModel> {
     const checkin = await this._checkinRepository.getCheckinById(checkinId);
     const chart = await this._checkinRepository.getChartCheckin(checkin.objective.userId, checkin.objective.id);

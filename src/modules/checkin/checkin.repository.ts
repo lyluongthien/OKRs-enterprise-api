@@ -40,6 +40,36 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
+  public async getDetailListWaitingFeedback(id: number): Promise<CheckinEntity> {
+    try {
+      const queryBuilder = this.createQueryBuilder('checkin')
+        .select([
+          'checkin.id',
+          'checkin.confidentLevel',
+          'checkin.checkinAt',
+          'objective.title',
+          'user.fullName',
+          'checkinDetails.valueObtained',
+          'checkinDetails.confidentLevel',
+          'checkinDetails.progress',
+          'checkinDetails.problems',
+          'checkinDetails.plans',
+          'keyresult.content',
+          'keyresult.targetValue',
+        ])
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('objective.user', 'user')
+        .leftJoin('checkin.checkinDetails', 'checkinDetails')
+        .leftJoin('checkinDetails.keyResult', 'keyresult')
+        .where('checkin.id= :id', { id })
+        .getOne();
+
+      return await queryBuilder;
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getCheckinById(id: number): Promise<CheckinEntity> {
     try {
       const queryBuilder = this.createQueryBuilder('checkin')

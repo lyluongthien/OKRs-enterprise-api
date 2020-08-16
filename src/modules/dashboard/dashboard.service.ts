@@ -88,15 +88,17 @@ export class DashboardService {
 
   public async getOKRsStatus(): Promise<ResponseModel> {
     const today = new Date();
-    const first = today.getDate() - today.getDay() + 1;
+    const first = today.getDate() - today.getDay();
     const last = first + 6;
 
     const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-    const firstOfLastWeek = lastWeek.getDate() - lastWeek.getDay() + 1;
+    const firstOfLastWeek = lastWeek.getDate() - lastWeek.getDay();
     const lastOfLastWeek = firstOfLastWeek + 6;
 
     const firstday = new Date(today.setDate(first)).toISOString();
     const lastday = new Date(today.setDate(last)).toISOString();
+
+    console.log(firstday + '       ' + lastday);
 
     const firstDayOfLastWeek = new Date(lastWeek.setDate(firstOfLastWeek)).toISOString();
     const lastDayOfLastWeek = new Date(lastWeek.setDate(lastOfLastWeek)).toISOString();
@@ -158,7 +160,7 @@ export class DashboardService {
       very_bad: very_bad,
     };
 
-    const dataResponse: any = [
+    const dataResponse = [
       {
         good: dataResponseCurrentWeek.good,
         changing: dataResponseCurrentWeek.good - dataResponseLastWeek.good,
