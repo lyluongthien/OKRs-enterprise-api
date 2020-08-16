@@ -85,14 +85,17 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async getTeamLeaderOKRs(id: number, type: OKRsLeaderType): Promise<ObjectiveEntity[]> {
+  public async getParentOKRs(id: number, type: OKRsLeaderType): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
         .select(['objective.id', 'objective.title', 'users.id', 'users.email'])
         .leftJoin('objective.user', 'users');
       switch (type) {
-        case OKRsLeaderType.CURRENT:
-          return await queryBuilder.where('users.id = :id', { id }).getMany();
+        case OKRsLeaderType.ROOT:
+          return await queryBuilder
+            .where('objective.cycleId = :cycleId', { cycleId: id })
+            .andWhere('objective.isRootObjective = true')
+            .getMany();
         case OKRsLeaderType.ALL:
           return await queryBuilder
             .where('objective.cycleId = :cycleId', { cycleId: id })

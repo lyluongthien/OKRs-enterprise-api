@@ -58,14 +58,9 @@ export class ObjectiveService {
     };
   }
 
-  public async getTeamLeaderOKRs(id: number, type: OKRsLeaderType): Promise<ResponseModel> {
+  public async getParentOKRs(cycleId: number, type: OKRsLeaderType): Promise<ResponseModel> {
     let data = null;
-    if (type == OKRsLeaderType.CURRENT) {
-      const teamLeadId = (await this._userRepository.getTeamLeaderId(id)).id;
-      data = await this._objectiveRepository.getTeamLeaderOKRs(teamLeadId, type);
-    } else {
-      data = await this._objectiveRepository.getTeamLeaderOKRs(id, type);
-    }
+    data = await this._objectiveRepository.getParentOKRs(cycleId, type);
     if (data) {
       data.map((value) => {
         const email = value.user.email.split('@');
