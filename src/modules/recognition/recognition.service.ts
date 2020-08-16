@@ -32,6 +32,7 @@ export class RecognitionService {
         cycleId: cycleId,
         userId: recognition.receiverId,
       };
+      await this._recognitionRepository.createRecognition(recognition, manager);
       await this._userStarsRepository.createUserStar(userStar, manager);
     }
     return {
