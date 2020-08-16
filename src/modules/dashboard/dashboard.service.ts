@@ -1,4 +1,5 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
+import { startOfWeek, endOfWeek } from 'date-fns';
 
 import { TopStarType, CommonMessage, OKRsType, RoleEnum } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
@@ -88,18 +89,14 @@ export class DashboardService {
 
   public async getOKRsStatus(): Promise<ResponseModel> {
     const today = new Date();
-    const first = today.getDate() - today.getDay();
-    const last = first + 6;
 
     const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-    const firstOfLastWeek = lastWeek.getDate() - lastWeek.getDay();
-    const lastOfLastWeek = firstOfLastWeek + 6;
 
-    const firstday = new Date(today.setDate(first)).toISOString();
-    const lastday = new Date(today.setDate(last)).toISOString();
+    const firstday = startOfWeek(today).toISOString();
+    const lastday = endOfWeek(today).toISOString();
 
-    const firstDayOfLastWeek = new Date(lastWeek.setDate(firstOfLastWeek)).toISOString();
-    const lastDayOfLastWeek = new Date(lastWeek.setDate(lastOfLastWeek)).toISOString();
+    const firstDayOfLastWeek = startOfWeek(lastWeek).toISOString();
+    const lastDayOfLastWeek = endOfWeek(lastWeek).toISOString();
 
     const dataCurrentWeek = await this._checkinRepository.getOKRStatus(firstday, lastday);
     const dataLastWeek = await this._checkinRepository.getOKRStatus(firstDayOfLastWeek, lastDayOfLastWeek);
@@ -110,6 +107,9 @@ export class DashboardService {
       lastDayOfLastWeek,
     );
 
+    const start = startOfWeek(new Date()).toISOString();
+    const end = endOfWeek(new Date()).toISOString();
+    console.log(start + '                ' + end);
     let good = 0,
       normal = 0,
       bad = 0,
