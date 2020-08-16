@@ -63,7 +63,7 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
     columnNames: [ForeignKey.OBJECTIVE_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.Objective,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   });
 
   public async up(queryRunner: QueryRunner): Promise<void> {
