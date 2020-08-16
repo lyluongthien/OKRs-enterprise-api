@@ -9,6 +9,7 @@ import { UserRepository } from '../user/user.repository';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { RecognitionRepository } from '../recognition/recognition.repository';
 import { RoleRepository } from '../role/role.repository';
+import { CheckinRepository } from '../checkin/checkin.repository';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { RoleRepository } from '../role/role.repository';
       ObjectiveRepository,
       RecognitionRepository,
       RoleRepository,
+      CheckinRepository,
     ]),
   ],
   controllers: [DashboardController],

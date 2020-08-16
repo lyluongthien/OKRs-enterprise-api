@@ -14,8 +14,8 @@ import { UserEntity } from '@app/db/entities/user.entity';
 export class DashboardController {
   constructor(private _dashBoardService: DashboardService) {}
 
-  @Get('/top_sender')
-  public async getTopSenderStars(
+  @Get('/top_stars')
+  public async getTopStars(
     @Query('cycleId', ParseIntPipe) cycleId: number,
     @Query('type') type: TopStarType,
   ): Promise<ResponseModel> {
@@ -32,6 +32,11 @@ export class DashboardController {
 
   @Get('/cfr_status')
   public async getCFRStatus(): Promise<ResponseModel> {
-    return this._dashBoardService.getFirstAndLastDate();
+    return this._dashBoardService.getCFRsStatus();
+  }
+
+  @Get('/okr_status')
+  public async getOKRsStatus(): Promise<ResponseModel> {
+    return this._dashBoardService.getOKRsStatus();
   }
 }

@@ -163,3 +163,10 @@ export enum DeleteKeyresultType {
   KEY_RESULT = 1,
   OKR = 2,
 }
+
+export enum OKRsStatusType {
+  GOOD = 'OKRs đang tiến triển tốt',
+  NORMAL = 'OKRs đang tiến triển',
+  BAD = 'OKRs có sự rủi ro',
+  VERY_BAD = 'OKRs không tiến triển',
+}

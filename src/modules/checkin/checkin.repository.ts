@@ -40,6 +40,36 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
+  public async getDetailListWaitingFeedback(id: number): Promise<CheckinEntity> {
+    try {
+      const queryBuilder = this.createQueryBuilder('checkin')
+        .select([
+          'checkin.id',
+          'checkin.confidentLevel',
+          'checkin.checkinAt',
+          'objective.title',
+          'user.fullName',
+          'checkinDetails.valueObtained',
+          'checkinDetails.confidentLevel',
+          'checkinDetails.progress',
+          'checkinDetails.problems',
+          'checkinDetails.plans',
+          'keyresult.content',
+          'keyresult.targetValue',
+        ])
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('objective.user', 'user')
+        .leftJoin('checkin.checkinDetails', 'checkinDetails')
+        .leftJoin('checkinDetails.keyResult', 'keyresult')
+        .where('checkin.id= :id', { id })
+        .getOne();
+
+      return await queryBuilder;
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getCheckinById(id: number): Promise<CheckinEntity> {
     try {
       const queryBuilder = this.createQueryBuilder('checkin')
@@ -248,7 +278,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public async getNotYetCheckin(cycleId: number): Promise<CheckinEntity[]> {
+  public async getNotYetCheckin(cycleId: number): Promise<ObjectLiteral[]> {
     try {
       const query = `SELECT count(o.id) as notYetCheckin
       FROM objectives o
@@ -257,7 +287,23 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         AND o.id NOT IN
           (SELECT DISTINCT c."objectiveId"
            FROM checkins c
-           WHERE c.status = '${CheckinStatus.DRAFT}' )`;
+           WHERE c.status = '${CheckinStatus.DRAFT}' or c.status = '${CheckinStatus.PENDING}')`;
+      return await this.query(query);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getNotYetCheckinStatus(firstDay: string, lastDay: string): Promise<ObjectLiteral[]> {
+    try {
+      const query = `SELECT count(o.id) as notYetCheckin
+      FROM objectives o
+      WHERE o."isCompleted" = FALSE
+        AND o.id NOT IN
+          (SELECT DISTINCT c."objectiveId"
+           FROM checkins c
+           WHERE c.status = '${CheckinStatus.DRAFT}' or c.status = '${CheckinStatus.PENDING}'
+           and c."checkinAt" between '${firstDay}' and '${lastDay}')`;
       return await this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
@@ -275,6 +321,50 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .orderBy('checkin.checkinAt', 'ASC');
 
       return queryBuilder.getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getOKRStatus(firstDay: string, lastDay: string): Promise<ObjectLiteral[]> {
+    try {
+      const query = `SELECT thisWeek."objectiveId",
+              coalesce(thisWeek.progress, 0) - coalesce(lastweek.progress, 0) AS progressChanging,
+              thisWeek."confidentLevel"
+        FROM
+        (SELECT c."objectiveId",
+                c.id,
+                c.progress,
+                c."confidentLevel"
+          FROM checkins c
+          LEFT JOIN objectives o ON c."objectiveId" = o.id
+          WHERE c."checkinAt" BETWEEN '${firstDay}' AND '${lastDay}'
+            AND c."nextCheckinDate" =
+              (SELECT c2."nextCheckinDate"
+              FROM checkins c2
+              WHERE c2."objectiveId" = c."objectiveId"
+                AND (c2.status = 'Done'
+                      OR c2.status = 'Closed')
+              ORDER BY c2."nextCheckinDate" DESC
+              LIMIT 1)) AS thisWeek
+        LEFT JOIN
+        (SELECT c."objectiveId",
+                c.progress
+          FROM checkins c
+          LEFT JOIN objectives o ON c."objectiveId" = o.id
+          WHERE c."nextCheckinDate" =
+              (SELECT sub."nextCheckinDate"
+              FROM
+                (SELECT c2."nextCheckinDate"
+                  FROM checkins c2
+                  WHERE c2."objectiveId" = c."objectiveId"
+                    AND (c2.status = 'Done'
+                        OR c2.status = 'Closed')
+                  ORDER BY c2."nextCheckinDate" DESC
+                  LIMIT 2) AS sub
+              ORDER BY sub."nextCheckinDate" ASC
+              LIMIT 1)) AS lastWeek ON thisWeek."objectiveId" = lastweek."objectiveId"`;
+      return this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

@@ -108,6 +108,14 @@ export class CheckinController {
     return this._checkinService.getCheckinDetail(checkinId, user.id);
   }
 
+  @Get('/waiting_feedback_detail/:checkinId')
+  @UsePipes(new ValidationPipe())
+  public async getDetailListWaitingFeedback(
+    @Param('checkinId', ParseIntPipe) checkinId: number,
+  ): Promise<ResponseModel> {
+    return this._checkinService.getDetailListWaitingFeedback(checkinId);
+  }
+
   @Post()
   @UsePipes(new ValidationPipe())
   @Transaction({ isolation: 'SERIALIZABLE' })
@@ -116,7 +124,7 @@ export class CheckinController {
     @CurrentUser() user: UserEntity,
     @TransactionManager() manager: EntityManager,
   ): Promise<ResponseModel> {
-    return this._checkinService.createUpdateCheckin(data, manager, 14);
+    return this._checkinService.createUpdateCheckin(data, manager, user.id);
   }
 
   /**
