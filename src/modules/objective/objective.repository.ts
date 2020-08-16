@@ -270,6 +270,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'checkins.status',
           'checkins.checkinAt',
           'checkins.nextCheckinDate',
+          'checkins.confidentLevel',
           'checkins.progress',
           'checkinDetails.id',
           'checkinDetails.valueObtained',
