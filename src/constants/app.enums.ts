@@ -152,7 +152,8 @@ export enum TopStarType {
 
 export enum OKRsLeaderType {
   ROOT = 1,
-  ALL = 2,
+  TEAM_LEADER = 2,
+  ALL = 3,
 }
 
 export enum TypeCFRsHistory {

@@ -289,7 +289,7 @@ export class UserService {
     const data = await this._userRepository.getUserActived();
     return {
       statusCode: HttpStatus.OK,
-      message: CommonMessage.UPLOAD_SUCCESS,
+      message: CommonMessage.SUCCESS,
       data: data,
     };
   }

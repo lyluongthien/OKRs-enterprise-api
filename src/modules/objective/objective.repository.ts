@@ -71,23 +71,10 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async getOKRsByCycleId(cycleId: number): Promise<ObjectiveEntity[]> {
-    try {
-      return await this.createQueryBuilder('objective')
-        .select(['objective.id', 'objective.title', 'users.id', 'users.email', 'user.fullName'])
-        .leftJoin('objective.user', 'users')
-        .where('objective.cycleId = :id', { id: cycleId })
-        .andWhere('objective.isRootObjective = :root', { root: false })
-        .getMany();
-    } catch (error) {
-      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
-    }
-  }
-
-  public async getParentOKRs(id: number, type: OKRsLeaderType): Promise<ObjectiveEntity[]> {
+  public async getListOKRs(id: number, type: OKRsLeaderType): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
-        .select(['objective.id', 'objective.title', 'users.id', 'users.email', 'user.'])
+        .select(['objective.id', 'objective.title', 'users.id', 'users.email'])
         .leftJoin('objective.user', 'users');
       switch (type) {
         case OKRsLeaderType.ROOT:
@@ -95,10 +82,15 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
             .where('objective.cycleId = :cycleId', { cycleId: id })
             .andWhere('objective.isRootObjective = true')
             .getMany();
-        case OKRsLeaderType.ALL:
+        case OKRsLeaderType.TEAM_LEADER:
           return await queryBuilder
             .where('objective.cycleId = :cycleId', { cycleId: id })
             .andWhere('users.isLeader = :isLead', { isLead: true })
+            .getMany();
+        case OKRsLeaderType.ALL:
+          return await queryBuilder
+            .where('objective.cycleId = :cycleId', { cycleId: id })
+            .andWhere('objective.isRootObjective = :root', { root: false })
             .getMany();
         default:
           return null;
