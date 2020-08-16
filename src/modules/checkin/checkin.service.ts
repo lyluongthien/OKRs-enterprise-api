@@ -418,6 +418,7 @@ export class CheckinService {
         id: 0,
         checkinAt: null,
         nextCheckinDate: null,
+        status: null,
         confidentLevel: 0,
       },
       checkinDetail: [],
@@ -430,6 +431,7 @@ export class CheckinService {
       responseData.checkin.checkinAt = checkinInfo.checkinAt;
       responseData.checkin.nextCheckinDate = checkinInfo.nextCheckinDate;
       responseData.checkin.confidentLevel = checkinInfo.confidentLevel;
+      responseData.checkin.status = checkinInfo.status;
 
       // checkinDetail logic
       if (checkinInfo.status === CheckinStatus.DRAFT) {
