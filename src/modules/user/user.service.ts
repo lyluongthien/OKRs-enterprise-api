@@ -284,4 +284,13 @@ export class UserService {
       data: data,
     };
   }
+
+  public async getUserActived(): Promise<ResponseModel> {
+    const data = await this._userRepository.getUserActived();
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.UPLOAD_SUCCESS,
+      data: data,
+    };
+  }
 }

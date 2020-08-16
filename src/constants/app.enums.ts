@@ -151,7 +151,7 @@ export enum TopStarType {
 }
 
 export enum OKRsLeaderType {
-  CURRENT = 1,
+  ROOT = 1,
   ALL = 2,
 }
 

@@ -28,17 +28,22 @@ export class ObjectiveController {
     return this._objectiveService.createAndUpdateOKRs(data, manager, user.id);
   }
 
-  @Get('/team_leaders')
+  @Get('/parent')
   public async getAllTeamLeaderOKRs(
-    @Query('id', ParseIntPipe) id: number,
+    @Query('cycleId', ParseIntPipe) id: number,
     @Query('type', ParseIntPipe) type: OKRsLeaderType,
   ): Promise<ResponseModel> {
-    return this._objectiveService.getTeamLeaderOKRs(id, type);
+    return this._objectiveService.getParentOKRs(id, type);
   }
 
-  @Get('/staffs')
-  public async getOKRsStaffs(): Promise<ResponseModel> {
-    return this._objectiveService.getOKRsStaffs();
+  @Get('/list_okrs')
+  public async getListOKRs(): Promise<ResponseModel> {
+    return this._objectiveService.getListOKRs();
+  }
+
+  @Get('list_okrs/:userId')
+  public async getListOKRsByUserId(@Param('userId', ParseIntPipe) userId: number): Promise<ResponseModel> {
+    return this._objectiveService.getListOKRsByUserId(userId);
   }
 
   @Get('/search')

@@ -102,6 +102,10 @@ export class UserController {
     }
   }
 
+  @Get('/user_recognition')
+  public async getUserRecognition(): Promise<ResponseModel> {
+    return this._userService.getUserActived();
+  }
   /**
    * @description: Get information of current logged in system
    */
