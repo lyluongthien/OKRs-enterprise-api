@@ -67,12 +67,17 @@ export class FeedbackService {
     }
 
     if (data.list1.list && data.list1.list.length > 0) {
-      data.list1.list.type = EvaluationCriteriaEnum.LEADER_TO_MEMBER;
+      data.list1.list.map((value) => {
+        value.type = EvaluationCriteriaEnum.LEADER_TO_MEMBER;
+        return value;
+      });
     }
     if (data.list2.list && data.list2.list.length > 0) {
-      data.list2.list.type = EvaluationCriteriaEnum.MEMBER_TO_LEADER;
+      data.list2.list.map((value) => {
+        value.type = EvaluationCriteriaEnum.MEMBER_TO_LEADER;
+        return value;
+      });
     }
-
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

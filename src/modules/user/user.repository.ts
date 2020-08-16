@@ -85,6 +85,14 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
+  public async getUserActived(): Promise<UserEntity[]> {
+    try {
+      return await this.find({ select: ['id', 'fullName'], where: { isActive: true } });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async searchUsersActived(text: string, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')

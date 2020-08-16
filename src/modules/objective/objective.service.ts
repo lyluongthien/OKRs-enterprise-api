@@ -131,6 +131,15 @@ export class ObjectiveService {
     };
   }
 
+  public async getListOKRsByUserId(userId: number): Promise<ResponseModel> {
+    const data = await this._objectiveRepository.getOKRsByUserId(userId);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
   public async deleteOKRs(objectiveId: number, userId: number, manager: EntityManager): Promise<ResponseModel> {
     let rowEffected = 0;
     if (objectiveId && manager && userId) {

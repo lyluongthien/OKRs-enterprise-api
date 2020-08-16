@@ -41,6 +41,11 @@ export class ObjectiveController {
     return this._objectiveService.getListOKRs();
   }
 
+  @Get('list_okrs/:userId')
+  public async getListOKRsByUserId(@Param('userId', ParseIntPipe) userId: number): Promise<ResponseModel> {
+    return this._objectiveService.getListOKRsByUserId(userId);
+  }
+
   @Get('/search')
   public async searchOKRs(
     @Query('cycleId', ParseIntPipe) cycleId: number,

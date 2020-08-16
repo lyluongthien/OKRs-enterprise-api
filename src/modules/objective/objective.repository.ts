@@ -74,7 +74,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
   public async getOKRsByCycleId(cycleId: number): Promise<ObjectiveEntity[]> {
     try {
       return await this.createQueryBuilder('objective')
-        .select(['objective.id', 'objective.title', 'users.id', 'users.email'])
+        .select(['objective.id', 'objective.title', 'users.id', 'users.email', 'user.fullName'])
         .leftJoin('objective.user', 'users')
         .where('objective.cycleId = :id', { id: cycleId })
         .andWhere('objective.isRootObjective = :root', { root: false })
@@ -87,7 +87,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
   public async getParentOKRs(id: number, type: OKRsLeaderType): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
-        .select(['objective.id', 'objective.title', 'users.id', 'users.email'])
+        .select(['objective.id', 'objective.title', 'users.id', 'users.email', 'user.'])
         .leftJoin('objective.user', 'users');
       switch (type) {
         case OKRsLeaderType.ROOT:
@@ -220,7 +220,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
 
   public async getOKRsByUserId(userId: number): Promise<ObjectiveEntity[]> {
     try {
-      return await this.find({ select: ['id'], where: { userId } });
+      return await this.find({ select: ['id', 'title'], where: { userId } });
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
