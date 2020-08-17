@@ -104,10 +104,15 @@ export class ObjectiveService {
 
   public async viewListOKRs(cycleId: number, userId: number): Promise<ResponseModel> {
     const data: any = {};
-    const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;
 
+    const adminId = (await this._userRepository.getAdmin()).id;
+    let teamOKRs = [];
+    if (adminId != userId) {
+      const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;
+      teamOKRs = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.TEAM, teamLeadId);
+    }
     data.personal = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.PERSONAL, userId);
-    data.team = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.TEAM, teamLeadId);
+    data.team = teamOKRs;
     data.root = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.ROOT);
     return {
       statusCode: HttpStatus.OK,
