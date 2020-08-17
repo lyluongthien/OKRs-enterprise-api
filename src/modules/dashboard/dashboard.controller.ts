@@ -29,6 +29,10 @@ export class DashboardController {
   ): Promise<ResponseModel> {
     return this._dashBoardService.viewOKRsProgress(cycleId, user.id);
   }
+  @Get('/checkin_status')
+  public async getCheckinStatus(): Promise<ResponseModel> {
+    return this._dashBoardService.getCheckinStatus();
+  }
 
   @Get('/cfr_status')
   public async getCFRStatus(): Promise<ResponseModel> {

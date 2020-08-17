@@ -58,7 +58,6 @@ export class TeamController {
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public updateTeam(@Param('id', ParseIntPipe) id: number, @Body() data: TeamDTO): Promise<ResponseModel> {
-    console.log(typeof id);
     return this._teamService.updateTeam(id, data);
   }
 
