@@ -13,7 +13,7 @@ export class Seeder3001bjective implements Seeder {
         {
           title: 'Đạt doanh thu 400.000.000 Đ trong quý tới',
           progress: 0,
-          userId: 1,
+          userId: 14,
           isRootObjective: true,
           cycleId: 3,
         },

@@ -13,7 +13,7 @@ export class Seeder4001KeyResult implements Seeder {
         {
           startValue: 0,
           valueObtained: 0,
-          targetValue: 0,
+          targetValue: 100,
           content: 'Nắm được 70% kiến thức môn kiểm toán doanh nghiệp',
           linkPlans: 'https://www.facebook.com/',
           linkResults: 'https://www.facebook.com/',
@@ -23,7 +23,7 @@ export class Seeder4001KeyResult implements Seeder {
         {
           startValue: 0,
           valueObtained: 0,
-          targetValue: 0,
+          targetValue: 100,
           content: 'Tìm kiếm được 10 khách hàng đầu tiên',
           linkPlans: 'https://www.facebook.com/',
           linkResults: 'https://www.facebook.com/',
@@ -33,7 +33,7 @@ export class Seeder4001KeyResult implements Seeder {
         {
           startValue: 0,
           valueObtained: 0,
-          targetValue: 0,
+          targetValue: 100,
           content: 'Key result của mục tiêu 1',
           linkPlans: 'https://www.facebook.com/',
           linkResults: 'https://www.facebook.com/',
@@ -43,7 +43,7 @@ export class Seeder4001KeyResult implements Seeder {
         {
           startValue: 0,
           valueObtained: 0,
-          targetValue: 0,
+          targetValue: 100,
           content: 'Key result của mục tiêu 3',
           linkPlans: 'https://www.facebook.com/',
           linkResults: 'https://www.facebook.com/',

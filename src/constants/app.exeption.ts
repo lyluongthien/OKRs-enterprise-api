@@ -120,3 +120,8 @@ export const OKR_INVALID = {
   statusCode: 404,
   message: `OKRs không tồn tại`,
 };
+
+export const OKR_UPDATE_FAIL = {
+  statusCode: 482,
+  message: `Dữ liệu không hợp lệ`,
+};
