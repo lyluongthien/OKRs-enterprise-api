@@ -24,7 +24,11 @@ export class CreateTableEvaluationCriterias1594008610938 implements MigrationInt
       {
         name: 'type',
         type: 'enum',
-        enum: [EvaluationCriteriaEnum.LEADER_TO_MEMBER, EvaluationCriteriaEnum.MEMBER_TO_LEADER],
+        enum: [
+          EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+          EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+          EvaluationCriteriaEnum.RECOGNITION,
+        ],
         isNullable: false,
       },
       {

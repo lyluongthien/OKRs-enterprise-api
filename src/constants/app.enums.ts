@@ -58,6 +58,7 @@ export enum ForeignKey {
 export enum EvaluationCriteriaEnum {
   MEMBER_TO_LEADER = 'MEMBER_TO_LEADER',
   LEADER_TO_MEMBER = 'LEADER_TO_MEMBER',
+  RECOGNITION = 'RECOGNITION',
 }
 
 export enum ObjectiveTypeEnum {
