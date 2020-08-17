@@ -9,6 +9,7 @@ import { RoleRepository } from '../role/role.repository';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { RecognitionRepository } from '../recognition/recognition.repository';
 import { CheckinRepository } from '../checkin/checkin.repository';
+import { CycleRepository } from '../cycle/cycle.repository';
 
 @Injectable()
 export class DashboardService {
@@ -19,6 +20,7 @@ export class DashboardService {
     private _objectiveRepository: ObjectiveRepository,
     private _roleRepository: RoleRepository,
     private _checkinRepository: CheckinRepository,
+    private _cycleRepository: CycleRepository,
   ) {}
 
   public async getTopStars(cycleId: number, type: TopStarType): Promise<ResponseModel> {
@@ -33,9 +35,28 @@ export class DashboardService {
   public async viewOKRsProgress(CycleId: number, userId: number): Promise<ResponseModel> {
     const data: any = {};
     const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;
-    data.personal = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.PERSONAL, userId);
-    data.team = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.TEAM, teamLeadId);
-    data.root = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.ROOT);
+    const personal = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.PERSONAL, userId);
+    const team = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.TEAM, teamLeadId);
+    const root = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.ROOT);
+
+    let personalProgress = 0,
+      teamProgress = 0,
+      rootProgress = 0;
+    personal.forEach((value) => {
+      personalProgress += value.progress;
+    });
+
+    team.forEach((value) => {
+      teamProgress += value.progress;
+    });
+
+    root.forEach((value) => {
+      rootProgress += value.progress;
+    });
+
+    data.personal = Math.floor(personalProgress / personal.length);
+    data.team = Math.floor(teamProgress / team.length);
+    data.root = Math.floor(rootProgress / root.length);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -45,18 +66,14 @@ export class DashboardService {
 
   public async getCFRsStatus(): Promise<ResponseModel> {
     const today = new Date();
-    const first = today.getDate() - today.getDay();
-    const last = first + 6;
 
     const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-    const firstOfLastWeek = lastWeek.getDate() - lastWeek.getDay();
-    const lastOfLastWeek = firstOfLastWeek + 6;
 
-    const firstday = new Date(today.setDate(first)).toISOString();
-    const lastday = new Date(today.setDate(last)).toISOString();
+    const firstday = startOfWeek(today).toISOString();
+    const lastday = endOfWeek(today).toISOString();
 
-    const firstDayOfLastWeek = new Date(lastWeek.setDate(firstOfLastWeek)).toISOString();
-    const lastDayOfLastWeek = new Date(lastWeek.setDate(lastOfLastWeek)).toISOString();
+    const firstDayOfLastWeek = startOfWeek(lastWeek).toISOString();
+    const lastDayOfLastWeek = endOfWeek(lastWeek).toISOString();
 
     const adminId = (await this._roleRepository.getRoleByName(RoleEnum.ADMIN)).id;
 
@@ -87,6 +104,21 @@ export class DashboardService {
     };
   }
 
+  public async getCheckinStatus(): Promise<ResponseModel> {
+    const currentCycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+    const data: any = {};
+    if (currentCycleId) {
+      data.inDue = await this._checkinRepository.getIndueCheckin(currentCycleId);
+      data.overDue = await this._checkinRepository.getOverdueCheckin(currentCycleId);
+      data.notYet = await this._checkinRepository.getNotYetCheckin(currentCycleId);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
   public async getOKRsStatus(): Promise<ResponseModel> {
     const today = new Date();
 
@@ -101,15 +133,9 @@ export class DashboardService {
     const dataCurrentWeek = await this._checkinRepository.getOKRStatus(firstday, lastday);
     const dataLastWeek = await this._checkinRepository.getOKRStatus(firstDayOfLastWeek, lastDayOfLastWeek);
 
-    const notYetCheckinCurrentWeek = await this._checkinRepository.getNotYetCheckinStatus(firstday, lastday);
-    const notYetCheckinLastWeek = await this._checkinRepository.getNotYetCheckinStatus(
-      firstDayOfLastWeek,
-      lastDayOfLastWeek,
-    );
+    const notYetCheckinCurrentWeek = await this._checkinRepository.getNotYetCheckinStatus(today.toISOString());
+    const notYetCheckinLastWeek = await this._checkinRepository.getNotYetCheckinStatus(lastDayOfLastWeek);
 
-    const start = startOfWeek(new Date()).toISOString();
-    const end = endOfWeek(new Date()).toISOString();
-    console.log(start + '                ' + end);
     let good = 0,
       normal = 0,
       bad = 0,
@@ -128,6 +154,7 @@ export class DashboardService {
       }
       return value;
     });
+
     const dataResponseCurrentWeek = {
       good: good,
       normal: normal,

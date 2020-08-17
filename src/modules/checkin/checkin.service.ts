@@ -386,21 +386,6 @@ export class CheckinService {
     };
   }
 
-  public async getCheckinStatus(): Promise<ResponseModel> {
-    const currentCycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
-    const data: any = {};
-    if (currentCycleId) {
-      data.inDue = await this._checkinRepository.getIndueCheckin(currentCycleId);
-      data.overDue = await this._checkinRepository.getOverdueCheckin(currentCycleId);
-      data.notYet = await this._checkinRepository.getNotYetCheckin(currentCycleId);
-    }
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: data,
-    };
-  }
-
   public async getCheckinObjective(userId: number, objectiveId: number): Promise<ResponseModel> {
     const data = await this._objectiveRepository.getObjectiveCheckin(userId, objectiveId);
     if (!data) {
