@@ -60,13 +60,13 @@ export class CreateTableKeyResults1594008910271 implements MigrationInterface {
     columnNames: [ForeignKey.OBJECTIVE_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.Objective,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   });
   private pkMeasureUnitId: TableForeignKey = new TableForeignKey({
     columnNames: [ForeignKey.MEASURE_UNIT_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.MeasureUnit,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   });
 
   private tableForeignKey: TableForeignKey[] = [this.pkObjectiveId, this.pkMeasureUnitId];
