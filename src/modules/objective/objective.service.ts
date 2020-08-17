@@ -28,12 +28,14 @@ export class ObjectiveService {
       }
       const listAlignment = await this._objectiveRepository.getListOKRs(cycleId, OKRsLeaderType.ALL);
 
-      okrDTo.objective.alignObjectivesId.forEach((value) => {
-        const alignmentExist = listAlignment.some(({ id }) => id === value);
-        if (!alignmentExist) {
-          throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
-        }
-      });
+      if (okrDTo.objective.alignObjectivesId) {
+        okrDTo.objective.alignObjectivesId.forEach((value) => {
+          const alignmentExist = listAlignment.some(({ id }) => id === value);
+          if (!alignmentExist) {
+            throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
+          }
+        });
+      }
 
       if (okrDTo.keyResult) {
         let sumDataTarget = 0,
