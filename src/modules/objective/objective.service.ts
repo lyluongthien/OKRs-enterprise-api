@@ -106,11 +106,13 @@ export class ObjectiveService {
     const data: any = {};
 
     const adminId = (await this._userRepository.getAdmin()).id;
+    let teamOKRs = [];
     if (adminId != userId) {
       const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;
-      data.team = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.TEAM, teamLeadId);
+      teamOKRs = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.TEAM, teamLeadId);
     }
     data.personal = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.PERSONAL, userId);
+    data.team = teamOKRs;
     data.root = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.ROOT);
     return {
       statusCode: HttpStatus.OK,
