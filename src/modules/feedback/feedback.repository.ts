@@ -117,7 +117,7 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
         select u2.id as regId, u2."fullName", SUM(ec."numberOfStar" ) as numberOfStar from recognitions r2 
         left join users u2 on u2.id = r2."${databaseType}" 
         left join evaluation_criterias ec on ec.id = r2."evaluationCriteriaId" 
-        group by u2.id) as reg on feed.feedId = reg.regId order by numberOfStar desc`);
+        group by u2.id) as reg on feed.feedId = reg.regId order by numberOfStar desc limit 5`);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

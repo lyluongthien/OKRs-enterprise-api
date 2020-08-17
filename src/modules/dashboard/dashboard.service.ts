@@ -35,9 +35,28 @@ export class DashboardService {
   public async viewOKRsProgress(CycleId: number, userId: number): Promise<ResponseModel> {
     const data: any = {};
     const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;
-    data.personal = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.PERSONAL, userId);
-    data.team = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.TEAM, teamLeadId);
-    data.root = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.ROOT);
+    const personal = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.PERSONAL, userId);
+    const team = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.TEAM, teamLeadId);
+    const root = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.ROOT);
+
+    let personalProgress = 0,
+      teamProgress = 0,
+      rootProgress = 0;
+    personal.forEach((value) => {
+      personalProgress += value.progress;
+    });
+
+    team.forEach((value) => {
+      teamProgress += value.progress;
+    });
+
+    root.forEach((value) => {
+      rootProgress += value.progress;
+    });
+
+    data.personal = Math.floor(personalProgress / personal.length);
+    data.team = Math.floor(teamProgress / team.length);
+    data.root = Math.floor(rootProgress / root.length);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -114,11 +133,8 @@ export class DashboardService {
     const dataCurrentWeek = await this._checkinRepository.getOKRStatus(firstday, lastday);
     const dataLastWeek = await this._checkinRepository.getOKRStatus(firstDayOfLastWeek, lastDayOfLastWeek);
 
-    const notYetCheckinCurrentWeek = await this._checkinRepository.getNotYetCheckinStatus(firstday, lastday);
-    const notYetCheckinLastWeek = await this._checkinRepository.getNotYetCheckinStatus(
-      firstDayOfLastWeek,
-      lastDayOfLastWeek,
-    );
+    const notYetCheckinCurrentWeek = await this._checkinRepository.getNotYetCheckinStatus(today.toISOString());
+    const notYetCheckinLastWeek = await this._checkinRepository.getNotYetCheckinStatus(lastDayOfLastWeek);
 
     let good = 0,
       normal = 0,

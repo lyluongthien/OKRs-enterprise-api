@@ -287,14 +287,14 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         AND o.id NOT IN
           (SELECT DISTINCT c."objectiveId"
            FROM checkins c
-           WHERE c.status = '${CheckinStatus.DRAFT}' or c.status = '${CheckinStatus.PENDING}')`;
+           WHERE c.status = '${CheckinStatus.DONE}' or c.status = '${CheckinStatus.CLOSED}')`;
       return await this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public async getNotYetCheckinStatus(firstDay: string, lastDay: string): Promise<ObjectLiteral[]> {
+  public async getNotYetCheckinStatus(lastDay: string): Promise<ObjectLiteral[]> {
     try {
       const query = `SELECT count(o.id) as notYetCheckin
       FROM objectives o
@@ -302,8 +302,8 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         AND o.id NOT IN
           (SELECT DISTINCT c."objectiveId"
            FROM checkins c
-           WHERE c.status = '${CheckinStatus.DRAFT}' or c.status = '${CheckinStatus.PENDING}'
-           and c."checkinAt" between '${firstDay}' and '${lastDay}')`;
+           WHERE (c.status = '${CheckinStatus.DONE}' or c.status = '${CheckinStatus.CLOSED}') 
+           and c."checkinAt" < '${lastDay}')`;
       return await this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
@@ -337,7 +337,6 @@ export class CheckinRepository extends Repository<CheckinEntity> {
                 c.progress,
                 c."confidentLevel"
           FROM checkins c
-          LEFT JOIN objectives o ON c."objectiveId" = o.id
           WHERE c."checkinAt" BETWEEN '${firstDay}' AND '${lastDay}'
             AND c."nextCheckinDate" =
               (SELECT c2."nextCheckinDate"
@@ -346,12 +345,12 @@ export class CheckinRepository extends Repository<CheckinEntity> {
                 AND (c2.status = 'Done'
                       OR c2.status = 'Closed')
               ORDER BY c2."nextCheckinDate" DESC
-              LIMIT 1)) AS thisWeek
+              LIMIT 1) 
+              AND (c.status = 'Done' OR c.status = 'Closed')) AS thisWeek
         LEFT JOIN
         (SELECT c."objectiveId",
                 c.progress
           FROM checkins c
-          LEFT JOIN objectives o ON c."objectiveId" = o.id
           WHERE c."nextCheckinDate" =
               (SELECT sub."nextCheckinDate"
               FROM
@@ -363,7 +362,8 @@ export class CheckinRepository extends Repository<CheckinEntity> {
                   ORDER BY c2."nextCheckinDate" DESC
                   LIMIT 2) AS sub
               ORDER BY sub."nextCheckinDate" ASC
-              LIMIT 1)) AS lastWeek ON thisWeek."objectiveId" = lastweek."objectiveId"`;
+              LIMIT 1) AND (c.status = 'Done' OR c.status = 'Closed')) 
+              AS lastWeek ON thisWeek."objectiveId" = lastweek."objectiveId"`;
       return this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
