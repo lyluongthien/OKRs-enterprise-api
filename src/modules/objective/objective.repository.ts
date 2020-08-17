@@ -112,8 +112,12 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'users.id',
           'users.fullName',
           'users.isLeader',
+          'childUser.id',
+          'childUser.fullName',
+          'childUser.isLeader',
         ])
         .leftJoinAndSelect('objective.childObjectives', 'childObjective')
+        .leftJoin('childObjective.user', 'childUser')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
         .leftJoinAndSelect('childObjective.keyResults', 'krs')
         .leftJoinAndMapMany(
