@@ -7,8 +7,8 @@ import { UserRepository } from '../user/user.repository';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, OKRsType, OKRsLeaderType, DeleteKeyresultType } from '@app/constants/app.enums';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
-import { CycleRepository } from '../cycle/cycle.repository';
 import { OKR_INVALID, DELETE_OKR, OKR_UPDATE_FAIL } from '@app/constants/app.exeption';
+import { CycleRepository } from '../cycle/cycle.repository';
 
 @Injectable()
 export class ObjectiveService {
@@ -20,41 +20,52 @@ export class ObjectiveService {
   ) {}
 
   public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userId?: number): Promise<ResponseModel> {
-    if (userId) {
-      okrDTo.objective.userId = userId;
-    }
     let objectiveEntity = null;
-    if (okrDTo.keyResult) {
-      let sumDataTarget = 0,
-        sumDataObtained = 0;
-      okrDTo.keyResult.map((value) => {
-        if (
-          value.valueObtained > value.targetValue ||
-          value.valueObtained > Number.MAX_SAFE_INTEGER ||
-          value.targetValue > Number.MAX_SAFE_INTEGER ||
-          value.startValue > Number.MAX_SAFE_INTEGER ||
-          value.valueObtained < 0 ||
-          value.targetValue <= 0 ||
-          value.startValue < 0 ||
-          value.startValue > value.targetValue
-        ) {
-          throw new HttpException(OKR_UPDATE_FAIL.message, OKR_UPDATE_FAIL.statusCode);
-        }
-        sumDataTarget += value.targetValue;
-        sumDataObtained += value.valueObtained;
-        return value.objectiveId;
-      });
-      if (sumDataTarget > 0 && sumDataObtained > 0) {
-        okrDTo.objective.progress = (sumDataObtained / sumDataTarget) * 100;
+    if (okrDTo.objective) {
+      const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+      if (userId) {
+        okrDTo.objective.userId = userId;
       }
-      objectiveEntity = await this._objectiveRepository.createAndUpdateObjective(okrDTo.objective, manager);
-      okrDTo.keyResult.map((value) => {
-        value.objectiveId = objectiveEntity.id;
-        return value.objectiveId;
-      });
-    }
-    await this._keyResultRepository.createAndUpdateKeyResult(okrDTo.keyResult, manager);
+      const listAlignment = await this._objectiveRepository.getListOKRs(cycleId, OKRsLeaderType.ALL);
 
+      okrDTo.objective.alignObjectivesId.forEach((value) => {
+        const alignmentExist = listAlignment.some(({ id }) => id === value);
+        if (!alignmentExist) {
+          throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
+        }
+      });
+
+      if (okrDTo.keyResult) {
+        let sumDataTarget = 0,
+          sumDataObtained = 0;
+        okrDTo.keyResult.map((value) => {
+          if (
+            value.valueObtained > value.targetValue ||
+            value.valueObtained > Number.MAX_SAFE_INTEGER ||
+            value.targetValue > Number.MAX_SAFE_INTEGER ||
+            value.startValue > Number.MAX_SAFE_INTEGER ||
+            value.valueObtained < 0 ||
+            value.targetValue <= 0 ||
+            value.startValue < 0 ||
+            value.startValue > value.targetValue
+          ) {
+            throw new HttpException(OKR_UPDATE_FAIL.message, OKR_UPDATE_FAIL.statusCode);
+          }
+          sumDataTarget += value.targetValue;
+          sumDataObtained += value.valueObtained;
+          return value.objectiveId;
+        });
+        if (sumDataTarget > 0 && sumDataObtained > 0) {
+          okrDTo.objective.progress = (sumDataObtained / sumDataTarget) * 100;
+        }
+        objectiveEntity = await this._objectiveRepository.createAndUpdateObjective(okrDTo.objective, manager);
+        okrDTo.keyResult.map((value) => {
+          value.objectiveId = objectiveEntity.id;
+          return value.objectiveId;
+        });
+      }
+      await this._keyResultRepository.createAndUpdateKeyResult(okrDTo.keyResult, manager);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
