@@ -192,7 +192,7 @@ export class Seeder2001User implements Seeder {
           gravatarURL: generateGravatar('quangnvse05839@fpt.edu.vn'),
           jobPositionId: 1,
           roleId: 1,
-          teamId: 2,
+          teamId: 4,
           isActive: true,
           isApproved: true,
           isLeader: false,

@@ -33,6 +33,7 @@ export class CreateTableRecognitions1594009275111 implements MigrationInterface 
       {
         name: ForeignKey.OBJECTIVE_ID,
         type: 'integer',
+        isNullable: true,
       },
       {
         name: ForeignKey.CYCLE_ID,

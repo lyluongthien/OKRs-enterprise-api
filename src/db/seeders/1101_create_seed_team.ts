@@ -24,6 +24,11 @@ export class Seeder1101Team implements Seeder {
           description: 'Lorem Ipsum is simply dummy text.',
           templateId: 1,
         },
+        {
+          name: 'Chair Team',
+          description: 'Lorem Ipsum is simply dummy text.',
+          templateId: 1,
+        },
       ])
       .execute();
   }
