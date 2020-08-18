@@ -91,6 +91,18 @@ export class CheckinController {
   }
 
   /**
+   * @description: Get list OKRs checkin of Admin
+   */
+  @Get('admin')
+  @UsePipes(new ValidationPipe())
+  public async getListOKRsCheckinAdmin(
+    @CurrentUser() user: UserEntity,
+    @Query('cycleId') cycleId: number,
+  ): Promise<ResponseModel> {
+    return await this._checkinService.getListOKRsCheckinAdmin(user.id, cycleId);
+  }
+
+  /**
    * @description: Get Checkin detail by checkinId
    * @returns: Checkin in detail
    */
