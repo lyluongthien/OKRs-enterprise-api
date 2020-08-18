@@ -206,7 +206,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       const queryBuilder = this.createQueryBuilder('checkin')
         .select([
           'checkin.id',
-          'checkin.checkinAt',
+          'checkin.createdAt',
           'objective.id',
           'objective.title',
           'user.id',
@@ -318,6 +318,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .where('objective.userId= :userId', { userId: userId })
         .andWhere('checkin.objectiveId = :objectiveId', { objectiveId: objectiveId })
         .andWhere('checkin.status != :status', { status: CheckinStatus.DRAFT })
+        .andWhere('checkin.status != :status', { status: CheckinStatus.PENDING })
         .orderBy('checkin.checkinAt', 'ASC');
 
       return queryBuilder.getMany();

@@ -19,10 +19,12 @@ export class CreateTableUserStars1594008773951 implements MigrationInterface {
       {
         name: ForeignKey.USER_ID,
         type: 'integer',
+        isNullable: true,
       },
       {
         name: ForeignKey.CYCLE_ID,
         type: 'integer',
+        isNullable: true,
       },
     ],
   });

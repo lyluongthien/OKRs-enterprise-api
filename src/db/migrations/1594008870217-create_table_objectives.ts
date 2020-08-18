@@ -31,10 +31,12 @@ export class CreateTableObjectives1594008870217 implements MigrationInterface {
       {
         name: ForeignKey.USER_ID,
         type: 'integer',
+        isNullable: true,
       },
       {
         name: ForeignKey.CYCLE_ID,
         type: 'integer',
+        isNullable: true,
       },
       {
         name: ForeignKey.PARENT_OBJECTIVE_ID,

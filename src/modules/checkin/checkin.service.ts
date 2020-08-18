@@ -172,6 +172,7 @@ export class CheckinService {
     // Set checkin.id, checkin.status
     data.checkin.id = checkinId;
     data.checkin.status = CheckinStatus.DONE;
+    data.checkin.checkinAt = new Date();
 
     // Calculate progress checkin
     let progressOKR = 0;

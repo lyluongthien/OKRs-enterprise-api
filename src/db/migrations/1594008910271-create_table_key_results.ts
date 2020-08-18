@@ -48,10 +48,12 @@ export class CreateTableKeyResults1594008910271 implements MigrationInterface {
       {
         name: ForeignKey.OBJECTIVE_ID,
         type: 'integer',
+        isNullable: true,
       },
       {
         name: ForeignKey.MEASURE_UNIT_ID,
         type: 'integer',
+        isNullable: true,
       },
     ],
   });
