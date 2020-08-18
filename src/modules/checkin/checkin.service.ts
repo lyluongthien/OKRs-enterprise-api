@@ -2,7 +2,7 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { CheckinRepository } from './checkin.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, ConfidentLevel, CheckinStatus, CheckinStatusLogic } from '@app/constants/app.enums';
+import { CommonMessage, ConfidentLevel, CheckinStatus, CheckinStatusLogic, RoleEnum } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
 import { EntityManager } from 'typeorm';
 import { UserRepository } from '../user/user.repository';
@@ -10,8 +10,8 @@ import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { isNotEmptyObject } from 'class-validator';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { CHECKIN_FOBIDDEN, CHECKIN_STATUS } from '@app/constants/app.exeption';
-import { CycleRepository } from '../cycle/cycle.repository';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { RoleRepository } from '../role/role.repository';
 
 @Injectable()
 export class CheckinService {
@@ -20,7 +20,7 @@ export class CheckinService {
     private _userRepository: UserRepository,
     private _keyResultRepository: KeyResultRepository,
     private _objectiveRepository: ObjectiveRepository,
-    private _cycleRepository: CycleRepository,
+    private _roleRepository: RoleRepository,
   ) {}
 
   public async getDetailListWaitingFeedback(checkinId: number): Promise<ResponseModel> {
@@ -228,16 +228,16 @@ export class CheckinService {
     let message = null;
     let data = null;
     const user = await this._userRepository.getUserByID(userId);
+    const roleAdmin = await this._roleRepository.getRoleByName(RoleEnum.ADMIN);
     const team = {
       id: user.teamId,
       isTeamLeader: user.isLeader,
     };
-    if (team.isTeamLeader) {
+    if (team.isTeamLeader || roleAdmin.id === user.roleId) {
       message = CommonMessage.SUCCESS;
-      data = await this._checkinRepository.getCheckinRequest(team.id, cycleId, options);
+      data = await this._checkinRepository.getCheckinRequest(userId, cycleId, options);
     } else {
-      message = CommonMessage.NOT_TEAM_LEADER;
-      data = {};
+      throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
     }
     return {
       statusCode: HttpStatus.OK,

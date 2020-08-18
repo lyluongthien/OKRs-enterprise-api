@@ -9,6 +9,7 @@ import { ObjectiveRepository } from '../objective/objective.repository';
 import { UserModule } from '../user/user.module';
 import { UserRepository } from '../user/user.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
+import { RoleRepository } from '../role/role.repository';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { CycleRepository } from '../cycle/cycle.repository';
       UserRepository,
       ObjectiveRepository,
       CycleRepository,
+      RoleRepository,
     ]),
   ],
   controllers: [CheckinController],

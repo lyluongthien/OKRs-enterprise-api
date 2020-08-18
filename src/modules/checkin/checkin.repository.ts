@@ -201,7 +201,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public async getCheckinRequest(teamId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
+  public async getCheckinRequest(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('checkin')
         .select([
@@ -217,7 +217,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .leftJoin('objective.user', 'user')
         .leftJoin('objective.cycle', 'cycle')
         .leftJoin('user.team', 'team')
-        .where('team.id= :team', { team: teamId })
+        .where('checkin.teamLeaderId= :leaderId', { leaderId: userId })
         .andWhere('cycle.id = :cycle', { cycle: cycleId })
         .andWhere('checkin.status = :status', { status: CheckinStatus.PENDING });
       return await paginate<CheckinEntity>(queryBuilder, options);

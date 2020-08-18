@@ -93,7 +93,7 @@ export const DATABASE_EXCEPTION = {
 
 export const CHECKIN_FOBIDDEN = {
   statusCode: 470,
-  message: `Bạn không có quền checkin nhân viên này`,
+  message: `Bạn không có quền truy cập checkin này`,
 };
 
 export const CHECKIN_STATUS = {
