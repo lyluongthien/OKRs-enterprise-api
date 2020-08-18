@@ -11,18 +11,15 @@ export class Seeder1101Team implements Seeder {
       .values([
         {
           name: 'Phòng kinh doanh',
-          description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-          templateId: 1,
+          description: 'Phát triển kế hoạch kinh doanh cho công ty.',
         },
         {
           name: 'Phòng công nghệ',
-          description: 'Lorem Ipsum is simply dummy text.',
-          templateId: 1,
+          description: 'Phát triển công nghệ.',
         },
         {
           name: 'Phòng thiết kế',
-          description: 'Lorem Ipsum is simply dummy text.',
-          templateId: 1,
+          description: 'Thiết kế sản phẩm.',
         },
       ])
       .execute();

@@ -9,38 +9,38 @@ export class Seeder5001Recognition implements Seeder {
       .insert()
       .into(FeedbackEntity)
       .values([
-        {
-          senderId: 9,
-          receiverId: 11,
-          content: 'Bạn làm rất tốt',
-          evaluationCriteriaId: 3,
-          isLeaderToStaff: true,
-          checkinId: 2,
-        },
-        {
-          senderId: 9,
-          receiverId: 12,
-          content: 'Bạn làm rất tốt',
-          evaluationCriteriaId: 3,
-          isLeaderToStaff: true,
-          checkinId: 4,
-        },
-        {
-          senderId: 11,
-          receiverId: 9,
-          content: 'Bạn làm rất tốt',
-          evaluationCriteriaId: 3,
-          isLeaderToStaff: false,
-          checkinId: 2,
-        },
-        {
-          senderId: 12,
-          receiverId: 9,
-          content: 'Bạn làm rất tốt',
-          evaluationCriteriaId: 3,
-          isLeaderToStaff: false,
-          checkinId: 2,
-        },
+        // {
+        //   senderId: 9,
+        //   receiverId: 11,
+        //   content: 'Bạn làm rất tốt',
+        //   evaluationCriteriaId: 3,
+        //   isLeaderToStaff: true,
+        //   checkinId: 2,
+        // },
+        // {
+        //   senderId: 9,
+        //   receiverId: 12,
+        //   content: 'Bạn làm rất tốt',
+        //   evaluationCriteriaId: 3,
+        //   isLeaderToStaff: true,
+        //   checkinId: 4,
+        // },
+        // {
+        //   senderId: 11,
+        //   receiverId: 9,
+        //   content: 'Bạn làm rất tốt',
+        //   evaluationCriteriaId: 3,
+        //   isLeaderToStaff: false,
+        //   checkinId: 2,
+        // },
+        // {
+        //   senderId: 12,
+        //   receiverId: 9,
+        //   content: 'Bạn làm rất tốt',
+        //   evaluationCriteriaId: 3,
+        //   isLeaderToStaff: false,
+        //   checkinId: 2,
+        // },
       ])
       .execute();
   }
