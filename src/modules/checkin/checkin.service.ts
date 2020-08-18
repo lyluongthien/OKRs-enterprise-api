@@ -9,7 +9,7 @@ import { UserRepository } from '../user/user.repository';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { isNotEmptyObject } from 'class-validator';
 import { ObjectiveRepository } from '../objective/objective.repository';
-import { CHECKIN_FOBIDDEN, CHECKIN_STATUS } from '@app/constants/app.exeption';
+import { CHECKIN_FOBIDDEN, CHECKIN_STATUS, CHECKIN_COMPLETED } from '@app/constants/app.exeption';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { RoleRepository } from '../role/role.repository';
 
@@ -133,6 +133,81 @@ export class CheckinService {
 
       // Update progress in Objective
       await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, manager);
+    }
+    const dataResponse = {
+      checkin: checkinModel,
+      checkin_details: checkinDetailModel,
+    };
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: CommonMessage.SUCCESS,
+      data: dataResponse,
+    };
+  }
+
+  public async createUpdateCheckinAdmin(
+    data: CreateCheckinDTO,
+    manager: EntityManager,
+    userId: number,
+  ): Promise<ResponseModel> {
+    if (!isNotEmptyObject(data) || !data) {
+      throw new HttpException(CommonMessage.BODY_EMPTY, HttpStatus.PAYMENT_REQUIRED);
+    }
+    const roleAdmin = await this._roleRepository.getRoleByName(RoleEnum.ADMIN);
+    const userData = await this._userRepository.getUserByID(userId);
+
+    // If user not admin => throw exception
+    if (userData.roleId !== roleAdmin.id) {
+      throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
+    }
+
+    if (data.checkin.isCompleted && data.checkin.status === CheckinStatus.DRAFT) {
+      throw new HttpException(CHECKIN_COMPLETED.message, CHECKIN_COMPLETED.statusCode);
+    }
+    // Calculate progress checkin
+    let progressOKR = 0;
+    let totalTarget = 0;
+    let totalObtained = 0;
+    data.checkinDetails.map((value) => {
+      totalTarget += value.targetValue;
+      totalObtained += value.valueObtained;
+    });
+    progressOKR = Math.round(100 * (totalObtained / totalTarget));
+
+    // If staff draft checkin => Do not update progress
+    if (data.checkin.status !== CheckinStatus.DRAFT) {
+      data.checkin.progress = progressOKR;
+      data.checkin.checkinAt = new Date();
+    }
+
+    let checkinModel = null;
+    if (userId && data.checkin) {
+      data.checkin.teamLeaderId = userId;
+      checkinModel = await this._checkinRepository.createUpdateCheckin(data.checkin, manager);
+    }
+
+    const keyResultValue = [];
+    let checkinDetailModel = null;
+    if (data.checkinDetails) {
+      data.checkinDetails.map((value) => {
+        keyResultValue.push({ id: value.keyResultId, valueObtained: value.valueObtained });
+        value.checkinId = checkinModel.id;
+        return value;
+      });
+      checkinDetailModel = await this._checkinRepository.createUpdateCheckinDetail(data.checkinDetails, manager);
+    }
+
+    // If staff checkin done
+    if (data.checkin.status === CheckinStatus.DONE) {
+      // Update ValueObtained in KeyResult
+      await this._keyResultRepository.createAndUpdateKeyResult(keyResultValue, manager);
+
+      // Update progress in Objective
+      await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, manager);
+
+      // Update isCompleted in Objective
+      await this._objectiveRepository.updateStatusOKRs(data.checkin.objectiveId, data.checkin.isCompleted, manager);
     }
     const dataResponse = {
       checkin: checkinModel,

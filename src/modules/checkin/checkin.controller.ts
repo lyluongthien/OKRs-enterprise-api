@@ -103,6 +103,20 @@ export class CheckinController {
   }
 
   /**
+   * @description: Get list OKRs checkin of Admin
+   */
+  @Post('admin')
+  @UsePipes(new ValidationPipe())
+  @Transaction({ isolation: 'SERIALIZABLE' })
+  public async createOKRsCheckinAdmin(
+    @Body() data: CreateCheckinDTO,
+    @CurrentUser() user: UserEntity,
+    @TransactionManager() manager: EntityManager,
+  ): Promise<ResponseModel> {
+    return this._checkinService.createUpdateCheckinAdmin(data, manager, user.id);
+  }
+
+  /**
    * @description: Get Checkin detail by checkinId
    * @returns: Checkin in detail
    */
