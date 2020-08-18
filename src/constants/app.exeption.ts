@@ -101,6 +101,11 @@ export const CHECKIN_STATUS = {
   message: `Bạn chỉ có thể checkin những form mà member gửi lên`,
 };
 
+export const CHECKIN_COMPLETED = {
+  statusCode: 478,
+  message: `Bạn không thể lưu nháp Objective đã hoàn thành`,
+};
+
 export const DELETE_KEY_RESULT = {
   statusCode: 480,
   message: `Bạn không có quyền xóa key result này`,
