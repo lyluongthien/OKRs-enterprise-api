@@ -387,6 +387,89 @@ export class CheckinService {
     };
   }
 
+  public async getListOKRsCheckinAdmin(userId: number, cycleId: number): Promise<ResponseModel> {
+    const roleAdmin = await this._roleRepository.getRoleByName(RoleEnum.ADMIN);
+    const userData = await this._userRepository.getUserByID(userId);
+
+    // If user not admin => throw exception
+    if (userData.roleId !== roleAdmin.id) {
+      throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
+    }
+
+    const data = await this._objectiveRepository.getListOKRsCheckin(userId, cycleId, true);
+    if (!data) {
+      throw new HttpException(CommonMessage.DATA_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    const responseData = [];
+
+    data.map((item) => {
+      const itemModel = {
+        id: 0,
+        progress: 0,
+        title: '',
+        change: 0,
+        keyResults: [],
+        status: '',
+        checkinId: null,
+      };
+      itemModel.id = item.id;
+      itemModel.title = item.title;
+      itemModel.progress = item.progress;
+      itemModel.keyResults = item.keyResults;
+
+      const checkin = item.checkins[0];
+      const preCheckin = item.checkins[1];
+      // Calculate changing
+      if (checkin && preCheckin && checkin.progress !== 0) {
+        itemModel.change = checkin.progress - preCheckin.progress;
+      }
+      if (checkin && !preCheckin && checkin.progress !== 0) {
+        itemModel.change = checkin.progress;
+      }
+
+      // Set status
+      if (!checkin) {
+        itemModel.status = CheckinStatusLogic.DONE;
+      } else {
+        // Checkin  is drafted
+        if (checkin.status === CheckinStatus.DRAFT) {
+          itemModel.status = CheckinStatusLogic.DRAFT;
+          itemModel.checkinId = checkin.id;
+        }
+        // Checkin  is pendding
+        if (checkin.status === CheckinStatus.PENDING) {
+          itemModel.status = CheckinStatusLogic.PENDING;
+          itemModel.checkinId = checkin.id;
+        }
+        // Checkin  is Done
+        if (checkin.status === CheckinStatus.DONE) {
+          itemModel.status = CheckinStatusLogic.DONE;
+          // Check overdue
+          if (checkin.nextCheckinDate) {
+            const now = new Date().getTime();
+            const nextCheckin = checkin.nextCheckinDate.getTime();
+            if (nextCheckin - now < 0) {
+              itemModel.status = CheckinStatusLogic.OVERDUE;
+            }
+          }
+        }
+      }
+
+      if (item.isCompleted) {
+        itemModel.status = CheckinStatusLogic.COMPLETED;
+      }
+
+      responseData.push(itemModel);
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: responseData,
+    };
+  }
+
   public async getCheckinObjective(userId: number, objectiveId: number): Promise<ResponseModel> {
     const data = await this._objectiveRepository.getObjectiveCheckin(userId, objectiveId);
     if (!data) {

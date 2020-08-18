@@ -230,8 +230,12 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async getListOKRsCheckin(userId: number, cycleId: number): Promise<ObjectiveEntity[]> {
+  public async getListOKRsCheckin(userId: number, cycleId: number, isRoot?: boolean): Promise<ObjectiveEntity[]> {
     try {
+      let isRootOKRs = false;
+      if (isRoot) {
+        isRootOKRs = true;
+      }
       const queryBuilder = await this.createQueryBuilder('objective')
         .select([
           'objective.id',
@@ -258,6 +262,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .leftJoin('keyresults.measureUnit', 'measureUnit')
         .where('objective.cycleId = :cycleId', { cycleId })
         .andWhere('users.id = :userId', { userId })
+        .andWhere('objective.isRootObjective = :isRootOKRs', { isRootOKRs })
         .orderBy('objective.id', 'ASC')
         .addOrderBy('checkins.checkinAt', 'DESC')
         .getMany();
