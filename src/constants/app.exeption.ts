@@ -93,12 +93,17 @@ export const DATABASE_EXCEPTION = {
 
 export const CHECKIN_FOBIDDEN = {
   statusCode: 470,
-  message: `Bạn không có quền checkin nhân viên này`,
+  message: `Bạn không có quền truy cập checkin này`,
 };
 
 export const CHECKIN_STATUS = {
   statusCode: 475,
   message: `Bạn chỉ có thể checkin những form mà member gửi lên`,
+};
+
+export const CHECKIN_COMPLETED = {
+  statusCode: 478,
+  message: `Bạn không thể lưu nháp Objective đã hoàn thành`,
 };
 
 export const DELETE_KEY_RESULT = {

@@ -2,16 +2,16 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { CheckinRepository } from './checkin.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, ConfidentLevel, CheckinStatus, CheckinStatusLogic } from '@app/constants/app.enums';
+import { CommonMessage, ConfidentLevel, CheckinStatus, CheckinStatusLogic, RoleEnum } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
 import { EntityManager } from 'typeorm';
 import { UserRepository } from '../user/user.repository';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { isNotEmptyObject } from 'class-validator';
 import { ObjectiveRepository } from '../objective/objective.repository';
-import { CHECKIN_FOBIDDEN, CHECKIN_STATUS } from '@app/constants/app.exeption';
-import { CycleRepository } from '../cycle/cycle.repository';
+import { CHECKIN_FOBIDDEN, CHECKIN_STATUS, CHECKIN_COMPLETED } from '@app/constants/app.exeption';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { RoleRepository } from '../role/role.repository';
 
 @Injectable()
 export class CheckinService {
@@ -20,7 +20,7 @@ export class CheckinService {
     private _userRepository: UserRepository,
     private _keyResultRepository: KeyResultRepository,
     private _objectiveRepository: ObjectiveRepository,
-    private _cycleRepository: CycleRepository,
+    private _roleRepository: RoleRepository,
   ) {}
 
   public async getDetailListWaitingFeedback(checkinId: number): Promise<ResponseModel> {
@@ -146,6 +146,81 @@ export class CheckinService {
     };
   }
 
+  public async createUpdateCheckinAdmin(
+    data: CreateCheckinDTO,
+    manager: EntityManager,
+    userId: number,
+  ): Promise<ResponseModel> {
+    if (!isNotEmptyObject(data) || !data) {
+      throw new HttpException(CommonMessage.BODY_EMPTY, HttpStatus.PAYMENT_REQUIRED);
+    }
+    const roleAdmin = await this._roleRepository.getRoleByName(RoleEnum.ADMIN);
+    const userData = await this._userRepository.getUserByID(userId);
+
+    // If user not admin => throw exception
+    if (userData.roleId !== roleAdmin.id) {
+      throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
+    }
+
+    if (data.checkin.isCompleted && data.checkin.status === CheckinStatus.DRAFT) {
+      throw new HttpException(CHECKIN_COMPLETED.message, CHECKIN_COMPLETED.statusCode);
+    }
+    // Calculate progress checkin
+    let progressOKR = 0;
+    let totalTarget = 0;
+    let totalObtained = 0;
+    data.checkinDetails.map((value) => {
+      totalTarget += value.targetValue;
+      totalObtained += value.valueObtained;
+    });
+    progressOKR = Math.round(100 * (totalObtained / totalTarget));
+
+    // If staff draft checkin => Do not update progress
+    if (data.checkin.status !== CheckinStatus.DRAFT) {
+      data.checkin.progress = progressOKR;
+      data.checkin.checkinAt = new Date();
+    }
+
+    let checkinModel = null;
+    if (userId && data.checkin) {
+      data.checkin.teamLeaderId = userId;
+      checkinModel = await this._checkinRepository.createUpdateCheckin(data.checkin, manager);
+    }
+
+    const keyResultValue = [];
+    let checkinDetailModel = null;
+    if (data.checkinDetails) {
+      data.checkinDetails.map((value) => {
+        keyResultValue.push({ id: value.keyResultId, valueObtained: value.valueObtained });
+        value.checkinId = checkinModel.id;
+        return value;
+      });
+      checkinDetailModel = await this._checkinRepository.createUpdateCheckinDetail(data.checkinDetails, manager);
+    }
+
+    // If staff checkin done
+    if (data.checkin.status === CheckinStatus.DONE) {
+      // Update ValueObtained in KeyResult
+      await this._keyResultRepository.createAndUpdateKeyResult(keyResultValue, manager);
+
+      // Update progress in Objective
+      await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, manager);
+
+      // Update isCompleted in Objective
+      await this._objectiveRepository.updateStatusOKRs(data.checkin.objectiveId, data.checkin.isCompleted, manager);
+    }
+    const dataResponse = {
+      checkin: checkinModel,
+      checkin_details: checkinDetailModel,
+    };
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: CommonMessage.SUCCESS,
+      data: dataResponse,
+    };
+  }
+
   public async updateCheckinRequest(
     data: CreateCheckinDTO,
     manager: EntityManager,
@@ -228,16 +303,16 @@ export class CheckinService {
     let message = null;
     let data = null;
     const user = await this._userRepository.getUserByID(userId);
+    const roleAdmin = await this._roleRepository.getRoleByName(RoleEnum.ADMIN);
     const team = {
       id: user.teamId,
       isTeamLeader: user.isLeader,
     };
-    if (team.isTeamLeader) {
+    if (team.isTeamLeader || roleAdmin.id === user.roleId) {
       message = CommonMessage.SUCCESS;
-      data = await this._checkinRepository.getCheckinRequest(team.id, cycleId, options);
+      data = await this._checkinRepository.getCheckinRequest(userId, cycleId, options);
     } else {
-      message = CommonMessage.NOT_TEAM_LEADER;
-      data = {};
+      throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
     }
     return {
       statusCode: HttpStatus.OK,
@@ -314,6 +389,89 @@ export class CheckinService {
 
   public async getListOKRsCheckin(userId: number, cycleId: number): Promise<ResponseModel> {
     const data = await this._objectiveRepository.getListOKRsCheckin(userId, cycleId);
+    if (!data) {
+      throw new HttpException(CommonMessage.DATA_NOT_FOUND, HttpStatus.NOT_FOUND);
+    }
+
+    const responseData = [];
+
+    data.map((item) => {
+      const itemModel = {
+        id: 0,
+        progress: 0,
+        title: '',
+        change: 0,
+        keyResults: [],
+        status: '',
+        checkinId: null,
+      };
+      itemModel.id = item.id;
+      itemModel.title = item.title;
+      itemModel.progress = item.progress;
+      itemModel.keyResults = item.keyResults;
+
+      const checkin = item.checkins[0];
+      const preCheckin = item.checkins[1];
+      // Calculate changing
+      if (checkin && preCheckin && checkin.progress !== 0) {
+        itemModel.change = checkin.progress - preCheckin.progress;
+      }
+      if (checkin && !preCheckin && checkin.progress !== 0) {
+        itemModel.change = checkin.progress;
+      }
+
+      // Set status
+      if (!checkin) {
+        itemModel.status = CheckinStatusLogic.DONE;
+      } else {
+        // Checkin  is drafted
+        if (checkin.status === CheckinStatus.DRAFT) {
+          itemModel.status = CheckinStatusLogic.DRAFT;
+          itemModel.checkinId = checkin.id;
+        }
+        // Checkin  is pendding
+        if (checkin.status === CheckinStatus.PENDING) {
+          itemModel.status = CheckinStatusLogic.PENDING;
+          itemModel.checkinId = checkin.id;
+        }
+        // Checkin  is Done
+        if (checkin.status === CheckinStatus.DONE) {
+          itemModel.status = CheckinStatusLogic.DONE;
+          // Check overdue
+          if (checkin.nextCheckinDate) {
+            const now = new Date().getTime();
+            const nextCheckin = checkin.nextCheckinDate.getTime();
+            if (nextCheckin - now < 0) {
+              itemModel.status = CheckinStatusLogic.OVERDUE;
+            }
+          }
+        }
+      }
+
+      if (item.isCompleted) {
+        itemModel.status = CheckinStatusLogic.COMPLETED;
+      }
+
+      responseData.push(itemModel);
+    });
+
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: responseData,
+    };
+  }
+
+  public async getListOKRsCheckinAdmin(userId: number, cycleId: number): Promise<ResponseModel> {
+    const roleAdmin = await this._roleRepository.getRoleByName(RoleEnum.ADMIN);
+    const userData = await this._userRepository.getUserByID(userId);
+
+    // If user not admin => throw exception
+    if (userData.roleId !== roleAdmin.id) {
+      throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
+    }
+
+    const data = await this._objectiveRepository.getListOKRsCheckin(userId, cycleId, true);
     if (!data) {
       throw new HttpException(CommonMessage.DATA_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
