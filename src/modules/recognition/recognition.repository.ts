@@ -66,6 +66,62 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
     }
   }
 
+  public async getReceivedRecognitions(userId: number, cycleId: number): Promise<ObjectLiteral[]> {
+    try {
+      return await this.createQueryBuilder('recognition')
+        .select([
+          'recognition.id',
+          'recognition.createdAt',
+          'recognition.content',
+          'criteria.id',
+          'criteria.content',
+          'criteria.numberOfStar',
+          'sender.fullName',
+          'sender.avatarURL',
+          'sender.gravatarURL',
+          'objective.id',
+          'objective.title',
+        ])
+        .leftJoin('recognition.evaluationCriteria', 'criteria')
+        .leftJoin('recognition.objective', 'objective')
+        .leftJoin('recognition.sender', 'sender')
+        .leftJoin('recognition.receiver', 'receiver')
+        .where('receiver.id = :id', { id: userId })
+        .andWhere('recognition.cycleId = :cycleId', { cycleId: cycleId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getSentRecognitions(userId: number, cycleId: number): Promise<ObjectLiteral[]> {
+    try {
+      return await this.createQueryBuilder('recognition')
+        .select([
+          'recognition.id',
+          'recognition.createdAt',
+          'recognition.content',
+          'criteria.id',
+          'criteria.content',
+          'criteria.numberOfStar',
+          'receiver.fullName',
+          'receiver.avatarURL',
+          'receiver.gravatarURL',
+          'objective.id',
+          'objective.title',
+        ])
+        .leftJoin('recognition.evaluationCriteria', 'criteria')
+        .leftJoin('recognition.objective', 'objective')
+        .leftJoin('recognition.sender', 'sender')
+        .leftJoin('recognition.receiver', 'receiver')
+        .where('sender.id = :id', { id: userId })
+        .andWhere('recognition.cycleId = :cycleId', { cycleId: cycleId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getAllRecognitions(cycleId: number): Promise<ObjectLiteral[]> {
     try {
       return await this.createQueryBuilder('recognition')

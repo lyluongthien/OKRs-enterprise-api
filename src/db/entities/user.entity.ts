@@ -95,7 +95,7 @@ export class UserEntity {
   public team: TeamEntity;
 
   @OneToMany(() => ObjectiveEntity, (objectives) => objectives.user)
-  public objectives: ObjectiveEntity;
+  public objectives: ObjectiveEntity[];
 
   @OneToMany(() => FeedbackEntity, (feedback) => feedback.sender)
   @JoinColumn([{ name: 'id', referencedColumnName: 'senderId' }])

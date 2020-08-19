@@ -17,52 +17,54 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
     }
   }
 
-  public async getSentFeedback(userId: number, cycleId: number): Promise<FeedbackEntity[]> {
+  public async getSentFeedback(userId: number, cycleId: number): Promise<ObjectLiteral[]> {
     try {
       return await this.createQueryBuilder('feedback')
         .select([
           'feedback.id',
-          'criteria.content',
-          'receiver.fullName',
           'feedback.createdAt',
           'feedback.content',
+          'criteria.id',
+          'criteria.content',
+          'criteria.numberOfStar',
+          'receiver.fullName',
           'receiver.avatarURL',
           'receiver.gravatarURL',
-          'checkin.id',
+          'objective.id',
           'objective.title',
         ])
         .leftJoin('feedback.evaluationCriteria', 'criteria')
-        .leftJoin('feedback.receiver', 'receiver')
         .leftJoin('feedback.sender', 'sender')
-        .leftJoin('feedback.checkin', 'checkin')
-        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('feedback.receiver', 'receiver')
+        .leftJoin('receiver.objectives', 'objective')
         .where('sender.id = :id', { id: userId })
-        .andWhere('objective.cycleId = :cycleId', { cycleId: cycleId })
+        .andWhere('objective.cycleId = :cycleId', { cycleId })
         .getMany();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public async getReceivedFeedback(userId: number, cycleId: number): Promise<FeedbackEntity[]> {
+  public async getReceivedFeedback(userId: number, cycleId: number): Promise<ObjectLiteral[]> {
     try {
       return await this.createQueryBuilder('feedback')
         .select([
           'feedback.id',
-          'checkin.id',
-          'objective.title',
-          'feedback.content',
-          'criteria.content',
-          'sender.fullName',
           'feedback.createdAt',
+          'feedback.content',
+          'criteria.id',
+          'criteria.content',
+          'criteria.numberOfStar',
+          'sender.fullName',
           'sender.avatarURL',
           'sender.gravatarURL',
+          'objective.id',
+          'objective.title',
         ])
         .leftJoin('feedback.evaluationCriteria', 'criteria')
         .leftJoin('feedback.sender', 'sender')
         .leftJoin('feedback.receiver', 'receiver')
-        .leftJoin('feedback.checkin', 'checkin')
-        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('sender.objectives', 'objective')
         .where('receiver.id = :id', { id: userId })
         .andWhere('objective.cycleId = :cycleId', { cycleId: cycleId })
         .getMany();
