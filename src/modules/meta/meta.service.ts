@@ -6,6 +6,7 @@ import { ResponseModel } from '@app/constants/app.interface';
 import { LessonRepository } from '../lesson/lesson.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
+import { RoleRepository } from '../role/role.repository';
 
 @Injectable()
 export class MetaService {
@@ -15,6 +16,7 @@ export class MetaService {
     private readonly _lessonRepository: LessonRepository,
     private readonly _cycleRepository: CycleRepository,
     private readonly _evaluationCriteriaRepository: EvaluationCriteriaRepository,
+    private readonly _roleRepository: RoleRepository,
   ) {}
 
   public async getListTeams(): Promise<ResponseModel> {
@@ -59,6 +61,15 @@ export class MetaService {
 
   public async getEvaluationCriterias(type: EvaluationCriteriaEnum): Promise<ResponseModel> {
     const data = await this._evaluationCriteriaRepository.getList(type);
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async getRoles(): Promise<ResponseModel> {
+    const data = await this._roleRepository.getListRoles();
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

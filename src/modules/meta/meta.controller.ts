@@ -28,4 +28,9 @@ export class MetaController {
   public async getEvaluationCriterias(@Query('type') type: EvaluationCriteriaEnum): Promise<ResponseModel> {
     return this._metaService.getEvaluationCriterias(type);
   }
+
+  @Get('/roles')
+  public async getRoles(): Promise<ResponseModel> {
+    return this._metaService.getRoles();
+  }
 }
