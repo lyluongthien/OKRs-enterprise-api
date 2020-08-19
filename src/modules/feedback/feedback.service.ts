@@ -35,71 +35,41 @@ export class FeedbackService {
     const data: any = {};
     const user = await this._userRepository.getUserByID(id);
     const isLeader = user.isLeader;
-    const adminId = (await this._userRepository.getAdmin()).id;
+    const admin = await this._userRepository.getAdmin();
     const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
     if (isLeader) {
-      const teamName = (await this._teamRepository.getDetailTeam(user.teamId)).name;
-      data.list2 = {
-        name: (await this._userRepository.getAdmin()).fullName,
-        list: await this._checkinRepository.getDoneCheckinById(adminId, cycleId, CheckinType.TEAM_LEADER),
+      data.superior = {
+        teamLead: admin.fullName,
+        avatar: admin.avatar,
+        gravatar: admin.gravatarURL,
+        type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+        checkins: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.PERSONAL),
       };
-      data.list1 = {
-        name: teamName,
-        list: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.MEMBER),
+
+      data.inferior = {
+        type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+        checkins: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.MEMBER),
       };
-    } else if (id == adminId) {
-      data.list2 = {
-        name: user.fullName,
-        list: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.PERSONAL),
+    } else if (id == admin.id) {
+      data.superior = {
+        type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+        checkins: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.PERSONAL),
       };
-      data.list1 = {
-        name: 'Team Của Bạn',
-        list: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.MEMBER),
+      data.inferior = {
+        type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+        checkins: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.MEMBER),
       };
     } else {
-      const teamLeaderId = (await this._userRepository.getTeamLeaderId(id)).id;
-      const teamName = (await this._teamRepository.getDetailTeam(user.teamId)).name;
-      data.list2 = {
-        name: teamName,
-        list: await this._checkinRepository.getDoneCheckinById(teamLeaderId, cycleId, CheckinType.TEAM_LEADER),
+      const teamLeader = await this._userRepository.getTeamLeader(id);
+      data.superior = {
+        teamLead: teamLeader.fullName,
+        avatar: teamLeader.avatar,
+        gravatar: teamLeader.gravatarURL,
+        type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+        checkins: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.PERSONAL),
       };
-      data.list1 = [];
+      data.inferior = {};
     }
-
-    if (data.list1.list && data.list1.list.length > 0) {
-      data.list1.list.map((value) => {
-        value.type = EvaluationCriteriaEnum.LEADER_TO_MEMBER;
-        return value;
-      });
-    }
-    if (data.list2.list && data.list2.list.length > 0) {
-      data.list2.list.map((value) => {
-        value.type = EvaluationCriteriaEnum.MEMBER_TO_LEADER;
-        return value;
-      });
-    }
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: data,
-    };
-  }
-
-  public async searchListWaitingFeedBack(text: string, userId: number): Promise<ResponseModel> {
-    const user = await this._userRepository.getUserByID(userId);
-    const isLeader = user.isLeader;
-    const adminId = (await this._userRepository.getAdmin()).id;
-    const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
-    let data = null;
-    if (isLeader) {
-      data = await this._checkinRepository.searchDoneCheckin(text, adminId, cycleId, CheckinType.TEAM_LEADER);
-    } else if (userId == adminId) {
-      data = await this._checkinRepository.searchDoneCheckin(text, userId, cycleId, CheckinType.MEMBER);
-    } else {
-      const teamLeaderId = (await this._userRepository.getTeamLeaderId(userId)).id;
-      data = await this._checkinRepository.searchDoneCheckin(text, teamLeaderId, cycleId, CheckinType.TEAM_LEADER);
-    }
-
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

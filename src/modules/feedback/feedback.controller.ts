@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Post, Body, Query, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, UseGuards, Get, Post, Body, Param, ParseIntPipe } from '@nestjs/common';
 import { TransactionManager, EntityManager, Transaction } from 'typeorm';
 
 import { AuthenticationGuard } from '@app/modules/auth/authentication.guard';
@@ -18,14 +18,6 @@ export class FeedbackController {
   @Get('/list_waiting')
   public async listWaitingFeedBack(@CurrentUser() me: UserEntity): Promise<ResponseModel> {
     return this._feedBackService.listWaitingFeedBack(me.id);
-  }
-
-  @Get('/search')
-  public async searchListWaitingFeedback(
-    @CurrentUser() me: UserEntity,
-    @Query('text') text: string,
-  ): Promise<ResponseModel> {
-    return this._feedBackService.searchListWaitingFeedBack(text, me.id);
   }
 
   @Get('/history/:cycleId')

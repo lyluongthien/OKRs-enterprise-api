@@ -119,7 +119,7 @@ export enum CheckinStatusLogic {
 }
 
 export enum CheckinType {
-  TEAM_LEADER = 1,
+  COMPANY = 1,
   MEMBER = 2,
   PERSONAL = 3,
 }

@@ -101,6 +101,11 @@ export const CHECKIN_STATUS = {
   message: `Bạn chỉ có thể checkin những form mà member gửi lên`,
 };
 
+export const CHECKIN_PENDING = {
+  statusCode: 476,
+  message: `Bạn không thể tạo checkin với Objective này`,
+};
+
 export const CHECKIN_COMPLETED = {
   statusCode: 478,
   message: `Bạn không thể lưu nháp Objective đã hoàn thành`,
