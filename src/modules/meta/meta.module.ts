@@ -7,6 +7,7 @@ import { TeamRepository } from '../team/team.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
 import { LessonRepository } from '../lesson/lesson.repository';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
+import { RoleRepository } from '../role/role.repository';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-
       CycleRepository,
       LessonRepository,
       EvaluationCriteriaRepository,
+      RoleRepository,
     ]),
   ],
   controllers: [MetaController],

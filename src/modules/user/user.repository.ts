@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
-import { AvatarURL, RoleEnum } from '@app/constants/app.enums';
+import { AvatarURL, RoleEnum, CheckinType, CheckinStatus } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -72,11 +72,10 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  public async getTeamLeaderId(userId: number): Promise<UserEntity> {
+  public async getTeamLeader(userId: number): Promise<UserEntity> {
     try {
       const teamId = (await this.getUserByID(userId)).teamId;
       return await this.createQueryBuilder('user')
-        .select(['user.id'])
         .where('user.teamId = :teamId', { teamId: teamId })
         .andWhere('user.isLeader = :isLead', { isLead: true })
         .getOne();
@@ -193,6 +192,40 @@ export class UserRepository extends Repository<UserEntity> {
         .where('user.id = :id', { id: id })
         .getOne();
       return await queryBuilder;
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getUserCheckin(id: number, cycleId: number, type: CheckinType): Promise<UserEntity[]> {
+    try {
+      let condition = null;
+      if (type === CheckinType.MEMBER) {
+        condition = 'checkin.teamLeaderId = :id and user.id <> :id';
+      } else if (type == CheckinType.PERSONAL) {
+        condition = 'user.id = :id and objective.isRootObjective = false';
+      } else {
+        condition = 'user.id = :id and objective.isRootObjective = true';
+      }
+      return await this.createQueryBuilder('user')
+        .select([
+          'user.fullName',
+          'user.gravatarURL',
+          'user.avatarURL',
+          'objective.id',
+          'objective.title',
+          'checkin.id',
+          'checkin.checkinAt',
+          'checkinObjective.id',
+          'checkinObjective.title',
+        ])
+        .leftJoin('user.objectives', 'objective')
+        .leftJoin('objective.checkins', 'checkin')
+        .leftJoin('checkin.objective', 'checkinObjective')
+        .where(condition, { id })
+        .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
+        .andWhere('objective.cycleId = :cycleId', { cycleId })
+        .getMany();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

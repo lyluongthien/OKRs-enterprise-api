@@ -34,7 +34,7 @@ export class DashboardService {
 
   public async viewOKRsProgress(CycleId: number, userId: number): Promise<ResponseModel> {
     const data: any = {};
-    const teamLeadId = (await this._userRepository.getTeamLeaderId(userId)).id;
+    const teamLeadId = (await this._userRepository.getTeamLeader(userId)).id;
     const personal = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.PERSONAL, userId);
     const team = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.TEAM, teamLeadId);
     const root = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.ROOT);

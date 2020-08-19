@@ -110,7 +110,7 @@ export class CheckinService {
       if (isLeader || userId == adminId) {
         data.checkin.teamLeaderId = adminId;
       } else {
-        data.checkin.teamLeaderId = (await this._userRepository.getTeamLeaderId(userId)).id;
+        data.checkin.teamLeaderId = (await this._userRepository.getTeamLeader(userId)).id;
       }
       checkinModel = await this._checkinRepository.createUpdateCheckin(data.checkin, manager);
     }
