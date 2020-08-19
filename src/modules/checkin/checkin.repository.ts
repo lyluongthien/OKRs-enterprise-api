@@ -130,6 +130,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         ])
         .leftJoin('checkin.objective', 'objective')
         .where('objective.id= :id', { id })
+        .orderBy('checkin.checkinAt', 'DESC')
         .getMany();
 
       return await queryBuilder;
