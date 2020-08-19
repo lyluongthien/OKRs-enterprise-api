@@ -9,7 +9,7 @@ import { UserRepository } from '../user/user.repository';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { isNotEmptyObject } from 'class-validator';
 import { ObjectiveRepository } from '../objective/objective.repository';
-import { CHECKIN_FOBIDDEN, CHECKIN_STATUS, CHECKIN_COMPLETED } from '@app/constants/app.exeption';
+import { CHECKIN_FOBIDDEN, CHECKIN_STATUS, CHECKIN_COMPLETED, CHECKIN_PENDING } from '@app/constants/app.exeption';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { RoleRepository } from '../role/role.repository';
 
@@ -551,6 +551,9 @@ export class CheckinService {
       throw new HttpException(CommonMessage.DATA_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
     const chart = await this._checkinRepository.getChartCheckin(userId, objectiveId);
+    if (data.isCompleted) {
+      throw new HttpException(CHECKIN_PENDING.message, CHECKIN_PENDING.statusCode);
+    }
 
     const responseData = {
       id: data.id,
@@ -576,6 +579,9 @@ export class CheckinService {
       responseData.checkin.nextCheckinDate = checkinInfo.nextCheckinDate;
       responseData.checkin.confidentLevel = checkinInfo.confidentLevel;
       responseData.checkin.status = checkinInfo.status;
+      if (checkinInfo.status === CheckinStatus.PENDING) {
+        throw new HttpException(CHECKIN_PENDING.message, CHECKIN_PENDING.statusCode);
+      }
 
       // checkinDetail logic
       if (checkinInfo.status === CheckinStatus.DRAFT) {
