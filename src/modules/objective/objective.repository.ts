@@ -280,6 +280,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objective.id',
           'objective.title',
           'objective.progress',
+          'objective.isCompleted',
           'keyresults.id',
           'keyresults.content',
           'keyresults.targetValue',
