@@ -119,7 +119,7 @@ export class CheckinController {
   /**
    * @description: Get list OKRs checkin of Admin
    */
-  @Put('admin/::checkinId')
+  @Put('admin/:checkinId')
   @UsePipes(new ValidationPipe())
   @Transaction({ isolation: 'SERIALIZABLE' })
   public async updateOKRsCheckinAdmin(
