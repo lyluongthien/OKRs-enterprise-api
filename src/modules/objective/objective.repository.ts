@@ -317,4 +317,30 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
       throw new HttpException(error.message, DATABASE_EXCEPTION.statusCode);
     }
   }
+
+  public async getObjectiveFeedback(userId: number): Promise<ObjectiveEntity[]> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('objective')
+        .select([
+          'objective.id',
+          'objective.title',
+          'objective.progress',
+          'objective.isCompleted',
+          'checkins.id',
+          'checkins.status',
+          'checkins.checkinAt',
+          'checkins.nextCheckinDate',
+          'checkins.confidentLevel',
+          'checkins.progress',
+        ])
+        .leftJoin('objective.checkins', 'checkins')
+        .andWhere('objective.userId = :userId', { userId })
+        .addOrderBy('checkins.checkinAt', 'DESC')
+        .getMany();
+
+      return queryBuilder;
+    } catch (error) {
+      throw new HttpException(error.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
 }

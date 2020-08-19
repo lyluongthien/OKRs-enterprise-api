@@ -17,6 +17,7 @@ import { UserStarRepository } from '../user-star/user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
 import { TeamRepository } from '../team/team.repository';
 import { RecognitionRepository } from '../recognition/recognition.repository';
+import { ObjectiveRepository } from '../objective/objective.repository';
 
 @Injectable()
 export class FeedbackService {
@@ -29,6 +30,7 @@ export class FeedbackService {
     private _userStarsRepository: UserStarRepository,
     private _cycleRepository: CycleRepository,
     private _teamRepository: TeamRepository,
+    private _objectiveRepository: ObjectiveRepository,
   ) {}
 
   public async listWaitingFeedBack(id: number): Promise<ResponseModel> {
@@ -82,6 +84,17 @@ export class FeedbackService {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
       data: data,
+    };
+  }
+
+  public async listWaitting(userId: number): Promise<ResponseModel> {
+    // const user = await this._userRepository.getUserByID(userId);
+    const objective = await this._objectiveRepository.getObjectiveFeedback(userId);
+
+    return {
+      statusCode: HttpStatus.CREATED,
+      message: CommonMessage.SUCCESS,
+      data: objective,
     };
   }
 
