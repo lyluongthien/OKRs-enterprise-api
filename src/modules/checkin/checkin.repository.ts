@@ -143,22 +143,13 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       let condition = null;
       if (type === CheckinType.MEMBER) {
         condition = 'checkin.teamLeaderId = :id and user.id <> :id';
+      } else if (type == CheckinType.PERSONAL) {
+        condition = 'user.id = :id and objective.isRootObjective = false';
       } else {
-        condition = 'user.id = :id';
+        condition = 'user.id = :id and objective.isRootObjective = true';
       }
       return await this.createQueryBuilder('checkin')
-        .select([
-          'checkin.id',
-          'checkin.checkinAt',
-          'objective.id',
-          'objective.title',
-          'cycle.id',
-          'cycle.name',
-          'user.id',
-          'user.fullName',
-          'user.gravatarURL',
-          'user.avatarURL',
-        ])
+        .select(['checkin.id', 'checkin.checkinAt', 'objective.title', 'user.fullName'])
         .leftJoin('checkin.objective', 'objective')
         .leftJoin('objective.cycle', 'cycle')
         .leftJoin('objective.user', 'user')
@@ -166,35 +157,6 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .where(condition, { id })
         .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
         .andWhere('cycle.id = :cycleId', { cycleId: cycleId })
-        .getMany();
-    } catch (error) {
-      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
-    }
-  }
-
-  public async searchDoneCheckin(
-    text: string,
-    id: number,
-    cycleId: number,
-    type: CheckinType,
-  ): Promise<CheckinEntity[]> {
-    try {
-      let condition = null;
-      if (type === CheckinType.MEMBER) {
-        condition = 'checkin.teamLeaderId = :id and user.id <> :id';
-      } else {
-        condition = 'user.id = :id';
-      }
-      text = text.toLowerCase();
-      return await this.createQueryBuilder('checkin')
-        .select(['checkin.id', 'objective.title', 'user.fullName'])
-        .leftJoin('checkin.objective', 'objective')
-        .leftJoin('objective.cycle', 'cycle')
-        .leftJoin('objective.user', 'user')
-        .where('(Lower(objective.title) like :text or Lower(user.fullName) like :text)', { text: '%' + text + '%' })
-        .andWhere(condition, { id })
-        .andWhere('cycle.id = :cycleId', { cycleId: cycleId })
-        .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
         .getMany();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);

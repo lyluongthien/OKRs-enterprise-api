@@ -110,7 +110,7 @@ export class CheckinService {
       if (isLeader || userId == adminId) {
         data.checkin.teamLeaderId = adminId;
       } else {
-        data.checkin.teamLeaderId = (await this._userRepository.getTeamLeaderId(userId)).id;
+        data.checkin.teamLeaderId = (await this._userRepository.getTeamLeader(userId)).id;
       }
       checkinModel = await this._checkinRepository.createUpdateCheckin(data.checkin, manager);
     }
@@ -150,6 +150,7 @@ export class CheckinService {
     data: CreateCheckinDTO,
     manager: EntityManager,
     userId: number,
+    checkinId?: number,
   ): Promise<ResponseModel> {
     if (!isNotEmptyObject(data) || !data) {
       throw new HttpException(CommonMessage.BODY_EMPTY, HttpStatus.PAYMENT_REQUIRED);
@@ -164,6 +165,9 @@ export class CheckinService {
 
     if (data.checkin.isCompleted && data.checkin.status === CheckinStatus.DRAFT) {
       throw new HttpException(CHECKIN_COMPLETED.message, CHECKIN_COMPLETED.statusCode);
+    }
+    if (checkinId) {
+      data.checkin.id = checkinId;
     }
     // Calculate progress checkin
     let progressOKR = 0;

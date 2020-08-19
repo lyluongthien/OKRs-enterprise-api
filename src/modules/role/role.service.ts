@@ -7,7 +7,7 @@ import { CommonMessage } from '@app/constants/app.enums';
 export class RoleService {
   constructor(private _roleRepository: RoleRepository) {}
   public async getListRoles(): Promise<ResponseModel> {
-    const data = await this._roleRepository.getListRoles();
+    const data = await this._roleRepository.getListApproveRole();
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
