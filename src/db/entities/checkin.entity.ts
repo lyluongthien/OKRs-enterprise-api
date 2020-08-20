@@ -38,6 +38,12 @@ export class CheckinEntity {
   @Column()
   public objectiveId: number;
 
+  @Column()
+  public isLeaderFeedBack: boolean;
+
+  @Column()
+  public isStaffFeedBack: boolean;
+
   public titleName: string;
 
   public type: string;

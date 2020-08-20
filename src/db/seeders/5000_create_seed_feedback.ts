@@ -14,7 +14,6 @@ export class Seeder5001Recognition implements Seeder {
           receiverId: 11,
           content: 'Bạn làm rất tốt',
           evaluationCriteriaId: 3,
-          isLeaderToStaff: true,
           checkinId: 2,
         },
         {
@@ -22,7 +21,6 @@ export class Seeder5001Recognition implements Seeder {
           receiverId: 12,
           content: 'Bạn làm rất tốt',
           evaluationCriteriaId: 3,
-          isLeaderToStaff: true,
           checkinId: 4,
         },
         {
@@ -30,7 +28,6 @@ export class Seeder5001Recognition implements Seeder {
           receiverId: 9,
           content: 'Bạn làm rất tốt',
           evaluationCriteriaId: 3,
-          isLeaderToStaff: false,
           checkinId: 2,
         },
         {
@@ -38,7 +35,6 @@ export class Seeder5001Recognition implements Seeder {
           receiverId: 9,
           content: 'Bạn làm rất tốt',
           evaluationCriteriaId: 3,
-          isLeaderToStaff: false,
           checkinId: 2,
         },
       ])

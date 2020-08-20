@@ -5,10 +5,9 @@ import { UserModule } from '../user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserStarEntity } from '@app/db/entities/user-stars.entity';
 import { UserStarRepository } from './user-star.repository';
-import { CycleRepository } from '../cycle/cycle.repository';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forFeature([UserStarEntity, UserStarRepository, CycleRepository])],
+  imports: [UserModule, TypeOrmModule.forFeature([UserStarEntity, UserStarRepository])],
   controllers: [UserStarController],
   providers: [UserStarService],
 })

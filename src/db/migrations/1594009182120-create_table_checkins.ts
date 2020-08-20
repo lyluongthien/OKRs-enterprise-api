@@ -33,6 +33,16 @@ export class CreateTableCheckins1594009182120 implements MigrationInterface {
         isNullable: false,
       },
       {
+        name: 'isLeaderFeedBack',
+        type: 'bool',
+        default: false,
+      },
+      {
+        name: 'isStaffFeedBack',
+        type: 'bool',
+        default: false,
+      },
+      {
         name: 'progress',
         type: 'integer',
         default: 0,
