@@ -22,7 +22,16 @@ export class UserRepository extends Repository<UserEntity> {
   public async getUsersActived(options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
-        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .select([
+          'user.id',
+          'user.email',
+          'user.fullName',
+          'user.isLeader',
+          'user.isApproved',
+          'user.isActive',
+          'user.avatarURL',
+          'user.gravatarURL',
+        ])
         .leftJoinAndSelect('user.role', 'roles')
         .leftJoinAndSelect('user.jobPosition', 'jobPositions')
         .leftJoinAndSelect('user.team', 'teams')
@@ -47,7 +56,16 @@ export class UserRepository extends Repository<UserEntity> {
   public async getUsersApproved(options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
-        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .select([
+          'user.id',
+          'user.email',
+          'user.fullName',
+          'user.isLeader',
+          'user.isApproved',
+          'user.isActive',
+          'user.avatarURL',
+          'user.gravatarURL',
+        ])
         .leftJoinAndSelect('user.role', 'roles')
         .leftJoinAndSelect('user.jobPosition', 'jobPositions')
         .leftJoinAndSelect('user.team', 'teams')
@@ -61,7 +79,16 @@ export class UserRepository extends Repository<UserEntity> {
   public async getUsersDeactived(options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
-        .select(['user.id', 'user.email', 'user.fullName', 'user.isLeader', 'user.isApproved', 'user.isActive'])
+        .select([
+          'user.id',
+          'user.email',
+          'user.fullName',
+          'user.isLeader',
+          'user.isApproved',
+          'user.isActive',
+          'user.avatarURL',
+          'user.gravatarURL',
+        ])
         .leftJoinAndSelect('user.role', 'roles')
         .leftJoinAndSelect('user.jobPosition', 'jobPositions')
         .leftJoinAndSelect('user.team', 'teams')
@@ -99,6 +126,8 @@ export class UserRepository extends Repository<UserEntity> {
           'user.id',
           'user.email',
           'user.fullName',
+          'user.gravatarURL',
+          'user.avatarURL',
           'user.isLeader',
           'user.isApproved',
           'user.isActive',
@@ -133,6 +162,8 @@ export class UserRepository extends Repository<UserEntity> {
           'user.isLeader',
           'user.isApproved',
           'user.isActive',
+          'user.gravatarURL',
+          'user.avatarURL',
           'jobPositions.id',
           'jobPositions.name',
           'teams.id',
@@ -163,6 +194,8 @@ export class UserRepository extends Repository<UserEntity> {
           'user.isLeader',
           'user.isApproved',
           'user.isActive',
+          'user.gravatarURL',
+          'user.avatarURL',
           'jobPositions.id',
           'jobPositions.name',
           'teams.id',
