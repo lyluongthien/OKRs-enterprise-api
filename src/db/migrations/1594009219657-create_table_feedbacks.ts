@@ -29,16 +29,6 @@ export class CreateTableFeedbacks1594009219657 implements MigrationInterface {
         length: '255',
       },
       {
-        name: 'isLeaderFeedBack',
-        type: 'bool',
-        default: false,
-      },
-      {
-        name: 'isStaffFeedBack',
-        type: 'bool',
-        default: false,
-      },
-      {
         name: ForeignKey.EVALUATION_CRITERIA_ID,
         type: 'integer',
       },
