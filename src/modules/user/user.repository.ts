@@ -113,7 +113,11 @@ export class UserRepository extends Repository<UserEntity> {
 
   public async getUserActived(): Promise<UserEntity[]> {
     try {
-      return await this.find({ select: ['id', 'fullName'], where: { isActive: true } });
+      return await this.find({
+        select: ['id', 'fullName', 'avatarURL', 'gravatarURL'],
+        where: { isActive: true },
+        relations: ['team'],
+      });
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -147,6 +151,14 @@ export class UserRepository extends Repository<UserEntity> {
         })
         .orderBy('user.id', 'ASC');
       return await paginate<UserEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getAllUsers(): Promise<UserEntity[]> {
+    try {
+      return this.find();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
