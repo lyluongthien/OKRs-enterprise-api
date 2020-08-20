@@ -1,4 +1,4 @@
-import { Controller, UseGuards, Get, Post, Body, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, UseGuards, Get, Post, Body, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { TransactionManager, EntityManager, Transaction } from 'typeorm';
 
 import { AuthenticationGuard } from '@app/modules/auth/authentication.guard';
@@ -20,12 +20,12 @@ export class FeedbackController {
     return this._feedBackService.listWaitingFeedBack(me.id);
   }
 
-  @Get('/history/:cycleId')
+  @Get('/history')
   public async historyCFRs(
-    @CurrentUser() me: UserEntity,
-    @Param('cycleId', ParseIntPipe) cycleId: number,
+    @Query('userId', ParseIntPipe) userId: number,
+    @Query('cycleId', ParseIntPipe) cycleId: number,
   ): Promise<ResponseModel> {
-    return this._feedBackService.getCFRsHistory(me.id, cycleId);
+    return this._feedBackService.getCFRsHistory(userId, cycleId);
   }
 
   @Get('/detail/:id')

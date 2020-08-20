@@ -29,7 +29,12 @@ export class CreateTableFeedbacks1594009219657 implements MigrationInterface {
         length: '255',
       },
       {
-        name: 'isLeaderToStaff',
+        name: 'isLeaderFeedBack',
+        type: 'bool',
+        default: false,
+      },
+      {
+        name: 'isStaffFeedBack',
         type: 'bool',
         default: false,
       },

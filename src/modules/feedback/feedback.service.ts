@@ -15,7 +15,6 @@ import { EntityManager } from 'typeorm';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
 import { UserStarRepository } from '../user-star/user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
-import { TeamRepository } from '../team/team.repository';
 import { RecognitionRepository } from '../recognition/recognition.repository';
 
 @Injectable()
@@ -28,7 +27,6 @@ export class FeedbackService {
     private _evaluationCriteriaRepository: EvaluationCriteriaRepository,
     private _userStarsRepository: UserStarRepository,
     private _cycleRepository: CycleRepository,
-    private _teamRepository: TeamRepository,
   ) {}
 
   public async listWaitingFeedBack(id: number): Promise<ResponseModel> {

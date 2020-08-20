@@ -11,7 +11,6 @@ import { UserRepository } from '../user/user.repository';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
 import { UserStarRepository } from '../user-star/user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
-import { TeamRepository } from '../team/team.repository';
 import { RecognitionRepository } from '../recognition/recognition.repository';
 
 @Module({
@@ -25,7 +24,6 @@ import { RecognitionRepository } from '../recognition/recognition.repository';
       EvaluationCriteriaRepository,
       UserStarRepository,
       CycleRepository,
-      TeamRepository,
       RecognitionRepository,
     ]),
   ],

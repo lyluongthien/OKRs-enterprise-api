@@ -27,7 +27,10 @@ export class FeedbackEntity {
   public content: string;
 
   @Column()
-  public isLeaderToStaff: boolean;
+  public isLeaderFeedBack: boolean;
+
+  @Column()
+  public isStaffFeedBack: boolean;
 
   @Column()
   public evaluationCriteriaId: number;
