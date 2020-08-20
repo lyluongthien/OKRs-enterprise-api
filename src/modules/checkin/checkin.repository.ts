@@ -212,7 +212,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public async getIndueCheckin(cycleId: number): Promise<CheckinEntity> {
+  public async getIndueCheckin(cycleId: number): Promise<ObjectLiteral[]> {
     try {
       const query = `SELECT count(c.id) AS inDueCheckin
       FROM checkins c
@@ -234,7 +234,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public async getOverdueCheckin(cycleId: number): Promise<CheckinEntity[]> {
+  public async getOverdueCheckin(cycleId: number): Promise<ObjectLiteral[]> {
     try {
       const query = `SELECT count(c.id) AS overDueCheckin
       FROM checkins c
