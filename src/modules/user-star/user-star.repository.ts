@@ -19,7 +19,7 @@ export class UserStarRepository extends Repository<UserStarEntity> {
     }
   }
 
-  public async getCurrentUserStar(id: number): Promise<UserStarEntity[]> {
+  public async getCycleUserStar(id: number): Promise<UserStarEntity[]> {
     try {
       return await this.query(`SELECT "user"."fullName" AS "user_fullName","user"."avatarURL", 
       "user"."gravatarURL", "user"."id" AS "user_id", 

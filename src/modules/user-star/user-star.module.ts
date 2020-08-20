@@ -8,7 +8,7 @@ import { UserStarRepository } from './user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forFeature([UserStarEntity, UserStarRepository, CycleRepository])],
+  imports: [UserModule, TypeOrmModule.forFeature([UserStarEntity, UserStarRepository])],
   controllers: [UserStarController],
   providers: [UserStarService],
 })

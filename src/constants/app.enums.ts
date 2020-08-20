@@ -131,7 +131,9 @@ export enum ConfidentLevel {
 }
 
 export enum CycleStatus {
-  CURRENT = 'current',
+  CURRENT = 1,
+  ALL = 2,
+  CYCLE = 3,
 }
 
 export enum AvatarURL {

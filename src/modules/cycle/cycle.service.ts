@@ -11,7 +11,7 @@ import { CYCLE_EXIST } from '@app/constants/app.exeption';
 export class CycleService {
   constructor(private _cycleRepository: CycleRepository) {}
 
-  public async getCycle(status?: string, options?: IPaginationOptions): Promise<ResponseModel> {
+  public async getCycle(status?: CycleStatus, options?: IPaginationOptions): Promise<ResponseModel> {
     let data = null;
     if (status && status == CycleStatus.CURRENT) {
       const currentDate = new Date();
