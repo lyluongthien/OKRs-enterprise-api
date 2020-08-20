@@ -174,3 +174,9 @@ export enum OKRsStatusType {
   BAD = 'OKRs có sự rủi ro',
   VERY_BAD = 'OKRs không tiến triển',
 }
+
+export enum CheckinStatusType {
+  inDue = 'Đúng hạn',
+  overDue = 'Sai hạn',
+  notYet = 'Chưa Checkin',
+}

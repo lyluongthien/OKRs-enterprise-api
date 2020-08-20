@@ -1,7 +1,7 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { startOfWeek, endOfWeek } from 'date-fns';
 
-import { TopStarType, CommonMessage, OKRsType, RoleEnum } from '@app/constants/app.enums';
+import { TopStarType, CommonMessage, OKRsType, RoleEnum, CheckinStatusType } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { FeedbackRepository } from '../feedback/feedback.repository';
 import { UserRepository } from '../user/user.repository';
@@ -106,11 +106,26 @@ export class DashboardService {
 
   public async getCheckinStatus(): Promise<ResponseModel> {
     const currentCycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
-    const data: any = {};
+    const data = [];
     if (currentCycleId) {
-      data.inDue = await this._checkinRepository.getIndueCheckin(currentCycleId);
-      data.overDue = await this._checkinRepository.getOverdueCheckin(currentCycleId);
-      data.notYet = await this._checkinRepository.getNotYetCheckin(currentCycleId);
+      const inDue = await this._checkinRepository.getIndueCheckin(currentCycleId);
+      const overDue = await this._checkinRepository.getOverdueCheckin(currentCycleId);
+      const notYet = await this._checkinRepository.getNotYetCheckin(currentCycleId);
+      const inDueObject = {
+        name: CheckinStatusType.inDue,
+        value: +inDue[0].induecheckin,
+      };
+      const overDueObject = {
+        name: CheckinStatusType.overDue,
+        value: +overDue[0].overduecheckin,
+      };
+      const notYetObject = {
+        name: CheckinStatusType.notYet,
+        value: +notYet[0].notyetcheckin,
+      };
+      data.push(inDueObject);
+      data.push(overDueObject);
+      data.push(notYetObject);
     }
     return {
       statusCode: HttpStatus.OK,
