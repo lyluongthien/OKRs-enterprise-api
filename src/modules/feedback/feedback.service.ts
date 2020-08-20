@@ -41,20 +41,40 @@ export class FeedbackService {
         avatar: admin.avatar,
         gravatar: admin.gravatarURL,
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
-        checkins: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.PERSONAL),
+        checkins: await this._checkinRepository.getDoneCheckinById(
+          id,
+          cycleId,
+          CheckinType.PERSONAL,
+          EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+        ),
       };
       data.inferior = {
         type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
-        checkins: await this._userRepository.getUserCheckin(id, cycleId, CheckinType.MEMBER),
+        checkins: await this._userRepository.getUserCheckin(
+          id,
+          cycleId,
+          CheckinType.MEMBER,
+          EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+        ),
       };
     } else if (id == admin.id) {
       data.superior = {
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
-        checkins: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.PERSONAL),
+        checkins: await this._checkinRepository.getDoneCheckinById(
+          id,
+          cycleId,
+          CheckinType.PERSONAL,
+          EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+        ),
       };
       data.inferior = {
         type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
-        checkins: await this._userRepository.getUserCheckin(id, cycleId, CheckinType.MEMBER),
+        checkins: await this._userRepository.getUserCheckin(
+          id,
+          cycleId,
+          CheckinType.MEMBER,
+          EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+        ),
       };
     } else {
       const teamLeader = await this._userRepository.getTeamLeader(id);
@@ -63,7 +83,12 @@ export class FeedbackService {
         avatar: teamLeader.avatar,
         gravatar: teamLeader.gravatarURL,
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
-        checkins: await this._checkinRepository.getDoneCheckinById(id, cycleId, CheckinType.PERSONAL),
+        checkins: await this._checkinRepository.getDoneCheckinById(
+          id,
+          cycleId,
+          CheckinType.PERSONAL,
+          EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+        ),
       };
       data.inferior = {};
     }

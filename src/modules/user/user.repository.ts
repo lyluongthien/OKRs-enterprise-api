@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
-import { AvatarURL, RoleEnum, CheckinType, CheckinStatus } from '@app/constants/app.enums';
+import { AvatarURL, RoleEnum, CheckinType, CheckinStatus, EvaluationCriteriaEnum } from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -197,7 +197,12 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  public async getUserCheckin(id: number, cycleId: number, type: CheckinType): Promise<UserEntity[]> {
+  public async getUserCheckin(
+    id: number,
+    cycleId: number,
+    type: CheckinType,
+    feedBacktype: EvaluationCriteriaEnum,
+  ): Promise<UserEntity[]> {
     try {
       let condition = null;
       if (type === CheckinType.MEMBER) {
@@ -207,6 +212,11 @@ export class UserRepository extends Repository<UserEntity> {
       } else {
         condition = 'user.id = :id and objective.isRootObjective = true';
       }
+
+      const feedBackType =
+        feedBacktype == EvaluationCriteriaEnum.LEADER_TO_MEMBER
+          ? 'checkin.isLeaderFeedBack = false'
+          : 'checkin.isStaffFeedBack = false';
       return await this.createQueryBuilder('user')
         .select([
           'user.fullName',
@@ -224,6 +234,7 @@ export class UserRepository extends Repository<UserEntity> {
         .leftJoin('checkin.objective', 'checkinObjective')
         .where(condition, { id })
         .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
+        .andWhere(feedBackType)
         .andWhere('objective.cycleId = :cycleId', { cycleId })
         .getMany();
     } catch (error) {
