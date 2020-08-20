@@ -102,8 +102,8 @@ export class UserController {
     }
   }
 
-  @Get('/user_recognition')
-  public async getUserRecognition(): Promise<ResponseModel> {
+  @Get('/all')
+  public async getAllUsers(): Promise<ResponseModel> {
     return this._userService.getUserActived();
   }
   /**

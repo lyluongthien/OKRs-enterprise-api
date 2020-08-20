@@ -26,7 +26,7 @@ export class UserStarRepository extends Repository<UserStarEntity> {
               SUM("user_stars"."star") AS "sum" 
               FROM "user_stars" "user_stars" LEFT JOIN "users" "user" ON "user"."id"="user_stars"."userId" 
               WHERE "cycleId" in (${id}) GROUP BY "user"."id", "user"."fullName"
-              ORDER BY "sum" desc`);
+              ORDER BY "sum" desc limit 10`);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
