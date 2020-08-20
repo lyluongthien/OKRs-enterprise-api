@@ -26,8 +26,8 @@ export class DashboardController {
 
   @Get('/view_progress')
   public async viewProgressOKRs(
-    @Query('cycleId', ParseIntPipe) cycleId: number,
     @CurrentUser() user: UserEntity,
+    @Query('cycleId', ParseIntPipe) cycleId: number,
   ): Promise<ResponseModel> {
     return this._dashBoardService.viewOKRsProgress(cycleId, user.id);
   }

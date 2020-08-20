@@ -195,7 +195,7 @@ export class Seeder2001User implements Seeder {
           teamId: 4,
           isActive: true,
           isApproved: true,
-          isLeader: false,
+          isLeader: true,
         },
         {
           email: 'hoapn@gmail.com',
