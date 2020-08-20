@@ -50,7 +50,12 @@ export class FeedbackService {
       };
       data.inferior = {
         type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
-        checkins: await this._userRepository.getUserCheckin(id, cycleId, CheckinType.MEMBER),
+        checkins: await this._userRepository.getUserCheckin(
+          id,
+          cycleId,
+          CheckinType.MEMBER,
+          EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+        ),
       };
     } else if (id == admin.id) {
       data.superior = {
@@ -64,7 +69,12 @@ export class FeedbackService {
       };
       data.inferior = {
         type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
-        checkins: await this._userRepository.getUserCheckin(id, cycleId, CheckinType.MEMBER),
+        checkins: await this._userRepository.getUserCheckin(
+          id,
+          cycleId,
+          CheckinType.MEMBER,
+          EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+        ),
       };
     } else {
       const teamLeader = await this._userRepository.getTeamLeader(id);
