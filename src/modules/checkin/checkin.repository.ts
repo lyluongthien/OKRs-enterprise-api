@@ -2,7 +2,7 @@ import { Repository, EntityRepository, EntityManager, getConnection, ObjectLiter
 import { HttpException } from '@nestjs/common';
 
 import { CheckinEntity } from '@app/db/entities/checkin.entity';
-import { CheckinStatus, CheckinType } from '@app/constants/app.enums';
+import { CheckinStatus, CheckinType, EvaluationCriteriaEnum } from '@app/constants/app.enums';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 import { CheckinDetailEntity } from '@app/db/entities/checkin-detail.entity';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
@@ -139,7 +139,12 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public async getDoneCheckinById(id: number, cycleId: number, type: CheckinType): Promise<CheckinEntity[]> {
+  public async getDoneCheckinById(
+    id: number,
+    cycleId: number,
+    type: CheckinType,
+    feedBacktype: EvaluationCriteriaEnum,
+  ): Promise<CheckinEntity[]> {
     try {
       let condition = null;
       if (type === CheckinType.MEMBER) {
@@ -149,6 +154,11 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       } else {
         condition = 'user.id = :id and objective.isRootObjective = true';
       }
+      const feedBackType =
+        feedBacktype == EvaluationCriteriaEnum.LEADER_TO_MEMBER
+          ? 'checkin.isLeaderFeedBack = false'
+          : 'checkin.isStaffFeedBack = false';
+
       return await this.createQueryBuilder('checkin')
         .select(['checkin.id', 'checkin.checkinAt', 'objective.title', 'user.fullName'])
         .leftJoin('checkin.objective', 'objective')
@@ -157,6 +167,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .leftJoin('user.team', 'team')
         .where(condition, { id })
         .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
+        .andWhere(feedBackType)
         .andWhere('cycle.id = :cycleId', { cycleId: cycleId })
         .getMany();
     } catch (error) {
