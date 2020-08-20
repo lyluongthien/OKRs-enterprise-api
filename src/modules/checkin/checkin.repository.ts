@@ -107,9 +107,13 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
-  public async updateCheckinStatus(id: number, status: CheckinStatus, manager: EntityManager): Promise<void> {
+  public async updateCheckinStatus(id: number, type: EvaluationCriteriaEnum, manager: EntityManager): Promise<void> {
     try {
-      await manager.getRepository(CheckinEntity).update({ id }, { status: status });
+      if (type == EvaluationCriteriaEnum.LEADER_TO_MEMBER) {
+        await manager.getRepository(CheckinEntity).update({ id }, { isLeaderFeedBack: true });
+      } else {
+        await manager.getRepository(CheckinEntity).update({ id }, { isStaffFeedBack: true });
+      }
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

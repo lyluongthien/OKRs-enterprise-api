@@ -1,13 +1,7 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { FeedbackRepository } from './feedback.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import {
-  CommonMessage,
-  CheckinType,
-  CheckinStatus,
-  TypeCFRsHistory,
-  EvaluationCriteriaEnum,
-} from '@app/constants/app.enums';
+import { CommonMessage, CheckinType, TypeCFRsHistory, EvaluationCriteriaEnum } from '@app/constants/app.enums';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserRepository } from '../user/user.repository';
 import { FeedbackDTO } from './feedback.dto';
@@ -99,10 +93,15 @@ export class FeedbackService {
     };
   }
 
-  public async createFeedBack(data: FeedbackDTO, senderId: number, manager: EntityManager): Promise<ResponseModel> {
+  public async createFeedBack(
+    data: FeedbackDTO,
+    senderId: number,
+    type: EvaluationCriteriaEnum,
+    manager: EntityManager,
+  ): Promise<ResponseModel> {
     if (data && senderId) {
       await this._feedBackRepository.createFeedBack(data, senderId, manager);
-      await this._checkinRepository.updateCheckinStatus(data.checkinId, CheckinStatus.CLOSED, manager);
+      await this._checkinRepository.updateCheckinStatus(data.checkinId, type, manager);
       const userStar = {
         star: (await this._evaluationCriteriaRepository.getCriteriaDetail(data.evaluationCriteriaId)).numberOfStar,
         cycleId: (await this._cycleRepository.getCurrentCycle(new Date())).id,
