@@ -44,7 +44,17 @@ export class UserRepository extends Repository<UserEntity> {
 
   public async getAdmin(): Promise<UserEntity> {
     try {
-      return this.createQueryBuilder('user')
+      return await this.createQueryBuilder('user')
+        .select([
+          'user.id',
+          'user.email',
+          'user.fullName',
+          'user.isLeader',
+          'user.isApproved',
+          'user.isActive',
+          'user.avatarURL',
+          'user.gravatarURL',
+        ])
         .leftJoin('user.role', 'role')
         .where('role.name = :type', { type: RoleEnum.ADMIN })
         .getOne();

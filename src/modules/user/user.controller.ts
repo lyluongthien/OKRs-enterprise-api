@@ -106,6 +106,11 @@ export class UserController {
   public async getAllUsers(): Promise<ResponseModel> {
     return this._userService.getUserActived();
   }
+
+  @Get('/admin')
+  public async getAdmin(@CurrentUser() me: UserEntity): Promise<ResponseModel> {
+    return this._userService.getAdmin(me.id);
+  }
   /**
    * @description: Get information of current logged in system
    */

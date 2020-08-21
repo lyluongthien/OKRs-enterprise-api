@@ -29,7 +29,7 @@ export class FeedbackService {
     const isLeader = user.isLeader;
     const admin = await this._userRepository.getAdmin();
     const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
-    if (isLeader) {
+    if (isLeader && id != admin.id) {
       data.superior = {
         user: {
           id: admin.id,
@@ -56,6 +56,12 @@ export class FeedbackService {
       };
     } else if (id == admin.id) {
       data.superior = {
+        user: {
+          id: admin.id,
+          fullName: admin.fullName,
+          avatarURL: admin.avatarURL ? admin.avatarURL : null,
+          gravatarURL: admin.gravatarURL ? admin.gravatarURL : null,
+        },
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
         checkins: await this._checkinRepository.getDoneCheckinById(
           id,
