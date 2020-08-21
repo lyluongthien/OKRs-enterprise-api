@@ -32,8 +32,8 @@ export class FeedbackService {
     if (isLeader) {
       data.superior = {
         teamLead: admin.fullName,
-        avatar: admin.avatar,
-        gravatar: admin.gravatarURL,
+        avatarURL: admin.avatarURL ? admin.avatarURL : null,
+        gravatarURL: admin.gravatarURL ? admin.gravatarURL : null,
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
         checkins: await this._checkinRepository.getDoneCheckinById(
           id,
