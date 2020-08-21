@@ -285,12 +285,8 @@ export class UserService {
     };
   }
 
-  public async getAdmin(userId: number): Promise<ResponseModel> {
-    const isLeader = (await this._userRepository.getUserByID(userId)).isLeader;
-    let data = null;
-    if (isLeader) {
-      data = (await this._userRepository.getAdmin()).id;
-    }
+  public async getAdmin(): Promise<ResponseModel> {
+    const data = (await this._userRepository.getAdmin()).id;
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

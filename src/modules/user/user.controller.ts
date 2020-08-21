@@ -108,8 +108,8 @@ export class UserController {
   }
 
   @Get('/admin')
-  public async getAdmin(@CurrentUser() me: UserEntity): Promise<ResponseModel> {
-    return this._userService.getAdmin(me.id);
+  public async getAdmin(): Promise<ResponseModel> {
+    return this._userService.getAdmin();
   }
   /**
    * @description: Get information of current logged in system
