@@ -164,7 +164,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
           : 'checkin.isStaffFeedBack = false';
 
       return await this.createQueryBuilder('checkin')
-        .select(['checkin.id', 'checkin.checkinAt', 'objective.title', 'user.fullName'])
+        .select(['checkin.id', 'checkin.checkinAt', 'objective.id', 'objective.title', 'user.id', 'user.fullName'])
         .leftJoin('checkin.objective', 'objective')
         .leftJoin('objective.cycle', 'cycle')
         .leftJoin('objective.user', 'user')

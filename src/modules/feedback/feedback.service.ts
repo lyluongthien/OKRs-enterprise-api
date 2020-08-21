@@ -44,7 +44,7 @@ export class FeedbackService {
       };
       data.inferior = {
         type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
-        checkins: await this._userRepository.getUserCheckin(
+        checkins: await this._checkinRepository.getDoneCheckinById(
           id,
           cycleId,
           CheckinType.MEMBER,
@@ -63,7 +63,7 @@ export class FeedbackService {
       };
       data.inferior = {
         type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
-        checkins: await this._userRepository.getUserCheckin(
+        checkins: await this._checkinRepository.getDoneCheckinById(
           id,
           cycleId,
           CheckinType.MEMBER,
