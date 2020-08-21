@@ -1,7 +1,15 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { startOfWeek, endOfWeek } from 'date-fns';
 
-import { TopStarType, CommonMessage, OKRsType, RoleEnum, CheckinStatusType } from '@app/constants/app.enums';
+import {
+  TopStarType,
+  CommonMessage,
+  OKRsType,
+  RoleEnum,
+  CheckinStatusType,
+  CFRStatusType,
+  OKRsStatusType,
+} from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { FeedbackRepository } from '../feedback/feedback.repository';
 import { UserRepository } from '../user/user.repository';
@@ -96,7 +104,27 @@ export class DashboardService {
       lastDayOfLastWeek,
       adminId,
     );
-    const data = { numberoffeedback, numberOfRecognition, numberOfManager };
+    const feedbackObject = {
+      name: CFRStatusType.FEED_BACK,
+      value: numberoffeedback[0].numberoffeedback ? numberoffeedback[0].numberoffeedback : 0,
+      changing: numberoffeedback[0].changing ? numberoffeedback[0].changing : 0,
+    };
+
+    const recongnitionObject = {
+      name: CFRStatusType.RECOGNITION,
+      value: numberOfRecognition[0].numberofrecognition ? numberOfRecognition[0].numberofrecognition : 0,
+      changing: numberOfRecognition[0].changing ? numberOfRecognition[0].changing : 0,
+    };
+
+    const managerObject = {
+      name: CFRStatusType.MANAGER,
+      value: numberOfManager[0].numberofleader ? numberOfManager[0].numberofleader : 0,
+      changing: numberOfManager[0].changing ? numberOfManager[0].changing : 0,
+    };
+    const data = [];
+    data.push(feedbackObject);
+    data.push(recongnitionObject);
+    data.push(managerObject);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -171,10 +199,10 @@ export class DashboardService {
     });
 
     const dataResponseCurrentWeek = {
-      good: good,
-      normal: normal,
-      bad: bad,
-      very_bad: very_bad,
+      good: +good,
+      normal: +normal,
+      bad: +bad,
+      very_bad: +very_bad,
     };
 
     good = normal = bad = very_bad = 0;
@@ -193,27 +221,31 @@ export class DashboardService {
     });
 
     const dataResponseLastWeek = {
-      good: good,
-      normal: normal,
-      bad: bad,
-      very_bad: very_bad,
+      good: +good,
+      normal: +normal,
+      bad: +bad,
+      very_bad: +very_bad,
     };
 
     const dataResponse = [
       {
-        good: dataResponseCurrentWeek.good,
+        name: OKRsStatusType.GOOD,
+        value: dataResponseCurrentWeek.good,
         changing: dataResponseCurrentWeek.good - dataResponseLastWeek.good,
       },
       {
-        normal: dataResponseCurrentWeek.normal,
+        name: OKRsStatusType.NORMAL,
+        value: dataResponseCurrentWeek.normal,
         changing: dataResponseCurrentWeek.normal - dataResponseLastWeek.normal,
       },
       {
-        bad: dataResponseCurrentWeek.bad,
+        name: OKRsStatusType.BAD,
+        value: dataResponseCurrentWeek.bad,
         changing: dataResponseCurrentWeek.bad - dataResponseLastWeek.bad,
       },
       {
-        very_bad: dataResponseCurrentWeek.very_bad,
+        name: OKRsStatusType.VERY_BAD,
+        value: dataResponseCurrentWeek.very_bad,
         changing: dataResponseCurrentWeek.very_bad - dataResponseLastWeek.very_bad,
       },
     ];
