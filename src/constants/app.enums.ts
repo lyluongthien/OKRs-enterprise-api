@@ -175,6 +175,12 @@ export enum OKRsStatusType {
   VERY_BAD = 'OKRs không tiến triển',
 }
 
+export enum CFRStatusType {
+  FEED_BACK = 'Feedback',
+  RECOGNITION = 'Recognition',
+  MANAGER = 'quản lý sử dụng CFRs',
+}
+
 export enum CheckinStatusType {
   inDue = 'Đúng hạn',
   overDue = 'Sai hạn',
