@@ -33,7 +33,7 @@ export class FeedbackService {
       data.superior = {
         user: {
           id: admin.id,
-          teamLead: admin.fullName,
+          fullName: admin.fullName,
           avatarURL: admin.avatarURL ? admin.avatarURL : null,
           gravatarURL: admin.gravatarURL ? admin.gravatarURL : null,
         },
@@ -78,7 +78,7 @@ export class FeedbackService {
       data.superior = {
         user: {
           id: teamLeader.id,
-          teamLead: teamLeader.fullName,
+          fullName: teamLeader.fullName,
           avatarURL: teamLeader.avatarURL ? teamLeader.avatarURL : null,
           gravatarURL: teamLeader.gravatarURL ? teamLeader.gravatarURL : null,
         },
