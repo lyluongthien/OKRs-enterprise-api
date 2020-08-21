@@ -31,9 +31,12 @@ export class FeedbackService {
     const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
     if (isLeader) {
       data.superior = {
-        teamLead: admin.fullName,
-        avatarURL: admin.avatarURL ? admin.avatarURL : null,
-        gravatarURL: admin.gravatarURL ? admin.gravatarURL : null,
+        user: {
+          id: admin.id,
+          fullName: admin.fullName,
+          avatarURL: admin.avatarURL ? admin.avatarURL : null,
+          gravatarURL: admin.gravatarURL ? admin.gravatarURL : null,
+        },
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
         checkins: await this._checkinRepository.getDoneCheckinById(
           id,
@@ -73,9 +76,12 @@ export class FeedbackService {
     } else {
       const teamLeader = await this._userRepository.getTeamLeader(id);
       data.superior = {
-        teamLead: teamLeader.fullName,
-        avatar: teamLeader.avatar,
-        gravatar: teamLeader.gravatarURL,
+        user: {
+          id: teamLeader.id,
+          fullName: teamLeader.fullName,
+          avatarURL: teamLeader.avatarURL ? teamLeader.avatarURL : null,
+          gravatarURL: teamLeader.gravatarURL ? teamLeader.gravatarURL : null,
+        },
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
         checkins: await this._checkinRepository.getDoneCheckinById(
           id,
