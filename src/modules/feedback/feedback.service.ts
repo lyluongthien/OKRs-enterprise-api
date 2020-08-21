@@ -32,8 +32,8 @@ export class FeedbackService {
     if (isLeader) {
       data.superior = {
         teamLead: admin.fullName,
-        avatar: admin.avatar,
-        gravatar: admin.gravatarURL,
+        avatarURL: admin.avatarURL ? admin.avatarURL : null,
+        gravatarURL: admin.gravatarURL ? admin.gravatarURL : null,
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
         checkins: await this._checkinRepository.getDoneCheckinById(
           id,
@@ -44,7 +44,7 @@ export class FeedbackService {
       };
       data.inferior = {
         type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
-        checkins: await this._userRepository.getUserCheckin(
+        checkins: await this._checkinRepository.getDoneCheckinById(
           id,
           cycleId,
           CheckinType.MEMBER,
@@ -63,7 +63,7 @@ export class FeedbackService {
       };
       data.inferior = {
         type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
-        checkins: await this._userRepository.getUserCheckin(
+        checkins: await this._checkinRepository.getDoneCheckinById(
           id,
           cycleId,
           CheckinType.MEMBER,
