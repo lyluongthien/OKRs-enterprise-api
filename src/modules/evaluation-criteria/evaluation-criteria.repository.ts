@@ -29,6 +29,17 @@ export class EvaluationCriteriaRepository extends Repository<EvaluationCriteriaE
     }
   }
 
+  public async searchEvaluationCriterias(option: IPaginationOptions, text: string): Promise<any> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('criteria')
+        .where('LOWER(criteria.content) like :text', { text: '%' + text + '%' })
+        .orderBy('criteria.updatedAt', 'DESC');
+      return await paginate<EvaluationCriteriaEntity>(queryBuilder, option);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async createCriteria(data: EvaluationDTO): Promise<EvaluationCriteriaEntity> {
     try {
       return await this.save(data);

@@ -30,7 +30,7 @@ export class JobController {
 
   @Get()
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public async getJobs(
     @Query('text') text: string,
     @Query('page') page: number,
@@ -52,21 +52,21 @@ export class JobController {
 
   @Post()
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public createJob(@Body() data: JobDTO): Promise<ResponseModel> {
     return this.jobService.createJob(data);
   }
 
   @Get(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public getDetailJob(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this.jobService.getJobDetail(id);
   }
 
   @Put(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
   public updateJob(@Param('id', ParseIntPipe) id: number, @Body() data: UpdateJobDTO): Promise<ResponseModel> {
     return this.jobService.updateJob(id, data);
@@ -74,7 +74,7 @@ export class JobController {
 
   @Delete(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public deleteJob(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this.jobService.deleteJob(id);
   }

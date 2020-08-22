@@ -29,6 +29,7 @@ export class JobService {
   }
 
   public async searchJob(text: string, options: IPaginationOptions): Promise<ResponseModel> {
+    text = text.toLowerCase();
     const data = await this._jobRepository.searchJob(text, options);
     return {
       statusCode: HttpStatus.OK,

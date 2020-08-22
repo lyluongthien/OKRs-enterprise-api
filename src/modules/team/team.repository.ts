@@ -25,7 +25,7 @@ export class TeamRepository extends Repository<TeamEntity> {
     try {
       const queryBuilder = this.createQueryBuilder('team')
         .select(['team.id', 'team.name', 'team.description', 'team.updatedAt'])
-        .where('team.name like :text', { text: '%' + text + '%' })
+        .where('LOWER(team.name) like :text', { text: '%' + text + '%' })
         .orderBy('team.updatedAt', 'DESC');
       return await paginate<TeamEntity>(queryBuilder, options);
     } catch (error) {

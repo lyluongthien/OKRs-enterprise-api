@@ -25,6 +25,17 @@ export class CycleRepository extends Repository<CycleEntity> {
     }
   }
 
+  public async searchCycles(options: IPaginationOptions, text: string): Promise<any> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('cycle')
+        .where('LOWER(cycle.name) like :text', { text: '%' + text + '%' })
+        .orderBy('cycle.updatedAt', 'DESC');
+      return await paginate<CycleEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async createCycle(data: CycleDTO): Promise<CycleEntity> {
     try {
       return await this.save(data);

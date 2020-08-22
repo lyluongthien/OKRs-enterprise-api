@@ -11,8 +11,12 @@ import { EVALUATION_CRITERIA_EXIST } from '@app/constants/app.exeption';
 export class EvaluationCriteriaService {
   constructor(private _evaluationCriteriaRepository: EvaluationCriteriaRepository) {}
 
-  public async getEvaluationCriterias(options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this._evaluationCriteriaRepository.getEvaluationCriterias(options);
+  public async getEvaluationCriterias(options: IPaginationOptions, text?: string): Promise<ResponseModel> {
+    let data = null;
+    if (text) {
+      text = text.toLowerCase();
+      data = await this._evaluationCriteriaRepository.searchEvaluationCriterias(options, text);
+    } else data = await this._evaluationCriteriaRepository.getEvaluationCriterias(options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

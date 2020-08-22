@@ -33,13 +33,17 @@ export class EvaluationCriteriaController {
   public getEvaluationCriterias(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
+    @Query('text') text: string,
   ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    return this._evaluationCriteriaService.getEvaluationCriterias({
-      page,
-      limit,
-    });
+    return this._evaluationCriteriaService.getEvaluationCriterias(
+      {
+        page,
+        limit,
+      },
+      text,
+    );
   }
 
   @Get(':id')

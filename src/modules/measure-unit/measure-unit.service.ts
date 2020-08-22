@@ -11,8 +11,12 @@ import { MEASURE_EXIST } from '@app/constants/app.exeption';
 export class MeasureUnitService {
   constructor(private _measureRepository: MeasureRepository) {}
 
-  public async getMeasureUnits(options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this._measureRepository.getList(options);
+  public async getMeasureUnits(options: IPaginationOptions, text?: string): Promise<ResponseModel> {
+    let data = null;
+    if (text) {
+      text = text.toLowerCase();
+      data = await this._measureRepository.searchMeasureUnits(options, text);
+    } else data = await this._measureRepository.getList(options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

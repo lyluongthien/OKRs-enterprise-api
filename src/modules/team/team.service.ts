@@ -21,6 +21,7 @@ export class TeamService {
   }
 
   public async searchTeam(text: string, options: IPaginationOptions): Promise<ResponseModel> {
+    text = text.toLowerCase();
     const data = await this._teamRepository.searchTeam(text, options);
     return {
       statusCode: HttpStatus.OK,

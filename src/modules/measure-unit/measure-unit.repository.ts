@@ -20,6 +20,20 @@ export class MeasureRepository extends Repository<MeasureUnitEntity> {
     }
   }
 
+  public async searchMeasureUnits(options: IPaginationOptions, text: string): Promise<any> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('measure')
+        .where('LOWER(measure.type) like :text', { text: '%' + text + '%' })
+        .orderBy({
+          'measure.index': 'ASC',
+          'measure.type': 'ASC',
+        });
+      return paginate<MeasureUnitEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getMeasureUnits(): Promise<MeasureUnitEntity[]> {
     try {
       return await this.find();
