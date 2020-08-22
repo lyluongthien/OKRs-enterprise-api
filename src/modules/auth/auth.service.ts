@@ -150,6 +150,7 @@ export class AuthService {
       message: CommonMessage.SUCCESS,
       data: {
         url: accessEnv('FE_HOST') + `/dang-ky?token=${token}`,
+        token: token,
       },
     };
   }
