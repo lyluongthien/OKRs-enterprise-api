@@ -11,13 +11,16 @@ import { CYCLE_EXIST } from '@app/constants/app.exeption';
 export class CycleService {
   constructor(private _cycleRepository: CycleRepository) {}
 
-  public async getCycle(status?: CycleStatus, options?: IPaginationOptions): Promise<ResponseModel> {
+  public async getCycle(status?: CycleStatus, options?: IPaginationOptions, text?: string): Promise<ResponseModel> {
     let data = null;
     if (status && status == CycleStatus.CURRENT) {
       const currentDate = new Date();
       data = await this._cycleRepository.getCurrentCycle(currentDate);
     } else {
-      data = await this._cycleRepository.getCycles(options);
+      if (text) {
+        text = text.toLowerCase();
+        data = await this._cycleRepository.searchCycles(options, text);
+      } else data = await this._cycleRepository.getCycles(options);
     }
     return {
       statusCode: HttpStatus.OK,

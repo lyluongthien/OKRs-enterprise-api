@@ -42,28 +42,28 @@ export class TeamController {
 
   @Get(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public getTeamDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._teamService.getDetailTeam(id);
   }
 
   @Post()
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public createTeam(@Body() team: TeamDTO): Promise<ResponseModel> {
     return this._teamService.createTeam(team);
   }
 
   @Put(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public updateTeam(@Param('id', ParseIntPipe) id: number, @Body() data: TeamDTO): Promise<ResponseModel> {
     return this._teamService.updateTeam(id, data);
   }
 
   @Delete(':id')
   @UseGuards(AuthenticationGuard, AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public deteleTeam(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._teamService.deteleTeam(id);
   }

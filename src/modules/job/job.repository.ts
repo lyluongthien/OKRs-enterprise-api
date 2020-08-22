@@ -30,7 +30,7 @@ export class JobRepository extends Repository<JobEntity> {
   public async searchJob(text: string, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('jobPosition')
-        .where('jobPosition.name like :text', { text: '%' + text + '%' })
+        .where('LOWER(jobPosition.name) like :text', { text: '%' + text + '%' })
         .orderBy('jobPosition.updatedAt', 'DESC');
       return await paginate<JobEntity>(queryBuilder, options);
     } catch (error) {

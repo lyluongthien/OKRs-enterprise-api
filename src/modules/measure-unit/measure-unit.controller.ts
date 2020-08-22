@@ -33,22 +33,23 @@ export class MeasureUnitController {
   public getMeasureUnits(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
+    @Query('text') text: string,
   ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    return this._measureService.getMeasureUnits({ page, limit });
+    return this._measureService.getMeasureUnits({ page, limit }, text);
   }
 
   @Get(':id')
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public getMeasureUnitDetail(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
     return this._measureService.getMeasureUnitDetail(id);
   }
 
   @Post()
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   @UsePipes(new ValidationPipe())
   public createMeasureUnit(@Body() data: MeasureUnitDTO): Promise<ResponseModel> {
     return this._measureService.createMeasureUnit(data);
@@ -56,7 +57,7 @@ export class MeasureUnitController {
 
   @Put(':id')
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public updateMeasureUnit(
     @Param('id', ParseIntPipe) id: number,
     @Body() data: MeasureUnitDTO,
@@ -66,7 +67,7 @@ export class MeasureUnitController {
 
   @Delete(':id')
   @UseGuards(AuthorizationGuard)
-  @Roles(RoleEnum.HR, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   public deleteMeasureUnit(@Param('id', ParseIntPipe) id: number): any {
     return this._measureService.deleteMeasureUnit(id);
   }

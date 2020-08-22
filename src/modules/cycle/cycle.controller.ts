@@ -38,13 +38,18 @@ export class CycleController {
   public getCycles(
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
+    @Query('text') text: string,
   ): Promise<ResponseModel> {
     page = page ? page : currentPage;
     limit = limit ? limit : limitPagination;
-    return this._cycleService.getCycle(null, {
-      page,
-      limit,
-    });
+    return this._cycleService.getCycle(
+      null,
+      {
+        page,
+        limit,
+      },
+      text,
+    );
   }
 
   @Get(':id')
