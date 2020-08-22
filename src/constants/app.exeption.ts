@@ -135,3 +135,8 @@ export const OKR_UPDATE_FAIL = {
   statusCode: 482,
   message: `Dữ liệu không hợp lệ`,
 };
+
+export const KEYRESULT_INVALID = {
+  statusCode: 483,
+  message: `Cần có ít nhất 1 kết quả then chốt`,
+};

@@ -7,7 +7,7 @@ import { UserRepository } from '../user/user.repository';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, OKRsType, OKRsLeaderType, DeleteKeyresultType } from '@app/constants/app.enums';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
-import { OKR_INVALID, DELETE_OKR, OKR_UPDATE_FAIL } from '@app/constants/app.exeption';
+import { OKR_INVALID, DELETE_OKR, OKR_UPDATE_FAIL, KEYRESULT_INVALID } from '@app/constants/app.exeption';
 import { CycleRepository } from '../cycle/cycle.repository';
 
 @Injectable()
@@ -39,6 +39,9 @@ export class ObjectiveService {
       }
 
       if (okrDTo.keyResult) {
+        if (okrDTo.keyResult.length < 1) {
+          throw new HttpException(KEYRESULT_INVALID.message, KEYRESULT_INVALID.statusCode);
+        }
         let sumDataTarget = 0,
           sumDataObtained = 0;
         okrDTo.keyResult.map((value) => {

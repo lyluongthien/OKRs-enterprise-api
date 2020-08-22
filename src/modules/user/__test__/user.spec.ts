@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '@app/app.module';
 import { SignInDTO } from '@app/modules/auth/auth.dto';
+import { UserProfileDTO, ChangePasswordDTO } from '../user.dto';
 
 describe('AuthController', () => {
   let app: INestApplication;
@@ -23,7 +24,7 @@ describe('AuthController', () => {
 
   let userToken: string;
 
-  describe('GET me', () => {
+  describe('me', () => {
     test('(GET) URL api wrong', () => {
       return request(app.getHttpServer()).get('/api/v1/usersXYZ/me').expect(404);
     });
@@ -59,6 +60,39 @@ describe('AuthController', () => {
         .expect((res) => {
           expect(res.body).toBeDefined();
           expect(res.body.data.email).toEqual(loginData.email);
+        })
+        .expect(HttpStatus.OK);
+    });
+
+    const userProfile: UserProfileDTO = {
+      fullName: 'Alex Dang',
+      gender: true,
+      dateOfBirth: new Date('1998-03-15'),
+    };
+    test('(PUT) Update user profile', async () => {
+      return request(app.getHttpServer())
+        .put(`/api/v1/users/me`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .send(userProfile)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data.fullName).toEqual(userProfile.fullName);
+        })
+        .expect(HttpStatus.OK);
+    });
+
+    const userPass: ChangePasswordDTO = {
+      newPassword: 'Admin1234',
+      password: 'Admin123',
+    };
+    test('(PUT) Change password', async () => {
+      return request(app.getHttpServer())
+        .put(`/api/v1/users/me/change_password`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .send(userPass)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
         })
         .expect(HttpStatus.OK);
     });

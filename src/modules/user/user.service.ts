@@ -285,6 +285,15 @@ export class UserService {
     };
   }
 
+  public async getAdmin(): Promise<ResponseModel> {
+    const data = (await this._userRepository.getAdmin()).id;
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
   public async getUserActived(): Promise<ResponseModel> {
     const data = await this._userRepository.getUserActived();
     return {

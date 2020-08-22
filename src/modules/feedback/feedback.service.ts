@@ -29,11 +29,14 @@ export class FeedbackService {
     const isLeader = user.isLeader;
     const admin = await this._userRepository.getAdmin();
     const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
-    if (isLeader) {
+    if (isLeader && id != admin.id) {
       data.superior = {
-        teamLead: admin.fullName,
-        avatar: admin.avatar,
-        gravatar: admin.gravatarURL,
+        user: {
+          id: admin.id,
+          fullName: admin.fullName,
+          avatarURL: admin.avatarURL ? admin.avatarURL : null,
+          gravatarURL: admin.gravatarURL ? admin.gravatarURL : null,
+        },
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
         checkins: await this._checkinRepository.getDoneCheckinById(
           id,
@@ -44,7 +47,7 @@ export class FeedbackService {
       };
       data.inferior = {
         type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
-        checkins: await this._userRepository.getUserCheckin(
+        checkins: await this._checkinRepository.getDoneCheckinById(
           id,
           cycleId,
           CheckinType.MEMBER,
@@ -53,6 +56,12 @@ export class FeedbackService {
       };
     } else if (id == admin.id) {
       data.superior = {
+        user: {
+          id: admin.id,
+          fullName: admin.fullName,
+          avatarURL: admin.avatarURL ? admin.avatarURL : null,
+          gravatarURL: admin.gravatarURL ? admin.gravatarURL : null,
+        },
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
         checkins: await this._checkinRepository.getDoneCheckinById(
           id,
@@ -63,7 +72,7 @@ export class FeedbackService {
       };
       data.inferior = {
         type: EvaluationCriteriaEnum.LEADER_TO_MEMBER,
-        checkins: await this._userRepository.getUserCheckin(
+        checkins: await this._checkinRepository.getDoneCheckinById(
           id,
           cycleId,
           CheckinType.MEMBER,
@@ -73,9 +82,12 @@ export class FeedbackService {
     } else {
       const teamLeader = await this._userRepository.getTeamLeader(id);
       data.superior = {
-        teamLead: teamLeader.fullName,
-        avatar: teamLeader.avatar,
-        gravatar: teamLeader.gravatarURL,
+        user: {
+          id: teamLeader.id,
+          fullName: teamLeader.fullName,
+          avatarURL: teamLeader.avatarURL ? teamLeader.avatarURL : null,
+          gravatarURL: teamLeader.gravatarURL ? teamLeader.gravatarURL : null,
+        },
         type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
         checkins: await this._checkinRepository.getDoneCheckinById(
           id,

@@ -31,13 +31,14 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
           'receiver.fullName',
           'receiver.avatarURL',
           'receiver.gravatarURL',
-          'objective.id',
+          'checkin.id',
           'objective.title',
         ])
         .leftJoin('feedback.evaluationCriteria', 'criteria')
         .leftJoin('feedback.sender', 'sender')
         .leftJoin('feedback.receiver', 'receiver')
-        .leftJoin('receiver.objectives', 'objective')
+        .leftJoin('feedback.checkin', 'checkin')
+        .leftJoin('checkin.objective', 'objective')
         .where('sender.id = :id', { id: userId })
         .andWhere('objective.cycleId = :cycleId', { cycleId })
         .getMany();
@@ -60,13 +61,14 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
           'sender.fullName',
           'sender.avatarURL',
           'sender.gravatarURL',
-          'objective.id',
+          'checkin.id',
           'objective.title',
         ])
         .leftJoin('feedback.evaluationCriteria', 'criteria')
         .leftJoin('feedback.sender', 'sender')
         .leftJoin('feedback.receiver', 'receiver')
-        .leftJoin('sender.objectives', 'objective')
+        .leftJoin('feedback.checkin', 'checkin')
+        .leftJoin('checkin.objective', 'objective')
         .where('receiver.id = :id', { id: userId })
         .andWhere('objective.cycleId = :cycleId', { cycleId: cycleId })
         .getMany();
