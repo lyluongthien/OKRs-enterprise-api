@@ -291,7 +291,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
           (SELECT DISTINCT c."objectiveId"
            FROM checkins c
            WHERE (c.status = '${CheckinStatus.DONE}' or c.status = '${CheckinStatus.CLOSED}') 
-           and c."checkinAt" < '${lastDay}')`;
+           and c."checkinAt" <= '${lastDay}')`;
       return await this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
@@ -326,7 +326,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
                 c.progress,
                 c."confidentLevel"
           FROM checkins c
-          WHERE c."checkinAt" BETWEEN '${firstDay}' AND '${lastDay}'
+          WHERE c."checkinAt" BETWEEN '${firstDay}'::date AND '${lastDay}'::date
             AND c."nextCheckinDate" =
               (SELECT c2."nextCheckinDate"
               FROM checkins c2
