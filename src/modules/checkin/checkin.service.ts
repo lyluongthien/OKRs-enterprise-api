@@ -39,6 +39,7 @@ export class CheckinService {
       const responseData = {
         id: checkin.id,
         confidentLevel: checkin.confidentLevel,
+        progress: checkin.progress,
         checkinAt: checkin.checkinAt,
         nextCheckinDate: checkin.nextCheckinDate,
         status: checkin.status,
