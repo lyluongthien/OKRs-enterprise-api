@@ -6,7 +6,13 @@ import { hashSync, compareSync } from 'bcryptjs';
 import { ResetPasswordDTO, ChangePasswordDTO, UserDTO, UserProfileDTO, PasswordDTO } from './user.dto';
 import { UserRepository } from './user.repository';
 import { _salt } from '@app/constants/app.config';
-import { INVALID_TOKEN, EXPIRED_TOKEN, PASSWORD_WRONG } from '@app/constants/app.exeption';
+import {
+  INVALID_TOKEN,
+  EXPIRED_TOKEN,
+  PASSWORD_WRONG,
+  TEAM_LEAD_EXIST,
+  ACTION_BLOCKED,
+} from '@app/constants/app.exeption';
 import { sendEmail } from '@app/services/email/sendEmail';
 import { RoleEntity } from '@app/db/entities/role.entity';
 import { CommonMessage } from '@app/constants/app.enums';
@@ -242,7 +248,19 @@ export class UserService {
 
   //HR
   public async updateUserInfor(id: number, data: UserDTO): Promise<ResponseModel> {
-    const userInfor = await this._userRepository.updateUserInfor(id, data);
+    let userInfor = null;
+    if (data) {
+      const admin = await this._userRepository.getAdmin();
+      if (id == admin.id || data.roleId == admin.roleId)
+        throw new HttpException(ACTION_BLOCKED.message, ACTION_BLOCKED.statusCode);
+      if (data.isLeader == true) {
+        const leader = await this._userRepository.getTeamLeader(id);
+        if (leader) throw new HttpException(TEAM_LEAD_EXIST.message, TEAM_LEAD_EXIST.statusCode);
+        else userInfor = await this._userRepository.updateUserInfor(id, data);
+      } else {
+        userInfor = await this._userRepository.updateUserInfor(id, data);
+      }
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
