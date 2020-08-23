@@ -23,6 +23,16 @@ export class CreateTableLessons1594697448722 implements MigrationInterface {
         isNullable: false,
       },
       {
+        name: 'thumbnail',
+        type: 'text',
+        isNullable: false,
+      },
+      {
+        name: 'abstract',
+        type: 'text',
+        isNullable: true,
+      },
+      {
         name: 'index',
         type: 'integer',
         isNullable: false,

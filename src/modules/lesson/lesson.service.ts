@@ -2,9 +2,11 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { LessonRepository } from './lesson.repository';
 import slugify from 'slugify';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { Converter } from 'showdown';
+import { load } from 'cheerio';
 
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage } from '@app/constants/app.enums';
+import { CommonMessage, LessonThumbnail } from '@app/constants/app.enums';
 import { LessonDTO } from './lesson.dto';
 import { generate } from 'generate-password';
 
@@ -71,11 +73,16 @@ export class LessonService {
   public async createLesson(lessons: LessonDTO): Promise<ResponseModel> {
     const token = generate({ length: 10, numbers: true, lowercase: true, uppercase: true });
     const slug = slugify(lessons.title) + `-${token}`;
+    const html = new Converter().makeHtml(lessons.content);
+    const $ = load(html);
+    const thumbnail = $('img').attr('src');
     await this._lessonRepository.createLesson({
       title: lessons.title,
       content: lessons.content,
       slug: slug,
       index: lessons.index,
+      thumbnail: thumbnail ? thumbnail : LessonThumbnail.thumbNail,
+      abstract: lessons.abstract,
     });
     return {
       statusCode: HttpStatus.CREATED,
@@ -89,6 +96,12 @@ export class LessonService {
       const token = generate({ length: 10, numbers: true, lowercase: true, uppercase: true });
       const slug = slugify(lessons.title) + `-${token}`;
       lessons.slug = slug;
+    }
+    if (lessons.content) {
+      const html = new Converter().makeHtml(lessons.content);
+      const $ = load(html);
+      const thumbnail = $('img').attr('src');
+      lessons.thumbnail = thumbnail ? thumbnail : LessonThumbnail.thumbNail;
     }
 
     await this._lessonRepository.updateLesson(id, lessons);
