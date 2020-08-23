@@ -51,6 +51,16 @@ export const USER_PENDING = {
   message: `Tài khoản của bạn đang chờ phê duyệt`,
 };
 
+export const TEAM_LEAD_EXIST = {
+  statusCode: 430,
+  message: `Team leader đã tồn tại`,
+};
+
+export const ACTION_BLOCKED = {
+  statusCode: 435,
+  message: `Không thể thực hiện thao tác này`,
+};
+
 export const CYCLE_EXIST = {
   statusCode: 440,
   message: `Tên chu kì đã tồn tại`,
