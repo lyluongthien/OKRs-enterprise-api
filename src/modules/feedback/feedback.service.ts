@@ -1,7 +1,13 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { FeedbackRepository } from './feedback.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, CheckinType, TypeCFRsHistory, EvaluationCriteriaEnum } from '@app/constants/app.enums';
+import {
+  CommonMessage,
+  CheckinType,
+  TypeCFRsHistory,
+  EvaluationCriteriaEnum,
+  CFRsHistoryType,
+} from '@app/constants/app.enums';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserRepository } from '../user/user.repository';
 import { FeedbackDTO } from './feedback.dto';
@@ -129,53 +135,60 @@ export class FeedbackService {
     };
   }
 
-  public async getCFRsHistory(userId: number, cycleId: number, options: IPaginationOptions): Promise<ResponseModel> {
-    const data: any = {};
-    if (userId && cycleId) {
-      const sent = await this._feedBackRepository.getSentFeedback(userId, cycleId, options);
-      const received = await this._feedBackRepository.getReceivedFeedback(userId, cycleId, options);
-      const recognitionSent = await this._recognitionRepository.getSentRecognitions(userId, cycleId, options);
-      const recognitionReceived = await this._recognitionRepository.getReceivedRecognitions(userId, cycleId, options);
-      const all = await this._feedBackRepository.getAllFeedBacks(cycleId, options);
-      const recognition = await this._recognitionRepository.getAllRecognitions(cycleId, options);
-      sent.items.map((value) => {
-        value.type = TypeCFRsHistory.FEED_BACK;
-        return value;
-      });
-      recognitionSent.items.map((value) => {
-        value.type = TypeCFRsHistory.RECOGNITION;
-        sent.items.push(value);
-        return value;
-      });
-      received.items.map((value) => {
-        value.type = TypeCFRsHistory.FEED_BACK;
-        return value;
-      });
-      recognitionReceived.items.map((value) => {
-        value.type = TypeCFRsHistory.RECOGNITION;
-        received.items.push(value);
-        return value;
-      });
-      all.items.map((value) => {
-        value.type = TypeCFRsHistory.FEED_BACK;
-        return value;
-      });
-
-      recognition.items.map((value) => {
-        value.type = TypeCFRsHistory.RECOGNITION;
-        all.items.push(value);
-        return value;
-      });
-
-      sent.meta.totalItems += recognitionSent.meta.totalItems;
-      received.meta.totalItems += recognitionReceived.meta.totalItems;
-      all.meta.totalItems += recognition.meta.totalItems;
-      all.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
-      sent.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
-      received.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
-      data.all = all;
-      data.sent = sent;
-      data.received = received;
+  public async getCFRsHistory(
+    userId: number,
+    cycleId: number,
+    options: IPaginationOptions,
+    type: CFRsHistoryType,
+  ): Promise<ResponseModel> {
+    let data = null;
+    if (userId && cycleId && options && type) {
+      if (type == CFRsHistoryType.SENT) {
+        const sent = await this._feedBackRepository.getSentFeedback(userId, cycleId, options);
+        const recognitionSent = await this._recognitionRepository.getSentRecognitions(userId, cycleId, options);
+        sent.items.map((value) => {
+          value.type = TypeCFRsHistory.FEED_BACK;
+          return value;
+        });
+        recognitionSent.items.map((value) => {
+          value.type = TypeCFRsHistory.RECOGNITION;
+          sent.items.push(value);
+          return value;
+        });
+        sent.meta.totalItems += recognitionSent.meta.totalItems;
+        sent.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
+        data = sent;
+      } else if (type == CFRsHistoryType.RECEIVED) {
+        const received = await this._feedBackRepository.getReceivedFeedback(userId, cycleId, options);
+        const recognitionReceived = await this._recognitionRepository.getReceivedRecognitions(userId, cycleId, options);
+        received.items.map((value) => {
+          value.type = TypeCFRsHistory.FEED_BACK;
+          return value;
+        });
+        recognitionReceived.items.map((value) => {
+          value.type = TypeCFRsHistory.RECOGNITION;
+          received.items.push(value);
+          return value;
+        });
+        received.meta.totalItems += recognitionReceived.meta.totalItems;
+        received.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
+        data = received;
+      } else if (type == CFRsHistoryType.ALL) {
+        const all = await this._feedBackRepository.getAllFeedBacks(cycleId, options);
+        const recognition = await this._recognitionRepository.getAllRecognitions(cycleId, options);
+        all.items.map((value) => {
+          value.type = TypeCFRsHistory.FEED_BACK;
+          return value;
+        });
+        recognition.items.map((value) => {
+          value.type = TypeCFRsHistory.RECOGNITION;
+          all.items.push(value);
+          return value;
+        });
+        all.meta.totalItems += recognition.meta.totalItems;
+        all.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
+        data = all;
+      }
     }
     return {
       statusCode: HttpStatus.OK,

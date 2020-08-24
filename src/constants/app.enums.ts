@@ -190,3 +190,9 @@ export enum CheckinStatusType {
 export enum LessonThumbnail {
   thumbNail = 'https://image.flaticon.com/icons/svg/207/207473.svg',
 }
+
+export enum CFRsHistoryType {
+  SENT = 1,
+  RECEIVED = 2,
+  ALL = 3,
+}
