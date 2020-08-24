@@ -17,7 +17,6 @@ import { MeasureUnitModule } from './modules/measure-unit/measure-unit.module';
 import { ObjectiveModule } from './modules/objective/objective.module';
 import { KeyResultModule } from './modules/keyresult/keyresult.module';
 import { LessonModule } from './modules/lesson/lesson.module';
-import { RecognitionModule } from './modules/recognition/recognition.module';
 import { FeedbackModule } from './modules/cfrs/cfrs.module';
 import { UserStarModule } from './modules/user-star/user-star.module';
 import { CheckinModule } from './modules/checkin/checkin.module';
@@ -40,7 +39,6 @@ import { DashboardModule } from './modules/dashboard/dashboard.module';
     ObjectiveModule,
     KeyResultModule,
     LessonModule,
-    RecognitionModule,
     FeedbackModule,
     UserStarModule,
     CheckinModule,

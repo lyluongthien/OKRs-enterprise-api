@@ -9,13 +9,13 @@ import {
   CheckinStatusType,
   CFRStatusType,
   OKRsStatusType,
+  TypeCFRsHistory,
 } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CFRsRepository } from '../cfrs/cfrs.repository';
 import { UserRepository } from '../user/user.repository';
 import { RoleRepository } from '../role/role.repository';
 import { ObjectiveRepository } from '../objective/objective.repository';
-import { RecognitionRepository } from '../recognition/recognition.repository';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
 
@@ -23,7 +23,6 @@ import { CycleRepository } from '../cycle/cycle.repository';
 export class DashboardService {
   constructor(
     private _cfrsRepository: CFRsRepository,
-    private _recognitionRepository: RecognitionRepository,
     private _userRepository: UserRepository,
     private _objectiveRepository: ObjectiveRepository,
     private _roleRepository: RoleRepository,
@@ -83,26 +82,28 @@ export class DashboardService {
     const firstDayOfLastWeek = startOfWeek(lastWeek).toISOString();
     const lastDayOfLastWeek = endOfWeek(lastWeek).toISOString();
 
-    const adminId = (await this._roleRepository.getRoleByName(RoleEnum.ADMIN)).id;
+    const adminRoleId = (await this._roleRepository.getRoleByName(RoleEnum.ADMIN)).id;
 
-    const numberoffeedback = await this._cfrsRepository.getFeedBackInWeek(
+    const numberoffeedback = await this._cfrsRepository.getCFRsInWeek(
       firstday,
       lastday,
       firstDayOfLastWeek,
       lastDayOfLastWeek,
+      TypeCFRsHistory.FEED_BACK,
     );
-    const numberOfRecognition = await this._recognitionRepository.getRecognitionInWeek(
+    const numberOfRecognition = await this._cfrsRepository.getCFRsInWeek(
       firstday,
       lastday,
       firstDayOfLastWeek,
       lastDayOfLastWeek,
+      TypeCFRsHistory.RECOGNITION,
     );
     const numberOfManager = await this._cfrsRepository.getTopManagerUseCFRsInWeek(
       firstday,
       lastday,
       firstDayOfLastWeek,
       lastDayOfLastWeek,
-      adminId,
+      adminRoleId,
     );
     const feedbackObject = {
       name: CFRStatusType.FEED_BACK,
