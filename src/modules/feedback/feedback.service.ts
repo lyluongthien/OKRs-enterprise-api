@@ -156,7 +156,10 @@ export class FeedbackService {
           return value;
         });
         sent.meta.totalItems += recognitionSent.meta.totalItems;
+        sent.meta.totalPages = Math.ceil(sent.meta.totalItems / options.limit);
         sent.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
+        delete sent.links;
+        delete sent.meta.itemCount;
         data = sent;
       } else if (type == CFRsHistoryType.RECEIVED) {
         const received = await this._feedBackRepository.getReceivedFeedback(userId, cycleId, options);
@@ -171,7 +174,10 @@ export class FeedbackService {
           return value;
         });
         received.meta.totalItems += recognitionReceived.meta.totalItems;
+        received.meta.totalPages = Math.ceil(received.meta.totalItems / options.limit);
         received.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
+        delete received.links;
+        delete received.meta.itemCount;
         data = received;
       } else if (type == CFRsHistoryType.ALL) {
         const all = await this._feedBackRepository.getAllFeedBacks(cycleId, options);
@@ -186,7 +192,10 @@ export class FeedbackService {
           return value;
         });
         all.meta.totalItems += recognition.meta.totalItems;
+        all.meta.totalPages = Math.ceil(all.meta.totalItems / options.limit);
         all.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
+        delete all.links;
+        delete all.meta.itemCount;
         data = all;
       }
     }
