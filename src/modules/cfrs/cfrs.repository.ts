@@ -138,7 +138,7 @@ export class CFRsRepository extends Repository<CFRsEntity> {
     try {
       const databaseType = type == TopStarType.SENDER ? 'senderId' : 'receiverId';
       const query = `
-      SELECT u."fullName",
+      SELECT u."fullName" as fullname,
             sum(ec."numberOfStar") AS numberOfStar
       FROM cfrs c
       LEFT JOIN users u ON u.id = c."${databaseType}"
