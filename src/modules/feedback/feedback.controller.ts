@@ -8,7 +8,7 @@ import { ResponseModel } from '@app/constants/app.interface';
 import { CurrentUser } from '../user/user.decorator';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { FeedbackDTO } from './feedback.dto';
-import { EvaluationCriteriaEnum } from '@app/constants/app.enums';
+import { EvaluationCriteriaEnum, CFRsHistoryType } from '@app/constants/app.enums';
 
 @Controller('/api/v1/feedback')
 @UseGuards(AuthenticationGuard)
@@ -25,10 +25,11 @@ export class FeedbackController {
   public async historyCFRs(
     @Query('userId', ParseIntPipe) userId: number,
     @Query('cycleId', ParseIntPipe) cycleId: number,
-    @Query('page') page: number,
-    @Query('limit') limit: number,
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+    @Query('type', ParseIntPipe) type: CFRsHistoryType,
   ): Promise<ResponseModel> {
-    return this._feedBackService.getCFRsHistory(userId, cycleId, { page, limit });
+    return this._feedBackService.getCFRsHistory(userId, cycleId, { page, limit }, type);
   }
 
   @Get('/detail/:id')
