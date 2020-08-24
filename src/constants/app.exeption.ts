@@ -106,6 +106,11 @@ export const CHECKIN_FOBIDDEN = {
   message: `Bạn không có quền truy cập checkin này`,
 };
 
+export const CHECKIN_DONE = {
+  statusCode: 472,
+  message: `Bạn không thể tạo checkin với trạng thái là Done`,
+};
+
 export const CHECKIN_STATUS = {
   statusCode: 475,
   message: `Bạn chỉ có thể checkin những form mà member gửi lên`,

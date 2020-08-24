@@ -186,3 +186,7 @@ export enum CheckinStatusType {
   overDue = 'Sai hạn',
   notYet = 'Chưa Checkin',
 }
+
+export enum LessonThumbnail {
+  thumbNail = 'https://image.flaticon.com/icons/svg/207/207473.svg',
+}

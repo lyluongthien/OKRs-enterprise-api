@@ -13,6 +13,12 @@ export class LessonEntity {
   public content: string;
 
   @Column()
+  public thumbnail: string;
+
+  @Column()
+  public abstract: string;
+
+  @Column()
   public index: number;
 
   @CreateDateColumn({ type: 'timestamptz' })

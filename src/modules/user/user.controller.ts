@@ -167,6 +167,7 @@ export class UserController {
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
   public async rejectRequest(@Param('id', ParseIntPipe) id: number): Promise<ResponseModel> {
+    await this._userService.logout(id);
     return this._userService.rejectRequest(id);
   }
 

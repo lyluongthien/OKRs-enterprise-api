@@ -9,7 +9,13 @@ import { UserRepository } from '../user/user.repository';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
 import { isNotEmptyObject } from 'class-validator';
 import { ObjectiveRepository } from '../objective/objective.repository';
-import { CHECKIN_FOBIDDEN, CHECKIN_STATUS, CHECKIN_COMPLETED, CHECKIN_PENDING } from '@app/constants/app.exeption';
+import {
+  CHECKIN_FOBIDDEN,
+  CHECKIN_STATUS,
+  CHECKIN_COMPLETED,
+  CHECKIN_PENDING,
+  CHECKIN_DONE,
+} from '@app/constants/app.exeption';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { RoleRepository } from '../role/role.repository';
 
@@ -88,6 +94,9 @@ export class CheckinService {
         throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
       }
       data.checkin.id = checkinId;
+    }
+    if (data.checkin.status === CheckinStatus.DONE) {
+      throw new HttpException(CHECKIN_DONE.message, CHECKIN_DONE.statusCode);
     }
     // Calculate progress checkin
     let progressOKR = 0;
@@ -182,8 +191,12 @@ export class CheckinService {
 
     // If staff draft checkin => Do not update progress
     if (data.checkin.status !== CheckinStatus.DRAFT) {
+      const now = new Date();
       data.checkin.progress = progressOKR;
-      data.checkin.checkinAt = new Date();
+      data.checkin.checkinAt = now;
+      const nextCheckinDate = new Date(data.checkin.nextCheckinDate);
+      nextCheckinDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
+      data.checkin.nextCheckinDate = nextCheckinDate;
     }
 
     let checkinModel = null;
@@ -250,9 +263,13 @@ export class CheckinService {
     }
 
     // Set checkin.id, checkin.status
+    const now = new Date();
     data.checkin.id = checkinId;
     data.checkin.status = CheckinStatus.DONE;
-    data.checkin.checkinAt = new Date();
+    data.checkin.checkinAt = now;
+    const nextCheckinDate = new Date(data.checkin.nextCheckinDate);
+    nextCheckinDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
+    data.checkin.nextCheckinDate = nextCheckinDate;
 
     // Calculate progress checkin
     let progressOKR = 0;
