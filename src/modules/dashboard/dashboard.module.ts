@@ -7,7 +7,6 @@ import { UserModule } from '../user/user.module';
 import { CFRsRepository } from '../cfrs/cfrs.repository';
 import { UserRepository } from '../user/user.repository';
 import { ObjectiveRepository } from '../objective/objective.repository';
-import { RecognitionRepository } from '../recognition/recognition.repository';
 import { RoleRepository } from '../role/role.repository';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
@@ -19,7 +18,6 @@ import { CycleRepository } from '../cycle/cycle.repository';
       CFRsRepository,
       UserRepository,
       ObjectiveRepository,
-      RecognitionRepository,
       RoleRepository,
       CheckinRepository,
       CycleRepository,

@@ -4,7 +4,7 @@ import { HttpException } from '@nestjs/common';
 import { CFRsEntity } from '@app/db/entities/cfrs.entity';
 import { CFRsDTO } from './cfrs.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
-import { TopStarType } from '@app/constants/app.enums';
+import { TopStarType, TypeCFRsHistory } from '@app/constants/app.enums';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(CFRsEntity)
@@ -153,26 +153,32 @@ export class CFRsRepository extends Repository<CFRsEntity> {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
-  public async getFeedBackInWeek(
+  public async getCFRsInWeek(
     firstDay: string,
     lastDay: string,
     firstOfLastWeek: string,
     lastOfLastWeek: string,
+    type: TypeCFRsHistory,
   ): Promise<ObjectLiteral[]> {
     try {
-      const query = `SELECT 
-        Sum(feed.numberOfFeedback) AS numberOfFeedback,
-        Sum(coalesce(feed.numberOfFeedback, 0) - coalesce(feedLastWeek.numberOfLastFeedback, 0)) AS changing
+      const query = `
+      SELECT Sum(feed.numberOfFeedback) AS numberOfFeedback,
+             Sum(coalesce(feed.numberOfFeedback, 0) - coalesce(feedLastWeek.numberOfLastFeedback, 0)) AS changing
       FROM
-        (SELECT f.id, count(f.id) AS numberOfFeedback
-        FROM feedbacks f
+        (SELECT f.id,
+                count(f.id) AS numberOfFeedback
+        FROM cfrs f
         WHERE f."createdAt" BETWEEN '${firstDay}' AND '${lastDay}'
+          AND f."type" = '${type}'
         GROUP BY f.id) AS feed
       FULL OUTER JOIN
-        (SELECT f.id, count(f.id) AS numberOfLastFeedback
-        FROM feedbacks f
+        (SELECT f.id,
+                count(f.id) AS numberOfLastFeedback
+        FROM cfrs f
         WHERE f."createdAt" BETWEEN '${firstOfLastWeek}' AND '${lastOfLastWeek}'
-        GROUP BY f.id) AS feedLastWeek ON feed.id = feedLastWeek.id`;
+          AND f."type" = '${type}'
+        GROUP BY f.id) AS feedLastWeek ON feed.id = feedLastWeek.id
+      `;
 
       return await this.query(query);
     } catch (error) {
@@ -185,47 +191,35 @@ export class CFRsRepository extends Repository<CFRsEntity> {
     lastDay: string,
     firstOfLastWeek: string,
     lastOfLastWeek: string,
-    adminId: number,
+    adminRoleId: number,
   ): Promise<ObjectLiteral[]> {
     try {
-      const query = `SELECT SUM(COALESCE (currentLeader.numberOfLeader, 0)) AS numberOfLeader,
-              SUM(coalesce(currentLeader.numberOfLeader, 0) - coalesce(lastWeekLeader.numberOfLeader, 0)) AS changing
+      const query = `
+      SELECT SUM(COALESCE (currentLeader.numberOfLeader, 0)) AS numberOfLeader,
+            SUM(coalesce(currentLeader.numberOfLeader, 0) - coalesce(lastWeekLeader.numberOfLeader, 0)) AS changing
+      FROM
+        (SELECT coalesce(cfr."senderId", 0) AS id,
+                Count(coalesce(cfr."senderId", 0)) AS numberOfLeader
         FROM
-        (SELECT coalesce(feed."senderId", reg."senderId") AS id,
-                Count(coalesce(feed."senderId", reg."senderId")) AS numberOfLeader
-          FROM
-            (SELECT DISTINCT f."senderId"
-            FROM feedbacks f
+          (SELECT DISTINCT f."senderId"
+            FROM cfrs f
             LEFT JOIN users u ON u.id = f."senderId"
             WHERE (u."isLeader" = TRUE
-                    OR u."roleId" = ${adminId})
-              AND f."createdAt" BETWEEN '${firstDay}' AND '${lastDay}' ) AS feed
-          FULL OUTER JOIN
-            (SELECT DISTINCT r."senderId"
-            FROM recognitions r
-            LEFT JOIN users u ON u.id = r."senderId"
-            WHERE (u."isLeader" = TRUE
-                    OR u."roleId" = ${adminId})
-              AND r."createdAt" BETWEEN '${firstDay}' AND '${lastDay}') AS reg ON feed."senderId" = reg."senderId"
-          GROUP BY id) AS currentLeader
-        FULL OUTER JOIN
-        (SELECT coalesce(feed."senderId", reg."senderId") AS id,
-                Count(coalesce(feed."senderId", reg."senderId")) AS numberOfLeader
-          FROM
-            (SELECT DISTINCT f."senderId"
-            FROM feedbacks f
+                  OR u."roleId" = ${adminRoleId})
+              AND f."createdAt" BETWEEN '${firstDay}' AND '${lastDay}' ) AS cfr
+        GROUP BY id) AS currentLeader
+      FULL OUTER JOIN
+        (SELECT coalesce(cfr."senderId", 0) AS id,
+                Count(coalesce(cfr."senderId", 0)) AS numberOfLeader
+        FROM
+          (SELECT DISTINCT f."senderId"
+            FROM cfrs f
             LEFT JOIN users u ON u.id = f."senderId"
             WHERE (u."isLeader" = TRUE
-                    OR u."roleId" = ${adminId})
-              AND f."createdAt" BETWEEN '${firstOfLastWeek}' AND '${lastOfLastWeek}' ) AS feed
-          FULL OUTER JOIN
-            (SELECT DISTINCT r."senderId"
-            FROM recognitions r
-            LEFT JOIN users u ON u.id = r."senderId"
-            WHERE (u."isLeader" = TRUE
-                    OR u."roleId" = ${adminId})
-              AND r."createdAt" BETWEEN '${firstOfLastWeek}' AND '${lastOfLastWeek}') AS reg ON feed."senderId" = reg."senderId"
-          GROUP BY id) AS lastWeekLeader ON currentLeader.id = lastWeekLeader.id`;
+                  OR u."roleId" = ${adminRoleId})
+              AND f."createdAt" BETWEEN '${firstOfLastWeek}' AND '${lastOfLastWeek}' ) AS cfr
+        GROUP BY id) AS lastWeekLeader ON currentLeader.id = lastWeekLeader.id
+      `;
       return await this.query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
