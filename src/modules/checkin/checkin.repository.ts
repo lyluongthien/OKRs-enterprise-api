@@ -186,7 +186,8 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .andWhere('cycle.id = :cycleId', { cycleId: cycleId });
       if (options) {
         return await paginate<CheckinEntity>(queryBuilder, options);
-      } else return await queryBuilder.getMany();
+      }
+      return await queryBuilder.getMany();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

@@ -29,6 +29,9 @@ export class CFRsRepository extends Repository<CFRsEntity> {
           'criteria.content',
           'criteria.numberOfStar',
           'criteria.type',
+          'sender.fullName',
+          'sender.avatarURL',
+          'sender.gravatarURL',
           'receiver.fullName',
           'receiver.avatarURL',
           'receiver.gravatarURL',
@@ -66,6 +69,9 @@ export class CFRsRepository extends Repository<CFRsEntity> {
           'criteria.content',
           'criteria.numberOfStar',
           'criteria.type',
+          'sender.fullName',
+          'sender.avatarURL',
+          'sender.gravatarURL',
           'receiver.fullName',
           'receiver.avatarURL',
           'receiver.gravatarURL',
@@ -102,6 +108,9 @@ export class CFRsRepository extends Repository<CFRsEntity> {
           'criteria.content',
           'criteria.numberOfStar',
           'criteria.type',
+          'sender.fullName',
+          'sender.avatarURL',
+          'sender.gravatarURL',
           'receiver.fullName',
           'receiver.avatarURL',
           'receiver.gravatarURL',
@@ -128,21 +137,18 @@ export class CFRsRepository extends Repository<CFRsEntity> {
   public async getTopStars(cycleId: number, type: TopStarType): Promise<ObjectLiteral[]> {
     try {
       const databaseType = type == TopStarType.SENDER ? 'senderId' : 'receiverId';
-      return await getConnection()
-        .query(`select feed.fullName, coalesce(feed.numberOfStar,0) + coalesce(reg.numberOfStar,0) as 
-        numberOfStar from (
-        select u.id as feedId, u."fullName" as fullName , SUM(ec."numberOfStar") as numberOfStar from feedbacks f 
-        left join checkins c on c.id = f."checkinId" 
-        left join objectives o on o.id = c."objectiveId" 
-        left join users u on u.id = f."${databaseType}" 
-        left join evaluation_criterias ec on ec.id = f."evaluationCriteriaId" 
-        where o."cycleId" = ${cycleId}
-        group by u.id) as feed
-        left join (
-        select u2.id as regId, u2."fullName", SUM(ec."numberOfStar" ) as numberOfStar from recognitions r2 
-        left join users u2 on u2.id = r2."${databaseType}" 
-        left join evaluation_criterias ec on ec.id = r2."evaluationCriteriaId" 
-        group by u2.id) as reg on feed.feedId = reg.regId order by numberOfStar desc limit 5`);
+      const query = `
+      SELECT u."fullName",
+            sum(ec."numberOfStar") AS numberOfStar
+      FROM cfrs c
+      LEFT JOIN users u ON u.id = c."${databaseType}"
+      LEFT JOIN evaluation_criterias ec ON ec.id = c."evaluationCriteriaId"
+      WHERE c."cycleId" = ${cycleId}
+      GROUP BY u."fullName"
+      ORDER BY numberOfStar DESC
+      LIMIT 5
+      `;
+      return await getConnection().query(query);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
