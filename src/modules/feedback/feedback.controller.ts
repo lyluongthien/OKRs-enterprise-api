@@ -25,8 +25,10 @@ export class FeedbackController {
   public async historyCFRs(
     @Query('userId', ParseIntPipe) userId: number,
     @Query('cycleId', ParseIntPipe) cycleId: number,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
   ): Promise<ResponseModel> {
-    return this._feedBackService.getCFRsHistory(userId, cycleId);
+    return this._feedBackService.getCFRsHistory(userId, cycleId, { page, limit });
   }
 
   @Get('/detail/:id')
