@@ -1,28 +1,26 @@
 import { Injectable, HttpStatus } from '@nestjs/common';
-import { FeedbackRepository } from './feedback.repository';
+import { CFRsRepository } from './cfrs.repository';
 import { ResponseModel } from '@app/constants/app.interface';
 import {
   CommonMessage,
   CheckinType,
-  TypeCFRsHistory,
   EvaluationCriteriaEnum,
   CFRsHistoryType,
+  TypeCFRsHistory,
 } from '@app/constants/app.enums';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserRepository } from '../user/user.repository';
-import { FeedbackDTO } from './feedback.dto';
+import { CFRsDTO } from './cfrs.dto';
 import { EntityManager } from 'typeorm';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
 import { UserStarRepository } from '../user-star/user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
-import { RecognitionRepository } from '../recognition/recognition.repository';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()
-export class FeedbackService {
+export class CFRsService {
   constructor(
-    private _feedBackRepository: FeedbackRepository,
-    private _recognitionRepository: RecognitionRepository,
+    private _cfrsRepository: CFRsRepository,
     private _checkinRepository: CheckinRepository,
     private _userRepository: UserRepository,
     private _evaluationCriteriaRepository: EvaluationCriteriaRepository,
@@ -30,7 +28,7 @@ export class FeedbackService {
     private _cycleRepository: CycleRepository,
   ) {}
 
-  public async listWaitingFeedBack(id: number): Promise<ResponseModel> {
+  public async listWaitingFeedBack(id: number, options: IPaginationOptions): Promise<ResponseModel> {
     const data: any = {};
     const user = await this._userRepository.getUserByID(id);
     const isLeader = user.isLeader;
@@ -59,6 +57,7 @@ export class FeedbackService {
           cycleId,
           CheckinType.MEMBER,
           EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+          options,
         ),
       };
     } else if (id == admin.id) {
@@ -84,6 +83,7 @@ export class FeedbackService {
           cycleId,
           CheckinType.MEMBER,
           EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+          options,
         ),
       };
     } else {
@@ -112,18 +112,22 @@ export class FeedbackService {
     };
   }
 
-  public async createFeedBack(
-    data: FeedbackDTO,
+  public async createCFRs(
+    data: CFRsDTO,
     senderId: number,
     type: EvaluationCriteriaEnum,
     manager: EntityManager,
   ): Promise<ResponseModel> {
     if (data && senderId) {
-      await this._feedBackRepository.createFeedBack(data, senderId, manager);
-      await this._checkinRepository.updateCheckinStatus(data.checkinId, type, manager);
+      data.senderId = senderId;
+      const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+      data.cycleId = cycleId;
+      await this._cfrsRepository.createCFRs(data, manager);
+      if (data.checkinId && data.type == TypeCFRsHistory.FEED_BACK)
+        await this._checkinRepository.updateCheckinStatus(data.checkinId, type, manager);
       const userStar = {
         star: (await this._evaluationCriteriaRepository.getCriteriaDetail(data.evaluationCriteriaId)).numberOfStar,
-        cycleId: (await this._cycleRepository.getCurrentCycle(new Date())).id,
+        cycleId: cycleId,
         userId: data.receiverId,
       };
       await this._userStarsRepository.createUserStar(userStar, manager);
@@ -142,61 +146,17 @@ export class FeedbackService {
     type: CFRsHistoryType,
   ): Promise<ResponseModel> {
     let data = null;
-    if (userId && cycleId && options && type) {
-      if (type == CFRsHistoryType.SENT) {
-        const sent = await this._feedBackRepository.getSentFeedback(userId, cycleId, options);
-        const recognitionSent = await this._recognitionRepository.getSentRecognitions(userId, cycleId, options);
-        sent.items.map((value) => {
-          value.type = TypeCFRsHistory.FEED_BACK;
-          return value;
-        });
-        recognitionSent.items.map((value) => {
-          value.type = TypeCFRsHistory.RECOGNITION;
-          sent.items.push(value);
-          return value;
-        });
-        sent.meta.totalItems += recognitionSent.meta.totalItems;
-        sent.meta.totalPages = Math.ceil(sent.meta.totalItems / options.limit);
-        sent.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
-        delete sent.links;
-        delete sent.meta.itemCount;
-        data = sent;
-      } else if (type == CFRsHistoryType.RECEIVED) {
-        const received = await this._feedBackRepository.getReceivedFeedback(userId, cycleId, options);
-        const recognitionReceived = await this._recognitionRepository.getReceivedRecognitions(userId, cycleId, options);
-        received.items.map((value) => {
-          value.type = TypeCFRsHistory.FEED_BACK;
-          return value;
-        });
-        recognitionReceived.items.map((value) => {
-          value.type = TypeCFRsHistory.RECOGNITION;
-          received.items.push(value);
-          return value;
-        });
-        received.meta.totalItems += recognitionReceived.meta.totalItems;
-        received.meta.totalPages = Math.ceil(received.meta.totalItems / options.limit);
-        received.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
-        delete received.links;
-        delete received.meta.itemCount;
-        data = received;
-      } else if (type == CFRsHistoryType.ALL) {
-        const all = await this._feedBackRepository.getAllFeedBacks(cycleId, options);
-        const recognition = await this._recognitionRepository.getAllRecognitions(cycleId, options);
-        all.items.map((value) => {
-          value.type = TypeCFRsHistory.FEED_BACK;
-          return value;
-        });
-        recognition.items.map((value) => {
-          value.type = TypeCFRsHistory.RECOGNITION;
-          all.items.push(value);
-          return value;
-        });
-        all.meta.totalItems += recognition.meta.totalItems;
-        all.meta.totalPages = Math.ceil(all.meta.totalItems / options.limit);
-        all.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
-        delete all.links;
-        delete all.meta.itemCount;
-        data = all;
+    if (cycleId && options && type) {
+      if (userId) {
+        if (type == CFRsHistoryType.SENT) {
+          data = await this._cfrsRepository.getSentCFRs(userId, cycleId, options);
+        } else if (type == CFRsHistoryType.RECEIVED) {
+          data = await this._cfrsRepository.getReceivedCFRs(userId, cycleId, options);
+        }
+      }
+      if (type == CFRsHistoryType.ALL) {
+        data = await this._cfrsRepository.getAllCFRs(cycleId, options);
+        //data.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
       }
     }
     return {
@@ -206,8 +166,8 @@ export class FeedbackService {
     };
   }
 
-  public async getDetailFeedback(feedbackId: number): Promise<ResponseModel> {
-    const data = await this._feedBackRepository.getDetailFeedback(feedbackId);
+  public async getDetailCFRs(cfrsId: number): Promise<ResponseModel> {
+    const data = await this._cfrsRepository.getDetailCFRs(cfrsId);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

@@ -10,7 +10,7 @@ import {
 import { TableName, CheckinStatus } from '@app/constants/app.enums';
 import { CheckinDetailEntity } from './checkin-detail.entity';
 import { ObjectiveEntity } from './objective.entity';
-import { FeedbackEntity } from './feedback.entity';
+import { CFRsEntity } from './cfrs.entity';
 
 @Entity(TableName.Checkin)
 export class CheckinEntity {
@@ -60,6 +60,6 @@ export class CheckinEntity {
   @ManyToOne(() => ObjectiveEntity, (objective) => objective.checkins)
   public objective: ObjectiveEntity;
 
-  @OneToMany(() => FeedbackEntity, (feedback) => feedback.checkin)
-  public feedback: FeedbackEntity[];
+  @OneToMany(() => CFRsEntity, (cfrs) => cfrs.checkin)
+  public cfrs: CFRsEntity[];
 }

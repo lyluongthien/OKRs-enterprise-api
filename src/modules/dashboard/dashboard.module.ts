@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { DashboardController } from './dashboard.controller';
 import { DashboardService } from './dashboard.service';
 import { UserModule } from '../user/user.module';
-import { FeedbackRepository } from '../feedback/feedback.repository';
+import { CFRsRepository } from '../cfrs/cfrs.repository';
 import { UserRepository } from '../user/user.repository';
 import { ObjectiveRepository } from '../objective/objective.repository';
 import { RecognitionRepository } from '../recognition/recognition.repository';
@@ -16,7 +16,7 @@ import { CycleRepository } from '../cycle/cycle.repository';
   imports: [
     UserModule,
     TypeOrmModule.forFeature([
-      FeedbackRepository,
+      CFRsRepository,
       UserRepository,
       ObjectiveRepository,
       RecognitionRepository,

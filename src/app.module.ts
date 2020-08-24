@@ -18,7 +18,7 @@ import { ObjectiveModule } from './modules/objective/objective.module';
 import { KeyResultModule } from './modules/keyresult/keyresult.module';
 import { LessonModule } from './modules/lesson/lesson.module';
 import { RecognitionModule } from './modules/recognition/recognition.module';
-import { FeedbackModule } from './modules/feedback/feedback.module';
+import { FeedbackModule } from './modules/cfrs/cfrs.module';
 import { UserStarModule } from './modules/user-star/user-star.module';
 import { CheckinModule } from './modules/checkin/checkin.module';
 import { RoleModule } from './modules/role/role.module';

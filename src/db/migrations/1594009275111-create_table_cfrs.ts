@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
-import { TableName, ForeignKey } from '@app/constants/app.enums';
+import { TableName, ForeignKey, TypeCFRsHistory } from '@app/constants/app.enums';
 import { dropFksToTable } from '@app/libs/migrationSupport';
 
-export class CreateTableRecognitions1594009275111 implements MigrationInterface {
-  private recognitionTable: Table = new Table({
-    name: TableName.Recognition,
+export class CreateTableCFRs1594009275111 implements MigrationInterface {
+  private cfrsTable: Table = new Table({
+    name: TableName.CFRs,
     columns: [
       {
         name: 'id',
@@ -38,6 +38,17 @@ export class CreateTableRecognitions1594009275111 implements MigrationInterface 
       {
         name: ForeignKey.CYCLE_ID,
         type: 'integer',
+        isNullable: true,
+      },
+      {
+        name: ForeignKey.CHECKIN_ID,
+        type: 'integer',
+        isNullable: true,
+      },
+      {
+        name: 'type',
+        type: 'enum',
+        enum: [TypeCFRsHistory.FEED_BACK, TypeCFRsHistory.RECOGNITION],
       },
       {
         name: 'createdAt',
@@ -87,23 +98,31 @@ export class CreateTableRecognitions1594009275111 implements MigrationInterface 
     onDelete: 'SET NULL',
   });
 
+  private pkCheckinId: TableForeignKey = new TableForeignKey({
+    columnNames: [ForeignKey.CHECKIN_ID],
+    referencedColumnNames: ['id'],
+    referencedTableName: TableName.Checkin,
+    onDelete: 'SET NULL',
+  });
+
   private tableForeignKey: TableForeignKey[] = [
     this.pkObjectiveId,
     this.pkSenderId,
     this.pkReceiverId,
     this.pkCycleId,
     this.pkEvalCriteriaId,
+    this.pkCheckinId,
   ];
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.createTable(this.recognitionTable);
+    await queryRunner.createTable(this.cfrsTable);
 
-    await queryRunner.createForeignKeys(TableName.Recognition, this.tableForeignKey);
+    await queryRunner.createForeignKeys(TableName.CFRs, this.tableForeignKey);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await dropFksToTable(queryRunner, TableName.Recognition, [ForeignKey.EVALUATION_CRITERIA_ID]);
+    await dropFksToTable(queryRunner, TableName.CFRs, [ForeignKey.EVALUATION_CRITERIA_ID]);
 
-    await queryRunner.dropTable(this.recognitionTable);
+    await queryRunner.dropTable(this.cfrsTable);
   }
 }

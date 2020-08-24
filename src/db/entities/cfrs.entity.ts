@@ -4,16 +4,17 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
-import { TableName } from '@app/constants/app.enums';
-import { CheckinEntity } from './checkin.entity';
+import { TableName, TypeCFRsHistory } from '@app/constants/app.enums';
 import { UserEntity } from './user.entity';
 import { EvaluationCriteriaEntity } from './evaluation-criteria.entity';
+import { ObjectiveEntity } from './objective.entity';
+import { CheckinEntity } from './checkin.entity';
 
-@Entity(TableName.Feeback)
-export class FeedbackEntity {
+@Entity(TableName.CFRs)
+export class CFRsEntity {
   @PrimaryGeneratedColumn()
   public id: number;
 
@@ -26,25 +27,37 @@ export class FeedbackEntity {
   @Column()
   public content: string;
 
+  @Column({ type: 'enum', enum: TypeCFRsHistory })
+  public type: TypeCFRsHistory;
+
   @Column()
   public evaluationCriteriaId: number;
 
   @Column()
+  public objectiveId: number;
+
+  @Column()
+  public cycleId: number;
+
+  @Column()
   public checkinId: number;
 
-  @ManyToOne(() => CheckinEntity, (checkin) => checkin.feedback)
-  public checkin: CheckinEntity;
-
-  @ManyToOne(() => UserEntity, (user) => user.feedbackSender)
+  @ManyToOne(() => UserEntity, (user) => user.recognitionSender)
   @JoinColumn([{ name: 'senderId', referencedColumnName: 'id' }])
   public sender: UserEntity;
 
-  @ManyToOne(() => UserEntity, (user) => user.feedbackReceiver)
+  @ManyToOne(() => UserEntity, (user) => user.recognitionReceiver)
   @JoinColumn([{ name: 'receiverId', referencedColumnName: 'id' }])
   public receiver: UserEntity;
 
-  @ManyToOne(() => EvaluationCriteriaEntity, (evaluations) => evaluations.feedback)
+  @ManyToOne(() => EvaluationCriteriaEntity, (evaluations) => evaluations.cfrs)
   public evaluationCriteria: EvaluationCriteriaEntity;
+
+  @ManyToOne(() => ObjectiveEntity, (objective) => objective.cfrs)
+  public objective: ObjectiveEntity;
+
+  @ManyToOne(() => CheckinEntity, (checkin) => checkin.cfrs)
+  public checkin: CheckinEntity;
 
   @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;

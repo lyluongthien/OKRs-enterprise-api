@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { RecognitionController } from './recognition.controller';
 import { RecognitionService } from './recognition.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RecognitionEntity } from '@app/db/entities/recognition.entity';
+import { CFRsEntity } from '@app/db/entities/cfrs.entity';
 import { RecognitionRepository } from './recognition.repository';
 import { UserModule } from '../user/user.module';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
@@ -13,7 +13,7 @@ import { UserStarRepository } from '../user-star/user-star.repository';
   imports: [
     UserModule,
     TypeOrmModule.forFeature([
-      RecognitionEntity,
+      CFRsEntity,
       RecognitionRepository,
       EvaluationCriteriaRepository,
       CycleRepository,
