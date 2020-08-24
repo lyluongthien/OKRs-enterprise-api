@@ -1,30 +1,30 @@
 import { Repository, EntityRepository, ObjectLiteral, getConnection, EntityManager } from 'typeorm';
 import { HttpException } from '@nestjs/common';
 
-import { FeedbackEntity } from '@app/db/entities/feedback.entity';
-import { FeedbackDTO } from './feedback.dto';
+import { CFRsEntity } from '@app/db/entities/cfrs.entity';
+import { CFRsDTO } from './cfrs.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 import { TopStarType } from '@app/constants/app.enums';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
-@EntityRepository(FeedbackEntity)
-export class FeedbackRepository extends Repository<FeedbackEntity> {
-  public async createFeedBack(data: FeedbackDTO, senderId: number, manager: EntityManager): Promise<void> {
+@EntityRepository(CFRsEntity)
+export class CFRsRepository extends Repository<CFRsEntity> {
+  public async createCFRs(data: CFRsDTO, manager: EntityManager): Promise<void> {
     try {
-      data.senderId = senderId;
-      await manager.getRepository(FeedbackEntity).save(data);
+      await manager.getRepository(CFRsEntity).save(data);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public async getSentFeedback(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
+  public async getSentCFRs(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
-      const queryBuilder = await this.createQueryBuilder('feedback')
+      const queryBuilder = await this.createQueryBuilder('cfrs')
         .select([
-          'feedback.id',
-          'feedback.createdAt',
-          'feedback.content',
+          'cfrs.id',
+          'cfrs.createdAt',
+          'cfrs.content',
+          'cfrs.type',
           'criteria.id',
           'criteria.content',
           'criteria.numberOfStar',
@@ -33,79 +33,93 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
           'receiver.avatarURL',
           'receiver.gravatarURL',
           'checkin.id',
-          'objective.title',
+          'feedbackObjective.id',
+          'feedbackObjective.title',
+          'recognitionObjective.id',
+          'recognitionObjective.title',
         ])
-        .leftJoin('feedback.evaluationCriteria', 'criteria')
-        .leftJoin('feedback.sender', 'sender')
-        .leftJoin('feedback.receiver', 'receiver')
-        .leftJoin('feedback.checkin', 'checkin')
-        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('cfrs.evaluationCriteria', 'criteria')
+        .leftJoin('cfrs.sender', 'sender')
+        .leftJoin('cfrs.receiver', 'receiver')
+        .leftJoin('cfrs.checkin', 'checkin')
+        .leftJoin('checkin.objective', 'feedbackObjective')
+        .leftJoin('cfrs.objective', 'recognitionObjective')
         .where('sender.id = :id', { id: userId })
-        .andWhere('objective.cycleId = :cycleId', { cycleId });
+        .andWhere('cfrs.cycleId = :cycleId', { cycleId })
+        .orderBy('cfrs.createdAt', 'DESC');
 
-      return await paginate<FeedbackEntity>(queryBuilder, options);
+      return await paginate<CFRsEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public async getReceivedFeedback(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
+  public async getReceivedCFRs(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
-      const queryBuilder = await this.createQueryBuilder('feedback')
+      const queryBuilder = await this.createQueryBuilder('cfrs')
         .select([
-          'feedback.id',
-          'feedback.createdAt',
-          'feedback.content',
+          'cfrs.id',
+          'cfrs.createdAt',
+          'cfrs.content',
+          'cfrs.type',
           'criteria.id',
           'criteria.content',
           'criteria.numberOfStar',
           'criteria.type',
-          'sender.fullName',
-          'sender.avatarURL',
-          'sender.gravatarURL',
-          'checkin.id',
-          'objective.title',
-        ])
-        .leftJoin('feedback.evaluationCriteria', 'criteria')
-        .leftJoin('feedback.sender', 'sender')
-        .leftJoin('feedback.receiver', 'receiver')
-        .leftJoin('feedback.checkin', 'checkin')
-        .leftJoin('checkin.objective', 'objective')
-        .where('receiver.id = :id', { id: userId })
-        .andWhere('objective.cycleId = :cycleId', { cycleId: cycleId });
-      return await paginate<FeedbackEntity>(queryBuilder, options);
-    } catch (error) {
-      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
-    }
-  }
-
-  public async getAllFeedBacks(cycleId: number, options: IPaginationOptions): Promise<any> {
-    try {
-      const queryBuilder = await this.createQueryBuilder('feedback')
-        .select([
-          'feedback.id',
-          'checkin.id',
-          'feedback.content',
-          'objective.title',
-          'criteria.id',
-          'criteria.content',
-          'criteria.numberOfStar',
-          'criteria.type',
-          'sender.fullName',
-          'sender.avatarURL',
-          'sender.gravatarURL',
           'receiver.fullName',
           'receiver.avatarURL',
           'receiver.gravatarURL',
-          'feedback.createdAt',
+          'checkin.id',
+          'feedbackObjective.id',
+          'feedbackObjective.title',
+          'recognitionObjective.id',
+          'recognitionObjective.title',
         ])
-        .leftJoin('feedback.checkin', 'checkin')
-        .leftJoin('checkin.objective', 'objective')
-        .leftJoin('feedback.evaluationCriteria', 'criteria')
-        .leftJoin('feedback.sender', 'sender')
-        .leftJoin('feedback.receiver', 'receiver')
-        .where('objective.cycleId = :cycleId', { cycleId: cycleId });
-      return await paginate<FeedbackEntity>(queryBuilder, options);
+        .leftJoin('cfrs.evaluationCriteria', 'criteria')
+        .leftJoin('cfrs.sender', 'sender')
+        .leftJoin('cfrs.receiver', 'receiver')
+        .leftJoin('cfrs.checkin', 'checkin')
+        .leftJoin('checkin.objective', 'feedbackObjective')
+        .leftJoin('cfrs.objective', 'recognitionObjective')
+        .where('receiver.id = :id', { id: userId })
+        .andWhere('cfrs.cycleId = :cycleId', { cycleId: cycleId })
+        .orderBy('cfrs.createdAt', 'DESC');
+      return await paginate<CFRsEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getAllCFRs(cycleId: number, options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = await this.createQueryBuilder('cfrs')
+        .select([
+          'cfrs.id',
+          'cfrs.createdAt',
+          'cfrs.content',
+          'cfrs.type',
+          'criteria.id',
+          'criteria.content',
+          'criteria.numberOfStar',
+          'criteria.type',
+          'receiver.fullName',
+          'receiver.avatarURL',
+          'receiver.gravatarURL',
+          'checkin.id',
+          'feedbackObjective.id',
+          'feedbackObjective.title',
+          'recognitionObjective.id',
+          'recognitionObjective.title',
+        ])
+        .leftJoin('cfrs.evaluationCriteria', 'criteria')
+        .leftJoin('cfrs.sender', 'sender')
+        .leftJoin('cfrs.receiver', 'receiver')
+        .leftJoin('cfrs.checkin', 'checkin')
+        .leftJoin('checkin.objective', 'feedbackObjective')
+        .leftJoin('cfrs.objective', 'recognitionObjective')
+        .where('cfrs.cycleId = :cycleId', { cycleId: cycleId })
+        .orderBy('cfrs.createdAt', 'DESC');
+      return await paginate<CFRsEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -212,24 +226,29 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
     }
   }
 
-  public async getDetailFeedback(feedbackId: number): Promise<FeedbackEntity> {
+  public async getDetailCFRs(cfrsId: number): Promise<CFRsEntity> {
     try {
-      return await this.createQueryBuilder('feedback')
+      return await this.createQueryBuilder('cfrs')
         .select([
-          'feedback.id',
+          'cfrs.id',
+          'cfrs.type',
           'criteria.content',
           'sender.fullName',
           'receiver.fullName',
           'checkin.checkinAt',
-          'objective.title',
-          'feedback.content',
+          'feedbackObjective.id',
+          'feedbackObjective.title',
+          'cfrs.content',
+          'recognitionObjective.id',
+          'recognitionObjective.title',
         ])
-        .leftJoin('feedback.checkin', 'checkin')
-        .leftJoin('feedback.evaluationCriteria', 'criteria')
-        .leftJoin('checkin.objective', 'objective')
-        .leftJoin('feedback.receiver', 'receiver')
-        .leftJoin('feedback.sender', 'sender')
-        .where('feedback.id = :id', { id: feedbackId })
+        .leftJoin('cfrs.checkin', 'checkin')
+        .leftJoin('cfrs.evaluationCriteria', 'criteria')
+        .leftJoin('checkin.objective', 'feedbackObjective')
+        .leftJoin('cfrs.objective', 'recognitionObjective')
+        .leftJoin('cfrs.receiver', 'receiver')
+        .leftJoin('cfrs.sender', 'sender')
+        .where('cfrs.id = :id', { id: cfrsId })
         .getOne();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);

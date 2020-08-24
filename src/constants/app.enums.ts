@@ -10,8 +10,6 @@ export enum TableName {
   MeasureUnit = 'measure_units',
   Cycle = 'cycles',
   Checkin = 'checkins',
-  Recognition = 'recognitions',
-  Feeback = 'feedbacks',
   EvaluationCriteria = 'evaluation_criterias',
   TemplateCheckin = 'template_checkins',
   FieldTemplate = 'field_templates',
@@ -19,6 +17,7 @@ export enum TableName {
   Lesson = 'lessons',
   InviteToken = 'invite_tokens',
   CheckinDetail = 'checkin_details',
+  CFRs = 'cfrs',
 }
 
 export enum DbConfig {

@@ -18,8 +18,7 @@ import { JobEntity } from './job.entity';
 import { RoleEntity } from './role.entity';
 import { TeamEntity } from './team.entity';
 import { ObjectiveEntity } from './objective.entity';
-import { FeedbackEntity } from './feedback.entity';
-import { RecognitionEntity } from './recognition.entity';
+import { CFRsEntity } from './cfrs.entity';
 
 @Entity({ name: TableName.User })
 export class UserEntity {
@@ -97,21 +96,13 @@ export class UserEntity {
   @OneToMany(() => ObjectiveEntity, (objectives) => objectives.user)
   public objectives: ObjectiveEntity[];
 
-  @OneToMany(() => FeedbackEntity, (feedback) => feedback.sender)
+  @OneToMany(() => CFRsEntity, (cfrs) => cfrs.sender)
   @JoinColumn([{ name: 'id', referencedColumnName: 'senderId' }])
-  public feedbackSender: FeedbackEntity[];
+  public recognitionSender: CFRsEntity[];
 
-  @OneToMany(() => FeedbackEntity, (feedback) => feedback.receiver)
+  @OneToMany(() => CFRsEntity, (cfrs) => cfrs.receiver)
   @JoinColumn([{ name: 'id', referencedColumnName: 'receiverId' }])
-  public feedbackReceiver: FeedbackEntity[];
-
-  @OneToMany(() => RecognitionEntity, (recognition) => recognition.sender)
-  @JoinColumn([{ name: 'id', referencedColumnName: 'senderId' }])
-  public recognitionSender: RecognitionEntity[];
-
-  @OneToMany(() => RecognitionEntity, (recognition) => recognition.receiver)
-  @JoinColumn([{ name: 'id', referencedColumnName: 'receiverId' }])
-  public recognitionReceiver: RecognitionEntity[];
+  public recognitionReceiver: CFRsEntity[];
 
   @BeforeInsert()
   public async hashPassword(): Promise<void> {

@@ -1,16 +1,15 @@
 import { Repository, EntityRepository, ObjectLiteral, EntityManager } from 'typeorm';
 import { HttpException } from '@nestjs/common';
 
-import { RecognitionEntity } from '@app/db/entities/recognition.entity';
+import { CFRsEntity } from '@app/db/entities/cfrs.entity';
 import { RecognitionDTO } from './recognition.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
-import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
-@EntityRepository(RecognitionEntity)
-export class RecognitionRepository extends Repository<RecognitionEntity> {
-  public async createRecognition(data: RecognitionDTO, manager: EntityManager): Promise<RecognitionEntity> {
+@EntityRepository(CFRsEntity)
+export class RecognitionRepository extends Repository<CFRsEntity> {
+  public async createRecognition(data: RecognitionDTO, manager: EntityManager): Promise<CFRsEntity> {
     try {
-      return await manager.getRepository(RecognitionEntity).save(data);
+      return await manager.getRepository(CFRsEntity).save(data);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -44,7 +43,7 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
     }
   }
 
-  public async getRecognitionDetail(recognitionId: number): Promise<RecognitionEntity[]> {
+  public async getRecognitionDetail(recognitionId: number): Promise<CFRsEntity[]> {
     try {
       return await this.createQueryBuilder('recognition')
         .select([
@@ -62,94 +61,6 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
         .leftJoin('recognition.receiver', 'receiver')
         .where('recognition.id = :id', { id: recognitionId })
         .getMany();
-    } catch (error) {
-      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
-    }
-  }
-
-  public async getReceivedRecognitions(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
-    try {
-      const queryBuilder = await this.createQueryBuilder('recognition')
-        .select([
-          'recognition.id',
-          'recognition.createdAt',
-          'recognition.content',
-          'criteria.id',
-          'criteria.content',
-          'criteria.numberOfStar',
-          'criteria.type',
-          'sender.fullName',
-          'sender.avatarURL',
-          'sender.gravatarURL',
-          'objective.id',
-          'objective.title',
-        ])
-        .leftJoin('recognition.evaluationCriteria', 'criteria')
-        .leftJoin('recognition.objective', 'objective')
-        .leftJoin('recognition.sender', 'sender')
-        .leftJoin('recognition.receiver', 'receiver')
-        .where('receiver.id = :id', { id: userId })
-        .andWhere('recognition.cycleId = :cycleId', { cycleId: cycleId });
-      return await paginate<RecognitionEntity>(queryBuilder, options);
-    } catch (error) {
-      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
-    }
-  }
-
-  public async getSentRecognitions(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
-    try {
-      const queryBuilder = await this.createQueryBuilder('recognition')
-        .select([
-          'recognition.id',
-          'recognition.createdAt',
-          'recognition.content',
-          'criteria.id',
-          'criteria.content',
-          'criteria.numberOfStar',
-          'criteria.type',
-          'receiver.fullName',
-          'receiver.avatarURL',
-          'receiver.gravatarURL',
-          'objective.id',
-          'objective.title',
-        ])
-        .leftJoin('recognition.evaluationCriteria', 'criteria')
-        .leftJoin('recognition.objective', 'objective')
-        .leftJoin('recognition.sender', 'sender')
-        .leftJoin('recognition.receiver', 'receiver')
-        .where('sender.id = :id', { id: userId })
-        .andWhere('recognition.cycleId = :cycleId', { cycleId: cycleId });
-      return await paginate<RecognitionEntity>(queryBuilder, options);
-    } catch (error) {
-      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
-    }
-  }
-
-  public async getAllRecognitions(cycleId: number, options: IPaginationOptions): Promise<any> {
-    try {
-      const queryBuilder = await this.createQueryBuilder('recognition')
-        .select([
-          'recognition.id',
-          'recognition.content',
-          'objective.title',
-          'criteria.id',
-          'criteria.content',
-          'criteria.numberOfStar',
-          'criteria.type',
-          'sender.fullName',
-          'sender.avatarURL',
-          'sender.gravatarURL',
-          'receiver.fullName',
-          'receiver.avatarURL',
-          'receiver.gravatarURL',
-          'recognition.createdAt',
-        ])
-        .leftJoin('recognition.evaluationCriteria', 'criteria')
-        .leftJoin('recognition.objective', 'objective')
-        .leftJoin('recognition.sender', 'sender')
-        .leftJoin('recognition.receiver', 'receiver')
-        .where('recognition.cycleId = :cycleId', { cycleId: cycleId });
-      return await paginate<RecognitionEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

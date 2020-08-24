@@ -11,7 +11,7 @@ import {
   OKRsStatusType,
 } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
-import { FeedbackRepository } from '../feedback/feedback.repository';
+import { CFRsRepository } from '../cfrs/cfrs.repository';
 import { UserRepository } from '../user/user.repository';
 import { RoleRepository } from '../role/role.repository';
 import { ObjectiveRepository } from '../objective/objective.repository';
@@ -22,7 +22,7 @@ import { CycleRepository } from '../cycle/cycle.repository';
 @Injectable()
 export class DashboardService {
   constructor(
-    private _feedBackRepository: FeedbackRepository,
+    private _cfrsRepository: CFRsRepository,
     private _recognitionRepository: RecognitionRepository,
     private _userRepository: UserRepository,
     private _objectiveRepository: ObjectiveRepository,
@@ -32,7 +32,7 @@ export class DashboardService {
   ) {}
 
   public async getTopStars(cycleId: number, type: TopStarType): Promise<ResponseModel> {
-    const data = await this._feedBackRepository.getTopStars(cycleId, type);
+    const data = await this._cfrsRepository.getTopStars(cycleId, type);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -85,7 +85,7 @@ export class DashboardService {
 
     const adminId = (await this._roleRepository.getRoleByName(RoleEnum.ADMIN)).id;
 
-    const numberoffeedback = await this._feedBackRepository.getFeedBackInWeek(
+    const numberoffeedback = await this._cfrsRepository.getFeedBackInWeek(
       firstday,
       lastday,
       firstDayOfLastWeek,
@@ -97,7 +97,7 @@ export class DashboardService {
       firstDayOfLastWeek,
       lastDayOfLastWeek,
     );
-    const numberOfManager = await this._feedBackRepository.getTopManagerUseCFRsInWeek(
+    const numberOfManager = await this._cfrsRepository.getTopManagerUseCFRsInWeek(
       firstday,
       lastday,
       firstDayOfLastWeek,

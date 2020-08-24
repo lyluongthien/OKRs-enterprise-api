@@ -2,32 +2,30 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { UserModule } from '@app/modules/user/user.module';
-import { FeedbackEntity } from '@app/db/entities/feedback.entity';
-import { FeedbackRepository } from './feedback.repository';
-import { FeedbackController } from './feedback.controller';
-import { FeedbackService } from './feedback.service';
+import { CFRsEntity } from '@app/db/entities/cfrs.entity';
+import { CFRsRepository } from './cfrs.repository';
+import { CFRsController } from './cfrs.controller';
+import { CFRsService } from './cfrs.service';
 import { CheckinRepository } from '../checkin/checkin.repository';
 import { UserRepository } from '../user/user.repository';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
 import { UserStarRepository } from '../user-star/user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
-import { RecognitionRepository } from '../recognition/recognition.repository';
 
 @Module({
   imports: [
     UserModule,
     TypeOrmModule.forFeature([
-      FeedbackEntity,
-      FeedbackRepository,
+      CFRsEntity,
+      CFRsRepository,
       CheckinRepository,
       UserRepository,
       EvaluationCriteriaRepository,
       UserStarRepository,
       CycleRepository,
-      RecognitionRepository,
     ]),
   ],
-  controllers: [FeedbackController],
-  providers: [FeedbackService],
+  controllers: [CFRsController],
+  providers: [CFRsService],
 })
 export class FeedbackModule {}

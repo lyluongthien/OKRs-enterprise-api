@@ -16,8 +16,7 @@ import { MeasureUnitEntity } from './entities/measure-unit.entity';
 import { LessonEntity } from './entities/lesson.entity';
 import { InviteTokenEntity } from './entities/invite-token.entity';
 import { CheckinEntity } from './entities/checkin.entity';
-import { RecognitionEntity } from './entities/recognition.entity';
-import { FeedbackEntity } from './entities/feedback.entity';
+import { CFRsEntity } from './entities/cfrs.entity';
 import { UserStarEntity } from './entities/user-stars.entity';
 import { CheckinDetailEntity } from './entities/checkin-detail.entity';
 
@@ -62,8 +61,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
         LessonEntity,
         InviteTokenEntity,
         CheckinEntity,
-        RecognitionEntity,
-        FeedbackEntity,
+        CFRsEntity,
         CheckinDetailEntity,
         UserStarEntity,
       ],

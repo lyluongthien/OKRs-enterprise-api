@@ -149,7 +149,8 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     cycleId: number,
     type: CheckinType,
     feedBacktype: EvaluationCriteriaEnum,
-  ): Promise<CheckinEntity[]> {
+    options?: IPaginationOptions,
+  ): Promise<any> {
     try {
       let condition = null;
       if (type === CheckinType.MEMBER) {
@@ -164,7 +165,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
           ? 'checkin.isLeaderFeedBack = false'
           : 'checkin.isStaffFeedBack = false';
 
-      return await this.createQueryBuilder('checkin')
+      const queryBuilder = await this.createQueryBuilder('checkin')
         .select([
           'checkin.id',
           'checkin.checkinAt',
@@ -182,8 +183,10 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .where(condition, { id })
         .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
         .andWhere(feedBackType)
-        .andWhere('cycle.id = :cycleId', { cycleId: cycleId })
-        .getMany();
+        .andWhere('cycle.id = :cycleId', { cycleId: cycleId });
+      if (options) {
+        return await paginate<CheckinEntity>(queryBuilder, options);
+      } else return await queryBuilder.getMany();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

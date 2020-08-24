@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { TableName, EvaluationCriteriaEnum } from '@app/constants/app.enums';
-import { FeedbackEntity } from './feedback.entity';
-import { RecognitionEntity } from './recognition.entity';
+import { CFRsEntity } from './cfrs.entity';
 
 @Entity(TableName.EvaluationCriteria)
 export class EvaluationCriteriaEntity {
@@ -17,11 +16,8 @@ export class EvaluationCriteriaEntity {
   @Column({ type: 'enum', enum: EvaluationCriteriaEnum, default: EvaluationCriteriaEnum.LEADER_TO_MEMBER })
   public type: EvaluationCriteriaEnum;
 
-  @OneToMany(() => FeedbackEntity, (feedback) => feedback.evaluationCriteria)
-  public feedback: FeedbackEntity[];
-
-  @OneToMany(() => RecognitionEntity, (recognition) => recognition.evaluationCriteria)
-  public recognition: RecognitionEntity[];
+  @OneToMany(() => CFRsEntity, (cfrs) => cfrs.evaluationCriteria)
+  public cfrs: CFRsEntity[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;
