@@ -10,6 +10,7 @@ import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-
 import { UserStarRepository } from '../user-star/user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
 import { RecognitionRepository } from '../recognition/recognition.repository';
+import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class FeedbackService {
@@ -128,45 +129,50 @@ export class FeedbackService {
     };
   }
 
-  public async getCFRsHistory(userId: number, cycleId: number): Promise<ResponseModel> {
+  public async getCFRsHistory(userId: number, cycleId: number, options: IPaginationOptions): Promise<ResponseModel> {
     const data: any = {};
     if (userId && cycleId) {
-      const sent = await this._feedBackRepository.getSentFeedback(userId, cycleId);
-      const received = await this._feedBackRepository.getReceivedFeedback(userId, cycleId);
-      const recognitionSent = await this._recognitionRepository.getSentRecognitions(userId, cycleId);
-      const recognitionReceived = await this._recognitionRepository.getReceivedRecognitions(userId, cycleId);
-      sent.map((value) => {
+      const sent = await this._feedBackRepository.getSentFeedback(userId, cycleId, options);
+      const received = await this._feedBackRepository.getReceivedFeedback(userId, cycleId, options);
+      const recognitionSent = await this._recognitionRepository.getSentRecognitions(userId, cycleId, options);
+      const recognitionReceived = await this._recognitionRepository.getReceivedRecognitions(userId, cycleId, options);
+      const all = await this._feedBackRepository.getAllFeedBacks(cycleId, options);
+      const recognition = await this._recognitionRepository.getAllRecognitions(cycleId, options);
+      sent.items.map((value) => {
         value.type = TypeCFRsHistory.FEED_BACK;
         return value;
       });
-      recognitionSent.map((value) => {
+      recognitionSent.items.map((value) => {
         value.type = TypeCFRsHistory.RECOGNITION;
-        sent.push(value);
+        sent.items.push(value);
         return value;
       });
-      received.map((value) => {
+      received.items.map((value) => {
         value.type = TypeCFRsHistory.FEED_BACK;
         return value;
       });
-      recognitionReceived.map((value) => {
+      recognitionReceived.items.map((value) => {
         value.type = TypeCFRsHistory.RECOGNITION;
-        received.push(value);
+        received.items.push(value);
         return value;
       });
-      const all = await this._feedBackRepository.getAllFeedBacks(cycleId);
-      all.map((value) => {
+      all.items.map((value) => {
         value.type = TypeCFRsHistory.FEED_BACK;
         return value;
       });
-      const recognition = await this._recognitionRepository.getAllRecognitions(cycleId);
-      recognition.map((value) => {
+
+      recognition.items.map((value) => {
         value.type = TypeCFRsHistory.RECOGNITION;
-        all.push(value);
+        all.items.push(value);
         return value;
       });
-      all.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
-      sent.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
-      received.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
+
+      sent.meta.totalItems += recognitionSent.meta.totalItems;
+      received.meta.totalItems += recognitionReceived.meta.totalItems;
+      all.meta.totalItems += recognition.meta.totalItems;
+      all.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
+      sent.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
+      received.items.sort((a, b) => (a.createdAt > b.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0));
       data.all = all;
       data.sent = sent;
       data.received = received;

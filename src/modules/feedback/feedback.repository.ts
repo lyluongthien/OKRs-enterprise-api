@@ -5,6 +5,7 @@ import { FeedbackEntity } from '@app/db/entities/feedback.entity';
 import { FeedbackDTO } from './feedback.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
 import { TopStarType } from '@app/constants/app.enums';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(FeedbackEntity)
 export class FeedbackRepository extends Repository<FeedbackEntity> {
@@ -17,9 +18,9 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
     }
   }
 
-  public async getSentFeedback(userId: number, cycleId: number): Promise<ObjectLiteral[]> {
+  public async getSentFeedback(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
-      return await this.createQueryBuilder('feedback')
+      const queryBuilder = await this.createQueryBuilder('feedback')
         .select([
           'feedback.id',
           'feedback.createdAt',
@@ -40,16 +41,17 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
         .leftJoin('feedback.checkin', 'checkin')
         .leftJoin('checkin.objective', 'objective')
         .where('sender.id = :id', { id: userId })
-        .andWhere('objective.cycleId = :cycleId', { cycleId })
-        .getMany();
+        .andWhere('objective.cycleId = :cycleId', { cycleId });
+
+      return await paginate<FeedbackEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public async getReceivedFeedback(userId: number, cycleId: number): Promise<ObjectLiteral[]> {
+  public async getReceivedFeedback(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
-      return await this.createQueryBuilder('feedback')
+      const queryBuilder = await this.createQueryBuilder('feedback')
         .select([
           'feedback.id',
           'feedback.createdAt',
@@ -70,16 +72,16 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
         .leftJoin('feedback.checkin', 'checkin')
         .leftJoin('checkin.objective', 'objective')
         .where('receiver.id = :id', { id: userId })
-        .andWhere('objective.cycleId = :cycleId', { cycleId: cycleId })
-        .getMany();
+        .andWhere('objective.cycleId = :cycleId', { cycleId: cycleId });
+      return await paginate<FeedbackEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public async getAllFeedBacks(cycleId: number): Promise<ObjectLiteral[]> {
+  public async getAllFeedBacks(cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
-      return await this.createQueryBuilder('feedback')
+      const queryBuilder = await this.createQueryBuilder('feedback')
         .select([
           'feedback.id',
           'checkin.id',
@@ -102,8 +104,8 @@ export class FeedbackRepository extends Repository<FeedbackEntity> {
         .leftJoin('feedback.evaluationCriteria', 'criteria')
         .leftJoin('feedback.sender', 'sender')
         .leftJoin('feedback.receiver', 'receiver')
-        .where('objective.cycleId = :cycleId', { cycleId: cycleId })
-        .getMany();
+        .where('objective.cycleId = :cycleId', { cycleId: cycleId });
+      return await paginate<FeedbackEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

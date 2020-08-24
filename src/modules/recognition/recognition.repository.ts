@@ -4,6 +4,7 @@ import { HttpException } from '@nestjs/common';
 import { RecognitionEntity } from '@app/db/entities/recognition.entity';
 import { RecognitionDTO } from './recognition.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(RecognitionEntity)
 export class RecognitionRepository extends Repository<RecognitionEntity> {
@@ -66,9 +67,9 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
     }
   }
 
-  public async getReceivedRecognitions(userId: number, cycleId: number): Promise<ObjectLiteral[]> {
+  public async getReceivedRecognitions(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
-      return await this.createQueryBuilder('recognition')
+      const queryBuilder = await this.createQueryBuilder('recognition')
         .select([
           'recognition.id',
           'recognition.createdAt',
@@ -88,16 +89,16 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
         .leftJoin('recognition.sender', 'sender')
         .leftJoin('recognition.receiver', 'receiver')
         .where('receiver.id = :id', { id: userId })
-        .andWhere('recognition.cycleId = :cycleId', { cycleId: cycleId })
-        .getMany();
+        .andWhere('recognition.cycleId = :cycleId', { cycleId: cycleId });
+      return await paginate<RecognitionEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public async getSentRecognitions(userId: number, cycleId: number): Promise<ObjectLiteral[]> {
+  public async getSentRecognitions(userId: number, cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
-      return await this.createQueryBuilder('recognition')
+      const queryBuilder = await this.createQueryBuilder('recognition')
         .select([
           'recognition.id',
           'recognition.createdAt',
@@ -117,16 +118,16 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
         .leftJoin('recognition.sender', 'sender')
         .leftJoin('recognition.receiver', 'receiver')
         .where('sender.id = :id', { id: userId })
-        .andWhere('recognition.cycleId = :cycleId', { cycleId: cycleId })
-        .getMany();
+        .andWhere('recognition.cycleId = :cycleId', { cycleId: cycleId });
+      return await paginate<RecognitionEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
 
-  public async getAllRecognitions(cycleId: number): Promise<ObjectLiteral[]> {
+  public async getAllRecognitions(cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
-      return await this.createQueryBuilder('recognition')
+      const queryBuilder = await this.createQueryBuilder('recognition')
         .select([
           'recognition.id',
           'recognition.content',
@@ -147,8 +148,8 @@ export class RecognitionRepository extends Repository<RecognitionEntity> {
         .leftJoin('recognition.objective', 'objective')
         .leftJoin('recognition.sender', 'sender')
         .leftJoin('recognition.receiver', 'receiver')
-        .where('recognition.cycleId = :cycleId', { cycleId: cycleId })
-        .getMany();
+        .where('recognition.cycleId = :cycleId', { cycleId: cycleId });
+      return await paginate<RecognitionEntity>(queryBuilder, options);
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
