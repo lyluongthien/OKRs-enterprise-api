@@ -162,7 +162,7 @@ export class CFRsRepository extends Repository<CFRsEntity> {
   ): Promise<ObjectLiteral[]> {
     try {
       const query = `
-      SELECT Sum(feed.numberOfFeedback) AS numberOfFeedback,
+      SELECT Sum(feed.numberOfFeedback) AS numberOfCFRs,
              Sum(coalesce(feed.numberOfFeedback, 0) - coalesce(feedLastWeek.numberOfLastFeedback, 0)) AS changing
       FROM
         (SELECT f.id,

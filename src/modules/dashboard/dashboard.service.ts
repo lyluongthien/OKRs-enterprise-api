@@ -107,13 +107,13 @@ export class DashboardService {
     );
     const feedbackObject = {
       name: CFRStatusType.FEED_BACK,
-      value: numberoffeedback[0].numberoffeedback ? numberoffeedback[0].numberoffeedback : 0,
+      value: numberoffeedback[0].numberofcfrs ? numberoffeedback[0].numberofcfrs : 0,
       changing: numberoffeedback[0].changing ? numberoffeedback[0].changing : 0,
     };
 
     const recongnitionObject = {
       name: CFRStatusType.RECOGNITION,
-      value: numberOfRecognition[0].numberofrecognition ? numberOfRecognition[0].numberofrecognition : 0,
+      value: numberOfRecognition[0].numberofcfrs ? numberOfRecognition[0].numberofcfrs : 0,
       changing: numberOfRecognition[0].changing ? numberOfRecognition[0].changing : 0,
     };
 
