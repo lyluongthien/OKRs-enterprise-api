@@ -232,15 +232,16 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       FROM checkins c
       LEFT JOIN objectives o ON c."objectiveId" = o.id
       WHERE c."checkinAt" <=
-          coalesce ((SELECT c2."nextCheckinDate"
+          (SELECT c2."nextCheckinDate"
            FROM checkins c2
            WHERE c2."objectiveId" = c."objectiveId"
-             AND c2.id <> c.id
+             AND c2.id < c.id
              AND (c2.status = '${CheckinStatus.DONE}'
                   OR c2.status = '${CheckinStatus.CLOSED}')
            ORDER BY c2."nextCheckinDate" DESC
-           LIMIT 1), c."checkinAt")
-        AND c.status = '${CheckinStatus.PENDING}'
+           LIMIT 1)
+        AND (c.status = '${CheckinStatus.PENDING}' OR c.status = '${CheckinStatus.DONE}' 
+        OR c.status = '${CheckinStatus.CLOSED}' )
         AND o."cycleId" = ${cycleId}`;
       return await this.query(query);
     } catch (error) {
@@ -257,12 +258,13 @@ export class CheckinRepository extends Repository<CheckinEntity> {
           (SELECT c2."nextCheckinDate"
            FROM checkins c2
            WHERE c2."objectiveId" = c."objectiveId"
-             AND c2.id <> c.id
+             AND c2.id < c.id
              AND (c2.status = '${CheckinStatus.DONE}'
                   OR c2.status = '${CheckinStatus.CLOSED}')
            ORDER BY c2."nextCheckinDate" DESC
            LIMIT 1)
-        AND c.status = '${CheckinStatus.PENDING}'
+        AND (c.status = '${CheckinStatus.PENDING}' OR c.status = '${CheckinStatus.DONE}' 
+        OR c.status = '${CheckinStatus.CLOSED}')
         AND o."cycleId" = ${cycleId}`;
       return await this.query(query);
     } catch (error) {
