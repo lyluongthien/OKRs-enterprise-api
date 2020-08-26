@@ -74,8 +74,18 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
   public async getListOKRs(id: number, type: OKRsLeaderType): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
-        .select(['objective.id', 'objective.title', 'users.id', 'users.email'])
-        .leftJoin('objective.user', 'users');
+        .select([
+          'objective.id',
+          'objective.title',
+          'users.id',
+          'users.email',
+          'users.isLeader',
+          'users.avatarURL',
+          'users.gravatarURL',
+          'team.name',
+        ])
+        .leftJoin('objective.user', 'users')
+        .leftJoin('users.team', 'team');
       switch (type) {
         case OKRsLeaderType.ROOT:
           return await queryBuilder
