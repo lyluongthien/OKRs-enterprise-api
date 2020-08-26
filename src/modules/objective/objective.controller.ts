@@ -52,9 +52,9 @@ export class ObjectiveController {
   @Get('/view_list')
   public async viewListOKRs(
     @Query('cycleId', ParseIntPipe) cycleId: number,
-    @CurrentUser() user: UserEntity,
+    @Query('userId', ParseIntPipe) userId: number,
   ): Promise<ResponseModel> {
-    return this._objectiveService.viewListOKRs(cycleId, user.id);
+    return this._objectiveService.viewListOKRs(cycleId, userId);
   }
 
   @Get('/detail/:id')

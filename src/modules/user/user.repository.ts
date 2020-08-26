@@ -126,7 +126,7 @@ export class UserRepository extends Repository<UserEntity> {
   public async getUserActived(): Promise<UserEntity[]> {
     try {
       return await this.find({
-        select: ['id', 'fullName', 'avatarURL', 'gravatarURL'],
+        select: ['id', 'fullName', 'avatarURL', 'gravatarURL', 'isLeader'],
         where: { isActive: true },
         relations: ['team'],
       });
