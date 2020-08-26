@@ -33,10 +33,11 @@ export class TeamRepository extends Repository<TeamEntity> {
     }
   }
 
-  public async getListTeams(): Promise<TeamEntity[]> {
+  public async getListTeams(teamId: number): Promise<TeamEntity[]> {
     try {
       return await this.createQueryBuilder('team')
         .select(['team.id', 'team.name'])
+        .where('team.id <> :teamId', { teamId })
         .orderBy('team.updatedAt', 'DESC')
         .getMany();
     } catch (error) {

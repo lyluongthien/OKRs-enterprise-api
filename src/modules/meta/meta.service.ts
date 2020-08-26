@@ -7,6 +7,7 @@ import { LessonRepository } from '../lesson/lesson.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
 import { RoleRepository } from '../role/role.repository';
+import { UserRepository } from '../user/user.repository';
 
 @Injectable()
 export class MetaService {
@@ -17,10 +18,12 @@ export class MetaService {
     private readonly _cycleRepository: CycleRepository,
     private readonly _evaluationCriteriaRepository: EvaluationCriteriaRepository,
     private readonly _roleRepository: RoleRepository,
+    private readonly _userRepository: UserRepository,
   ) {}
 
   public async getListTeams(): Promise<ResponseModel> {
-    const data = await this._teamRepository.getListTeams();
+    const adminTeamId = (await this._userRepository.getAdmin()).teamId;
+    const data = await this._teamRepository.getListTeams(adminTeamId);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

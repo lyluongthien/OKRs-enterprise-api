@@ -290,7 +290,8 @@ export class CheckinRepository extends Repository<CheckinEntity> {
 
   public async getNotYetCheckinStatus(lastDay: string): Promise<ObjectLiteral[]> {
     try {
-      const query = `SELECT count(o.id) as notYetCheckin
+      const query = `
+      SELECT count(o.id) as notYetCheckin
       FROM objectives o
       WHERE o."isCompleted" = FALSE
         AND o.id NOT IN

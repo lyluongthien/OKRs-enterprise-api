@@ -55,6 +55,7 @@ export class UserRepository extends Repository<UserEntity> {
           'user.avatarURL',
           'user.gravatarURL',
           'user.roleId',
+          'user.teamId',
         ])
         .leftJoin('user.role', 'role')
         .where('role.name = :type', { type: RoleEnum.ADMIN })
