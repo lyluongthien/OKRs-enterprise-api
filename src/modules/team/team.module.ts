@@ -6,9 +6,10 @@ import { TeamService } from './team.service';
 import { TeamController } from './team.controller';
 import { TeamRepository } from './team.repository';
 import { UserModule } from '../user/user.module';
+import { UserRepository } from '../user/user.repository';
 
 @Module({
-  imports: [UserModule, TypeOrmModule.forFeature([TeamEntity, TeamRepository])],
+  imports: [UserModule, TypeOrmModule.forFeature([TeamEntity, TeamRepository, UserRepository])],
   controllers: [TeamController],
   providers: [TeamService],
 })

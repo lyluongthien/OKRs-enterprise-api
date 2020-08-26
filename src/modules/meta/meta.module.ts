@@ -8,6 +8,7 @@ import { CycleRepository } from '../cycle/cycle.repository';
 import { LessonRepository } from '../lesson/lesson.repository';
 import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-criteria.repository';
 import { RoleRepository } from '../role/role.repository';
+import { UserRepository } from '../user/user.repository';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RoleRepository } from '../role/role.repository';
       LessonRepository,
       EvaluationCriteriaRepository,
       RoleRepository,
+      UserRepository,
     ]),
   ],
   controllers: [MetaController],

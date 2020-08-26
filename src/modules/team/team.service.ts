@@ -6,10 +6,11 @@ import { CommonMessage } from '@app/constants/app.enums';
 import { ResponseModel } from '@app/constants/app.interface';
 import { TeamRepository } from './team.repository';
 import { TEAM_EXIST } from '@app/constants/app.exeption';
+import { UserRepository } from '../user/user.repository';
 
 @Injectable()
 export class TeamService {
-  constructor(private _teamRepository: TeamRepository) {}
+  constructor(private _teamRepository: TeamRepository, private _userRepository: UserRepository) {}
 
   public async getTeams(options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._teamRepository.getTeams(options);
@@ -31,7 +32,8 @@ export class TeamService {
   }
 
   public async getListTeams(): Promise<ResponseModel> {
-    const data = await this._teamRepository.getListTeams();
+    const adminTeamId = (await this._userRepository.getAdmin()).teamId;
+    const data = await this._teamRepository.getListTeams(adminTeamId);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -49,7 +51,8 @@ export class TeamService {
   }
 
   public async createTeam(data: TeamDTO): Promise<ResponseModel> {
-    const teams = await this._teamRepository.getListTeams();
+    const adminTeamId = (await this._userRepository.getAdmin()).teamId;
+    const teams = await this._teamRepository.getListTeams(adminTeamId);
     const checkCycleExist = (teamParam) => teams.some(({ name }) => name == teamParam);
     if (checkCycleExist(data.name)) {
       throw new HttpException(TEAM_EXIST.message, TEAM_EXIST.statusCode);
@@ -63,7 +66,8 @@ export class TeamService {
   }
 
   public async updateTeam(id: number, data: TeamDTO): Promise<ResponseModel> {
-    const teams = await this._teamRepository.getListTeams();
+    const adminTeamId = (await this._userRepository.getAdmin()).teamId;
+    const teams = await this._teamRepository.getListTeams(adminTeamId);
     const checkCycleExist = (teamParam, currentId) =>
       teams.some(({ name, id }) => name == teamParam && currentId !== id);
     if (checkCycleExist(data.name, id)) {
