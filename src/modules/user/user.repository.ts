@@ -125,11 +125,21 @@ export class UserRepository extends Repository<UserEntity> {
 
   public async getUserActived(): Promise<UserEntity[]> {
     try {
-      return await this.find({
-        select: ['id', 'fullName', 'avatarURL', 'gravatarURL', 'isLeader'],
-        where: { isActive: true },
-        relations: ['team'],
-      });
+      return await this.createQueryBuilder('user')
+        .select([
+          'user.id',
+          'user.fullName',
+          'user.avatarURL',
+          'user.gravatarURL',
+          'user.isLeader',
+          'team.id',
+          'team.name',
+          'role.name',
+        ])
+        .leftJoin('user.team', 'team')
+        .leftJoin('user.role', 'role')
+        .where('user.isActive = true')
+        .getMany();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
