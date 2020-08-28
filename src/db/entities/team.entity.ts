@@ -12,9 +12,6 @@ export class TeamEntity {
   @Column()
   public description: string;
 
-  @Column()
-  public templateId: number;
-
   @CreateDateColumn({ type: 'timestamptz' })
   public createdAt: Date;
 
