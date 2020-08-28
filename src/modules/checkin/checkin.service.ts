@@ -54,6 +54,9 @@ export class CheckinService {
         checkinDetails: checkin.checkinDetails,
         chart: chart,
       };
+      if (checkin.status === CheckinStatus.DRAFT) {
+        responseData.progress = checkin.objective.progress;
+      }
 
       return {
         statusCode: HttpStatus.OK,
@@ -98,6 +101,9 @@ export class CheckinService {
     if (data.checkin.status === CheckinStatus.DONE) {
       throw new HttpException(CHECKIN_DONE.message, CHECKIN_DONE.statusCode);
     }
+
+    // Get data of objectvie
+    const objectvieData = await this._objectiveRepository.getDetailOKRs(data.checkin.objectiveId);
     // Calculate progress checkin
     let progressOKR = 0;
     let totalTarget = 0;
@@ -107,6 +113,9 @@ export class CheckinService {
       totalObtained += value.valueObtained;
     });
     progressOKR = Math.round(100 * (totalObtained / totalTarget));
+    if (!progressOKR) {
+      progressOKR = 0;
+    }
 
     // If staff draft checkin => Do not update progress
     if (data.checkin.status !== CheckinStatus.DRAFT) {
@@ -138,11 +147,13 @@ export class CheckinService {
 
     // If staff checkin done => Update ValueObtained in KeyResult, progress in Objective, Checkin
     if (data.checkin.status !== CheckinStatus.DRAFT) {
+      const changing = progressOKR - objectvieData.progress;
+
       // Update ValueObtained in KeyResult
       await this._keyResultRepository.createAndUpdateKeyResult(keyResultValue, manager);
 
       // Update progress in Objective
-      await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, manager);
+      await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, changing, manager);
     }
     const dataResponse = {
       checkin: checkinModel,
@@ -179,6 +190,8 @@ export class CheckinService {
     if (checkinId) {
       data.checkin.id = checkinId;
     }
+    // Get data of objectvie
+    const objectvieData = await this._objectiveRepository.getDetailOKRs(data.checkin.objectiveId);
     // Calculate progress checkin
     let progressOKR = 0;
     let totalTarget = 0;
@@ -188,6 +201,9 @@ export class CheckinService {
       totalObtained += value.valueObtained;
     });
     progressOKR = Math.round(100 * (totalObtained / totalTarget));
+    if (!progressOKR) {
+      progressOKR = 0;
+    }
 
     // If staff draft checkin => Do not update progress
     if (data.checkin.status !== CheckinStatus.DRAFT) {
@@ -218,11 +234,12 @@ export class CheckinService {
 
     // If staff checkin done
     if (data.checkin.status === CheckinStatus.DONE) {
+      const changing = progressOKR - objectvieData.progress;
       // Update ValueObtained in KeyResult
       await this._keyResultRepository.createAndUpdateKeyResult(keyResultValue, manager);
 
       // Update progress in Objective
-      await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, manager);
+      await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, changing, manager);
 
       // Update isCompleted in Objective
       await this._objectiveRepository.updateStatusOKRs(data.checkin.objectiveId, data.checkin.isCompleted, manager);
@@ -271,6 +288,8 @@ export class CheckinService {
     nextCheckinDate.setHours(now.getHours(), now.getMinutes(), now.getSeconds());
     data.checkin.nextCheckinDate = nextCheckinDate;
 
+    // Get data of objectvie
+    const objectvieData = await this._objectiveRepository.getDetailOKRs(data.checkin.objectiveId);
     // Calculate progress checkin
     let progressOKR = 0;
     let totalTarget = 0;
@@ -280,6 +299,9 @@ export class CheckinService {
       totalObtained += value.valueObtained;
     });
     progressOKR = Math.round(100 * (totalObtained / totalTarget));
+    if (!progressOKR) {
+      progressOKR = 0;
+    }
 
     // Set checkin.progress
     data.checkin.progress = progressOKR;
@@ -299,12 +321,13 @@ export class CheckinService {
       });
       checkinDetailModel = await this._checkinRepository.createUpdateCheckinDetail(data.checkinDetails, manager);
     }
+    const changing = progressOKR - objectvieData.progress;
 
     // Update ValueObtained in KeyResult
     await this._keyResultRepository.createAndUpdateKeyResult(keyResultValue, manager);
 
     // Update progress in Objective
-    await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, manager);
+    await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, changing, manager);
 
     // Update isCompleted in Objective
     await this._objectiveRepository.updateStatusOKRs(data.checkin.objectiveId, data.checkin.isCompleted, manager);

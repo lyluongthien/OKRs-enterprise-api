@@ -15,6 +15,9 @@ export class ObjectiveEntity {
   public progress: number;
 
   @Column()
+  public changing: number;
+
+  @Column()
   public title: string;
 
   @Column()

@@ -16,9 +16,14 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async updateProgressOKRs(id: number, progress: number, manager: EntityManager): Promise<any> {
+  public async updateProgressOKRs(
+    id: number,
+    progress: number,
+    changing: number,
+    manager: EntityManager,
+  ): Promise<any> {
     try {
-      return await manager.getRepository(ObjectiveEntity).update({ id }, { progress });
+      return await manager.getRepository(ObjectiveEntity).update({ id }, { progress, changing });
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
@@ -125,9 +130,13 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'childUser.id',
           'childUser.fullName',
           'childUser.isLeader',
+          'checkins.id',
+          'checkins.progress',
+          'checkins.checkinAt',
         ])
         .leftJoinAndSelect('objective.childObjectives', 'childObjective')
         .leftJoin('childObjective.user', 'childUser')
+        .leftJoin('objective.checkins', 'checkins')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
         .leftJoinAndSelect('childObjective.keyResults', 'krs')
         .leftJoinAndMapMany(
@@ -137,7 +146,8 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objectiveAlignment.id = any (objective.alignObjectivesId)',
         )
         .leftJoinAndSelect('objectiveAlignment.keyResults', 'aligmentKeyResults')
-        .leftJoin('objective.user', 'users');
+        .leftJoin('objective.user', 'users')
+        .orderBy('checkins.checkinAt', 'DESC');
       if (cycleId) {
         await queryBuilder.where('objective.cycleId = :id', { id: cycleId });
         switch (type) {
