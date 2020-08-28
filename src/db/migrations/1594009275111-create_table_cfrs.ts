@@ -88,14 +88,12 @@ export class CreateTableCFRs1594009275111 implements MigrationInterface {
     columnNames: [ForeignKey.CYCLE_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.Cycle,
-    onDelete: 'SET NULL',
   });
 
   private pkEvalCriteriaId: TableForeignKey = new TableForeignKey({
     columnNames: [ForeignKey.EVALUATION_CRITERIA_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.EvaluationCriteria,
-    onDelete: 'SET NULL',
   });
 
   private pkCheckinId: TableForeignKey = new TableForeignKey({

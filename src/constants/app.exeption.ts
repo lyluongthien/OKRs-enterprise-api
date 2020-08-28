@@ -155,3 +155,8 @@ export const KEYRESULT_INVALID = {
   statusCode: 483,
   message: `Cần có ít nhất 1 kết quả then chốt`,
 };
+
+export const DELETE_ERROR = {
+  message: `Không thể xóa dữ liệu này vì đang được sử dụng ở nơi khác`,
+  statusCode: 495,
+};

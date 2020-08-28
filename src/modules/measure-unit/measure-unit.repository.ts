@@ -3,7 +3,7 @@ import { HttpException } from '@nestjs/common';
 
 import { MeasureUnitEntity } from '@app/db/entities/measure-unit.entity';
 import { MeasureUnitDTO } from './measure-unit.dto';
-import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { DATABASE_EXCEPTION, DELETE_ERROR } from '@app/constants/app.exeption';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(MeasureUnitEntity)
@@ -72,6 +72,10 @@ export class MeasureRepository extends Repository<MeasureUnitEntity> {
       const rowEffected: number = (await this.delete({ id })).affected;
       return { rowEffected: rowEffected };
     } catch (error) {
+      //view detail on: https://github.com/ryanleecode/postgres-error-codes/blob/master/src/index.ts#L82
+      if (error.code == '23503') {
+        throw new HttpException(DELETE_ERROR.message, DELETE_ERROR.statusCode);
+      }
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }

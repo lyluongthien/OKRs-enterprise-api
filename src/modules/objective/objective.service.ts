@@ -5,8 +5,8 @@ import { OkrsDTO } from './objective.dto';
 import { ObjectiveRepository } from './objective.repository';
 import { UserRepository } from '../user/user.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, OKRsType, OKRsLeaderType, DeleteKeyresultType } from '@app/constants/app.enums';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
+import { CommonMessage, OKRsType, OKRsLeaderType, DeleteKeyresultType } from '@app/constants/app.enums';
 import { OKR_INVALID, DELETE_OKR, OKR_UPDATE_FAIL, KEYRESULT_INVALID } from '@app/constants/app.exeption';
 import { CycleRepository } from '../cycle/cycle.repository';
 

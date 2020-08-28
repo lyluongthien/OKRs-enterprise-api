@@ -1,7 +1,7 @@
 import { Repository, EntityRepository, ObjectLiteral } from 'typeorm';
 import { JobEntity } from '@app/db/entities/job.entity';
 import { JobDTO, UpdateJobDTO } from './job.dto';
-import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { DATABASE_EXCEPTION, DELETE_ERROR } from '@app/constants/app.exeption';
 import { HttpException } from '@nestjs/common';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
@@ -67,6 +67,10 @@ export class JobRepository extends Repository<JobEntity> {
       const rowEffected = (await this.delete({ id })).affected;
       return { rowEffected: rowEffected };
     } catch (error) {
+      //view detail on: https://github.com/ryanleecode/postgres-error-codes/blob/master/src/index.ts#L82
+      if (error.code == '23503') {
+        throw new HttpException(DELETE_ERROR.message, DELETE_ERROR.statusCode);
+      }
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }

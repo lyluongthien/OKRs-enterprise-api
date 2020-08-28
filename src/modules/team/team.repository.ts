@@ -5,7 +5,7 @@ import { TeamEntity } from '@app/db/entities/team.entity';
 import { TeamDTO } from './team.dto';
 import { CommonMessage } from '@app/constants/app.enums';
 import { HttpStatus, HttpException } from '@nestjs/common';
-import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { DATABASE_EXCEPTION, DELETE_ERROR } from '@app/constants/app.exeption';
 import { ResponseModel } from '@app/constants/app.interface';
 
 @EntityRepository(TeamEntity)
@@ -82,6 +82,10 @@ export class TeamRepository extends Repository<TeamEntity> {
 
       return { statusCode: HttpStatus.OK, message: CommonMessage.DELETE_FAIL, data: { is_deleted: false } };
     } catch (error) {
+      //view detail on: https://github.com/ryanleecode/postgres-error-codes/blob/master/src/index.ts#L82
+      if (error.code == '23503') {
+        throw new HttpException(DELETE_ERROR.message, DELETE_ERROR.statusCode);
+      }
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }

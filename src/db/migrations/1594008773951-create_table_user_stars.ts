@@ -41,7 +41,6 @@ export class CreateTableUserStars1594008773951 implements MigrationInterface {
     columnNames: [ForeignKey.CYCLE_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.Cycle,
-    onDelete: 'SET NULL',
   });
 
   public async up(queryRunner: QueryRunner): Promise<void> {

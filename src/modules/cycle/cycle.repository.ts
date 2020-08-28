@@ -3,7 +3,7 @@ import { HttpException } from '@nestjs/common';
 
 import { CycleEntity } from '@app/db/entities/cycle.entity';
 import { CycleDTO, UpdateCycleDTO } from './cycle.dto';
-import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
+import { DATABASE_EXCEPTION, DELETE_ERROR } from '@app/constants/app.exeption';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @EntityRepository(CycleEntity)
@@ -62,10 +62,16 @@ export class CycleRepository extends Repository<CycleEntity> {
   }
 
   public async deleteCycle(id: number): Promise<ObjectLiteral> {
+    let query;
     try {
-      const rowEffected: number = (await this.delete({ id })).affected;
+      query = await this.delete({ id });
+      const rowEffected: number = query.affected;
       return { rowEffected: rowEffected };
     } catch (error) {
+      //view detail on: https://github.com/ryanleecode/postgres-error-codes/blob/master/src/index.ts#L82
+      if (error.code == '23503') {
+        throw new HttpException(DELETE_ERROR.message, DELETE_ERROR.statusCode);
+      }
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
   }
