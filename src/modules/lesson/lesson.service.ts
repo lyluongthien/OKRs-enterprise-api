@@ -62,7 +62,7 @@ export class LessonService {
   }
 
   public async searchLessons(text: string, options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this._lessonRepository.searchLessons(text, options);
+    const data = await this._lessonRepository.searchLessons(text.toLowerCase(), options);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

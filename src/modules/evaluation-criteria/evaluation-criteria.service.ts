@@ -26,8 +26,9 @@ export class EvaluationCriteriaService {
 
   public async createCriteria(evaluationDTO: EvaluationDTO): Promise<ResponseModel> {
     const evaluationCriterias = await this._evaluationCriteriaRepository.getList();
-    const checkCriteriaExist = (criteriaParam) => evaluationCriterias.some(({ content }) => content == criteriaParam);
-    if (checkCriteriaExist(evaluationDTO.content)) {
+    const checkCriteriaExist = (criteriaParam) =>
+      evaluationCriterias.some(({ content }) => content.toLowerCase() === criteriaParam);
+    if (checkCriteriaExist(evaluationDTO.content.toLowerCase())) {
       throw new HttpException(EVALUATION_CRITERIA_EXIST.message, EVALUATION_CRITERIA_EXIST.statusCode);
     }
     const data = await this._evaluationCriteriaRepository.createCriteria(evaluationDTO);
@@ -50,8 +51,8 @@ export class EvaluationCriteriaService {
   public async updateCriteria(id: number, evaluationDTO: Partial<EvaluationDTO>): Promise<ResponseModel> {
     const evaluationCriterias = await this._evaluationCriteriaRepository.getList();
     const checkCriteriaExist = (criteriaParam, currentId) =>
-      evaluationCriterias.some(({ content, id }) => content == criteriaParam && id !== currentId);
-    if (checkCriteriaExist(evaluationDTO.content, id)) {
+      evaluationCriterias.some(({ content, id }) => content.toLowerCase() === criteriaParam && id !== currentId);
+    if (checkCriteriaExist(evaluationDTO.content.toLowerCase(), id)) {
       throw new HttpException(EVALUATION_CRITERIA_EXIST.message, EVALUATION_CRITERIA_EXIST.statusCode);
     }
     const data = await this._evaluationCriteriaRepository.updateCriteria(id, evaluationDTO);

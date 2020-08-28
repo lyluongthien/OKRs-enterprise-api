@@ -167,7 +167,7 @@ export class UserRepository extends Repository<UserEntity> {
         .leftJoin('user.team', 'teams')
         .where('user.isActive = true')
         .andWhere('user.isApproved = true')
-        .andWhere('(user.fullName like :text or user.email like :text2)', {
+        .andWhere('(LOWER(user.fullName) like :text or LOWER(user.email) like :text2)', {
           text: '%' + text + '%',
           text2: '%' + text + '%',
         })
@@ -207,7 +207,7 @@ export class UserRepository extends Repository<UserEntity> {
         .leftJoin('user.jobPosition', 'jobPositions')
         .leftJoin('user.team', 'teams')
         .where('user.isApproved = false')
-        .andWhere('(user.fullName like :text or user.email like :text2)', {
+        .andWhere('(LOWER(user.fullName) like :text or LOWER(user.email) like :text2)', {
           text: '%' + text + '%',
           text2: '%' + text + '%',
         })
@@ -239,7 +239,7 @@ export class UserRepository extends Repository<UserEntity> {
         .leftJoin('user.jobPosition', 'jobPositions')
         .leftJoin('user.team', 'teams')
         .where('user.isActive = false')
-        .andWhere('(user.fullName like :text or user.email like :text2)', {
+        .andWhere('(LOWER(user.fullName) like :text or LOWER(user.email) like :text2)', {
           text: '%' + text + '%',
           text2: '%' + text + '%',
         })
