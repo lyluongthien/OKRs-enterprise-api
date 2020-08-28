@@ -77,12 +77,20 @@ describe('JobController', () => {
     test('(GET) first page without authentication', async () => {
       return request(app.getHttpServer()).get('/api/v1/jobs').expect(HttpStatus.UNAUTHORIZED);
     });
-    test('(GET) job by page', async () => {
+    test('(GET) job by page without admin acccount', async () => {
       const page = 1;
       const limit = 3;
       return request(app.getHttpServer())
         .get(`/api/v1/jobs?page=${page}&limit=${limit}`)
         .set('Authorization', `Bearer ${userToken}`)
+        .expect(HttpStatus.FORBIDDEN);
+    });
+    test('(GET) job by page', async () => {
+      const page = 1;
+      const limit = 3;
+      return request(app.getHttpServer())
+        .get(`/api/v1/jobs?page=${page}&limit=${limit}`)
+        .set('Authorization', `Bearer ${admintoken}`)
         .expect((res) => {
           expect(res.body).toBeDefined();
           expect(res.body.data).toBeDefined();

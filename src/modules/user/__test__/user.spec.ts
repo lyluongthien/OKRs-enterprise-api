@@ -21,8 +21,13 @@ describe('AuthController', () => {
     email: 'ducpvse05320@fpt.edu.vn',
     password: 'Admin123',
   };
+  const loginDataChangePass: SignInDTO = {
+    email: 'hiepdqse05627@fpt.edu.vn',
+    password: 'Admin123',
+  };
 
   let userToken: string;
+  let userTokenChangePass: string;
 
   describe('me', () => {
     test('(GET) URL api wrong', () => {
@@ -39,6 +44,21 @@ describe('AuthController', () => {
           expect(res.body.data).toBeDefined();
           expect(res.body.data.user).toBeDefined();
           expect(res.body.data.user.email).toEqual(loginData.email);
+          expect(res.body.data.token).toBeDefined();
+        })
+        .expect(201);
+    });
+
+    test('(POST) Login succes to test change password', async () => {
+      return request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .set('Accept', 'application/json')
+        .send(loginDataChangePass)
+        .expect((res) => {
+          userTokenChangePass = res.body.data.token;
+          expect(res.body.data).toBeDefined();
+          expect(res.body.data.user).toBeDefined();
+          expect(res.body.data.user.email).toEqual(loginDataChangePass.email);
           expect(res.body.data.token).toBeDefined();
         })
         .expect(201);
@@ -88,7 +108,7 @@ describe('AuthController', () => {
     test('(PUT) Change password', async () => {
       return request(app.getHttpServer())
         .put(`/api/v1/users/me/change_password`)
-        .set('Authorization', `Bearer ${userToken}`)
+        .set('Authorization', `Bearer ${userTokenChangePass}`)
         .send(userPass)
         .expect((res) => {
           expect(res.body).toBeDefined();
