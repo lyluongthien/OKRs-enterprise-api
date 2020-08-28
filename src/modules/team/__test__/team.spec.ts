@@ -114,7 +114,6 @@ describe('TeamController', () => {
     const createData: TeamDTO = {
       name: 'Demo team',
       description: 'Demo team',
-      templateId: 1,
     };
     test('(POST) Create new team', async () => {
       return request(app.getHttpServer())
@@ -135,7 +134,6 @@ describe('TeamController', () => {
     const updateData: TeamDTO = {
       name: 'Demo team 123',
       description: 'Demo team 123',
-      templateId: 1,
     };
     test('(PUT) Update measure unit', async () => {
       return request(app.getHttpServer())

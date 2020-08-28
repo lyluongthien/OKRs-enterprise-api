@@ -12,22 +12,18 @@ export class Seeder1101Team implements Seeder {
         {
           name: 'Phòng kinh doanh',
           description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-          templateId: 1,
         },
         {
           name: 'Phòng công nghệ',
           description: 'Lorem Ipsum is simply dummy text.',
-          templateId: 1,
         },
         {
           name: 'Phòng thiết kế',
           description: 'Lorem Ipsum is simply dummy text.',
-          templateId: 1,
         },
         {
           name: 'Chair Team',
           description: 'Lorem Ipsum is simply dummy text.',
-          templateId: 1,
         },
       ])
       .execute();
