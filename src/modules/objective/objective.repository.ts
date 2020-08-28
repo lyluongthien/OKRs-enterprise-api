@@ -294,6 +294,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'keyresults.id',
           'keyresults.content',
           'keyresults.targetValue',
+          'keyresults.valueObtained',
           'checkins.id',
           'checkins.status',
           'checkins.checkinAt',
