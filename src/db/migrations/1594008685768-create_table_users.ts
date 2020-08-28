@@ -116,13 +116,11 @@ export class CreateTableUsers1594008685768 implements MigrationInterface {
     columnNames: [ForeignKey.JOB_POSITION_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.JobPosition,
-    onDelete: 'SET NULL',
   });
   private pkTeamId: TableForeignKey = new TableForeignKey({
     columnNames: [ForeignKey.TEAM_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.Team,
-    onDelete: 'SET NULL',
   });
 
   private tableForeignKey: TableForeignKey[] = [this.pkRoleId, this.pkobPosId, this.pkTeamId];

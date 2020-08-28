@@ -5,9 +5,15 @@ import { OkrsDTO } from './objective.dto';
 import { ObjectiveRepository } from './objective.repository';
 import { UserRepository } from '../user/user.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, OKRsType, OKRsLeaderType, DeleteKeyresultType } from '@app/constants/app.enums';
 import { KeyResultRepository } from '../keyresult/keyresult.repository';
-import { OKR_INVALID, DELETE_OKR, OKR_UPDATE_FAIL, KEYRESULT_INVALID } from '@app/constants/app.exeption';
+import { CommonMessage, OKRsType, OKRsLeaderType, DeleteKeyresultType } from '@app/constants/app.enums';
+import {
+  OKR_INVALID,
+  DELETE_OKR,
+  OKR_UPDATE_FAIL,
+  KEYRESULT_INVALID,
+  OKR_CYCLE_INVALID,
+} from '@app/constants/app.exeption';
 import { CycleRepository } from '../cycle/cycle.repository';
 
 @Injectable()
@@ -22,13 +28,23 @@ export class ObjectiveService {
   public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userId?: number): Promise<ResponseModel> {
     let objectiveEntity = null;
     if (okrDTo.objective) {
-      const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+      let cycleId = okrDTo.objective.cycleId;
+      if (cycleId) {
+        const cycle = await this._cycleRepository.getCycleDetail(cycleId);
+        const today = new Date().getTime();
+        const cycleDate = new Date(cycle.endDate).getTime();
+        if (today > cycleDate) {
+          throw new HttpException(OKR_CYCLE_INVALID.message, OKR_CYCLE_INVALID.statusCode);
+        }
+      }
       if (userId) {
         okrDTo.objective.userId = userId;
       }
-      const listAlignment = await this._objectiveRepository.getListOKRs(cycleId, OKRsLeaderType.ALL);
 
       if (okrDTo.objective.alignObjectivesId) {
+        if (!cycleId) cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+        const listAlignment = await this._objectiveRepository.getListOKRs(cycleId, OKRsLeaderType.ALL);
+
         okrDTo.objective.alignObjectivesId = okrDTo.objective.alignObjectivesId.filter((value, index) => {
           const alignmentExist = listAlignment.some(({ id }) => id === value);
           if (!alignmentExist) {
@@ -69,13 +85,13 @@ export class ObjectiveService {
           value.objectiveId = objectiveEntity.id;
           return value.objectiveId;
         });
+        await this._keyResultRepository.createAndUpdateKeyResult(okrDTo.keyResult, manager);
       }
-      await this._keyResultRepository.createAndUpdateKeyResult(okrDTo.keyResult, manager);
     }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: objectiveEntity.id,
+      data: objectiveEntity ? objectiveEntity.id : -1,
     };
   }
 

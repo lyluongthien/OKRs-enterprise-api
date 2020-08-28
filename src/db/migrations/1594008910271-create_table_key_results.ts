@@ -68,7 +68,6 @@ export class CreateTableKeyResults1594008910271 implements MigrationInterface {
     columnNames: [ForeignKey.MEASURE_UNIT_ID],
     referencedColumnNames: ['id'],
     referencedTableName: TableName.MeasureUnit,
-    onDelete: 'SET NULL',
   });
 
   private tableForeignKey: TableForeignKey[] = [this.pkObjectiveId, this.pkMeasureUnitId];
