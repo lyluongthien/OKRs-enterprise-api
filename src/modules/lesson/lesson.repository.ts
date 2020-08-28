@@ -43,7 +43,7 @@ export class LessonRepository extends Repository<LessonEntity> {
   public async searchLessons(title: string, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('lesson')
-        .where('lesson.title like :text', {
+        .where('LOWER(lesson.title) like :text', {
           text: '%' + title + '%',
         })
         .orderBy('lesson.id', 'ASC');

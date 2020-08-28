@@ -217,7 +217,7 @@ export class UserService {
   }
 
   public async searchUsersActived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this._userRepository.searchUsersActived(text, options);
+    const data = await this._userRepository.searchUsersActived(text.toLowerCase(), options);
     const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
@@ -227,7 +227,7 @@ export class UserService {
   }
 
   public async searchUsersApproved(text: string, options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this._userRepository.searchUsersApproved(text, options);
+    const data = await this._userRepository.searchUsersApproved(text.toLowerCase(), options);
     const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
@@ -237,7 +237,7 @@ export class UserService {
   }
 
   public async searchUsersDeactived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this._userRepository.searchUsersDeactived(text, options);
+    const data = await this._userRepository.searchUsersDeactived(text.toLowerCase(), options);
     const dataResponse = paginationDataParser(data);
     return {
       statusCode: HttpStatus.OK,
