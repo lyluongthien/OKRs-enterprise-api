@@ -48,6 +48,16 @@ export class CreateTableCheckinDetails1595388563967 implements MigrationInterfac
         type: 'integer',
         isNullable: true,
       },
+      {
+        name: 'createdAt',
+        type: 'timestamptz',
+        default: 'now()',
+      },
+      {
+        name: 'updatedAt',
+        type: 'timestamptz',
+        default: 'now()',
+      },
     ],
   });
 

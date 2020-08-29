@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 
 @Entity(TableName.UserStar)
@@ -14,4 +14,10 @@ export class UserStarEntity {
 
   @Column()
   public userId: number;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  public createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  public updatedAt: Date;
 }

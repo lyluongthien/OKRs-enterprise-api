@@ -26,6 +26,28 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
+  public async getUserActived(): Promise<UserEntity[]> {
+    try {
+      return await this.createQueryBuilder('user')
+        .select([
+          'user.id',
+          'user.fullName',
+          'user.avatarURL',
+          'user.gravatarURL',
+          'user.isLeader',
+          'team.id',
+          'team.name',
+          'role.name',
+        ])
+        .leftJoin('user.team', 'team')
+        .leftJoin('user.role', 'role')
+        .where('user.isActive = true')
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getUsersActived(options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
@@ -130,28 +152,6 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  public async getUserActived(): Promise<UserEntity[]> {
-    try {
-      return await this.createQueryBuilder('user')
-        .select([
-          'user.id',
-          'user.fullName',
-          'user.avatarURL',
-          'user.gravatarURL',
-          'user.isLeader',
-          'team.id',
-          'team.name',
-          'role.name',
-        ])
-        .leftJoin('user.team', 'team')
-        .leftJoin('user.role', 'role')
-        .where('user.isActive = true')
-        .getMany();
-    } catch (error) {
-      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
-    }
-  }
-
   public async searchUsersActived(text: string, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
@@ -185,13 +185,14 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
-  public async getInferior(id: number, type: InferiorType, options: IPaginationOptions): Promise<any> {
+  public async getInferior(id: number, type: InferiorType, cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
         .select(['user.id', 'user.fullName', 'user.avatarURL', 'user.gravatarURL'])
         .leftJoin('user.objectives', 'objectives')
         .leftJoin('objectives.checkins', 'checkins')
-        .where('checkins.status = :status', { status: CheckinStatus.DONE });
+        .where('checkins.status = :status', { status: CheckinStatus.DONE })
+        .andWhere('objectives.cycleId = :cycleId', { cycleId });
       switch (type) {
         case InferiorType.STAFF:
           queryBuilder.andWhere('user.teamId = :teamId', { teamId: id }).andWhere('user.isLeader = false').getMany();

@@ -1,4 +1,13 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { CheckinEntity } from './checkin.entity';
 import { KeyResultEntity } from './key-result.entity';
@@ -31,6 +40,12 @@ export class CheckinDetailEntity {
 
   @Column()
   public keyResultId: number;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  public createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  public updatedAt: Date;
 
   @ManyToOne(() => CheckinEntity, (checkin) => checkin.checkinDetails)
   public checkin: CheckinEntity;

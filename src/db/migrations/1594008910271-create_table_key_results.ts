@@ -55,6 +55,16 @@ export class CreateTableKeyResults1594008910271 implements MigrationInterface {
         type: 'integer',
         isNullable: true,
       },
+      {
+        name: 'createdAt',
+        type: 'timestamptz',
+        default: 'now()',
+      },
+      {
+        name: 'updatedAt',
+        type: 'timestamptz',
+        default: 'now()',
+      },
     ],
   });
 

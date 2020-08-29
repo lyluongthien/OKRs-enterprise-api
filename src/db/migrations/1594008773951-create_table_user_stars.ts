@@ -26,6 +26,16 @@ export class CreateTableUserStars1594008773951 implements MigrationInterface {
         type: 'integer',
         isNullable: true,
       },
+      {
+        name: 'createdAt',
+        type: 'timestamptz',
+        default: 'now()',
+      },
+      {
+        name: 'updatedAt',
+        type: 'timestamptz',
+        default: 'now()',
+      },
     ],
   });
 

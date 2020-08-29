@@ -165,3 +165,13 @@ export const DELETE_ERROR = {
   message: `Không thể xóa dữ liệu này vì đang được sử dụng ở nơi khác`,
   statusCode: 495,
 };
+
+export const INFERIOR_FORBIDEN = {
+  statusCode: 470,
+  message: `Bạn không có quền truy cập`,
+};
+
+export const USER_INVALID = {
+  statusCode: 404,
+  message: `User không tồn tại`,
+};
