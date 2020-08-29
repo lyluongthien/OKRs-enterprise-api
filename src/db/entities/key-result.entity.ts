@@ -1,4 +1,13 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { ObjectiveEntity } from './objective.entity';
 import { MeasureUnitEntity } from './measure-unit.entity';
@@ -33,6 +42,12 @@ export class KeyResultEntity {
   public measureUnitId: number;
 
   public progress: number;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  public createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  public updatedAt: Date;
 
   @ManyToOne(() => ObjectiveEntity, (objective) => objective.keyResults)
   public objective: ObjectiveEntity;

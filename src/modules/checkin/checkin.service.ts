@@ -22,6 +22,8 @@ import {
   CHECKIN_COMPLETED,
   CHECKIN_PENDING,
   CHECKIN_DONE,
+  INFERIOR_FORBIDEN,
+  USER_INVALID,
 } from '@app/constants/app.exeption';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { RoleRepository } from '../role/role.repository';
@@ -648,15 +650,17 @@ export class CheckinService {
     };
   }
 
-  public async getInferior(userId: number, options: IPaginationOptions): Promise<ResponseModel> {
+  public async getInferior(userId: number, options: IPaginationOptions, cycleId: number): Promise<ResponseModel> {
     let data = null;
     const user = await this._userRepository.getUserByID(userId);
     const admin = await this._userRepository.getAdmin();
     if (user && admin) {
       if (user.isLeader && admin.id != userId) {
-        data = await this._userRepository.getInferior(user.teamId, InferiorType.STAFF, options);
+        data = await this._userRepository.getInferior(user.teamId, InferiorType.STAFF, cycleId, options);
       } else if (admin.id == userId) {
-        data = await this._userRepository.getInferior(userId, InferiorType.TEAM_LEADER, options);
+        data = await this._userRepository.getInferior(userId, InferiorType.TEAM_LEADER, cycleId, options);
+      } else {
+        throw new HttpException(INFERIOR_FORBIDEN.message, INFERIOR_FORBIDEN.statusCode);
       }
     }
     return {
@@ -666,10 +670,12 @@ export class CheckinService {
     };
   }
 
-  public async getInferiorCheckin(userId: number, options: IPaginationOptions): Promise<ResponseModel> {
+  public async getInferiorObjective(userId: number, cycleId: number): Promise<ResponseModel> {
     let data = null;
     if (userId) {
-      data = await this._checkinRepository.getInferiorCheckin(userId, options);
+      const userExist = await this._userRepository.getUserByID(userId);
+      if (!userExist) throw new HttpException(USER_INVALID.message, USER_INVALID.statusCode);
+      data = await this._objectiveRepository.getInferiorObjective(userId, cycleId);
     }
     return {
       statusCode: HttpStatus.OK,

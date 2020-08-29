@@ -10,15 +10,6 @@ import { JOB_EXIST } from '@app/constants/app.exeption';
 export class JobService {
   constructor(private _jobRepository: JobRepository) {}
 
-  public async getListJob(): Promise<ResponseModel> {
-    const data = await this._jobRepository.getListJob();
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: data,
-    };
-  }
-
   public async getJobs(options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._jobRepository.getJobs(options);
     return {

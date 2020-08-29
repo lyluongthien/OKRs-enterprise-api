@@ -3,7 +3,7 @@ import { HttpException } from '@nestjs/common';
 
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
-import { OKRsType, OKRsLeaderType } from '@app/constants/app.enums';
+import { OKRsType, OKRsLeaderType, CheckinStatus } from '@app/constants/app.enums';
 import { ObjectiveDTO } from './objective.dto';
 
 @EntityRepository(ObjectiveEntity)
@@ -110,6 +110,21 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         default:
           return null;
       }
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getInferiorObjective(userId: number, cycleId: number): Promise<ObjectiveEntity[]> {
+    try {
+      return await this.createQueryBuilder('objective')
+        .select(['objective.id', 'objective.title', 'objective.progress', 'objective.createdAt'])
+        .leftJoin('objective.checkins', 'checkin')
+        .leftJoin('objective.user', 'user')
+        .where('user.id = :userId', { userId })
+        .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
+        .andWhere('objective.cycleId = :cycleId', { cycleId })
+        .getMany();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

@@ -54,6 +54,16 @@ export class CreateTableObjectives1594008870217 implements MigrationInterface {
         type: 'bool',
         default: false,
       },
+      {
+        name: 'createdAt',
+        type: 'timestamptz',
+        default: 'now()',
+      },
+      {
+        name: 'updatedAt',
+        type: 'timestamptz',
+        default: 'now()',
+      },
     ],
   });
 

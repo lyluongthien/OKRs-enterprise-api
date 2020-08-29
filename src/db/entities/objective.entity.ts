@@ -1,4 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  ManyToOne,
+  JoinColumn,
+  ManyToMany,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { TableName } from '@app/constants/app.enums';
 import { KeyResultEntity } from './key-result.entity';
 import { UserEntity } from './user.entity';
@@ -37,6 +47,12 @@ export class ObjectiveEntity {
 
   @Column()
   public isCompleted: boolean;
+
+  @CreateDateColumn({ type: 'timestamptz' })
+  public createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamptz' })
+  public updatedAt: Date;
 
   @OneToMany(() => ObjectiveEntity, (objective) => objective.parentObjective)
   @JoinColumn([{ name: 'id', referencedColumnName: 'parentObjectiveId' }])

@@ -31,19 +31,19 @@ export class CheckinController {
   @Get('/inferior')
   public async getInferior(
     @CurrentUser() user: UserEntity,
+    @Query('cycleId') cycleId: number,
     @Query('page', ParseIntPipe) page: number,
     @Query('limit', ParseIntPipe) limit: number,
   ): Promise<ResponseModel> {
-    return this._checkinService.getInferior(user.id, { page, limit });
+    return this._checkinService.getInferior(user.id, { page, limit }, cycleId);
   }
 
-  @Get('/inferior_checkin')
+  @Get('/inferior_objective')
   public async getInferiorCheckin(
     @Query('userId', ParseIntPipe) userId: number,
-    @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number,
+    @Query('cycleId') cycleId: number,
   ): Promise<ResponseModel> {
-    return this._checkinService.getInferiorCheckin(userId, { page, limit });
+    return this._checkinService.getInferiorObjective(userId, cycleId);
   }
 
   @Get('weekly_checkin')
