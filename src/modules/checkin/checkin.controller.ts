@@ -28,6 +28,24 @@ import { currentPage, limitPagination } from '@app/constants/app.magic-number';
 export class CheckinController {
   constructor(private readonly _checkinService: CheckinService) {}
 
+  @Get('/inferior')
+  public async getInferior(
+    @CurrentUser() user: UserEntity,
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ): Promise<ResponseModel> {
+    return this._checkinService.getInferior(user.id, { page, limit });
+  }
+
+  @Get('/inferior_checkin')
+  public async getInferiorCheckin(
+    @Query('userId', ParseIntPipe) userId: number,
+    @Query('page', ParseIntPipe) page: number,
+    @Query('limit', ParseIntPipe) limit: number,
+  ): Promise<ResponseModel> {
+    return this._checkinService.getInferiorCheckin(userId, { page, limit });
+  }
+
   @Get('weekly_checkin')
   public async getWeeklyCheckin(): Promise<ResponseModel> {
     return this._checkinService.getWeeklyCheckin();

@@ -6,7 +6,14 @@ import * as fs from 'fs';
 import { UserEntity } from '@app/db/entities/user.entity';
 import { UserDTO, UserProfileDTO, ResetPasswordTokenDTO } from './user.dto';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
-import { AvatarURL, RoleEnum, CheckinType, CheckinStatus, EvaluationCriteriaEnum } from '@app/constants/app.enums';
+import {
+  AvatarURL,
+  RoleEnum,
+  CheckinType,
+  CheckinStatus,
+  EvaluationCriteriaEnum,
+  InferiorType,
+} from '@app/constants/app.enums';
 
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
@@ -178,9 +185,33 @@ export class UserRepository extends Repository<UserEntity> {
     }
   }
 
+  public async getInferior(id: number, type: InferiorType, options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = this.createQueryBuilder('user')
+        .select(['user.id', 'user.fullName', 'user.avatarURL', 'user.gravatarURL'])
+        .leftJoin('user.objectives', 'objectives')
+        .leftJoin('objectives.checkins', 'checkins')
+        .where('checkins.status = :status', { status: CheckinStatus.DONE });
+      switch (type) {
+        case InferiorType.STAFF:
+          queryBuilder.andWhere('user.teamId = :teamId', { teamId: id }).andWhere('user.isLeader = false').getMany();
+          break;
+        case InferiorType.TEAM_LEADER:
+          queryBuilder.andWhere('user.id <> :id', { id }).andWhere('user.isLeader = true').getMany();
+          break;
+        default:
+          queryBuilder.getMany();
+          break;
+      }
+      return await paginate<UserEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getAllUsers(): Promise<UserEntity[]> {
     try {
-      return this.find();
+      return await this.find();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
