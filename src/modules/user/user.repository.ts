@@ -188,9 +188,10 @@ export class UserRepository extends Repository<UserEntity> {
   public async getInferior(id: number, type: InferiorType, cycleId: number, options: IPaginationOptions): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('user')
-        .select(['user.id', 'user.fullName', 'user.avatarURL', 'user.gravatarURL'])
+        .select(['user.id', 'user.fullName', 'user.avatarURL', 'user.gravatarURL', 'role.name'])
         .leftJoin('user.objectives', 'objectives')
         .leftJoin('objectives.checkins', 'checkins')
+        .leftJoin('user.role', 'role')
         .where('checkins.status = :status', { status: CheckinStatus.DONE })
         .andWhere('objectives.cycleId = :cycleId', { cycleId });
       switch (type) {
