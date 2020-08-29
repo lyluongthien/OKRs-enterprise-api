@@ -36,7 +36,8 @@
     "migration:run": "yarn typeorm migration:run",
     "migration:revert": "yarn typeorm migration:revert",
     "seed:run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm-seeding/dist/cli.js seed",
-    "setup:db": "yarn migration:run && yarn seed:run"
+    "setup:db": "yarn migration:run && yarn seed:run",
+    "setup:staging": "yarn migration:run && yarn seed:run --seed Seeder1002Role"
   },
   "engines": {
     "node": ">=12.18.1"

@@ -226,6 +226,21 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
+  public async getInferiorCheckin(userId: number, options: IPaginationOptions): Promise<any> {
+    try {
+      const queryBuilder = this.createQueryBuilder('checkin')
+        .select(['checkin.id', 'objective.title', 'checkin.checkinAt'])
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('objective.user', 'user')
+        .where('user.id = :userId', { userId })
+        .andWhere('checkin.status = :status', { status: CheckinStatus.DONE });
+
+      return await paginate<CheckinEntity>(queryBuilder, options);
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getIndueCheckin(cycleId: number): Promise<ObjectLiteral[]> {
     try {
       const query = `SELECT count(c.id) AS inDueCheckin

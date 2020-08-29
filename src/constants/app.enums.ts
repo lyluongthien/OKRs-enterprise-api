@@ -191,3 +191,8 @@ export enum CFRsHistoryType {
   RECEIVED = 2,
   ALL = 3,
 }
+
+export enum InferiorType {
+  STAFF = 1,
+  TEAM_LEADER = 2,
+}

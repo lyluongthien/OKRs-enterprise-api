@@ -2,7 +2,14 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { CheckinRepository } from './checkin.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import { CommonMessage, ConfidentLevel, CheckinStatus, CheckinStatusLogic, RoleEnum } from '@app/constants/app.enums';
+import {
+  CommonMessage,
+  ConfidentLevel,
+  CheckinStatus,
+  CheckinStatusLogic,
+  RoleEnum,
+  InferiorType,
+} from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
 import { EntityManager } from 'typeorm';
 import { UserRepository } from '../user/user.repository';
@@ -638,6 +645,36 @@ export class CheckinService {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
       data: responseData,
+    };
+  }
+
+  public async getInferior(userId: number, options: IPaginationOptions): Promise<ResponseModel> {
+    let data = null;
+    const user = await this._userRepository.getUserByID(userId);
+    const admin = await this._userRepository.getAdmin();
+    if (user && admin) {
+      if (user.isLeader && admin.id != userId) {
+        data = await this._userRepository.getInferior(user.teamId, InferiorType.STAFF, options);
+      } else if (admin.id == userId) {
+        data = await this._userRepository.getInferior(userId, InferiorType.TEAM_LEADER, options);
+      }
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
+    };
+  }
+
+  public async getInferiorCheckin(userId: number, options: IPaginationOptions): Promise<ResponseModel> {
+    let data = null;
+    if (userId) {
+      data = await this._checkinRepository.getInferiorCheckin(userId, options);
+    }
+    return {
+      statusCode: HttpStatus.OK,
+      message: CommonMessage.SUCCESS,
+      data: data,
     };
   }
 }
