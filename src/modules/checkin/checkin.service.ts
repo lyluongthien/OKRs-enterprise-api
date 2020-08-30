@@ -66,7 +66,6 @@ export class CheckinService {
       if (checkin.status === CheckinStatus.DRAFT) {
         responseData.progress = checkin.objective.progress;
       }
-
       return {
         statusCode: HttpStatus.OK,
         message: CommonMessage.SUCCESS,

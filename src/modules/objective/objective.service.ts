@@ -28,6 +28,10 @@ export class ObjectiveService {
   public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userId?: number): Promise<ResponseModel> {
     let objectiveEntity = null;
     if (okrDTo.objective) {
+      if (okrDTo.objective.id) {
+        const okrs = await this._objectiveRepository.getDetailOKRs(okrDTo.objective.id);
+        if (!okrs) throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
+      }
       let cycleId = okrDTo.objective.cycleId;
       if (cycleId) {
         const cycle = await this._cycleRepository.getCycleDetail(cycleId);
@@ -154,7 +158,7 @@ export class ObjectiveService {
           return data;
         });
       }
-    }
+    } else throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -164,6 +168,9 @@ export class ObjectiveService {
 
   public async getListOKRsByUserId(userId: number): Promise<ResponseModel> {
     const data = await this._objectiveRepository.getOKRsByUserId(userId);
+    if (!data) {
+      throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
