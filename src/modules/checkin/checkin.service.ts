@@ -50,7 +50,6 @@ export class CheckinService {
   public async getCheckinDetail(checkinId: number, userId: number): Promise<ResponseModel> {
     const checkin = await this._checkinRepository.getCheckinById(checkinId);
     const chart = await this._checkinRepository.getChartCheckin(checkin.objective.userId, checkin.objective.id);
-    console.log(checkin.objective.userId + '       ' + checkin.teamLeaderId + '    ' + userId);
     if (checkin.objective.userId === userId || checkin.teamLeaderId === userId) {
       const responseData = {
         id: checkin.id,
