@@ -258,13 +258,13 @@ export class UserService {
   //HR
   public async updateUserInfor(id: number, data: UserDTO): Promise<ResponseModel> {
     let userInfor = null;
-    if (data) {
+    if (data && id) {
       const admin = await this._userRepository.getAdmin();
       if (id == admin.id || data.roleId == admin.roleId)
         throw new HttpException(ACTION_BLOCKED.message, ACTION_BLOCKED.statusCode);
       if (data.isLeader == true) {
         const leader = await this._userRepository.getTeamLeader(id);
-        if (leader) throw new HttpException(TEAM_LEAD_EXIST.message, TEAM_LEAD_EXIST.statusCode);
+        if (leader && id != leader.id) throw new HttpException(TEAM_LEAD_EXIST.message, TEAM_LEAD_EXIST.statusCode);
         else userInfor = await this._userRepository.updateUserInfor(id, data);
       } else {
         userInfor = await this._userRepository.updateUserInfor(id, data);

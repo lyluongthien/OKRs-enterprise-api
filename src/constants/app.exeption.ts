@@ -168,7 +168,7 @@ export const DELETE_ERROR = {
 
 export const INFERIOR_FORBIDEN = {
   statusCode: 470,
-  message: `Bạn không có quền truy cập`,
+  message: `Bạn không có quyền truy cập`,
 };
 
 export const USER_INVALID = {
