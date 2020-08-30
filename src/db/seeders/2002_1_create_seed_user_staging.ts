@@ -7,7 +7,7 @@ import accessEnv from '@app/libs/accessEnv';
 import { _salt } from '@app/constants/app.config';
 import { generateGravatar } from '@app/libs/gravatar';
 
-export class Seeder2000UserStaging implements Seeder {
+export class Seeder2002UserStaging implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
     const seedPassword: string = accessEnv('SEED_PASSSWORD');
     await connection
