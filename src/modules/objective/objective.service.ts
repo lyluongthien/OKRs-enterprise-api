@@ -29,7 +29,7 @@ export class ObjectiveService {
     let objectiveEntity = null;
     if (okrDTo.objective) {
       if (okrDTo.objective.id) {
-        const okrs = this._objectiveRepository.getDetailOKRs(okrDTo.objective.id);
+        const okrs = await this._objectiveRepository.getDetailOKRs(okrDTo.objective.id);
         if (!okrs) throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
       }
       let cycleId = okrDTo.objective.cycleId;
