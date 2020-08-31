@@ -134,7 +134,12 @@ export class DashboardService {
   }
 
   public async getCheckinStatus(): Promise<ResponseModel> {
-    const currentCycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth();
+    const year = currentDate.getFullYear();
+    const date = year + '-' + month + '-' + day;
+    const currentCycleId = (await this._cycleRepository.getCurrentCycle(date)).id;
     const data = [];
     if (currentCycleId) {
       const inDue = await this._checkinRepository.getIndueCheckin(currentCycleId);

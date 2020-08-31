@@ -46,7 +46,12 @@ export class ObjectiveService {
       }
 
       if (okrDTo.objective.alignObjectivesId) {
-        if (!cycleId) cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+        const currentDate = new Date();
+        const day = currentDate.getDate();
+        const month = currentDate.getMonth();
+        const year = currentDate.getFullYear();
+        const date = year + '-' + month + '-' + day;
+        if (!cycleId) cycleId = (await this._cycleRepository.getCurrentCycle(date)).id;
         const listAlignment = await this._objectiveRepository.getListOKRs(cycleId, OKRsLeaderType.ALL);
 
         okrDTo.objective.alignObjectivesId = okrDTo.objective.alignObjectivesId.filter((value, index) => {

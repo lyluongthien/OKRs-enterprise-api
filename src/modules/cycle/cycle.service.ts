@@ -15,7 +15,11 @@ export class CycleService {
     let data = null;
     if (status && status == CycleStatus.CURRENT) {
       const currentDate = new Date();
-      data = await this._cycleRepository.getCurrentCycle(currentDate);
+      const day = currentDate.getDate();
+      const month = currentDate.getMonth();
+      const year = currentDate.getFullYear();
+      const date = year + '-' + month + '-' + day;
+      data = await this._cycleRepository.getCurrentCycle(date);
     } else {
       if (text) {
         text = text.toLowerCase();
