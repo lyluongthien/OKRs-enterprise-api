@@ -146,6 +146,21 @@ export const OKR_INVALID = {
   message: `OKRs không tồn tại`,
 };
 
+export const CFR_INVALID = {
+  statusCode: 404,
+  message: `CFRs không tồn tại`,
+};
+
+export const CHECKIN_INVALID = {
+  statusCode: 404,
+  message: `Checkin không tồn tại`,
+};
+
+export const CYCLE_INVALID = {
+  statusCode: 404,
+  message: `Chu kì không tồn tại`,
+};
+
 export const OKR_UPDATE_FAIL = {
   statusCode: 482,
   message: `Dữ liệu không hợp lệ`,

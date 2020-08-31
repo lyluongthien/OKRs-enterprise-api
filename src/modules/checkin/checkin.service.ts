@@ -24,6 +24,7 @@ import {
   CHECKIN_DONE,
   INFERIOR_FORBIDEN,
   USER_INVALID,
+  CHECKIN_INVALID,
 } from '@app/constants/app.exeption';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { RoleRepository } from '../role/role.repository';
@@ -77,7 +78,11 @@ export class CheckinService {
   }
 
   public async getHistoryCheckin(objectiveId: number): Promise<ResponseModel> {
-    const data = await this._checkinRepository.getCheckinByObjectiveId(objectiveId);
+    let data = null;
+    if (objectiveId) {
+      data = await this._checkinRepository.getCheckinByObjectiveId(objectiveId);
+      if (!data) throw new HttpException(CHECKIN_INVALID.message, CHECKIN_INVALID.statusCode);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
