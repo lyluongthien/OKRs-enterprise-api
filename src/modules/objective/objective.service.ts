@@ -186,8 +186,7 @@ export class ObjectiveService {
   public async deleteOKRs(objectiveId: number, userId: number, manager: EntityManager): Promise<ResponseModel> {
     let rowEffected = 0;
     if (objectiveId && manager && userId) {
-      const okrsIds = await this._objectiveRepository.getListOKRsIds();
-      const okrsExist = okrsIds.some(({ id }) => id === objectiveId);
+      const okrsExist = await this._objectiveRepository.getDetailOKRs(objectiveId);
       if (!okrsExist) {
         throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
       }

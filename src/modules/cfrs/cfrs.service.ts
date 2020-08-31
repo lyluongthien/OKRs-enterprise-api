@@ -1,4 +1,4 @@
-import { Injectable, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 import { CFRsRepository } from './cfrs.repository';
 import { ResponseModel } from '@app/constants/app.interface';
 import {
@@ -16,6 +16,7 @@ import { EvaluationCriteriaRepository } from '../evaluation-criteria/evaluation-
 import { UserStarRepository } from '../user-star/user-star.repository';
 import { CycleRepository } from '../cycle/cycle.repository';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
+import { CFR_INVALID, USER_INVALID, CYCLE_INVALID } from '@app/constants/app.exeption';
 
 @Injectable()
 export class CFRsService {
@@ -157,7 +158,11 @@ export class CFRsService {
   ): Promise<ResponseModel> {
     let data = null;
     if (cycleId && options && type) {
+      const cycle = await this._cycleRepository.getCycleDetail(cycleId);
+      if (!cycle) throw new HttpException(CYCLE_INVALID.message, CYCLE_INVALID.statusCode);
       if (userId) {
+        const user = await this._userRepository.getUserByID(userId);
+        if (!user) throw new HttpException(USER_INVALID.message, USER_INVALID.statusCode);
         if (type == CFRsHistoryType.SENT) {
           data = await this._cfrsRepository.getSentCFRs(userId, cycleId, options);
         } else if (type == CFRsHistoryType.RECEIVED) {
@@ -177,7 +182,11 @@ export class CFRsService {
   }
 
   public async getDetailCFRs(cfrsId: number): Promise<ResponseModel> {
-    const data = await this._cfrsRepository.getDetailCFRs(cfrsId);
+    let data = null;
+    if (cfrsId) {
+      data = await this._cfrsRepository.getDetailCFRs(cfrsId);
+      if (!data) throw new HttpException(CFR_INVALID.message, CFR_INVALID.statusCode);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
