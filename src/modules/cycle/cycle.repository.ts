@@ -76,11 +76,11 @@ export class CycleRepository extends Repository<CycleEntity> {
     }
   }
 
-  public async getCurrentCycle(currentDate: Date): Promise<CycleEntity> {
+  public async getCurrentCycle(date: string): Promise<CycleEntity> {
     try {
       return await this.createQueryBuilder('cycle')
         .where(':date BETWEEN cycle.startDate AND cycle.endDate', {
-          date: currentDate,
+          date,
         })
         .getOne();
     } catch (error) {

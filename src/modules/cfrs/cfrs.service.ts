@@ -30,10 +30,15 @@ export class CFRsService {
 
   public async listWaitingFeedBack(id: number, options: IPaginationOptions): Promise<ResponseModel> {
     const data: any = {};
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = currentDate.getMonth() + 1;
+    const year = currentDate.getFullYear();
+    const date = year + '-' + month + '-' + day;
     const user = await this._userRepository.getUserByID(id);
     const isLeader = user.isLeader;
     const admin = await this._userRepository.getAdmin();
-    const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+    const cycleId = (await this._cycleRepository.getCurrentCycle(date)).id;
     if (isLeader && id != admin.id) {
       data.superior = {
         user: {
@@ -120,7 +125,12 @@ export class CFRsService {
   ): Promise<ResponseModel> {
     if (data && senderId) {
       data.senderId = senderId;
-      const cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+      const currentDate = new Date();
+      const day = currentDate.getDate();
+      const month = currentDate.getMonth() + 1;
+      const year = currentDate.getFullYear();
+      const date = year + '-' + month + '-' + day;
+      const cycleId = (await this._cycleRepository.getCurrentCycle(date)).id;
       data.cycleId = cycleId;
       await this._cfrsRepository.createCFRs(data, manager);
       if (data.checkinId && data.type == TypeCFRsHistory.FEED_BACK)
