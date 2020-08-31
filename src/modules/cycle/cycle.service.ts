@@ -16,7 +16,7 @@ export class CycleService {
     if (status && status == CycleStatus.CURRENT) {
       const currentDate = new Date();
       const day = currentDate.getDate();
-      const month = currentDate.getMonth();
+      const month = currentDate.getMonth() + 1;
       const year = currentDate.getFullYear();
       const date = year + '-' + month + '-' + day;
       data = await this._cycleRepository.getCurrentCycle(date);

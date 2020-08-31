@@ -32,7 +32,7 @@ export class CFRsService {
     const data: any = {};
     const currentDate = new Date();
     const day = currentDate.getDate();
-    const month = currentDate.getMonth();
+    const month = currentDate.getMonth() + 1;
     const year = currentDate.getFullYear();
     const date = year + '-' + month + '-' + day;
     const user = await this._userRepository.getUserByID(id);
@@ -127,7 +127,7 @@ export class CFRsService {
       data.senderId = senderId;
       const currentDate = new Date();
       const day = currentDate.getDate();
-      const month = currentDate.getMonth();
+      const month = currentDate.getMonth() + 1;
       const year = currentDate.getFullYear();
       const date = year + '-' + month + '-' + day;
       const cycleId = (await this._cycleRepository.getCurrentCycle(date)).id;

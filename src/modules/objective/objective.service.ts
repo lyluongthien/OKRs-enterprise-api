@@ -48,7 +48,7 @@ export class ObjectiveService {
       if (okrDTo.objective.alignObjectivesId) {
         const currentDate = new Date();
         const day = currentDate.getDate();
-        const month = currentDate.getMonth();
+        const month = currentDate.getMonth() + 1;
         const year = currentDate.getFullYear();
         const date = year + '-' + month + '-' + day;
         if (!cycleId) cycleId = (await this._cycleRepository.getCurrentCycle(date)).id;
