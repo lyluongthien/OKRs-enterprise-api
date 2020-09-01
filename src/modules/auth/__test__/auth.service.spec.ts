@@ -153,7 +153,11 @@ describe('AuthController', () => {
         .post('/api/v1/auth/register')
         .set('Accept', 'application/json')
         .send(payload)
-        .expect(HttpStatus.NOT_FOUND);
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    test('(GET) Verify token', async () => {
+      return request(app.getHttpServer()).get('/api/v1/auth/verification/aaaaaaaaa').expect(413);
     });
   });
 });

@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '@app/app.module';
 import { SignInDTO } from '@app/modules/auth/auth.dto';
 
-describe('CheckinController', () => {
+describe('CFRsController', () => {
   let app: INestApplication;
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -25,10 +25,33 @@ describe('CheckinController', () => {
     email: 'quangnvse05839@fpt.edu.vn',
     password: 'Admin123',
   };
+  const leaderBody: SignInDTO = {
+    email: 'ducnmhe130666@fpt.edu.vn',
+    password: 'Admin123',
+  };
   let userToken: string;
   let admintoken: string;
+  let leaderToken: string;
 
   describe('LOGIN SYSTEM', () => {
+    test('(POST) Test with empty login body', async () => {
+      return request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .set('Accept', 'application/json')
+        .send({})
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+    test('(POST) Login leader account', async () => {
+      return request(app.getHttpServer())
+        .post('/api/v1/auth/login')
+        .set('Accept', 'application/json')
+        .send(leaderBody)
+        .expect((res) => {
+          leaderToken = res.body.data.token;
+          expect(res.body.data).toBeDefined();
+          expect(res.body.data.user).toBeDefined();
+        });
+    });
     test('(POST) Login succes', async () => {
       return request(app.getHttpServer())
         .post('/api/v1/auth/login')
@@ -62,75 +85,56 @@ describe('CheckinController', () => {
     });
   });
 
-  describe('GET CHECKIN INFERIOR', () => {
-    test('(GET) inferior of staff', async () => {
+  describe('GET LIST WATTING', () => {
+    test('(GET) list_waiting with role staff', async () => {
       return request(app.getHttpServer())
-        .get('/api/v1/checkins/inferior?cycleId=3&page=1&limit=10')
+        .get('/api/v1/cfrs/list_waiting?page=1&limit=10')
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(470);
+        .expect(HttpStatus.OK);
     });
 
-    test('(GET) inferior admin', async () => {
+    test('(GET) list_waiting with role admin', async () => {
       return request(app.getHttpServer())
-        .get('/api/v1/checkins/inferior?cycleId=3&page=1&limit=10')
+        .get('/api/v1/cfrs/list_waiting?page=1&limit=10')
         .set('Authorization', `Bearer ${admintoken}`)
         .expect(HttpStatus.OK);
     });
-  });
 
-  describe('GET CHECKIN INFERIOR OBJECTIVE', () => {
-    test('(GET) inferior of staff', async () => {
+    test('(GET) list_waiting with role leader', async () => {
       return request(app.getHttpServer())
-        .get('/api/v1/checkins/inferior_objective?userId=1&cycleId=3')
-        .set('Authorization', `Bearer ${userToken}`)
+        .get('/api/v1/cfrs/list_waiting?page=1&limit=10')
+        .set('Authorization', `Bearer ${leaderToken}`)
         .expect(HttpStatus.OK);
     });
   });
 
-  describe('GET CHECKIN HISTORY OBJECTIVE', () => {
-    test('(GET) history checkin', async () => {
+  describe('GET CFRs HISTORY', () => {
+    test('(GET) history sent', async () => {
       return request(app.getHttpServer())
-        .get('/api/v1/checkins/history/1')
-        .set('Authorization', `Bearer ${userToken}`)
+        .get('/api/v1/cfrs/history?page=1&limit=10&userId=1&cycleId=3&type=1')
+        .set('Authorization', `Bearer ${leaderToken}`)
+        .expect(HttpStatus.OK);
+    });
+    test('(GET) history received', async () => {
+      return request(app.getHttpServer())
+        .get('/api/v1/cfrs/history?page=1&limit=10&userId=1&cycleId=3&type=2')
+        .set('Authorization', `Bearer ${leaderToken}`)
+        .expect(HttpStatus.OK);
+    });
+    test('(GET) history all', async () => {
+      return request(app.getHttpServer())
+        .get('/api/v1/cfrs/history?page=1&limit=10&userId=1&cycleId=3&type=3')
+        .set('Authorization', `Bearer ${leaderToken}`)
         .expect(HttpStatus.OK);
     });
   });
 
-  describe('GET CHECKIN REQUEST', () => {
-    test('(GET) request checkin', async () => {
+  describe('GET CFRs DETAIL', () => {
+    test('(GET) CFR detail', async () => {
       return request(app.getHttpServer())
-        .get('/api/v1/checkins/checkin_request?cycleId=3&page=1&limit=10')
-        .set('Authorization', `Bearer ${admintoken}`)
+        .get('/api/v1/cfrs/detail/1')
+        .set('Authorization', `Bearer ${leaderToken}`)
         .expect(HttpStatus.OK);
-    });
-  });
-
-  describe('GET CHECKIN Admin', () => {
-    test('(GET) admin checkin', async () => {
-      return request(app.getHttpServer())
-        .get('/api/v1/checkins/admin?cycleId=3')
-        .set('Authorization', `Bearer ${admintoken}`)
-        .expect(HttpStatus.OK);
-    });
-    test('(GET) not admin checkin', async () => {
-      return request(app.getHttpServer())
-        .get('/api/v1/checkins/admin?cycleId=3')
-        .set('Authorization', `Bearer ${userToken}`)
-        .expect(470);
-    });
-
-    test('(GET) waiting_feedback_detail', async () => {
-      return request(app.getHttpServer())
-        .get('/api/v1/checkins/waiting_feedback_detail/1')
-        .set('Authorization', `Bearer ${userToken}`)
-        .expect(200);
-    });
-
-    test('(GET) get checkin detail', async () => {
-      return request(app.getHttpServer())
-        .get('/api/v1/checkins?cycleId=3')
-        .set('Authorization', `Bearer ${userToken}`)
-        .expect(200);
     });
   });
 });

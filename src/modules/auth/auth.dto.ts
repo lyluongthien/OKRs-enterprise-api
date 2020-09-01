@@ -39,6 +39,7 @@ export class RegisterDTO {
 export class SignInDTO {
   @ApiProperty()
   @IsNotEmpty()
+  @IsEmail()
   public readonly email: string;
 
   @ApiProperty()
