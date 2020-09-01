@@ -3,7 +3,7 @@ import { HttpException } from '@nestjs/common';
 
 import { ObjectiveEntity } from '@app/db/entities/objective.entity';
 import { DATABASE_EXCEPTION } from '@app/constants/app.exeption';
-import { OKRsType, OKRsLeaderType, CheckinStatus } from '@app/constants/app.enums';
+import { OKRsType, OKRsLeaderType, CheckinStatus, RoleEnum } from '@app/constants/app.enums';
 import { ObjectiveDTO } from './objective.dto';
 
 @EntityRepository(ObjectiveEntity)
@@ -91,6 +91,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         ])
         .leftJoin('objective.user', 'users')
         .leftJoin('users.team', 'team')
+        .leftJoin('users.role', 'role')
         .where('objective.cycleId = :cycleId', { cycleId: id });
       switch (type) {
         case OKRsLeaderType.ROOT:
@@ -99,6 +100,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           return await queryBuilder
             .andWhere('users.isLeader = :isLead', { isLead: true })
             .andWhere('objective.isRootObjective = :root', { root: false })
+            .andWhere('role.name <> :name', { name: RoleEnum.ADMIN })
             .getMany();
         case OKRsLeaderType.ALL:
           return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: false }).getMany();
