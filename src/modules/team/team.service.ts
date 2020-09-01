@@ -13,7 +13,8 @@ export class TeamService {
   constructor(private _teamRepository: TeamRepository, private _userRepository: UserRepository) {}
 
   public async getTeams(options: IPaginationOptions): Promise<ResponseModel> {
-    const data = await this._teamRepository.getTeams(options);
+    const adminTeamId = (await this._userRepository.getAdmin()).teamId;
+    const data = await this._teamRepository.getTeams(options, adminTeamId);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -23,7 +24,8 @@ export class TeamService {
 
   public async searchTeam(text: string, options: IPaginationOptions): Promise<ResponseModel> {
     text = text.toLowerCase();
-    const data = await this._teamRepository.searchTeam(text, options);
+    const adminTeamId = (await this._userRepository.getAdmin()).teamId;
+    const data = await this._teamRepository.searchTeam(text, options, adminTeamId);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,

@@ -10,10 +10,11 @@ import { ResponseModel } from '@app/constants/app.interface';
 
 @EntityRepository(TeamEntity)
 export class TeamRepository extends Repository<TeamEntity> {
-  public async getTeams(options: IPaginationOptions): Promise<any> {
+  public async getTeams(options: IPaginationOptions, adminTeamId: number): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('team')
         .select(['team.id', 'team.name', 'team.description', 'team.updatedAt'])
+        .where('team.id <> :adminTeamId', { adminTeamId })
         .orderBy('team.updatedAt', 'DESC');
       return await paginate<TeamEntity>(queryBuilder, options);
     } catch (error) {
@@ -21,11 +22,12 @@ export class TeamRepository extends Repository<TeamEntity> {
     }
   }
 
-  public async searchTeam(text: string, options: IPaginationOptions): Promise<any> {
+  public async searchTeam(text: string, options: IPaginationOptions, adminTeamId: number): Promise<any> {
     try {
       const queryBuilder = this.createQueryBuilder('team')
         .select(['team.id', 'team.name', 'team.description', 'team.updatedAt'])
         .where('LOWER(team.name) like :text', { text: '%' + text + '%' })
+        .where('team.id <> :adminTeamId', { adminTeamId })
         .orderBy('team.updatedAt', 'DESC');
       return await paginate<TeamEntity>(queryBuilder, options);
     } catch (error) {
