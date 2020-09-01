@@ -41,6 +41,10 @@ export class PasswordDTO {
 export class UserDTO {
   @Optional()
   @ApiProperty()
+  public email: string;
+
+  @Optional()
+  @ApiProperty()
   public isLeader: boolean;
 
   @Optional()

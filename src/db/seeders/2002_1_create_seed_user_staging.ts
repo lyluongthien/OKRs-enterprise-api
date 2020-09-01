@@ -7,7 +7,7 @@ import accessEnv from '@app/libs/accessEnv';
 import { _salt } from '@app/constants/app.config';
 import { generateGravatar } from '@app/libs/gravatar';
 
-export class Seeder2000UserStaging implements Seeder {
+export class Seeder2002UserStaging implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
     const seedPassword: string = accessEnv('SEED_PASSSWORD');
     await connection
@@ -16,30 +16,30 @@ export class Seeder2000UserStaging implements Seeder {
       .into(UserEntity)
       .values([
         {
-          email: 'ducpvse05320@fpt.edu.vn',
+          email: 'ducpvse@fpt.edu.vn',
           password: hashSync(seedPassword, _salt),
           fullName: 'Phan Văn Đức',
           gender: true,
-          gravatarURL: generateGravatar('ducpvse05320@fpt.edu.vn'),
+          gravatarURL: generateGravatar('ducpvse@fpt.edu.vn'),
           jobPositionId: 1,
-          roleId: 2,
+          roleId: 3,
           teamId: 3,
           isActive: true,
           isApproved: true,
           isLeader: false,
         },
         {
-          email: 'quangnvse05839@fpt.edu.vn',
+          email: 'quangnvse@fpt.edu.vn',
           password: hashSync(seedPassword, _salt),
           fullName: 'Nguyễn Văn Quang',
           gender: true,
-          gravatarURL: generateGravatar('quangnvse05839@fpt.edu.vn'),
+          gravatarURL: generateGravatar('quangnvse@fpt.edu.vn'),
           jobPositionId: 1,
-          roleId: 1,
-          teamId: 4,
+          roleId: 3,
+          teamId: 3,
           isActive: true,
           isApproved: true,
-          isLeader: true,
+          isLeader: false,
         },
       ])
       .execute();

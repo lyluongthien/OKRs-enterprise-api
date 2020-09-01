@@ -1,7 +1,7 @@
 codecov:
   bot: code-hunter
   token: ${{ secrets.CODECOV_TOKEN }}
-  require_ci_to_pass: yes
+  require_ci_to_pass: no
 
 coverage:
   round: up
@@ -15,4 +15,5 @@ comment:
   layout: "reach, diff, flags, files"
   behavior: default
   require_changes: true
-  after_n_builds: 5
+  branches:
+    - 'develop'

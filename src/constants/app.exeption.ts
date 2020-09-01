@@ -146,6 +146,21 @@ export const OKR_INVALID = {
   message: `OKRs không tồn tại`,
 };
 
+export const CFR_INVALID = {
+  statusCode: 404,
+  message: `CFRs không tồn tại`,
+};
+
+export const CHECKIN_INVALID = {
+  statusCode: 404,
+  message: `Checkin không tồn tại`,
+};
+
+export const CYCLE_INVALID = {
+  statusCode: 404,
+  message: `Chu kì không tồn tại`,
+};
+
 export const OKR_UPDATE_FAIL = {
   statusCode: 482,
   message: `Dữ liệu không hợp lệ`,
@@ -168,7 +183,7 @@ export const DELETE_ERROR = {
 
 export const INFERIOR_FORBIDEN = {
   statusCode: 470,
-  message: `Bạn không có quền truy cập`,
+  message: `Bạn không có quyền truy cập`,
 };
 
 export const USER_INVALID = {

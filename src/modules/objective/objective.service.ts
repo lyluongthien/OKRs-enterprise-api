@@ -28,6 +28,10 @@ export class ObjectiveService {
   public async createAndUpdateOKRs(okrDTo: OkrsDTO, manager: EntityManager, userId?: number): Promise<ResponseModel> {
     let objectiveEntity = null;
     if (okrDTo.objective) {
+      if (okrDTo.objective.id) {
+        const okrs = await this._objectiveRepository.getDetailOKRs(okrDTo.objective.id);
+        if (!okrs) throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
+      }
       let cycleId = okrDTo.objective.cycleId;
       if (cycleId) {
         const cycle = await this._cycleRepository.getCycleDetail(cycleId);
@@ -42,7 +46,12 @@ export class ObjectiveService {
       }
 
       if (okrDTo.objective.alignObjectivesId) {
-        if (!cycleId) cycleId = (await this._cycleRepository.getCurrentCycle(new Date())).id;
+        const currentDate = new Date();
+        const day = currentDate.getDate();
+        const month = currentDate.getMonth() + 1;
+        const year = currentDate.getFullYear();
+        const date = year + '-' + month + '-' + day;
+        if (!cycleId) cycleId = (await this._cycleRepository.getCurrentCycle(date)).id;
         const listAlignment = await this._objectiveRepository.getListOKRs(cycleId, OKRsLeaderType.ALL);
 
         okrDTo.objective.alignObjectivesId = okrDTo.objective.alignObjectivesId.filter((value, index) => {
@@ -154,7 +163,7 @@ export class ObjectiveService {
           return data;
         });
       }
-    }
+    } else throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -164,6 +173,9 @@ export class ObjectiveService {
 
   public async getListOKRsByUserId(userId: number): Promise<ResponseModel> {
     const data = await this._objectiveRepository.getOKRsByUserId(userId);
+    if (!data) {
+      throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
+    }
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
@@ -174,8 +186,7 @@ export class ObjectiveService {
   public async deleteOKRs(objectiveId: number, userId: number, manager: EntityManager): Promise<ResponseModel> {
     let rowEffected = 0;
     if (objectiveId && manager && userId) {
-      const okrsIds = await this._objectiveRepository.getListOKRsIds();
-      const okrsExist = okrsIds.some(({ id }) => id === objectiveId);
+      const okrsExist = await this._objectiveRepository.getDetailOKRs(objectiveId);
       if (!okrsExist) {
         throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
       }
