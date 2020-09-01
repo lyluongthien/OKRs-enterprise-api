@@ -13,12 +13,14 @@ export const sendEmail = async (email: string, subject: string, html: string): P
   });
 
   // send mail with defined transport object
-  const info = await transporter.sendMail({
-    from: accessEnv('EMAIL_NAME'),
-    to: email,
-    subject: subject,
-    html: html,
-  });
-
-  console.log('Message sent: %s', info.messageId);
+  try {
+    await transporter.sendMail({
+      from: accessEnv('EMAIL_NAME'),
+      to: email,
+      subject: subject,
+      html: html,
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
 };

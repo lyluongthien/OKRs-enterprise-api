@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '@app/app.module';
 import { SignInDTO } from '@app/modules/auth/auth.dto';
 
-describe('CheckinController', () => {
+describe('DashboardController', () => {
   let app: INestApplication;
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -62,75 +62,75 @@ describe('CheckinController', () => {
     });
   });
 
-  describe('GET CHECKIN INFERIOR', () => {
-    test('(GET) inferior of staff', async () => {
+  describe('GET TOP STAR', () => {
+    test('(GET) top star send', async () => {
       return request(app.getHttpServer())
-        .get('/api/v1/checkins/inferior?cycleId=3&page=1&limit=10')
+        .get(`/api/v1/dashboard/top_stars?cycleId=3&type=1`)
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(470);
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
     });
 
-    test('(GET) inferior admin', async () => {
+    test('(GET) top star received', async () => {
       return request(app.getHttpServer())
-        .get('/api/v1/checkins/inferior?cycleId=3&page=1&limit=10')
+        .get(`/api/v1/dashboard/top_stars?cycleId=3&type=2`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+  });
+
+  describe('VIEW PROGRESS', () => {
+    test('(GET) OKRs progress', async () => {
+      return request(app.getHttpServer())
+        .get(`/api/v1/dashboard/view_progress?cycleId=3`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+  });
+
+  describe('VIEW DASHBOARd ADMIN', () => {
+    test('(GET) Checkin status', async () => {
+      return request(app.getHttpServer())
+        .get(`/api/v1/dashboard/checkin_status`)
         .set('Authorization', `Bearer ${admintoken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
         .expect(HttpStatus.OK);
     });
-  });
 
-  describe('GET CHECKIN INFERIOR OBJECTIVE', () => {
-    test('(GET) inferior of staff', async () => {
+    test('(GET) CFRs status', async () => {
       return request(app.getHttpServer())
-        .get('/api/v1/checkins/inferior_objective?userId=1&cycleId=3')
-        .set('Authorization', `Bearer ${userToken}`)
-        .expect(HttpStatus.OK);
-    });
-  });
-
-  describe('GET CHECKIN HISTORY OBJECTIVE', () => {
-    test('(GET) history checkin', async () => {
-      return request(app.getHttpServer())
-        .get('/api/v1/checkins/history/1')
-        .set('Authorization', `Bearer ${userToken}`)
-        .expect(HttpStatus.OK);
-    });
-  });
-
-  describe('GET CHECKIN REQUEST', () => {
-    test('(GET) request checkin', async () => {
-      return request(app.getHttpServer())
-        .get('/api/v1/checkins/checkin_request?cycleId=3&page=1&limit=10')
+        .get(`/api/v1/dashboard/cfr_status`)
         .set('Authorization', `Bearer ${admintoken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
         .expect(HttpStatus.OK);
     });
-  });
 
-  describe('GET CHECKIN Admin', () => {
-    test('(GET) admin checkin', async () => {
+    test('(GET) OKRs status', async () => {
       return request(app.getHttpServer())
-        .get('/api/v1/checkins/admin?cycleId=3')
+        .get(`/api/v1/dashboard/okr_status`)
         .set('Authorization', `Bearer ${admintoken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
         .expect(HttpStatus.OK);
-    });
-    test('(GET) not admin checkin', async () => {
-      return request(app.getHttpServer())
-        .get('/api/v1/checkins/admin?cycleId=3')
-        .set('Authorization', `Bearer ${userToken}`)
-        .expect(470);
-    });
-
-    test('(GET) waiting_feedback_detail', async () => {
-      return request(app.getHttpServer())
-        .get('/api/v1/checkins/waiting_feedback_detail/1')
-        .set('Authorization', `Bearer ${userToken}`)
-        .expect(200);
-    });
-
-    test('(GET) get checkin detail', async () => {
-      return request(app.getHttpServer())
-        .get('/api/v1/checkins?cycleId=3')
-        .set('Authorization', `Bearer ${userToken}`)
-        .expect(200);
     });
   });
 });
