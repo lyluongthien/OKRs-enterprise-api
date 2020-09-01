@@ -132,5 +132,19 @@ describe('CheckinController', () => {
         .set('Authorization', `Bearer ${userToken}`)
         .expect(200);
     });
+
+    test('(GET) get checkin detail with invalid ID', async () => {
+      return request(app.getHttpServer())
+        .get('/api/v1/checkins/23423')
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(200);
+    });
+
+    test('(GET) get checkin detail history with invalid ID', async () => {
+      return request(app.getHttpServer())
+        .get('/api/v1/checkins/history/23423')
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(200);
+    });
   });
 });
