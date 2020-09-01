@@ -39,6 +39,18 @@ jobs:
       - name: Install packages
         run: yarn install
 
+      - name: Copy file .env
+        run: cp .env.example .env
+
+      - name: Run Docker compose stack for CI
+        run: docker-compose -f docker-compose.yml up -d
+
+      - name: Check running containers & Check logs flame_db container
+        run: docker ps -a && docker logs flame_db
+
+      - name: Migration DB & Seed data
+        run: yarn setup:ci
+
       - name: Run Unit Test
         run: yarn test:cov
 
