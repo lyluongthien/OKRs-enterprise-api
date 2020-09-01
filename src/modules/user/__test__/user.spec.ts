@@ -3,7 +3,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '@app/app.module';
 import { SignInDTO } from '@app/modules/auth/auth.dto';
-import { UserProfileDTO, ChangePasswordDTO } from '../user.dto';
+import {
+  UserProfileDTO,
+  ChangePasswordDTO,
+  UserDTO,
+  ApproveRequestDTO,
+  ResetPasswordDTO,
+  PasswordDTO,
+} from '../user.dto';
+import { Status } from '@app/constants/app.enums';
 
 describe('AuthController', () => {
   let app: INestApplication;
@@ -115,6 +123,163 @@ describe('AuthController', () => {
           expect(res.body.data).toBeDefined();
         })
         .expect(HttpStatus.OK);
+    });
+  });
+
+  describe('User information', () => {
+    test('(GET) Get user active', () => {
+      return request(app.getHttpServer())
+        .get(`/api/v1/users?status=${Status.ACTIVE}&page=1&limit=10`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+    test('(GET) Search user active', () => {
+      return request(app.getHttpServer())
+        .get(`/api/v1/users?status=${Status.ACTIVE}&page=1&text=duc&limit=10`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+
+    test('(GET) Get user pending', () => {
+      return request(app.getHttpServer())
+        .get(`/api/v1/users?status=${Status.PENDING}&page=1&limit=10`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+    test('(GET) Search user pending', () => {
+      return request(app.getHttpServer())
+        .get(`/api/v1/users?status=${Status.PENDING}&page=1&text=duc&limit=10`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+
+    test('(GET) Get user deactive', () => {
+      return request(app.getHttpServer())
+        .get(`/api/v1/users?status=${Status.DEAVCTIVE}&page=1&limit=10`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+    test('(GET) Search user deactive', () => {
+      return request(app.getHttpServer())
+        .get(`/api/v1/users?status=${Status.DEAVCTIVE}&page=1&text=duc&limit=10`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+
+    test('(GET) Get all users', () => {
+      return request(app.getHttpServer())
+        .get(`/api/v1/users/all`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+
+    test('(GET) Get admin', () => {
+      return request(app.getHttpServer())
+        .get(`/api/v1/users/admin`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+
+    const userProfile: UserDTO = {
+      teamId: 1,
+      email: 'phanduc0908@gmail.com',
+      isActive: true,
+      isApproved: true,
+      isLeader: false,
+      jobPositionId: 1,
+      roleId: 3,
+    };
+    test('(PUT) Update user information', () => {
+      return request(app.getHttpServer())
+        .put(`/api/v1/users/4`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .send(userProfile)
+        .expect((res) => {
+          expect(res.body).toBeDefined();
+          expect(res.body.data).toBeDefined();
+        })
+        .expect(HttpStatus.OK);
+    });
+
+    const approveRequest: ApproveRequestDTO = {
+      id: [9],
+    };
+    test('(PUT) Approve request', () => {
+      return request(app.getHttpServer())
+        .put(`/api/v1/users/approve_request`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .send(approveRequest)
+        .expect(HttpStatus.OK);
+    });
+
+    test('(DELETE) Delete user', () => {
+      return request(app.getHttpServer())
+        .delete(`/api/v1/users/3000`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(HttpStatus.OK);
+    });
+  });
+
+  describe('Reset password', () => {
+    const resetPass: ResetPasswordDTO = {
+      email: 'phanduc0908@gmail.com',
+    };
+    test('(POST) Send request', () => {
+      return request(app.getHttpServer())
+        .post(`/api/v1/reset_password`)
+        .send(resetPass)
+        .expect((res) => expect(res.body).toBeDefined());
+    });
+
+    test('(POST) Send request with email dose not exist', () => {
+      return request(app.getHttpServer())
+        .post(`/api/v1/reset_password`)
+        .send({ email: 'demo@gmail.com' })
+        .expect((res) => expect(res.body).toBeDefined());
+    });
+
+    test('(GET) Verify token', () => {
+      return request(app.getHttpServer()).get(`/api/v1/reset_password/tokenasd`).send(resetPass).expect(413);
+    });
+
+    const newPassword: PasswordDTO = {
+      password: 'Admin123',
+      token: 'token',
+    };
+    test('(PUT) Reset password password', () => {
+      return request(app.getHttpServer()).put(`/api/v1/reset_password`).send(newPassword).expect(413);
     });
   });
 });

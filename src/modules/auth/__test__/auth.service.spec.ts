@@ -137,5 +137,27 @@ describe('AuthController', () => {
         .send(registerData)
         .expect(HttpStatus.BAD_REQUEST);
     });
+
+    const payload: RegisterDTO = {
+      email: 'string',
+      password: 'string',
+      fullName: 'string',
+      gender: true,
+      teamId: 299,
+      jobPositionId: 1999,
+      token: `${inviteToken}`,
+    };
+
+    test('(POST) Register with password wrong format', async () => {
+      return request(app.getHttpServer())
+        .post('/api/v1/auth/register')
+        .set('Accept', 'application/json')
+        .send(payload)
+        .expect(HttpStatus.BAD_REQUEST);
+    });
+
+    test('(GET) Verify token', async () => {
+      return request(app.getHttpServer()).get('/api/v1/auth/verification/aaaaaaaaa').expect(413);
+    });
   });
 });

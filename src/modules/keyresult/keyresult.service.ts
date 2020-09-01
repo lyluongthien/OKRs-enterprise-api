@@ -1,24 +1,13 @@
 import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { KeyResultRepository } from './keyresult.repository';
-import { KeyResultDTO } from './keyresult.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, DeleteKeyresultType } from '@app/constants/app.enums';
-import { ObjectiveRepository } from '../objective/objective.repository';
 import { KEY_RESULT_INVALID, DELETE_KEY_RESULT } from '@app/constants/app.exeption';
 
 @Injectable()
 export class KeyResultService {
-  constructor(private _keyResultRepository: KeyResultRepository, private _objectiveRepository: ObjectiveRepository) {}
-
-  public async createAndUpdateKeyResult(data: KeyResultDTO[]): Promise<ResponseModel> {
-    await this._keyResultRepository.createAndUpdateKeyResult(data);
-    return {
-      statusCode: HttpStatus.CREATED,
-      message: CommonMessage.SUCCESS,
-      data: {},
-    };
-  }
+  constructor(private _keyResultRepository: KeyResultRepository) {}
 
   public async deleteKeyResult(keyResultId: number, userId: number): Promise<ResponseModel> {
     let data = null;
@@ -39,15 +28,6 @@ export class KeyResultService {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
       data: data,
-    };
-  }
-
-  public async updateKeyresults(id: number, data: KeyResultDTO): Promise<ResponseModel> {
-    await this._keyResultRepository.updateKeyResults(id, data);
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: {},
     };
   }
 }

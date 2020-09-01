@@ -76,7 +76,7 @@ export class LessonService {
     const html = new Converter().makeHtml(lessons.content);
     const $ = load(html);
     const thumbnail = $('img').attr('src');
-    await this._lessonRepository.createLesson({
+    const data = await this._lessonRepository.createLesson({
       title: lessons.title,
       content: lessons.content,
       slug: slug,
@@ -87,7 +87,7 @@ export class LessonService {
     return {
       statusCode: HttpStatus.CREATED,
       message: CommonMessage.SUCCESS,
-      data: {},
+      data: data,
     };
   }
 
@@ -104,11 +104,11 @@ export class LessonService {
       lessons.thumbnail = thumbnail ? thumbnail : LessonThumbnail.thumbNail;
     }
 
-    await this._lessonRepository.updateLesson(id, lessons);
+    const data = await this._lessonRepository.updateLesson(id, lessons);
     return {
       statusCode: HttpStatus.OK,
       message: CommonMessage.SUCCESS,
-      data: {},
+      data: data,
     };
   }
   public async deleteLesson(id: number): Promise<ResponseModel> {

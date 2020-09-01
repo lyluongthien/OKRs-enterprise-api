@@ -216,15 +216,6 @@ export class UserService {
     };
   }
 
-  public async getUserByEmail(email: string): Promise<ResponseModel> {
-    const data = await this._userRepository.getUserByEmail(email);
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: data,
-    };
-  }
-
   public async searchUsersActived(text: string, options: IPaginationOptions): Promise<ResponseModel> {
     const data = await this._userRepository.searchUsersActived(text.toLowerCase(), options);
     const dataResponse = paginationDataParser(data);
