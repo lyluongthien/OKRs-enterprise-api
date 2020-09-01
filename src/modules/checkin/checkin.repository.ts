@@ -279,7 +279,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       WHERE o."isCompleted" = FALSE
         AND o."cycleId" = ${cycleId}
         AND o.id NOT IN
-          (SELECT DISTINCT c."objectiveId"
+          (SELECT DISTINCT coalesce(c."objectiveId", 0)
            FROM checkins c
            WHERE c.status = '${CheckinStatus.DONE}' or c.status = '${CheckinStatus.CLOSED}')`;
       return await this.query(query);
@@ -295,7 +295,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       FROM objectives o
       WHERE o."isCompleted" = FALSE
         AND o.id NOT IN
-          (SELECT DISTINCT c."objectiveId"
+          (SELECT DISTINCT coalesce(c."objectiveId", 0)
            FROM checkins c
            WHERE (c.status = '${CheckinStatus.DONE}' or c.status = '${CheckinStatus.CLOSED}') 
            and c."checkinAt" <= '${lastDay}')`;
