@@ -90,23 +90,18 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'team.name',
         ])
         .leftJoin('objective.user', 'users')
-        .leftJoin('users.team', 'team');
+        .leftJoin('users.team', 'team')
+        .where('objective.cycleId = :cycleId', { cycleId: id });
       switch (type) {
         case OKRsLeaderType.ROOT:
-          return await queryBuilder
-            .where('objective.cycleId = :cycleId', { cycleId: id })
-            .andWhere('objective.isRootObjective = true')
-            .getMany();
+          return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: true }).getMany();
         case OKRsLeaderType.TEAM_LEADER:
           return await queryBuilder
-            .where('objective.cycleId = :cycleId', { cycleId: id })
             .andWhere('users.isLeader = :isLead', { isLead: true })
-            .getMany();
-        case OKRsLeaderType.ALL:
-          return await queryBuilder
-            .where('objective.cycleId = :cycleId', { cycleId: id })
             .andWhere('objective.isRootObjective = :root', { root: false })
             .getMany();
+        case OKRsLeaderType.ALL:
+          return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: false }).getMany();
         default:
           return null;
       }
