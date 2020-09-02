@@ -90,7 +90,7 @@ describe('CheckinController', () => {
   describe('GET CHECKIN HISTORY OBJECTIVE', () => {
     test('(GET) history checkin', async () => {
       return request(app.getHttpServer())
-        .get('/api/v1/checkins/history/1')
+        .get('/api/v1/checkins/history/11')
         .set('Authorization', `Bearer ${userToken}`)
         .expect(HttpStatus.OK);
     });
@@ -123,28 +123,28 @@ describe('CheckinController', () => {
       return request(app.getHttpServer())
         .get('/api/v1/checkins/waiting_feedback_detail/1')
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(200);
+        .expect(HttpStatus.OK);
     });
 
     test('(GET) get checkin detail', async () => {
       return request(app.getHttpServer())
         .get('/api/v1/checkins?cycleId=3')
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(200);
+        .expect(HttpStatus.OK);
     });
 
     test('(GET) get checkin detail with invalid ID', async () => {
       return request(app.getHttpServer())
         .get('/api/v1/checkins/23423')
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(200);
+        .expect(HttpStatus.NOT_FOUND);
     });
 
     test('(GET) get checkin detail history with invalid ID', async () => {
       return request(app.getHttpServer())
         .get('/api/v1/checkins/history/23423')
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(200);
+        .expect(HttpStatus.NOT_FOUND);
     });
   });
 });

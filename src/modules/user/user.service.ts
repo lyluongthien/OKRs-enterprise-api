@@ -247,11 +247,11 @@ export class UserService {
   }
 
   //HR
-  public async updateUserInfor(id: number, data: UserDTO): Promise<ResponseModel> {
+  public async updateUserInfor(userId: number, id: number, data: UserDTO): Promise<ResponseModel> {
     let userInfor = null;
     if (data && id) {
       const admin = await this._userRepository.getAdmin();
-      if (id == admin.id || data.roleId == admin.roleId)
+      if ((id == admin.id || data.roleId == admin.roleId) && userId != admin.id)
         throw new HttpException(ACTION_BLOCKED.message, ACTION_BLOCKED.statusCode);
       if (data.isLeader == true) {
         const leader = await this._userRepository.getTeamLeader(id);
