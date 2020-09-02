@@ -50,38 +50,39 @@ export class CheckinService {
 
   public async getCheckinDetail(checkinId: number, userId: number): Promise<ResponseModel> {
     const checkin = await this._checkinRepository.getCheckinById(checkinId);
-    const chart = await this._checkinRepository.getChartCheckin(checkin.objective.userId, checkin.objective.id);
-    if (checkin.objective.userId === userId || checkin.teamLeaderId === userId) {
-      const responseData = {
-        id: checkin.id,
-        confidentLevel: checkin.confidentLevel,
-        progress: checkin.progress,
-        checkinAt: checkin.checkinAt,
-        nextCheckinDate: checkin.nextCheckinDate,
-        status: checkin.status,
-        teamLeaderId: checkin.teamLeaderId,
-        objective: checkin.objective,
-        checkinDetails: checkin.checkinDetails,
-        chart: chart,
-      };
-      if (checkin.status === CheckinStatus.DRAFT) {
-        responseData.progress = checkin.objective.progress;
+    if (checkin) {
+      const chart = await this._checkinRepository.getChartCheckin(checkin.objective.userId, checkin.objective.id);
+      if (checkin.objective.userId === userId || checkin.teamLeaderId === userId) {
+        const responseData = {
+          id: checkin.id,
+          confidentLevel: checkin.confidentLevel,
+          progress: checkin.progress,
+          checkinAt: checkin.checkinAt,
+          nextCheckinDate: checkin.nextCheckinDate,
+          status: checkin.status,
+          teamLeaderId: checkin.teamLeaderId,
+          objective: checkin.objective,
+          checkinDetails: checkin.checkinDetails,
+          chart: chart,
+        };
+        if (checkin.status === CheckinStatus.DRAFT) {
+          responseData.progress = checkin.objective.progress;
+        }
+        return {
+          statusCode: HttpStatus.OK,
+          message: CommonMessage.SUCCESS,
+          data: responseData,
+        };
+      } else {
+        throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
       }
-      return {
-        statusCode: HttpStatus.OK,
-        message: CommonMessage.SUCCESS,
-        data: responseData,
-      };
-    } else {
-      throw new HttpException(CHECKIN_FOBIDDEN.message, CHECKIN_FOBIDDEN.statusCode);
-    }
+    } else throw new HttpException(CHECKIN_INVALID.message, CHECKIN_INVALID.statusCode);
   }
 
   public async getHistoryCheckin(objectiveId: number): Promise<ResponseModel> {
-    let data = null;
-    if (objectiveId) {
-      data = await this._checkinRepository.getCheckinByObjectiveId(objectiveId);
-      if (!data) throw new HttpException(CHECKIN_INVALID.message, CHECKIN_INVALID.statusCode);
+    const data = await this._checkinRepository.getCheckinByObjectiveId(objectiveId);
+    if (!data || data.length < 1) {
+      throw new HttpException(CHECKIN_INVALID.message, CHECKIN_INVALID.statusCode);
     }
     return {
       statusCode: HttpStatus.OK,

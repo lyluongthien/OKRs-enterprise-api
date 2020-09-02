@@ -190,7 +190,11 @@ export class UserController {
   @Put(':id')
   @UseGuards(AuthorizationGuard)
   @Roles(RoleEnum.HR, RoleEnum.ADMIN)
-  public updateUserInfo(@Param('id') id: number, @Body() data: UserDTO): Promise<ResponseModel> {
-    return this._userService.updateUserInfor(id, data);
+  public updateUserInfo(
+    @CurrentUser() user: UserEntity,
+    @Param('id') id: number,
+    @Body() data: UserDTO,
+  ): Promise<ResponseModel> {
+    return this._userService.updateUserInfor(user.id, id, data);
   }
 }

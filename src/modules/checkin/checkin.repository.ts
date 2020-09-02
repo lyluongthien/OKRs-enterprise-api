@@ -122,7 +122,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
 
   public async getCheckinByObjectiveId(id: number): Promise<CheckinEntity[]> {
     try {
-      const queryBuilder = this.createQueryBuilder('checkin')
+      return await this.createQueryBuilder('checkin')
         .select([
           'checkin.id',
           'checkin.confidentLevel',
@@ -137,8 +137,6 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .where('objective.id= :id', { id })
         .orderBy('checkin.checkinAt', 'DESC')
         .getMany();
-
-      return await queryBuilder;
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }
