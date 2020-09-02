@@ -314,6 +314,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objective.title',
           'objective.progress',
           'objective.isCompleted',
+          'objective.createdAt',
           'keyresults.id',
           'keyresults.content',
           'keyresults.targetValue',

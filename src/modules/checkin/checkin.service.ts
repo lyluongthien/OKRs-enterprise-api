@@ -52,6 +52,16 @@ export class CheckinService {
     const checkin = await this._checkinRepository.getCheckinById(checkinId);
     if (checkin) {
       const chart = await this._checkinRepository.getChartCheckin(checkin.objective.userId, checkin.objective.id);
+      const createObjective = {
+        checkinAt: checkin.objective.createdAt,
+        progress: checkin.objective.progress,
+      };
+
+      const chartResult: any = [];
+      chartResult.push(createObjective);
+      chart.map((value) => {
+        chartResult.push(value);
+      });
       if (checkin.objective.userId === userId || checkin.teamLeaderId === userId) {
         const responseData = {
           id: checkin.id,
@@ -63,7 +73,7 @@ export class CheckinService {
           teamLeaderId: checkin.teamLeaderId,
           objective: checkin.objective,
           checkinDetails: checkin.checkinDetails,
-          chart: chart,
+          chart: chartResult,
         };
         if (checkin.status === CheckinStatus.DRAFT) {
           responseData.progress = checkin.objective.progress;
@@ -117,7 +127,7 @@ export class CheckinService {
     }
 
     // Get data of objectvie
-    const objectvieData = await this._objectiveRepository.getDetailOKRs(data.checkin.objectiveId);
+    // const objectvieData = await this._objectiveRepository.getDetailOKRs(data.checkin.objectiveId);
     // Calculate progress checkin
     let progressOKR = 0;
     let totalTarget = 0;
@@ -161,13 +171,13 @@ export class CheckinService {
 
     // If staff checkin done => Update ValueObtained in KeyResult, progress in Objective, Checkin
     if (data.checkin.status !== CheckinStatus.DRAFT) {
-      const changing = progressOKR - objectvieData.progress;
+      // const changing = progressOKR - objectvieData.progress;
 
       // Update ValueObtained in KeyResult
       await this._keyResultRepository.createAndUpdateKeyResult(keyResultValue, manager);
 
       // Update progress in Objective
-      await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, changing, manager);
+      // await this._objectiveRepository.updateProgressOKRs(data.checkin.objectiveId, progressOKR, changing, manager);
     }
     const dataResponse = {
       checkin: checkinModel,
@@ -613,13 +623,23 @@ export class CheckinService {
     if (data.isCompleted) {
       throw new HttpException(CHECKIN_PENDING.message, CHECKIN_PENDING.statusCode);
     }
+    const createObjective = {
+      checkinAt: data.createdAt,
+      progress: data.progress,
+    };
+
+    const chartResult: any = [];
+    chartResult.push(createObjective);
+    chart.map((value) => {
+      chartResult.push(value);
+    });
 
     const responseData = {
       id: data.id,
       title: data.title,
       progress: data.progress,
       keyResults: data.keyResults,
-      chart: chart,
+      chart: chartResult,
       checkin: {
         id: 0,
         checkinAt: null,
