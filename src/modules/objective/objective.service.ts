@@ -187,10 +187,10 @@ export class ObjectiveService {
     let rowEffected = 0;
     if (objectiveId && manager && userId) {
       const okrsExist = await this._objectiveRepository.getDetailOKRs(objectiveId);
-      if (okrsExist.childObjectives) throw new HttpException(DELETE_OKR.message, DELETE_OKR.statusCode);
       if (!okrsExist) {
         throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
       }
+      if (okrsExist.childObjectives) throw new HttpException(DELETE_OKR.message, DELETE_OKR.statusCode);
       const okrValidIds = await this._objectiveRepository.getOKRsByUserId(userId);
       const okrValidIdsExist = okrValidIds.some(({ id }) => id == objectiveId);
       if (!okrValidIdsExist) {
