@@ -53,8 +53,8 @@ export class CheckinService {
     if (checkin) {
       const chart = await this._checkinRepository.getChartCheckin(checkin.objective.userId, checkin.objective.id);
       const createObjective = {
+        progress: 0,
         checkinAt: checkin.objective.createdAt,
-        progress: checkin.objective.progress,
       };
 
       const chartResult: any = [];
@@ -624,8 +624,8 @@ export class CheckinService {
       throw new HttpException(CHECKIN_PENDING.message, CHECKIN_PENDING.statusCode);
     }
     const createObjective = {
+      progress: 0,
       checkinAt: data.createdAt,
-      progress: data.progress,
     };
 
     const chartResult: any = [];
