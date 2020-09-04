@@ -222,8 +222,10 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'parentObjective.title',
           'users.id',
           'users.fullName',
+          'childObjective.id',
         ])
         .leftJoin('objective.parentObjective', 'parentObjective')
+        .leftJoin('objective.childObjectives', 'childObjective')
         .leftJoinAndSelect('objective.keyResults', 'keyresults')
         .leftJoinAndMapMany(
           'objective.alignmentObjectives',

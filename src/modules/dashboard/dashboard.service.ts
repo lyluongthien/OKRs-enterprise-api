@@ -42,8 +42,10 @@ export class DashboardService {
   public async viewOKRsProgress(CycleId: number, userId: number): Promise<ResponseModel> {
     const data: any = {};
     const teamLeadId = (await this._userRepository.getTeamLeader(userId)).id;
+    const adminId = (await this._userRepository.getAdmin()).id;
     const personal = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.PERSONAL, userId);
-    const team = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.TEAM, teamLeadId);
+    let team = [];
+    if (userId != adminId) team = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.TEAM, teamLeadId);
     const root = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.ROOT);
 
     let personalProgress = 0,
@@ -52,7 +54,6 @@ export class DashboardService {
     personal.forEach((value) => {
       personalProgress += value.progress;
     });
-
     team.forEach((value) => {
       teamProgress += value.progress;
     });
@@ -62,7 +63,7 @@ export class DashboardService {
     });
 
     data.personal = Math.floor(personalProgress / personal.length);
-    data.team = Math.floor(teamProgress / team.length);
+    data.team = team.length > 0 ? Math.floor(teamProgress / team.length) : 0;
     data.root = Math.floor(rootProgress / root.length);
     return {
       statusCode: HttpStatus.OK,
