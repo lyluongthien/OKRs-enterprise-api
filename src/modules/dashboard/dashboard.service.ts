@@ -63,7 +63,7 @@ export class DashboardService {
     });
 
     data.personal = Math.floor(personalProgress / personal.length);
-    data.team = team.length != 0 ? Math.floor(teamProgress / team.length) : 0;
+    data.team = team.length > 0 ? Math.floor(teamProgress / team.length) : 0;
     data.root = Math.floor(rootProgress / root.length);
     return {
       statusCode: HttpStatus.OK,
