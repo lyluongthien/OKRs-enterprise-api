@@ -60,15 +60,16 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objectiveAlignment.id = any (objective.alignObjectivesId)',
         )
         .leftJoinAndSelect('objectiveAlignment.keyResults', 'aligmentKeyResults')
-        .leftJoin('objective.user', 'users');
+        .leftJoin('objective.user', 'users')
+        .where('users.isActive = true');
       if (cycleId) {
         if (userId) {
           return await queryBuilder
-            .where('objective.cycleId = :cycleId', { cycleId })
+            .andWhere('objective.cycleId = :cycleId', { cycleId })
             .andWhere('users.id = :userId', { userId })
             .getMany();
         }
-        return await queryBuilder.where('objective.cycleId = :cycleId', { cycleId }).getMany();
+        return await queryBuilder.andWhere('objective.cycleId = :cycleId', { cycleId }).getMany();
       }
       return null;
     } catch (error) {
@@ -92,7 +93,8 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .leftJoin('objective.user', 'users')
         .leftJoin('users.team', 'team')
         .leftJoin('users.role', 'role')
-        .where('objective.cycleId = :cycleId', { cycleId: id });
+        .where('objective.cycleId = :cycleId', { cycleId: id })
+        .andWhere('users.isActive = true');
       switch (type) {
         case OKRsLeaderType.ROOT:
           return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: true }).getMany();
@@ -119,6 +121,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .leftJoin('objective.checkins', 'checkin')
         .leftJoin('objective.user', 'user')
         .where('user.id = :userId', { userId })
+        .andWhere('user.isActive = true')
         .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
         .andWhere('objective.cycleId = :cycleId', { cycleId })
         .getMany();
@@ -162,7 +165,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .leftJoin('objective.user', 'users')
         .orderBy('checkins.checkinAt', 'DESC');
       if (cycleId) {
-        await queryBuilder.where('objective.cycleId = :id', { id: cycleId });
+        await queryBuilder.where('objective.cycleId = :id', { id: cycleId }).andWhere('users.isActive = true');
         switch (type) {
           case OKRsType.ROOT:
             return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: true }).getMany();
@@ -189,7 +192,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .select(['objective.progress'])
         .leftJoin('objective.user', 'users');
       if (cycleId) {
-        await queryBuilder.where('objective.cycleId = :id', { id: cycleId });
+        await queryBuilder.where('objective.cycleId = :id', { id: cycleId }).andWhere('users.isActive = true');
         switch (type) {
           case OKRsType.ROOT:
             return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: true }).getMany();
