@@ -39,14 +39,15 @@ export class DashboardService {
     };
   }
 
-  public async viewOKRsProgress(CycleId: number, userId: number): Promise<ResponseModel> {
+  public async viewOKRsProgress(cycleId: number, userId: number): Promise<ResponseModel> {
     const data: any = {};
-    const teamLeadId = (await this._userRepository.getTeamLeader(userId)).id;
+    const teamLead = await this._userRepository.getTeamLeader(userId);
     const adminId = (await this._userRepository.getAdmin()).id;
-    const personal = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.PERSONAL, userId);
+    const personal = await this._objectiveRepository.getOKRsProgress(cycleId, OKRsType.PERSONAL, userId);
     let team = [];
-    if (userId != adminId) team = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.TEAM, teamLeadId);
-    const root = await this._objectiveRepository.getOKRsProgress(CycleId, OKRsType.ROOT);
+    if (userId != adminId && teamLead)
+      team = await this._objectiveRepository.getOKRsProgress(cycleId, OKRsType.TEAM, teamLead.id);
+    const root = await this._objectiveRepository.getOKRsProgress(cycleId, OKRsType.ROOT);
 
     let personalProgress = 0,
       teamProgress = 0,

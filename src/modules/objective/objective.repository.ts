@@ -166,16 +166,23 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .orderBy('checkins.checkinAt', 'DESC');
       if (cycleId) {
         await queryBuilder.where('objective.cycleId = :id', { id: cycleId }).andWhere('users.isActive = true');
+
         switch (type) {
           case OKRsType.ROOT:
-            return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: true }).getMany();
+            return await queryBuilder
+              .andWhere('objective.isRootObjective = :root', { root: true })
+              .andWhere('childUser.isActive = true')
+              .getMany();
           case OKRsType.PERSONAL:
             return await queryBuilder
               .andWhere('users.id = :user', { user: id })
               .andWhere('objective.isRootObjective = :root', { root: false })
               .getMany();
           case OKRsType.TEAM:
-            return await queryBuilder.andWhere('users.id = :user', { user: id }).getMany();
+            return await queryBuilder
+              .andWhere('users.id = :user', { user: id })
+              .andWhere('childUser.isActive = true')
+              .getMany();
           default:
             return await queryBuilder.getMany();
         }

@@ -19,6 +19,7 @@ import { RoleEntity } from './role.entity';
 import { TeamEntity } from './team.entity';
 import { ObjectiveEntity } from './objective.entity';
 import { CFRsEntity } from './cfrs.entity';
+import { CheckinEntity } from './checkin.entity';
 
 @Entity({ name: TableName.User })
 export class UserEntity {
@@ -103,6 +104,10 @@ export class UserEntity {
   @OneToMany(() => CFRsEntity, (cfrs) => cfrs.receiver)
   @JoinColumn([{ name: 'id', referencedColumnName: 'receiverId' }])
   public recognitionReceiver: CFRsEntity[];
+
+  @OneToMany(() => CheckinEntity, (checkin) => checkin.teamLeader)
+  @JoinColumn([{ name: 'id', referencedColumnName: 'teamLeaderId' }])
+  public checkin: CheckinEntity[];
 
   @BeforeInsert()
   public async hashPassword(): Promise<void> {
