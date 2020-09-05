@@ -146,6 +146,7 @@ export class UserRepository extends Repository<UserEntity> {
       return await this.createQueryBuilder('user')
         .where('user.teamId = :teamId', { teamId: teamId })
         .andWhere('user.isLeader = :isLead', { isLead: true })
+        .andWhere('user.isActive = true')
         .getOne();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);

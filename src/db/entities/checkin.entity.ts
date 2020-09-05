@@ -6,11 +6,13 @@ import {
   ManyToOne,
   OneToMany,
   CreateDateColumn,
+  JoinColumn,
 } from 'typeorm';
 import { TableName, CheckinStatus } from '@app/constants/app.enums';
 import { CheckinDetailEntity } from './checkin-detail.entity';
 import { ObjectiveEntity } from './objective.entity';
 import { CFRsEntity } from './cfrs.entity';
+import { UserEntity } from './user.entity';
 
 @Entity(TableName.Checkin)
 export class CheckinEntity {
@@ -62,4 +64,8 @@ export class CheckinEntity {
 
   @OneToMany(() => CFRsEntity, (cfrs) => cfrs.checkin)
   public cfrs: CFRsEntity[];
+
+  @ManyToOne(() => UserEntity, (user) => user.checkin)
+  @JoinColumn([{ name: 'teamLeaderId', referencedColumnName: 'id' }])
+  public teamLeader: UserEntity;
 }

@@ -137,8 +137,8 @@ export class ObjectiveService {
     const adminId = (await this._userRepository.getAdmin()).id;
     let teamOKRs = [];
     if (adminId != userId) {
-      const teamLeadId = (await this._userRepository.getTeamLeader(userId)).id;
-      if (teamLeadId) teamOKRs = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.TEAM, teamLeadId);
+      const teamLead = await this._userRepository.getTeamLeader(userId);
+      if (teamLead) teamOKRs = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.TEAM, teamLead.id);
     }
     data.personal = await this._objectiveRepository.viewListOKRs(cycleId, OKRsType.PERSONAL, userId);
     data.team = teamOKRs;

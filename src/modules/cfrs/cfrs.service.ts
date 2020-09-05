@@ -94,21 +94,24 @@ export class CFRsService {
       };
     } else {
       const teamLeader = await this._userRepository.getTeamLeader(id);
-      data.superior = {
-        user: {
-          id: teamLeader.id,
-          fullName: teamLeader.fullName,
-          avatarURL: teamLeader.avatarURL ? teamLeader.avatarURL : null,
-          gravatarURL: teamLeader.gravatarURL ? teamLeader.gravatarURL : null,
-        },
-        type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
-        checkins: await this._checkinRepository.getDoneCheckinById(
-          id,
-          cycleId,
-          CheckinType.PERSONAL,
-          EvaluationCriteriaEnum.MEMBER_TO_LEADER,
-        ),
-      };
+      data.superior = {};
+      if (teamLeader) {
+        data.superior = {
+          user: {
+            id: teamLeader.id,
+            fullName: teamLeader.fullName,
+            avatarURL: teamLeader.avatarURL ? teamLeader.avatarURL : null,
+            gravatarURL: teamLeader.gravatarURL ? teamLeader.gravatarURL : null,
+          },
+          type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+          checkins: await this._checkinRepository.getDoneCheckinById(
+            id,
+            cycleId,
+            CheckinType.PERSONAL,
+            EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+          ),
+        };
+      }
       data.inferior = {};
     }
     return {

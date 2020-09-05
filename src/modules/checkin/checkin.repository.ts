@@ -179,7 +179,10 @@ export class CheckinRepository extends Repository<CheckinEntity> {
         .leftJoin('objective.cycle', 'cycle')
         .leftJoin('objective.user', 'user')
         .leftJoin('user.team', 'team')
+        .leftJoin('checkin.teamLeader', 'teamLeader')
         .where(condition, { id })
+        .andWhere('user.isActive = true')
+        .andWhere('teamLeader.isActive = true')
         .andWhere('checkin.status = :status', { status: CheckinStatus.DONE })
         .andWhere(feedBackType)
         .andWhere('cycle.id = :cycleId', { cycleId: cycleId });
