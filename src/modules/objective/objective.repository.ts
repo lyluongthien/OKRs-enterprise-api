@@ -166,7 +166,6 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .orderBy('checkins.checkinAt', 'DESC');
       if (cycleId) {
         await queryBuilder.where('objective.cycleId = :id', { id: cycleId }).andWhere('users.isActive = true');
-
         switch (type) {
           case OKRsType.ROOT:
             return await queryBuilder
