@@ -140,6 +140,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           'objective.title',
           'objective.isRootObjective',
           'objective.cycleId',
+          'objective.parentObjectiveId',
           'users.id',
           'users.fullName',
           'users.isLeader',
