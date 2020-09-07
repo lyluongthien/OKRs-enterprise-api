@@ -273,6 +273,27 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
+  public async getAllChildObjectiveByUserId(userId: number): Promise<ObjectiveEntity[]> {
+    try {
+      return await this.createQueryBuilder('objective')
+        .select(['objective.id', 'childObjective.id'])
+        .leftJoin('objective.childObjectives', 'childObjective')
+        .leftJoin('objective.user', 'user')
+        .where('user.id = :userId', { userId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async setNullParentObjectiveByIds(ids: number[]): Promise<void> {
+    try {
+      await this.update(ids, { parentObjectiveId: null });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getOKRsByUserId(userId: number): Promise<ObjectiveEntity[]> {
     try {
       return await this.find({ select: ['id', 'title'], where: { userId } });

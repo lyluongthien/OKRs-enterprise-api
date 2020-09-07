@@ -70,6 +70,29 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     }
   }
 
+  public async getCheckinByTeamId(teamId: number): Promise<CheckinEntity[]> {
+    try {
+      return await this.createQueryBuilder('checkin')
+        .select(['checkin.id'])
+        .leftJoin('checkin.objective', 'objective')
+        .leftJoin('objective.user', 'user')
+        .leftJoin('user.team', 'team')
+        .where('team.id = :teamId', { teamId })
+        .andWhere(`(checkin.status = '${CheckinStatus.DRAFT}' or checkin.status = '${CheckinStatus.PENDING}')`)
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async updateCheckinByIds(ids: number[], teamLeaderId: number): Promise<void> {
+    try {
+      await this.update(ids, { teamLeaderId });
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async getCheckinById(id: number): Promise<CheckinEntity> {
     try {
       const queryBuilder = this.createQueryBuilder('checkin')

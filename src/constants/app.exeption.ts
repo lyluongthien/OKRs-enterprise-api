@@ -176,6 +176,11 @@ export const OKR_CYCLE_INVALID = {
   message: `Không thể chọn chu kì trong quá khứ`,
 };
 
+export const CHECKIN_BLOCKED = {
+  statusCode: 485,
+  message: `Không thể tạo checkin do chưa có trưởng phòng`,
+};
+
 export const DELETE_ERROR = {
   message: `Không thể xóa dữ liệu này vì đang được sử dụng ở nơi khác`,
   statusCode: 495,
