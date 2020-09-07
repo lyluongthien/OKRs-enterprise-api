@@ -44,7 +44,6 @@ export class ObjectiveService {
       if (userId) {
         okrDTo.objective.userId = userId;
       }
-
       if (okrDTo.objective.alignObjectivesId) {
         const currentDate = new Date();
         const day = currentDate.getDate();
@@ -89,6 +88,7 @@ export class ObjectiveService {
         if (sumDataTarget > 0 && sumDataObtained > 0) {
           okrDTo.objective.progress = Math.floor((sumDataObtained / sumDataTarget) * 100);
         }
+
         objectiveEntity = await this._objectiveRepository.createAndUpdateObjective(okrDTo.objective, manager);
         okrDTo.keyResult.map((value) => {
           value.objectiveId = objectiveEntity.id;
