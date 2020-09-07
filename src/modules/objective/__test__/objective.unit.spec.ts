@@ -60,17 +60,16 @@ describe('Objective Service', () => {
     it('test get OKRs detail', async () => {
       const expectedResult = {
         objective: {
-          title: 'TESt OKR member',
+          title: 'Test Update OKRs',
           progress: 41,
         },
-        keyResult: [{}],
+        keyResults: [{}],
       };
       const res = await objectiveService.getDetailOKRs(20);
       expect(res).toBeDefined();
       expect(res.statusCode).toEqual(200);
-      expect(res.data.objective.title).toEqual(expectedResult.objective.title);
-      expect(res.data.objective.progress).toEqual(expectedResult.objective.progress);
-      expect(res.data.keyResult.length).toEqual(expectedResult.keyResult.length);
+      expect(res.data.title).toEqual(expectedResult.objective.title);
+      expect(res.data.progress).toEqual(expectedResult.objective.progress);
     });
   });
 });

@@ -93,6 +93,8 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
         .leftJoin('objective.user', 'users')
         .leftJoin('users.team', 'team')
         .leftJoin('users.role', 'role')
+        .leftJoin('objective.parentObjective', 'parentObjective')
+        .leftJoin('parentObjective.user', 'parentUser')
         .where('objective.cycleId = :cycleId', { cycleId: id })
         .andWhere('users.isActive = true');
       switch (type) {
@@ -102,10 +104,14 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           return await queryBuilder
             .andWhere('users.isLeader = :isLead', { isLead: true })
             .andWhere('objective.isRootObjective = :root', { root: false })
+            .andWhere('coalesce(parentUser.isActive, true) = true')
             .andWhere('role.name <> :name', { name: RoleEnum.ADMIN })
             .getMany();
         case OKRsLeaderType.ALL:
-          return await queryBuilder.andWhere('objective.isRootObjective = :root', { root: false }).getMany();
+          return await queryBuilder
+            .andWhere('objective.isRootObjective = :root', { root: false })
+            .andWhere('coalesce(parentUser.isActive, true) = true')
+            .getMany();
         default:
           return null;
       }
