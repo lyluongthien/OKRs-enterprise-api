@@ -170,7 +170,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           case OKRsType.ROOT:
             return await queryBuilder
               .andWhere('objective.isRootObjective = :root', { root: true })
-              .andWhere('childUser.isActive = true')
+              .andWhere('coalesce(childUser.isActive, true) = true')
               .getMany();
           case OKRsType.PERSONAL:
             return await queryBuilder
@@ -180,7 +180,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           case OKRsType.TEAM:
             return await queryBuilder
               .andWhere('users.id = :user', { user: id })
-              .andWhere('childUser.isActive = true')
+              .andWhere('coalesce(childUser.isActive, true) = true')
               .getMany();
           default:
             return await queryBuilder.getMany();
