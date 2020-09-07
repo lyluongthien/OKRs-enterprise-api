@@ -30,7 +30,7 @@ describe('Objective Service', () => {
       const someMockedUsers: any = {};
       someMockedUsers.objective = {
         title: 'Test Create OKRs',
-        parentObjectiveId: 20,
+        parentObjectiveId: 4,
         cycleId: 3,
         isRootObjective: false,
       };
@@ -60,16 +60,19 @@ describe('Objective Service', () => {
     it('test get OKRs detail', async () => {
       const expectedResult = {
         objective: {
-          title: 'Test Update OKRs',
-          progress: 41,
+          title: 'Cải thiện sự gắn kết nhân viên nội bộ và sự hài lòng trong công việc',
+          progress: 43,
         },
-        keyResults: [{}],
       };
-      const res = await objectiveService.getDetailOKRs(20);
+      const res = await objectiveService.getDetailOKRs(8);
       expect(res).toBeDefined();
       expect(res.statusCode).toEqual(200);
       expect(res.data.title).toEqual(expectedResult.objective.title);
       expect(res.data.progress).toEqual(expectedResult.objective.progress);
+    });
+
+    it('test get OKRs detail', async () => {
+      //const res = await objectiveService.deleteOKRs(20);
     });
   });
 });

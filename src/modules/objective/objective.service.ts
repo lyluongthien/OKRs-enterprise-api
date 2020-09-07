@@ -188,7 +188,7 @@ export class ObjectiveService {
       if (!okrsExist) {
         throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
       }
-      if (okrsExist.childObjectives) throw new HttpException(DELETE_OKR.message, DELETE_OKR.statusCode);
+      if (okrsExist.childObjectives.length > 0) throw new HttpException(DELETE_OKR.message, DELETE_OKR.statusCode);
       const okrValidIds = await this._objectiveRepository.getOKRsByUserId(userId);
       const okrValidIdsExist = okrValidIds.some(({ id }) => id == objectiveId);
       if (!okrValidIdsExist) {
