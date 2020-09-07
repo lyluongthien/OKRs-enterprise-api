@@ -20,10 +20,16 @@ import { expireResetPasswordToken } from '@app/constants/app.magic-number';
 import { ResponseModel } from '@app/constants/app.interface';
 import { paginationDataParser } from '@app/libs/pagination';
 import accessEnv from '@app/libs/accessEnv';
+import { ObjectiveRepository } from '../objective/objective.repository';
+import { CheckinRepository } from '../checkin/checkin.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private _userRepository: UserRepository) {}
+  constructor(
+    private _userRepository: UserRepository,
+    private _objectiveRepository: ObjectiveRepository,
+    private _checkinRepository: CheckinRepository,
+  ) {}
 
   /**
    * @description Send a link in email to user, then use this link to reset password
@@ -256,10 +262,32 @@ export class UserService {
       if (data.isLeader == true) {
         const leader = await this._userRepository.getTeamLeader(id);
         if (leader && id != leader.id) throw new HttpException(TEAM_LEAD_EXIST.message, TEAM_LEAD_EXIST.statusCode);
-        else userInfor = await this._userRepository.updateUserInfor(id, data);
-      } else {
-        userInfor = await this._userRepository.updateUserInfor(id, data);
+        const user = await this._userRepository.getUserByID(id);
+        if (user) {
+          const checkins = await this._checkinRepository.getCheckinByTeamId(user.teamId);
+          const checkinIds = [];
+          if (checkins) {
+            checkins.forEach((value) => {
+              checkinIds.push(value.id);
+            });
+            if (checkinIds.length > 0) await this._checkinRepository.updateCheckinByIds(checkinIds, id);
+          }
+        }
       }
+      if (data.isLeader == false || data.isActive == false) {
+        const objectives = await this._objectiveRepository.getAllChildObjectiveByUserId(id);
+        const objectiveIds = [];
+        if (objectives) {
+          objectives.forEach((value) => {
+            value.childObjectives.forEach((childValue) => {
+              objectiveIds.push(childValue.id);
+            });
+          });
+        }
+        if (objectiveIds.length > 0) await this._objectiveRepository.setNullParentObjectiveByIds(objectiveIds);
+      }
+      if (data.isActive == false) await this.logout(id);
+      userInfor = await this._userRepository.updateUserInfor(id, data);
     }
     return {
       statusCode: HttpStatus.OK,

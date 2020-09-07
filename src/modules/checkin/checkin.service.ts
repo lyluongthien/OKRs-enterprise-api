@@ -25,6 +25,7 @@ import {
   INFERIOR_FORBIDEN,
   USER_INVALID,
   CHECKIN_INVALID,
+  CHECKIN_BLOCKED,
 } from '@app/constants/app.exeption';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
 import { RoleRepository } from '../role/role.repository';
@@ -153,7 +154,9 @@ export class CheckinService {
       if (isLeader || userId == adminId) {
         data.checkin.teamLeaderId = adminId;
       } else {
-        data.checkin.teamLeaderId = (await this._userRepository.getTeamLeader(userId)).id;
+        const teamLead = await this._userRepository.getTeamLeader(userId);
+        if (!teamLead) throw new HttpException(CHECKIN_BLOCKED.message, CHECKIN_BLOCKED.statusCode);
+        data.checkin.teamLeaderId = teamLead.id;
       }
       checkinModel = await this._checkinRepository.createUpdateCheckin(data.checkin, manager);
     }

@@ -54,14 +54,14 @@ export class ObjectiveService {
         const listAlignment = await this._objectiveRepository.getListOKRs(cycleId, OKRsLeaderType.ALL);
 
         okrDTo.objective.alignObjectivesId = okrDTo.objective.alignObjectivesId.filter((value, index) => {
-          const alignmentExist = listAlignment.some(({ id }) => id === value);
+          const alignmentExist = listAlignment.some(({ id }) => id == value);
           if (!alignmentExist) {
             throw new HttpException(OKR_INVALID.message, OKR_INVALID.statusCode);
           }
           return okrDTo.objective.alignObjectivesId.indexOf(value) === index;
         });
       }
-
+      objectiveEntity = await this._objectiveRepository.createAndUpdateObjective(okrDTo.objective, manager);
       if (okrDTo.keyResult) {
         if (okrDTo.keyResult.length < 1) {
           throw new HttpException(KEYRESULT_INVALID.message, KEYRESULT_INVALID.statusCode);
@@ -88,8 +88,6 @@ export class ObjectiveService {
         if (sumDataTarget > 0 && sumDataObtained > 0) {
           okrDTo.objective.progress = Math.floor((sumDataObtained / sumDataTarget) * 100);
         }
-
-        objectiveEntity = await this._objectiveRepository.createAndUpdateObjective(okrDTo.objective, manager);
         okrDTo.keyResult.map((value) => {
           value.objectiveId = objectiveEntity.id;
           return value.objectiveId;
