@@ -275,15 +275,24 @@ export class UserService {
         }
       }
       if (data.isLeader == false || data.isActive == false) {
-        const objectives = await this._objectiveRepository.getAllChildObjectiveByUserId(id);
+        const childObjectives = await this._objectiveRepository.getAllChildObjectiveByUserId(id);
+        const objectives = await this._objectiveRepository.getOKRsByUserId(id);
+        const childObjectiveIds = [];
         const objectiveIds = [];
-        if (objectives) {
-          objectives.forEach((value) => {
+        if (childObjectives) {
+          childObjectives.forEach((value) => {
             value.childObjectives.forEach((childValue) => {
-              objectiveIds.push(childValue.id);
+              childObjectiveIds.push(childValue.id);
             });
           });
         }
+        if (objectives) {
+          objectives.forEach((value) => {
+            objectiveIds.push(value.id);
+          });
+        }
+        if (childObjectiveIds.length > 0)
+          await this._objectiveRepository.setNullParentObjectiveByIds(childObjectiveIds);
         if (objectiveIds.length > 0) await this._objectiveRepository.setNullParentObjectiveByIds(objectiveIds);
       }
       if (data.isActive == false) await this.logout(id);

@@ -286,6 +286,19 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
+  public async getAllParentObjectiveByUserId(userId: number): Promise<ObjectiveEntity[]> {
+    try {
+      return await this.createQueryBuilder('objective')
+        .select(['objective.id', 'parentObjective.id'])
+        .leftJoin('objective.parentObjective', 'parentObjective')
+        .leftJoin('objective.user', 'user')
+        .where('user.id = :userId', { userId })
+        .getMany();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
   public async setNullParentObjectiveByIds(ids: number[]): Promise<void> {
     try {
       await this.update(ids, { parentObjectiveId: null });
