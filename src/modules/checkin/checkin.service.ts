@@ -2,14 +2,7 @@ import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
 
 import { CheckinRepository } from './checkin.repository';
 import { ResponseModel } from '@app/constants/app.interface';
-import {
-  CommonMessage,
-  ConfidentLevel,
-  CheckinStatus,
-  CheckinStatusLogic,
-  RoleEnum,
-  InferiorType,
-} from '@app/constants/app.enums';
+import { CommonMessage, CheckinStatus, CheckinStatusLogic, RoleEnum, InferiorType } from '@app/constants/app.enums';
 import { CreateCheckinDTO } from './checkin.dto';
 import { EntityManager } from 'typeorm';
 import { UserRepository } from '../user/user.repository';
@@ -393,71 +386,71 @@ export class CheckinService {
     };
   }
 
-  public async getWeeklyCheckin(): Promise<ResponseModel> {
-    const today = new Date('2020-08-12');
-    const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
-    const todayValue = today.getTime();
-    const lastWeekValue = lastWeek.getTime();
-    const currentWeekIds = [],
-      lastWeekIds = [];
-    const data = [];
-    const confidentLevel = [ConfidentLevel.BAD, ConfidentLevel.GOOD, ConfidentLevel.NORMAL];
-    let dataLastWeek = null;
-    const checkins = await this._checkinRepository.getCheckin();
-    if (checkins) {
-      checkins.map((value) => {
-        if (todayValue >= value.checkinAt.getTime() && todayValue < value.nextCheckinDate.getTime()) {
-          currentWeekIds.push(value.id);
-        }
-        if (lastWeekValue >= value.checkinAt.getTime() && lastWeekValue < value.nextCheckinDate.getTime()) {
-          lastWeekIds.push(value.id);
-        }
-        return value;
-      });
-      if (lastWeekIds.length > 1) {
-        dataLastWeek = await this._checkinRepository.getWeeklyCheckin(lastWeekIds);
-      }
-      if (currentWeekIds.length > 1) {
-        const dataCurrentWeek = await this._checkinRepository.getWeeklyCheckin(currentWeekIds);
-        dataCurrentWeek.map((CurrentWeekValue) => {
-          const subData: any = {};
-          confidentLevel.some((value) => {
-            const levelExist = (param) => dataCurrentWeek.some(({ confidentLevel }) => param == confidentLevel);
-            if (levelExist(value)) {
-              subData.confidentLevel = CurrentWeekValue.confidentLevel;
-              subData.numberoflevel = CurrentWeekValue.numberoflevel;
-            } else {
-              subData.confidentLevel = value;
-            }
-            return value;
-          });
-          if (dataLastWeek) {
-            confidentLevel.some((value) => {
-              const levelExist = (param) => dataLastWeek.some(({ confidentLevel }) => param == confidentLevel);
-              if (levelExist(value)) {
-                dataLastWeek.some(({ confidentLevel, numberoflevel }) => {
-                  if (CurrentWeekValue.confidentLevel == confidentLevel) {
-                    subData.changing = CurrentWeekValue.numberoflevel - numberoflevel;
-                  } else {
-                    subData.changing = CurrentWeekValue.numberoflevel;
-                  }
-                  return { confidentLevel, numberoflevel };
-                });
-              }
-              return value;
-            });
-          }
-          data.push(subData);
-          return dataCurrentWeek;
-        });
-      }
-    }
-    return {
-      statusCode: HttpStatus.OK,
-      message: CommonMessage.SUCCESS,
-      data: data,
-    };
-  }
+  // public async getWeeklyCheckin(): Promise<ResponseModel> {
+  //   const today = new Date('2020-08-12');
+  //   const lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+  //   const todayValue = today.getTime();
+  //   const lastWeekValue = lastWeek.getTime();
+  //   const currentWeekIds = [],
+  //     lastWeekIds = [];
+  //   const data = [];
+  //   const confidentLevel = [ConfidentLevel.BAD, ConfidentLevel.GOOD, ConfidentLevel.NORMAL];
+  //   let dataLastWeek = null;
+  //   const checkins = await this._checkinRepository.getCheckin();
+  //   if (checkins) {
+  //     checkins.map((value) => {
+  //       if (todayValue >= value.checkinAt.getTime() && todayValue < value.nextCheckinDate.getTime()) {
+  //         currentWeekIds.push(value.id);
+  //       }
+  //       if (lastWeekValue >= value.checkinAt.getTime() && lastWeekValue < value.nextCheckinDate.getTime()) {
+  //         lastWeekIds.push(value.id);
+  //       }
+  //       return value;
+  //     });
+  //     if (lastWeekIds.length > 1) {
+  //       dataLastWeek = await this._checkinRepository.getWeeklyCheckin(lastWeekIds);
+  //     }
+  //     if (currentWeekIds.length > 1) {
+  //       const dataCurrentWeek = await this._checkinRepository.getWeeklyCheckin(currentWeekIds);
+  //       dataCurrentWeek.map((CurrentWeekValue) => {
+  //         const subData: any = {};
+  //         confidentLevel.some((value) => {
+  //           const levelExist = (param) => dataCurrentWeek.some(({ confidentLevel }) => param == confidentLevel);
+  //           if (levelExist(value)) {
+  //             subData.confidentLevel = CurrentWeekValue.confidentLevel;
+  //             subData.numberoflevel = CurrentWeekValue.numberoflevel;
+  //           } else {
+  //             subData.confidentLevel = value;
+  //           }
+  //           return value;
+  //         });
+  //         if (dataLastWeek) {
+  //           confidentLevel.some((value) => {
+  //             const levelExist = (param) => dataLastWeek.some(({ confidentLevel }) => param == confidentLevel);
+  //             if (levelExist(value)) {
+  //               dataLastWeek.some(({ confidentLevel, numberoflevel }) => {
+  //                 if (CurrentWeekValue.confidentLevel == confidentLevel) {
+  //                   subData.changing = CurrentWeekValue.numberoflevel - numberoflevel;
+  //                 } else {
+  //                   subData.changing = CurrentWeekValue.numberoflevel;
+  //                 }
+  //                 return { confidentLevel, numberoflevel };
+  //               });
+  //             }
+  //             return value;
+  //           });
+  //         }
+  //         data.push(subData);
+  //         return dataCurrentWeek;
+  //       });
+  //     }
+  //   }
+  //   return {
+  //     statusCode: HttpStatus.OK,
+  //     message: CommonMessage.SUCCESS,
+  //     data: data,
+  //   };
+  // }
 
   public async getListOKRsCheckin(userId: number, cycleId: number): Promise<ResponseModel> {
     const data = await this._objectiveRepository.getListOKRsCheckin(userId, cycleId);

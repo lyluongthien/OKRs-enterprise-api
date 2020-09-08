@@ -12,7 +12,7 @@ describe('UT JOB service', () => {
 
   it('Get list job', async () => {
     const res = await jobservice.getJobDetail(1);
-    expect(res.statusCode).toEqual(100);
+    expect(res.statusCode).toEqual(200);
   });
 
   let jobId: number;

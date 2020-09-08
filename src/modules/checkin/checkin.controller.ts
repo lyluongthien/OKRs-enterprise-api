@@ -46,10 +46,10 @@ export class CheckinController {
     return this._checkinService.getInferiorObjective(userId, cycleId);
   }
 
-  @Get('weekly_checkin')
-  public async getWeeklyCheckin(): Promise<ResponseModel> {
-    return this._checkinService.getWeeklyCheckin();
-  }
+  // @Get('weekly_checkin')
+  // public async getWeeklyCheckin(): Promise<ResponseModel> {
+  //   return this._checkinService.getWeeklyCheckin();
+  // }
 
   /**
    * @description: Get Checkin history of each objective
