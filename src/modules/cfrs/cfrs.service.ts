@@ -63,6 +63,7 @@ export class CFRsService {
           cycleId,
           CheckinType.MEMBER,
           EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+          null,
           options,
         ),
       };
@@ -89,6 +90,7 @@ export class CFRsService {
           cycleId,
           CheckinType.MEMBER,
           EvaluationCriteriaEnum.LEADER_TO_MEMBER,
+          null,
           options,
         ),
       };
@@ -96,21 +98,26 @@ export class CFRsService {
       const teamLeader = await this._userRepository.getTeamLeader(id);
       data.superior = {};
       if (teamLeader) {
-        data.superior = {
-          user: {
-            id: teamLeader.id,
-            fullName: teamLeader.fullName,
-            avatarURL: teamLeader.avatarURL ? teamLeader.avatarURL : null,
-            gravatarURL: teamLeader.gravatarURL ? teamLeader.gravatarURL : null,
-          },
-          type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
-          checkins: await this._checkinRepository.getDoneCheckinById(
-            id,
-            cycleId,
-            CheckinType.PERSONAL,
-            EvaluationCriteriaEnum.MEMBER_TO_LEADER,
-          ),
-        };
+        const teamId = (await this._userRepository.getTeamLeader(id)).id;
+        data.superior = {};
+        if (teamId) {
+          data.superior = {
+            user: {
+              id: teamLeader.id,
+              fullName: teamLeader.fullName,
+              avatarURL: teamLeader.avatarURL ? teamLeader.avatarURL : null,
+              gravatarURL: teamLeader.gravatarURL ? teamLeader.gravatarURL : null,
+            },
+            type: EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+            checkins: await this._checkinRepository.getDoneCheckinById(
+              id,
+              cycleId,
+              CheckinType.PERSONAL,
+              EvaluationCriteriaEnum.MEMBER_TO_LEADER,
+              teamId,
+            ),
+          };
+        }
       }
       data.inferior = {};
     }

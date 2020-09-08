@@ -77,7 +77,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
     }
   }
 
-  public async getListOKRs(id: number, type: OKRsLeaderType): Promise<ObjectiveEntity[]> {
+  public async getListOKRs(id: number, type: OKRsLeaderType, teamId?: number): Promise<ObjectiveEntity[]> {
     try {
       const queryBuilder = await this.createQueryBuilder('objective')
         .select([
@@ -104,6 +104,7 @@ export class ObjectiveRepository extends Repository<ObjectiveEntity> {
           return await queryBuilder
             .andWhere('users.isLeader = :isLead', { isLead: true })
             .andWhere('objective.isRootObjective = :root', { root: false })
+            .andWhere('users.teamId = :teamId', { teamId })
             .andWhere('coalesce(parentUser.isActive, true) = true')
             .andWhere('role.name <> :name', { name: RoleEnum.ADMIN })
             .getMany();
