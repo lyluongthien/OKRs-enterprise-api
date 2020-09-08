@@ -171,6 +171,7 @@ export class CheckinRepository extends Repository<CheckinEntity> {
     cycleId: number,
     type: CheckinType,
     feedBacktype: EvaluationCriteriaEnum,
+    teamId?: number,
     options?: IPaginationOptions,
   ): Promise<any> {
     try {
@@ -178,7 +179,9 @@ export class CheckinRepository extends Repository<CheckinEntity> {
       if (type === CheckinType.MEMBER) {
         condition = 'checkin.teamLeaderId = :id and user.id <> :id';
       } else if (type == CheckinType.PERSONAL) {
-        condition = 'user.id = :id and objective.isRootObjective = false';
+        if (teamId) {
+          condition = `user.id = :id and objective.isRootObjective = false and checkin.teamLeaderId = ${teamId}`;
+        } else condition = 'user.id = :id and objective.isRootObjective = false';
       } else {
         condition = 'user.id = :id and objective.isRootObjective = true';
       }

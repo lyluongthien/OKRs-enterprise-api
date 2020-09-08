@@ -194,6 +194,7 @@ export class UserRepository extends Repository<UserEntity> {
         .leftJoin('objectives.checkins', 'checkins')
         .leftJoin('user.role', 'role')
         .where('checkins.status = :status', { status: CheckinStatus.DONE })
+        .andWhere('user.isActive = true')
         .andWhere('objectives.cycleId = :cycleId', { cycleId });
       switch (type) {
         case InferiorType.STAFF:

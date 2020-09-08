@@ -111,8 +111,9 @@ export class ObjectiveService {
     };
   }
 
-  public async getListOKRs(cycleId: number, type: OKRsLeaderType): Promise<ResponseModel> {
-    const data = await this._objectiveRepository.getListOKRs(cycleId, type);
+  public async getListOKRs(cycleId: number, type: OKRsLeaderType, userId: number): Promise<ResponseModel> {
+    const user = await this._userRepository.getUserByID(userId);
+    const data = await this._objectiveRepository.getListOKRs(cycleId, type, user.teamId);
     if (data) {
       data.map((value) => {
         const email = value.user.email.split('@');

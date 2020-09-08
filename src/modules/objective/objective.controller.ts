@@ -30,10 +30,11 @@ export class ObjectiveController {
 
   @Get('/list_okrs')
   public async getListOKRs(
+    @CurrentUser() user: UserEntity,
     @Query('cycleId', ParseIntPipe) id: number,
     @Query('type', ParseIntPipe) type: OKRsLeaderType,
   ): Promise<ResponseModel> {
-    return this._objectiveService.getListOKRs(id, type);
+    return this._objectiveService.getListOKRs(id, type, user.id);
   }
 
   @Get('list_okrs/:userId')
