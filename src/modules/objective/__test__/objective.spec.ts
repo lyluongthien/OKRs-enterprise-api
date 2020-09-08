@@ -246,7 +246,7 @@ describe('ObjectvieController', () => {
       return request(app.getHttpServer())
         .delete(`/api/v1/objectives/${objectiveId}`)
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(481);
+        .expect(200);
     });
   });
 });
