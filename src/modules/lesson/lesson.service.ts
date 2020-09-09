@@ -48,6 +48,7 @@ export class LessonService {
       title: data.title,
       index: data.index,
       content: data.content,
+      abstract: data.abstract,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
       nextLesson: nextLesson,

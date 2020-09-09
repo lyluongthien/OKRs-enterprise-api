@@ -24,10 +24,11 @@ export class TeamRepository extends Repository<TeamEntity> {
 
   public async searchTeam(text: string, options: IPaginationOptions, adminTeamId: number): Promise<any> {
     try {
+      console.log(text);
       const queryBuilder = this.createQueryBuilder('team')
         .select(['team.id', 'team.name', 'team.description', 'team.updatedAt'])
         .where('LOWER(team.name) like :text', { text: '%' + text + '%' })
-        .where('team.id <> :adminTeamId', { adminTeamId })
+        .andWhere('team.id <> :adminTeamId', { adminTeamId })
         .orderBy('team.updatedAt', 'DESC');
       return await paginate<TeamEntity>(queryBuilder, options);
     } catch (error) {

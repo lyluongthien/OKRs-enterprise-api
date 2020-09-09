@@ -79,10 +79,27 @@ export class CycleRepository extends Repository<CycleEntity> {
   public async getCurrentCycle(date: string): Promise<CycleEntity> {
     try {
       return await this.createQueryBuilder('cycle')
-        .where(':date BETWEEN cycle.startDate AND cycle.endDate', {
-          date,
-        })
+        .where(':date >= cycle.startDate AND :date < cycle.endDate', { date })
         .getOne();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getSmallestStartDate(): Promise<CycleEntity> {
+    try {
+      return await this.createQueryBuilder('cycle')
+        .select(['cycle.startDate'])
+        .orderBy('cycle.startDate', 'ASC')
+        .getOne();
+    } catch (error) {
+      throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
+    }
+  }
+
+  public async getBiggestEndDate(): Promise<CycleEntity> {
+    try {
+      return await this.createQueryBuilder('cycle').select(['cycle.endDate']).orderBy('cycle.endDate', 'DESC').getOne();
     } catch (error) {
       throw new HttpException(DATABASE_EXCEPTION.message, DATABASE_EXCEPTION.statusCode);
     }

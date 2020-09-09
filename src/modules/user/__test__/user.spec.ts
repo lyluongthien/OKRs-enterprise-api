@@ -54,7 +54,7 @@ describe('AuthController', () => {
           expect(res.body.data.user.email).toEqual(loginData.email);
           expect(res.body.data.token).toBeDefined();
         })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
     });
 
     test('(POST) Login succes to test change password', async () => {
@@ -69,7 +69,7 @@ describe('AuthController', () => {
           expect(res.body.data.user.email).toEqual(loginDataChangePass.email);
           expect(res.body.data.token).toBeDefined();
         })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
     });
 
     test('(GET) when user not logged in yet', () => {

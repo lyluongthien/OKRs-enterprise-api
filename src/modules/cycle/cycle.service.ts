@@ -5,7 +5,7 @@ import { CycleDTO, UpdateCycleDTO } from './cycle.dto';
 import { ResponseModel } from '@app/constants/app.interface';
 import { CommonMessage, CycleStatus } from '@app/constants/app.enums';
 import { IPaginationOptions } from 'nestjs-typeorm-paginate';
-import { CYCLE_EXIST } from '@app/constants/app.exeption';
+import { CYCLE_EXIST, CYCLE_DATE_INVALID } from '@app/constants/app.exeption';
 
 @Injectable()
 export class CycleService {
@@ -36,6 +36,19 @@ export class CycleService {
   public async createCycle(cycleDTO: CycleDTO): Promise<ResponseModel> {
     const startDate = new Date(cycleDTO.startDate).getTime();
     const endDate = new Date(cycleDTO.endDate).getTime();
+    const cycleStartDateInValid = await this._cycleRepository.getCurrentCycle(
+      new Date(cycleDTO.startDate).toISOString(),
+    );
+    const cycleEndDateInValid = await this._cycleRepository.getCurrentCycle(new Date(cycleDTO.endDate).toISOString());
+    if (cycleStartDateInValid || cycleEndDateInValid)
+      throw new HttpException(CYCLE_DATE_INVALID.message, CYCLE_DATE_INVALID.statusCode);
+
+    const smallestStartDate = await this._cycleRepository.getSmallestStartDate();
+    const biggestEndDate = await this._cycleRepository.getBiggestEndDate();
+    if (smallestStartDate && biggestEndDate) {
+      if (startDate <= smallestStartDate.startDate.getTime() && endDate >= biggestEndDate.endDate.getTime())
+        throw new HttpException(CYCLE_DATE_INVALID.message, CYCLE_DATE_INVALID.statusCode);
+    }
     const cycles = await this._cycleRepository.getList();
     const checkCycleExist = (cycleParam) => cycles.some(({ name }) => name.toLowerCase() === cycleParam);
     if (checkCycleExist(cycleDTO.name.toLowerCase())) {
@@ -64,6 +77,24 @@ export class CycleService {
   public async updateCycle(id: number, cycleDTO: UpdateCycleDTO): Promise<ResponseModel> {
     const startDate = new Date(cycleDTO.startDate).getTime();
     const endDate = new Date(cycleDTO.endDate).getTime();
+    const cycleStartDateInValid = await this._cycleRepository.getCurrentCycle(
+      new Date(cycleDTO.startDate).toISOString(),
+    );
+    const cycleEndDateInValid = await this._cycleRepository.getCurrentCycle(new Date(cycleDTO.endDate).toISOString());
+    if (cycleStartDateInValid) {
+      if (cycleStartDateInValid.id != id)
+        throw new HttpException(CYCLE_DATE_INVALID.message, CYCLE_DATE_INVALID.statusCode);
+    }
+    if (cycleEndDateInValid) {
+      if (cycleEndDateInValid.id != id)
+        throw new HttpException(CYCLE_DATE_INVALID.message, CYCLE_DATE_INVALID.statusCode);
+    }
+    const smallestStartDate = await this._cycleRepository.getSmallestStartDate();
+    const biggestEndDate = await this._cycleRepository.getBiggestEndDate();
+    if (smallestStartDate && biggestEndDate) {
+      if (startDate <= smallestStartDate.startDate.getTime() && endDate >= biggestEndDate.endDate.getTime())
+        throw new HttpException(CYCLE_DATE_INVALID.message, CYCLE_DATE_INVALID.statusCode);
+    }
     const cycles = await this._cycleRepository.getList();
     const checkCycleExist = (cycleParam, currentId) =>
       cycles.some(({ name, id }) => name.toLowerCase() === cycleParam && id !== currentId);

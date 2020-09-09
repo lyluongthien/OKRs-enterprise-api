@@ -1,4 +1,4 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe, HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '@app/app.module';
@@ -23,7 +23,7 @@ describe('MetaController', () => {
       return request(app.getHttpServer())
         .get('/api/v1/meta_data/teams')
         .then((res) => {
-          expect(200);
+          expect(HttpStatus.OK);
           expect(res.body.data).toBeDefined();
         });
     });
@@ -36,7 +36,7 @@ describe('MetaController', () => {
       return request(app.getHttpServer())
         .get('/api/v1/meta_data/job_positions')
         .then((res) => {
-          expect(200);
+          expect(HttpStatus.OK);
           expect(res.body.data).toBeDefined();
         });
     });
@@ -49,7 +49,7 @@ describe('MetaController', () => {
       return request(app.getHttpServer())
         .get('/api/v1/meta_data/lessons')
         .then((res) => {
-          expect(200);
+          expect(HttpStatus.OK);
           expect(res.body.data).toBeDefined();
         });
     });
@@ -62,7 +62,7 @@ describe('MetaController', () => {
       return request(app.getHttpServer())
         .get('/api/v1/meta_data/cycles')
         .then((res) => {
-          expect(200);
+          expect(HttpStatus.OK);
           expect(res.body.data).toBeDefined();
         });
     });
@@ -75,7 +75,7 @@ describe('MetaController', () => {
       return request(app.getHttpServer())
         .get('/api/v1/meta_data/evaluation_criteria')
         .then((res) => {
-          expect(200);
+          expect(HttpStatus.OK);
           expect(res.body.data).toBeDefined();
         });
     });
@@ -88,7 +88,7 @@ describe('MetaController', () => {
       return request(app.getHttpServer())
         .get('/api/v1/meta_data/roles')
         .then((res) => {
-          expect(200);
+          expect(HttpStatus.OK);
           expect(res.body.data).toBeDefined();
         });
     });
