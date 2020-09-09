@@ -181,6 +181,11 @@ export const CHECKIN_BLOCKED = {
   message: `Không thể tạo checkin do chưa có trưởng phòng`,
 };
 
+export const CYCLE_DATE_INVALID = {
+  statusCode: 486,
+  message: `Ngày bắt đầu hoặc ngày kết thúc không hợp lệ`,
+};
+
 export const DELETE_ERROR = {
   message: `Không thể xóa dữ liệu này vì đang được sử dụng ở nơi khác`,
   statusCode: 495,

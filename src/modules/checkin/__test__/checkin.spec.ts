@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from '@app/app.module';
 import { SignInDTO } from '@app/modules/auth/auth.dto';
+import { INFERIOR_FORBIDEN } from '@app/constants/app.exeption';
 
 describe('CheckinController', () => {
   let app: INestApplication;
@@ -41,7 +42,7 @@ describe('CheckinController', () => {
           expect(res.body.data.user.email).toEqual(loginData.email);
           expect(res.body.data.token).toBeDefined();
         })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
     });
   });
 
@@ -58,7 +59,7 @@ describe('CheckinController', () => {
           expect(res.body.data.user.email).toEqual(adminData.email);
           expect(res.body.data.token).toBeDefined();
         })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
     });
   });
 
@@ -67,7 +68,7 @@ describe('CheckinController', () => {
       return request(app.getHttpServer())
         .get('/api/v1/checkins/inferior?cycleId=3&page=1&limit=10')
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(470);
+        .expect(INFERIOR_FORBIDEN.statusCode);
     });
 
     test('(GET) inferior admin', async () => {
@@ -116,7 +117,7 @@ describe('CheckinController', () => {
       return request(app.getHttpServer())
         .get('/api/v1/checkins/admin?cycleId=3')
         .set('Authorization', `Bearer ${userToken}`)
-        .expect(470);
+        .expect(INFERIOR_FORBIDEN.statusCode);
     });
 
     test('(GET) waiting_feedback_detail', async () => {

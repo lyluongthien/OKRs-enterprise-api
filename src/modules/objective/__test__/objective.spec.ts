@@ -45,7 +45,7 @@ describe('ObjectvieController', () => {
           expect(res.body.data.user.email).toEqual(loginData.email);
           expect(res.body.data.token).toBeDefined();
         })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
     });
   });
 
@@ -62,7 +62,7 @@ describe('ObjectvieController', () => {
           expect(res.body.data.user.email).toEqual(adminData.email);
           expect(res.body.data.token).toBeDefined();
         })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
     });
   });
 

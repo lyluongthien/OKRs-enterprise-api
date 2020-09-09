@@ -42,7 +42,7 @@ describe('CycleController', () => {
           expect(res.body.data.user.email).toEqual(loginData.email);
           expect(res.body.data.token).toBeDefined();
         })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
     });
   });
 
@@ -59,7 +59,7 @@ describe('CycleController', () => {
           expect(res.body.data.user.email).toEqual(adminData.email);
           expect(res.body.data.token).toBeDefined();
         })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
     });
   });
 
@@ -72,7 +72,7 @@ describe('CycleController', () => {
       return request(app.getHttpServer()).get('/api/v1/cycles/current').expect(HttpStatus.UNAUTHORIZED);
     });
 
-    test('(GET) crrent cycle', async () => {
+    test('(GET) current cycle', async () => {
       return request(app.getHttpServer())
         .get('/api/v1/cycles/current')
         .set('Authorization', `Bearer ${userToken}`)
@@ -94,7 +94,7 @@ describe('CycleController', () => {
         .set('Authorization', `Bearer ${userToken}`)
         .expect(HttpStatus.BAD_REQUEST);
     });
-    test('(GET) crrent cycle', async () => {
+    test('(GET) current cycle', async () => {
       const page = 1;
       const limit = 3;
       return request(app.getHttpServer())
@@ -119,7 +119,7 @@ describe('CycleController', () => {
         .set('Authorization', `Bearer ${userToken}`)
         .expect(HttpStatus.FORBIDDEN);
     });
-    test('(GET) crrent cycle', async () => {
+    test('(GET) current cycle', async () => {
       return request(app.getHttpServer())
         .get(`/api/v1/cycles/${cycleId}`)
         .set('Authorization', `Bearer ${admintoken}`)
@@ -136,8 +136,8 @@ describe('CycleController', () => {
   describe('CREATE CYCLE', () => {
     const cycleData: CycleDTO = {
       name: 'Test demo cycle summer',
-      startDate: new Date('2020-01-02'),
-      endDate: new Date('2020-03-04'),
+      startDate: new Date('2023-01-02'),
+      endDate: new Date('2023-03-04'),
     };
     test('(POST) Create new cycle', async () => {
       return request(app.getHttpServer())
@@ -157,15 +157,16 @@ describe('CycleController', () => {
   describe('UPDATE CYCLE', () => {
     const cycleUpdate: CycleDTO = {
       name: 'Update name cycle name',
-      startDate: new Date('2020-01-13'),
-      endDate: new Date('2020-03-24'),
+      startDate: new Date('2023-01-13'),
+      endDate: new Date('2023-03-24'),
     };
-    test('(PUT) Create new cycle', async () => {
+    test('(PUT) Update cycle', async () => {
       return request(app.getHttpServer())
         .put(`/api/v1/cycles/${createCycleId}`)
         .set('Authorization', `Bearer ${admintoken}`)
         .send(cycleUpdate)
         .expect((res) => {
+          console.log(res.body);
           expect(res.body).toBeDefined();
           expect(res.body.data).toBeDefined();
           expect(res.body.data.name).toEqual(cycleUpdate.name);

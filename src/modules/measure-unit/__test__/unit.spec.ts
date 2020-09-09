@@ -59,7 +59,7 @@ describe('MeasureUnitController', () => {
           expect(res.body.data.user.email).toEqual(adminData.email);
           expect(res.body.data.token).toBeDefined();
         })
-        .expect(201);
+        .expect(HttpStatus.CREATED);
     });
   });
 
